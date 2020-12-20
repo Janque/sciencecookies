@@ -8,7 +8,6 @@ admin.initializeApp({
 //var serviceAccount = require("ScienceCookies-d5fb83753a2b");
 const db=admin.firestore();
 
-
 exports.createDBDoc=functions.region('us-east1').auth.user().onCreate((user)=>{
   let nname=user.displayName;
   if(nname==null){
