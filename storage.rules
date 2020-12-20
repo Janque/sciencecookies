@@ -1,6 +1,7 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+  	allow read, write: if request.auth.uid=='wjcSAh7VsCQp909D6x6LzyapDkl1'||request.auth.uid=='zle5Rq7VDtTkAp5Wm9WCWuEDGg33'||request.auth.uid=='r6jLy9UI6kS9ijF6thrXxDyTN242';
     match /ppics/{pubID}/{imgId} {
     	allow	read: if true;
       allow write: if request.resource.size < 5 * 1024 * 1024
@@ -14,14 +15,6 @@ service firebase.storage {
     }
     match /cookieMedia/{month}/{imgId}{
     	allow read: if true;
-      allow write: if request.resource.size < 5 * 1024 * 1024
-                       &&(request.resource.contentType.matches('image/png')
-                       ||request.resource.contentType.matches('image/jpg')
-                       ||request.resource.contentType.matches('image/jpeg')
-                       ||request.resource.contentType.matches('image/tiff')
-                       ||request.resource.contentType.matches('image/webp'))
-                       && imgId.size() < 32
-                       && request.auth!=null;
     }
   }
 }
