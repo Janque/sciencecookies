@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="La ciencia te explica por qué sentimos mariposas en el estómago y un sinfín de cosas más cuando nos enamoramos."/>
+    <link rel="shortcut icon" href="../../img/logoT.svg">
+    <title>Science Cookies - La ciencia de enamorarse</title>
+
+    <!--Firebase app-->
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+    <!--Firebase features-->
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-functions.js"></script>
+
+    <!--Initialize Firebase-->
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig={
+        apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
+        authDomain: "sciencecookies.net",
+        databaseURL: "https://science-cookies.firebaseio.com",
+        projectId: "science-cookies",
+        storageBucket: "science-cookies.appspot.com",
+        messagingSenderId: "906770471712",
+        appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
+        measurementId: "G-1MYVREMBFV"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
+
+    <!--FirebaseUI-->
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth__es.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+    
+    <!--Font awesome-->
+    <script src="https://kit.fontawesome.com/cf642fd47e.js" crossorigin="anonymous"></script>
+
+    <!--Bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <!--Google fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+      .sdbarCnt{
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        margin-right: -15px;
+        margin-left: -15px;
+      }
+      @media (min-width: 768px){
+        .sidebar{
+          order: 0;
+          position: sticky;
+          z-index: 1000;
+          border-right: 1px solid rgba(0,0,0,.1);
+        }
+        .sdbarCnt{
+          display: block!important;
+        }
+      }
+      body{
+        font-family: 'Raleway', sans-serif;
+        font-weight: bolder;
+      }
+      .btn-scckie{
+        color: #f8f9fa;
+        background-color: rebeccapurple;
+        border-color: rebeccapurple;
+      }
+      .btn-link-scckie{
+        font-weight: 400;
+        color: rebeccapurple;
+        text-decoration: none;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <!--Navbar-->
+    <nav class="navbar sticky-top navbar-expand-md navbar-dark" style="background-color: #791acd;">
+      <img src="../../img/wlogoT.svg" height="30" class="d-inline-block align-center mr-2" alt="Science Cookies Logo" loading="lazy">
+      <a class="navbar-brand" href="https://sciencecookies.net">Science Cookies</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarM" aria-controls="navbarM" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navbarM">
+        <ul class="navbar-nav mr-auto py-0">
+          <a class="btn btn-dark mx-2 my-1" href="https://sciencecookies.net">Inicio</a>
+          <a class="btn btn-dark mx-2 my-1" href="../../quienes-somos">¿Quienes somos?</a>
+          <a class="btn btn-dark mx-2 my-1" href="../../contacto">Contacto</a>
+          <a class="btn btn-dark mx-2 my-1" href="../../archivo">Archivo</a>
+        </ul>
+        <div class="row justify-content-end">
+          <div class="dropdown mr-4 dropleft">
+            <button class="btn btn-dark dropdown-toggle p-2" type="button" id="usrDrpdwn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user" id="icnUsr"></i><img src="" height="30" class="d-inline-block align-center ml-2 rounded-circle" alt="" id="picUsr"></button>
+            <div class="dropdown-menu dropdown-menu-right bg-dark pl-1" aria-labelledby="usrDrpdwn">
+              <a id="btnPrfl" class="btn btn-link text-decoration-none text-light d-none" href="../../perfil">Mi perfíl</a>
+              <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none" href="../../perfil?tab=pref">Preferencias</a>
+              <div class="dropdown-divider ml-1 mr-2"></div>
+              <button id="btnLgO" class="btn btn-link text-decoration-none text-light d-none">Cerrar sesión</button>
+              <button id="btnLgI" class="btn btn-link text-decoration-none text-light d-none" data-toggle="modal" data-target="#mdlRgstr">Acceder</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Register modal -->
+    <div class="modal fade" id="mdlRgstr" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="mdlRgsL" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mdlRgsL">Inicia sesión o regístrate</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="firebaseui-auth-container"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="document.getElementById('mdlRgsL').innerHTML='Inicia sesión o regístrate';reporting=null">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Report modal-->
+    <div class="modal fade" id="mdlRprt" tabindex="-1" role="dialog" aria-labelledby="mdlRprtL" aria-hidden="true" data-backdrop="static">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mdlRprtL">Reportar contenido</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="frmRprt">
+              <div class="form-group row">
+                <label for="inReas" class="col-sm-2 col-form-label">Razón</label>
+                <div class="col-sm-10">
+                  <select id="inReas" class="form-control" required>
+                    <option value="">Escoge...</option>
+                    <option value="Spam o contenido comercial no deseado">Spam o contenido comercial no deseado</option>
+                    <option value="Abuso o acoso">Abuso o acoso</option>
+                    <option value="Fomenta el odio o la violencia">Fomenta el odio o la violencia</option>
+                    <option value="Lenguaje ofensivo">Lenguaje ofensivo</option>
+                    <option value="Material sexualmente explícito">Material sexualmente explícito</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inText" class="col-sm-2 col-form-label">Detalles</label>
+                <div class="col-sm-10">
+                  <textarea type="text" class="form-control" id="inText" placeholder="Opcional" rows="3" maxlength="300"></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" form="frmRprt">Reportar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Alertas-->
+    <div id="alrtClsSsn">
+      
+    </div>
+    
+    <!--Página-->
+    <div class="container-fluid text-white" style="background-color: black;background-image: url('../../img/fondo1.jpg');background-position: center top;background-attachment: fixed;">
+      <div class="row justify-content-around">
+        <div class="col-md-3 col-xl-2 sidebar my-0 ml-lg-3 mr-0 ml-md-2 py-md-1 pl-md-3 text-dark" style="background-color: #FFF8E7;">
+          <div class="row">
+            <h5 class="text-center my-auto mr-auto ml-3 ml-md-auto mt-md-2 d-md-none">Galletas recomendadas</h5>
+            <button class="btn d-md-none p-0 pr-2 mr-4" type="button" data-toggle="collapse" data-target="#sdbarL" aria-controls="sdbarL" aria-expanded="false" aria-label="Toggle docs navigation" style="font-size: 1.8rem;"><i class="fas fa-bars"></i></button>
+          </div>
+          <nav class="collapse sdbarCnt" id="sdbarL">
+            <div class="col justify-content-center px-5 px-md-0 px-lg-3 px-xl-2">
+              <h5 class="text-center">La galleta más nueva</h5>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd0"><div class="card mb-2">
+                <img id="crd0i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd0t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed0" ><div class="media mb-3">
+                <img id="rmed0i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed0t"></div>
+              </div></a>
+              <h5 class="text-center">Las galletas más populares</h5>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd1"><div class="card mb-2">
+                <img id="crd1i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd1t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd2"><div class="card mb-2">
+                <img id="crd2i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd2t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd3"><div class="card mb-2">
+                <img id="crd3i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd3t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed1"><div class="media mb-3">
+                <img id="rmed1i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed1t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed2"><div class="media mb-3">
+                <img id="rmed2i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed2t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed3"><div class="media mb-3">
+                <img id="rmed3i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed3t"></div>
+              </div></a>
+            </div>
+          </nav>
+        </div>
+        <div class="col-12 col-sm-9 col-md-6 col-xl-7 py-md-3 pl-md-3">
+          <p class="text-center"><img class="mt-3 mb-4 w-75" src="../../img/NLogoHalignT.svg" alt="Science Cookies: artículos de ciencia con chispas de chocolate"></p>
+          <div class="container-fluid mb-2 rounded-lg p-3" style="background-color:rebeccapurple;">
+            <!--Aquí va el contenido-->
+            <h1 class="text-center">La ciencia de enamorarse</h1>
+            <p>14/08/2020</p>
+            <p>Autor: Paulina Vargas</p>
+            <figure class="w-75 mx-auto">
+              <img src="20081401img/manos.JPG" alt="pareja de enamorados" class="w-100">
+              <figcaption style="font-size: 70%; font-weight: lighter;">Fotografía de Valentin Atonucci en Unsplash</figcaption>
+            </figure>
+            <p>Si has tenido la dicha (o desgracia para algunos) de enamorarte, sabrás muy bien que es una experiencia muy difícil de explicar; a veces tu mente y cuerpo actúan de maneras que tú no planeas y sientes una mezcla de sentimientos encontrados que te quitan el sueño. A pesar de que todo esto sea detonado por aspectos de carácter psicológico, existe una explicación biológica y química capaz de precisar mucho mejor lo que sucede detrás de todo este fenómeno.</p>
+            <p>El proceso de enamorarse es comúnmente dividido en 3 etapas, esto debido a que en cada una de ellas el cuerpo experimenta distintos fenómenos. Pero algo que tienen en común es que todas toman lugar en el cerebro, ya que el amor podría definirse como un proceso neurológico en el cual colaboran partes como el hipotálamo, la amígdala, la corteza prefrontal, el núcleo accumbens y el área tegmental frontal. Luego entonces, decir que amas a alguien con el corazón, termina siendo algo ilógico.</p>
+            <figure class="w-75 mx-auto">
+              <img src="20081401img/partes cerebro.png" alt="partes del cerebro" class="w-100">
+              <figcaption style="font-size: 70%; font-weight: lighter;">Vargas, P. para Science Cookies.<br>Partes del cerebro que colaboran en el proceso neurológico de enamorarse.</figcaption>
+            </figure>
+            <br>
+            <h4>Las etapas del amor en el cerebro</h4>
+            <p>La primera de estas etapas es el <strong>deseo</strong>, el cual da inicio prácticamente cuando empezamos a sentir una atracción por alguien, cuando adquirimos un nuevo ‘crush’, por ejemplo. El cerebro enseguida percibe lo que sucede y comienza con la segregación de feromonas y hormonas esteroideas sexuales tanto en hombres como en mujeres, las cuales son la testosterona y los estrógenos.</p>
+            <p>Cuando comienzamos a tener la sospecha o incluso la certeza de que esa persona especial podría correspondernos amorosamente, se dispara la segunda etapa que es conocida como <strong>atracción</strong>. La cual provoca la liberación de compuestos químicos llamados monoaminas, entre los que se encuentran la dopamina, serotonina, feniletilamina y la norepinefrina.</p>
+            <p>No todos los enamorados llegan a experimentar la tercera y última etapa, denominada <strong>cariño o apego</strong>, ya que usualmente se consigue hasta después de un periodo de tiempo de haber iniciado una relación estable. A partir de esta etapa toman las riendas la oxitocina, vasopresina y la endorfina.</p>
+            <p>Ahora probablemente te preguntarás ¿qué son todos esos compuestos químicos y qué es lo que provocan?</p>
+            <br>
+            <h4>El amor es sintomático</h4>
+            <p>Creo que a casi todos nos ha pasado que cuando por fin nos armamos de valor de hablarle o siquiera mandarle un mensaje a nuestro crush, nos ponemos nerviosos, nos pensamos mucho las palabras que diremos, e incluso nos pueden sudar las manos y temblar la voz. Esto es completamente normal, pues cuando nos encontramos en la primera etapa del amor, el organismo tiende a relacionar lo sucedido con una situación de estrés.</p>
+            <p>Algo relacionado con los efectos de la segunda etapa es la frase “el amor es como una droga”, y es que no está nada alejada de la realidad, pues tanto las drogas como el enamoramiento producen altos niveles de dopamina, la cual genera una constante euforia, deseo, dependencia y abstinencia en ambos escenarios; y es debido a esto que, después de un tiempo de interactuar con esa persona especial, nos damos cuenta que nos emociona verla, que nuestro ritmo cardíaco se acelera cuando estamos con ella y que, sin querer, no nos podemos concentrar porque siempre la tenemos en nuestros pensamientos. A esto se le suman los efectos de la serotonina, que afecta nuestro estado de ánimo haciéndonos sentir felices cuando estamos con esa persona o tristes cuando no; y asimismo los de la norepinefrina, que además de provocar insomnio y pérdida de apetito, aumenta nuestra capacidad de recordar estímulos nuevos, haciendo que recordemos los más mínimos detalles de cuando nos encontramos con esa persona.</p>
+            <p>En la etapa del cariño, los efectos de la vasopresina y la oxitocina hacen que el amor intenso y desmedido, que sentíamos en la segunda etapa, vaya decayendo para que tome lugar una sensación de apego. La vasopresina favorece a que el apego sea duradero y la oxitocina, apodada ‘sustancia química del abrazo’, hace que se cree un vínculo afectivo más estrecho por medio del contacto físico. Así también, se genera una sensación de calma y estabilidad con la otra persona gracias a la endorfina, pues las dosis extra de esta sustancia reducen el dolor haciendo que hasta las cosas más insignificantes nos provoquen alegría.</p>
+            <p>Uno de los síntomas más representativos del amor son las llamadas ‘mariposas en el estómago’, que son como un cosquilleo en la zona abdominal que se detona al ver a esa persona querida; esta usualmente se presenta en la segunda etapa del amor, pero no de manera estricta, y a diferencia de todos los síntomas previamente mencionados, no se provoca por la liberación de una sustancia química nada más.</p>
+            <br>
+            <h4>¿Qué son realmente las mariposas en el estómago?</h4>
+            <p>Todo inicia en el sistema nervioso autónomo (SNA), el cual se divide en el SNA parasimpático y el SNA simpático; siendo el primero el que disminuye nuestra frecuencia cardíaca y nos hace sentir relajados, y el segundo el que se activa en tan solo unos milisegundos para segregar adrenalina y cortisol cuando el cuerpo se siente en peligro. El cambio de un SNA a otro es la razón exacta de este torbellino que sentimos en el estómago; ese estado de nerviosismo, incertidumbre y preocupación provocado tal vez por una primera cita o encuentro, el cuerpo lo interpreta como una situación que nos pone en riesgo. Y al cambiar al SNA simpático, cierta cantidad de la sangre que había en nuestro sistema digestivo se transfiere a los músculos de los brazos y piernas, pues son ideales para huir de una situación de verdadero peligro; nuestro estómago se da cuenta de la falta de sangre y oxígeno, y manda ese estímulo que sentimos como un aleteo de mariposas en señal de protesta.</p>
+            <p>Sin duda, enamorarse conlleva muchos cambios temporales en nuestro organismo, que la biología y la química son capaces de explicar; sin embargo, no existen reglas estrictas al enamorarse, ya que cuestiones como el por qué nos enamoramos y qué tanto nos podemos enamorar de alguien, son cosas que la ciencia exacta no puede abarcar, pues la parte sentimental del amor sigue siendo muy abstracta para la ciencia.</p>
+            <br>
+            <h5>Referencias</h5>
+            <p><a href="https://www.nationalgeographic.es/ciencia/que-le-pasa-tu-cerebro-cuando-te-enamoras" target="_blank" class="text-warning text-break" rel="nofollow">https://www.nationalgeographic.es/ciencia/que-le-pasa-tu-cerebro-cuando-te-enamoras <i class="fas fa-external-link-alt"></i></a></p>
+            <p><a href="https://www.nationalgeographic.es/ciencia/2017/11/que-es-el-amor-segun-la-ciencia-verdades-y-mentiras/amp" target="_blank" class="text-warning text-break">https://www.nationalgeographic.es/ciencia/2017/11/que-es-el-amor-segun-la-ciencia-verdades-y-mentiras/amp <i class="fas fa-external-link-alt" rel="nofollow"></i></a></p>
+            <p><a href="https://www.uaeh.edu.mx/scige/boletin/prepa2/n4/p1.html" target="_blank" class="text-warning text-break" rel="nofollow">https://www.uaeh.edu.mx/scige/boletin/prepa2/n4/p1.html <i class="fas fa-external-link-alt"></i></a></p>
+            <p><a href="https://www.codigonuevo.com/entretenimiento/explicacion-cientifica-sientes-mariposas-estomago" target="_blank" class="text-warning text-break" rel="nofollow">https://www.codigonuevo.com/entretenimiento/explicacion-cientifica-sientes-mariposas-estomago <i class="fas fa-external-link-alt"></i></a></p>
+            <!--Aquí termina el contenido-->
+          </div>
+          <div class="row justify-content-start mb-2" id="btnsFL">
+            <div class="col-auto">
+                <button class="btn btn-outline-light p-1 disabled mt-2 mx-2" id="btnFav">Añadir a favoritos <i class="far fa-heart"></i></button>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-outline-light p-1 disabled m-2" id="btnLike">Dar me gusta <i class="far fa-thumbs-up"></i></button>
+            </div>
+          </div>
+          <!--Comentarios-->
+          <div class="row">
+            <button class="btn btn-block btn-scckie mb-2 disabled" id="btnLdComs">Cargar comentarios</button>
+            <div class="container-fluid d-none" id="spnCom"><div class="text-center">
+              <div class="spinner-border text-primary" role="status"><span class="sr-only"></span></div>
+            </div></div>
+            <div class="container-fluid text-dark d-none" id="cntComs">
+              <div class="container-fluid bg-light p-2 rounded-lg mb-1">
+                <div class="row"><div class="col" id="comCount">Aún no hay comentarios</div></div>
+                <div class="dropdown-divider"></div>      
+                <form id="frmNwCom">
+                  <div class="form-group row">
+                    <div class="col-auto pr-0">
+                      <label for="inNwCom"><img src="" alt="" class="rounded-circle" height="35" width="35" id="ppCom"></label>
+                    </div>
+                    <div class="col">
+                      <textarea type="text" class="form-control-plaintext border-bottom" id="inNwCom" maxlength="200" placeholder="Nuevo comentario" required rows="3"></textarea>
+                      <small class="text-muted">Máximo 200 caracteres</small>
+                    </div>
+                  </div>
+                </form>
+                <div class="row justify-content-end d-none" id="frmNwComBtns">
+                  <div class="col-auto">
+                    <button class="btn btn-secondary" onclick="document.getElementById('inNwCom').value='';document.getElementById('frmNwComBtns').classList.add('d-none');replying=-1;document.getElementById('inNwCom').setAttribute('placeholder','Nuevo comentario');" id="btnCanCom">Cancelar</button>
+                    <button class="btn btn-scckie" type="submit" form="frmNwCom" id="btnAddCom">Comentar</button>
+                  </div>
+                </div>
+              </div>
+              <div class="container-fluid text-dark d-none p-0" id="cntComs2">
+              </div>
+            </div>
+            <button class="btn btn-block btn-scckie mb-2 disabled d-none" id="btnLdMrComs">Más comentarios</button>
+            <div class="container-fluid d-none" id="spnCom2"><div class="text-center">
+              <div class="spinner-border text-primary" role="status"><span class="sr-only"></span></div>
+            </div></div>
+          </div>
+        </div>
+        <!--Anuncios V-->
+        <div class="col-2 py-md-3 d-none d-sm-block bg-info sidebar text-dark text-center justify-content-center px-1 px-lg-2">
+          <h5 class="text-center mx-auto">Publicidad</h5>
+          <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65"><img class="w-100 mb-2" src="../../publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
+          <a href="https://www.instagram.com/_pedacitode_cielo/"><img class="w-100 mb-2" src="../../publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
+          <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37">
+            <img class="w-100" src="../../publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
+            <img class="w-100" src="../../publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
+            <img class="w-100 mb-2" src="../../publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
+          </a>
+          <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd"><img class="w-100 mb-2" src="../../publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
+          <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/"><img class="w-100 mb-2" src="../../publicidad/Mondler.jpeg" alt="Mondler"></a>
+        </div>
+      </div>
+      <!--Anuncios H-->
+      <div class="row bg-info px-2 text-dark d-sm-none justify-content-center">
+        <div class="col-12 pt-2">
+          <h5 class="text-center mx-auto">Publicidad</h5>
+        </div>
+        <div class="col-6 px-1">
+          <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65"><img class="w-100 mb-2" src="../../publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
+          <a href="https://www.instagram.com/_pedacitode_cielo/"><img class="w-100 mb-2" src="../../publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
+          <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37">
+            <img class="w-100" src="../../publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
+            <img class="w-100" src="../../publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
+            <img class="w-100 mb-2" src="../../publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
+          </a>
+        </div>
+        <div class="col-6 px-1">
+          <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd"><img class="w-100 mb-2" src="../../publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
+          <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/"><img class="w-100 mb-2" src="../../publicidad/Mondler.jpeg" alt="Mondler"></a>
+        </div>
+      </div>
+    </div>
+
+    <!--Id@#IMPORTANTE-->
+    <input class="form-check-input d-none" type="checkbox" id="getId" value="20081401">
+    <input class="form-check-input d-none" type="checkbox" id="getTitle" value="La ciencia de enamorarse">
+    
+    <!--Bootstrap-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+    <script src="../../js/cookApp.js"></script>
+
+    <!--AddThis-->
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f13599e10bd5c2b"></script>
+  </body>
+</html>

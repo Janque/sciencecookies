@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="En este blog escribimos artículos de difusión científica y sobre curiosidades y esperamos lograr alimentar la curiosidad."/>
+    <link rel="shortcut icon" href="img/logoT.svg">
+    <title>Science Cookies - ¿Quiénes somos?</title>
+
+    <!--Firebase app-->
+    <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-app.js"></script>
+    <!--Firebase features-->
+    <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-firestore.js"></script>
+
+    <!--Initialize Firebase-->
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig={
+        apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
+        authDomain: "sciencecookies.net",
+        databaseURL: "https://science-cookies.firebaseio.com",
+        projectId: "science-cookies",
+        storageBucket: "science-cookies.appspot.com",
+        messagingSenderId: "906770471712",
+        appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
+        measurementId: "G-1MYVREMBFV"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
+
+    <!--FirebaseUI-->
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth__es.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+    
+    <!--Font awesome-->
+    <script src="https://kit.fontawesome.com/cf642fd47e.js" crossorigin="anonymous"></script>
+
+    <!--Bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <!--Google fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+      .sdbarCnt{
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        margin-right: -15px;
+        margin-left: -15px;
+      }
+      @media (min-width: 768px){
+        .sidebar{
+          order: 0;
+          position: sticky;
+          z-index: 1000;
+          border-right: 1px solid rgba(0,0,0,.1);
+        }
+        .sdbarCnt{
+          display: block!important;
+        }
+      }
+      body{
+        font-family: 'Raleway', sans-serif;
+        font-weight: bolder;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <!--Navbar-->
+    <nav class="navbar sticky-top navbar-expand-md navbar-dark" style="background-color: #791acd;">
+      <img src="img/wlogoT.svg" height="30" class="d-inline-block align-center mr-2" alt="Science Cookies Logo" loading="lazy">
+      <a class="navbar-brand" href="https://sciencecookies.net">Science Cookies</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarM" aria-controls="navbarM" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navbarM">
+        <ul class="navbar-nav mr-auto py-0">
+          <a class="btn btn-dark mx-2 my-1" href="https://sciencecookies.net">Inicio</a>
+          <a class="btn btn-dark mx-2 my-1 active">¿Quienes somos?</a>
+          <a class="btn btn-dark mx-2 my-1" href="contacto">Contacto</a>
+          <a class="btn btn-dark mx-2 my-1" href="archivo">Archivo</a>
+        </ul>
+        <div class="row justify-content-end">
+          <div class="dropdown mr-4 dropleft">
+            <button class="btn btn-dark dropdown-toggle p-2" type="button" id="usrDrpdwn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas" id="icnUsr"></i><img src="" height="30" class="d-inline-block align-center ml-2 rounded-circle" alt="" id="picUsr"></button>
+            <div class="dropdown-menu dropdown-menu-right bg-dark pl-1" aria-labelledby="usrDrpdwn">
+              <a id="btnPrfl" class="btn btn-link text-decoration-none text-light d-none" href="perfil">Mi perfíl</a>
+              <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none" href="perfil?tab=pref">Preferencias</a>
+              <div class="dropdown-divider ml-1 mr-2"></div>
+              <button id="btnLgO" class="btn btn-link text-decoration-none text-light d-none">Cerrar sesión</button>
+              <button id="btnLgI" class="btn btn-link text-decoration-none text-light d-none" data-toggle="modal" data-target="#mdlRgstr">Acceder</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Register modal -->
+    <div class="modal fade" id="mdlRgstr" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="mdlRgsL" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mdlRgsL">Inicia sesión o regístrate</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="firebaseui-auth-container"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Alertas-->
+    <div id="alrtClsSsn">
+      
+    </div>
+    
+    <!--Página-->
+    <div class="container-fluid text-white" style="background-color: black;background-image: url('img/fondo1.jpg');background-position: center top;background-attachment: fixed;">
+      <div class="row justify-content-around">
+        <div class="col-md-3 col-xl-2 sidebar my-0 ml-lg-3 mr-0 ml-md-2 py-md-1 pl-md-3 text-dark" style="background-color: #FFF8E7;">
+          <div class="row">
+            <h5 class="text-center my-auto mr-auto ml-3 ml-md-auto mt-md-2 d-md-none">Galletas recomendadas</h5>
+            <button class="btn d-md-none p-0 pr-2 mr-4" type="button" data-toggle="collapse" data-target="#sdbarL" aria-controls="sdbarL" aria-expanded="false" aria-label="Toggle docs navigation" style="font-size: 1.8rem;"><i class="fas fa-bars"></i></button>
+          </div>
+          <nav class="collapse sdbarCnt" id="sdbarL">
+            <div class="col justify-content-center px-5 px-md-0 px-lg-3 px-xl-2">
+              <h5 class="text-center">La galleta más nueva</h5>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd0"><div class="card mb-2">
+                <img id="crd0i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd0t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed0" ><div class="media mb-3">
+                <img id="rmed0i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed0t"></div>
+              </div></a>
+              <h5 class="text-center">Las galletas más populares</h5>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd1"><div class="card mb-2">
+                <img id="crd1i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd1t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd2"><div class="card mb-2">
+                <img id="crd2i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd2t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd3"><div class="card mb-2">
+                <img id="crd3i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd3t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed1"><div class="media mb-3">
+                <img id="rmed1i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed1t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed2"><div class="media mb-3">
+                <img id="rmed2i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed2t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed3"><div class="media mb-3">
+                <img id="rmed3i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed3t"></div>
+              </div></a>
+            </div>
+          </nav>
+        </div>
+        <div class="col-12 col-sm-9 col-md-6 col-xl-7 py-md-3 pl-md-3">
+          <p class="text-center"><img class="mt-3 mb-4 w-75" src="img/NLogoHalignT.svg" alt="Science Cookies: artículos de ciencia con chispas de chocolate"></p>
+          <div class="container-fluid mb-2 rounded-lg p-3" style="background-color:rebeccapurple;">
+            <!--Aquí va el contenido-->
+            <h1 class="text-center">¿Quiénes somos?</h1>
+            <br>
+            <p>Somos un grupo de estudiantes apasionados por la ciencia y motivados por la curiosidad. Cualquier persona que formule las preguntas correctas es un científico en potencia, y creemos que fue ese mismo principio el cual unió nuestros caminos en 2017. En este blog escribimos artículos de difusión científica y sobre curiosidades y esperamos lograr alimentar la curiosidad de muchas más personas y ofrezcer una respuesta a interrogantes del día a día.</p>
+            <!--Aquí termina el contenido-->
+          </div>
+        </div>
+        <!--Anuncios V-->
+        <div class="col-2 py-md-3 d-none d-sm-block bg-info sidebar text-dark text-center justify-content-center px-1 px-lg-2">
+          <h5 class="text-center mx-auto">Publicidad</h5>
+          <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65" rel="sponsored"><img class="w-100 mb-2" src="publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
+          <a href="https://www.instagram.com/_pedacitode_cielo/" rel="sponsored"><img class="w-100 mb-2" src="publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
+          <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37" rel="sponsored">
+            <img class="w-100" src="publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
+            <img class="w-100" src="publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
+            <img class="w-100 mb-2" src="publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
+          </a>
+          <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd" rel="sponsored"><img class="w-100 mb-2" src="publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
+          <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/" rel="sponsored"><img class="w-100 mb-2" src="publicidad/Mondler.jpeg" alt="Mondler"></a>
+        </div>
+      </div>
+      <!--Anuncios H-->
+      <div class="row bg-info px-2 text-dark d-sm-none justify-content-center">
+        <div class="col-12 pt-2">
+          <h5 class="text-center mx-auto">Publicidad</h5>
+        </div>
+        <div class="col-6 px-1">
+          <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65" rel="sponsored"><img class="w-100 mb-2" src="publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
+          <a href="https://www.instagram.com/_pedacitode_cielo/" rel="sponsored"><img class="w-100 mb-2" src="publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
+          <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37" rel="sponsored">
+            <img class="w-100" src="publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
+            <img class="w-100" src="publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
+            <img class="w-100 mb-2" src="publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
+          </a>
+        </div>
+        <div class="col-6 px-1">
+          <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd" rel="sponsored"><img class="w-100 mb-2" src="publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
+          <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/" rel="sponsored"><img class="w-100 mb-2" src="publicidad/Mondler.jpeg" alt="Mondler"></a>
+        </div>
+      </div>
+    </div>
+    
+    <!--Bootstrap-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+    <script src="js/whoApp.js"></script>
+
+    <!--AddThis-->
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f13599e10bd5c2b"></script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /ppics/{pubID}/{imgId} {
+    	allow	read: if true;
+      allow write: if request.resource.size < 5 * 1024 * 1024
+                       &&(request.resource.contentType.matches('image/png')
+                       ||request.resource.contentType.matches('image/jpg')
+                       ||request.resource.contentType.matches('image/jpeg')
+                       ||request.resource.contentType.matches('image/tiff')
+                       ||request.resource.contentType.matches('image/webp'))
+                       && imgId.size() < 32
+                       && request.auth!=null;
+    }
+  }
+}

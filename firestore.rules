@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  	match /{document=**} {
+      allow read, write: if request.auth!=null&&(request.auth.uid=='wjcSAh7VsCQp909D6x6LzyapDkl1'||request.auth.uid=='zle5Rq7VDtTkAp5Wm9WCWuEDGg33'||request.auth.uid=='r6jLy9UI6kS9ijF6thrXxDyTN242');
+    }
+    match /users/{userId} {
+      allow read, update, delete: if request.auth!=null&&request.auth.uid==userId;
+    }
+    match /usersPublic/{publicID}{
+    	allow update: if request.auth!=null&&get(/databases/$(database)/documents/users/$(request.auth.uid)).data.publicID==publicID;
+    }
+    match /galletas/{galleta} {
+      allow read: if true;
+      allow update: if true;
+      match /coms/{com}{
+      	allow read:if true;
+        allow update:if request.auth!=null;
+      }
+    }
+    match /messages/{mess} {
+      allow create: if request.auth != null;
+    }
+    match /reports/{rep}{
+    	allow create: if request.auth!=null;
+    }
+    match /newsletters/base{
+      allow update: if request.auth!=null;
+    }
+  }
+}

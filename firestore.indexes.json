@@ -1,0 +1,27 @@
+{
+  "indexes": [
+    { 
+      "collectionGroup": "galletas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cats", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "pop", "order": "DESCENDING" }
+      ]
+    },{ 
+      "collectionGroup": "galletas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cats", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "date", "order": "ASCENDING" }
+      ]
+    },{ 
+      "collectionGroup": "galletas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cats", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "date", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
