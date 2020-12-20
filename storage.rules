@@ -12,5 +12,16 @@ service firebase.storage {
                        && imgId.size() < 32
                        && request.auth!=null;
     }
+    match /cookieMedia/{month}/{imgId}{
+    	allow read: if true;
+      allow write: if request.resource.size < 5 * 1024 * 1024
+                       &&(request.resource.contentType.matches('image/png')
+                       ||request.resource.contentType.matches('image/jpg')
+                       ||request.resource.contentType.matches('image/jpeg')
+                       ||request.resource.contentType.matches('image/tiff')
+                       ||request.resource.contentType.matches('image/webp'))
+                       && imgId.size() < 32
+                       && request.auth!=null;
+    }
   }
 }
