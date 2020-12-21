@@ -273,11 +273,11 @@ function shwRecom(){
     db.collection('galletas').orderBy('date','desc').limit(1).get().then(function(docs){
         docs.forEach(function(doc){
             document.getElementById('crd0').href='../'+doc.data().url;
-            document.getElementById('crd0i').src='../'+doc.data().picUrl;
+            document.getElementById('crd0i').src=doc.data().picUrl;
             let d=doc.data().date.toDate();
             document.getElementById('crd0t').innerHTML='                                      <h5 class="card-title">'+doc.data().title+'</h5>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
             document.getElementById('rmed0').href='../'+doc.data().url;
-            document.getElementById('rmed0i').src='../'+doc.data().picUrl;
+            document.getElementById('rmed0i').src=doc.data().picUrl;
             d=doc.data().date.toDate();
             document.getElementById('rmed0t').innerHTML='                                    <h6 class="card-title">'+doc.data().title+'</h6>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
         })
@@ -286,11 +286,11 @@ function shwRecom(){
         let idx=1;
         docs.forEach(function(doc){
             document.getElementById('crd'+idx).href='../'+doc.data().url;
-            document.getElementById('crd'+idx+'i').src='../'+doc.data().picUrl;
+            document.getElementById('crd'+idx+'i').src=doc.data().picUrl;
             let d=doc.data().date.toDate();
             document.getElementById('crd'+idx+'t').innerHTML='                                <h5 class="card-title">'+doc.data().title+'</h5>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
             document.getElementById('rmed'+idx).href='../'+doc.data().url;
-            document.getElementById('rmed'+idx+'i').src='../'+doc.data().picUrl;
+            document.getElementById('rmed'+idx+'i').src=doc.data().picUrl;
             d=doc.data().date.toDate();
             document.getElementById('rmed'+idx+'t').innerHTML='                              <h6 class="card-title">'+doc.data().title+'</h6>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
             idx++;

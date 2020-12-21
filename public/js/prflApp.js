@@ -1,9 +1,4 @@
-//Init database & storage
-var db=firebase.firestore();
-var strg=firebase.storage();
-
 //Global
-var urlSrch='';
 var actSsn=false;
 var fav,liked,points,rank,gotFL=false;
 var favn,favl,likedn,likedl;
@@ -14,23 +9,18 @@ var fileForUp=null;
 
 //Check auth
 var displayName,email,photoURL,uid;
-function chAuth(){
-    firebase.auth().onAuthStateChanged(function(user) {
-        if(user){
-            displayName=user.displayName;
-            email=user.email;
-            photoURL=user.photoURL;
-            uid=user.uid;
-            actSsn=true;
-            document.getElementById('picUsr').setAttribute('onerror',"this.src='img/nopp.png'");
-            document.getElementById('picUsr').src=photoURL;
-            shwCrds(urlSrch.get('tab'));
-        }else{
-            $('#mdlRgstr').modal('show');
-            actSsn=false;
-        }
-    });
-}
+firebase.auth().onAuthStateChanged(function(user) {
+    if(user){
+        actSsn=true;
+        document.getElementById('picUsr').setAttribute('onerror',"this.src='img/nopp.png'");
+        document.getElementById('picUsr').src=photoURL;
+        shwCrds(urlSrch.get('tab'));
+    }else{
+        $('#mdlRgstr').modal('show');
+        actSsn=false;
+    }
+});
+
 //Log Out
 document.getElementById("btnLgO").onclick=function(){
     firebase.auth().signOut().then(function() {
@@ -47,35 +37,8 @@ document.getElementById("btnLgO").onclick=function(){
         document.getElementById("alrtClsSsn").innerHTML='';
     });
 };
-//Autenticaciones
-var uiConfig={
-    signInSuccessUrl:window.location,
-    signInOptions: [
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        {
-            provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            signInMethod: firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD,
-            forceSameDevice: false,
-            requireDisplayName: true,
-            signInMethod:'emailLink',
-        },
-        //firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-    ],
-    // Terms of service url.
-    tosUrl: 'docs/tos',
-    // Privacy policy url.
-    privacyPolicyUrl: 'docs/privacidad'
-};
-var ui=new firebaseui.auth.AuthUI(firebase.auth());
-ui.start('#firebaseui-auth-container', uiConfig);
 
-window.addEventListener("load",function(){
-    urlSrch=new URLSearchParams(location.search);
-    chAuth();
-    if(ui.isPendingRedirect())ui.start('#firebaseui-auth-container', uiConfig);
-    if(urlSrch.get('mode')=='select')$('#mdlRgstr').modal('show');
-    shwRecom();
+function loaded(){
     function send(){
         displayName=document.getElementById('inNewNck').value;
         firebase.auth().currentUser.updateProfile({
@@ -158,7 +121,7 @@ window.addEventListener("load",function(){
         });
     });
     function uptPP(file){
-        let ref=strg.ref('ppics/'+publicID+'/pp');
+        let ref=storage.ref('ppics/'+publicID+'/pp');
         let task=ref.put(file);
         task.on('state_changed',
             function progress(snap){
@@ -221,7 +184,7 @@ window.addEventListener("load",function(){
         document.getElementById('inNwPPL').innerHTML=fileForUp.name;
         prevImg(fileForUp);
     });
-});
+}
 function resetFrm(){
     document.getElementById('inNewNck').value='';
     document.getElementById('inNwPP').value='';
@@ -392,33 +355,4 @@ function shwCrds2(t){
             }
         }
     }
-}
-
-function shwRecom(){
-    db.collection('galletas').orderBy('date','desc').limit(1).get().then(function(docs){
-        docs.forEach(function(doc){
-            document.getElementById('crd0').href='galletas/'+doc.data().url;
-            document.getElementById('crd0i').src='galletas/'+doc.data().picUrl;
-            let d=doc.data().date.toDate();
-            document.getElementById('crd0t').innerHTML='                                      <h5 class="card-title">'+doc.data().title+'</h5>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
-            document.getElementById('rmed0').href='galletas/'+doc.data().url;
-            document.getElementById('rmed0i').src='galletas/'+doc.data().picUrl;
-            d=doc.data().date.toDate();
-            document.getElementById('rmed0t').innerHTML='                                    <h6 class="card-title">'+doc.data().title+'</h6>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
-        })
-    });
-    db.collection('galletas').orderBy('pop','desc').limit(3).get().then(function(docs){
-        let idx=1;
-        docs.forEach(function(doc){
-            document.getElementById('crd'+idx).href='galletas/'+doc.data().url;
-            document.getElementById('crd'+idx+'i').src='galletas/'+doc.data().picUrl;
-            let d=doc.data().date.toDate();
-            document.getElementById('crd'+idx+'t').innerHTML='                                <h5 class="card-title">'+doc.data().title+'</h5>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
-            document.getElementById('rmed'+idx).href='galletas/'+doc.data().url;
-            document.getElementById('rmed'+idx+'i').src='galletas/'+doc.data().picUrl;
-            d=doc.data().date.toDate();
-            document.getElementById('rmed'+idx+'t').innerHTML='                              <h6 class="card-title">'+doc.data().title+'</h6>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
-            idx++;
-        })
-    });
 }
