@@ -25,6 +25,12 @@ function shwSsnBtns(ac){
         document.getElementById('picUsr').src=photoURL;
         document.getElementById('btnPrfl').classList.remove('d-none');
         document.getElementById('btnPref').classList.remove('d-none');
+        let modAuth=firebase.app().functions('us-east1').httpsCallable('modAuth');
+        modAuth(uid).then(res=>{
+            if(res.data){
+                document.getElementById('btnDraft').classList.remove('d-none');
+            }
+        }).catch(err=>console.log(err));
         document.getElementById('btnLgO').classList.remove('d-none');
         document.getElementById('btnLgI').classList.add('d-none');
     }else{
@@ -32,10 +38,11 @@ function shwSsnBtns(ac){
         document.getElementById('icnUsr').classList.add('fa-user-slash');
         document.getElementById('picUsr').setAttribute('onerror',"");
         document.getElementById('picUsr').src='';
-        document.getElementById('btnLgI').classList.remove('d-none');
         document.getElementById('btnPrfl').classList.add('d-none');
         document.getElementById('btnPref').classList.add('d-none');
+        document.getElementById('btnDraft').classList.add('d-none');
         document.getElementById('btnLgO').classList.add('d-none');
+        document.getElementById('btnLgI').classList.remove('d-none');
     }
 }
 //Log Out
