@@ -14,7 +14,11 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "rewrites":[{
+      "source":"/galletas/*/*",
+      "function":"dynCookies-showCookie"
+    }]
   },
   "storage": {
     "rules": "storage.rules"
