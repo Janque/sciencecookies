@@ -1,5 +1,4 @@
 //Global
-var actSsn=false;
 var fav,liked,points,rank,gotFL=false;
 var favn,favl,likedn,likedl;
 var publicID;
@@ -11,32 +10,13 @@ var fileForUp=null;
 var displayName,email,photoURL,uid;
 firebase.auth().onAuthStateChanged(function(user) {
     if(user){
-        actSsn=true;
         document.getElementById('picUsr').setAttribute('onerror',"this.src='img/nopp.png'");
         document.getElementById('picUsr').src=photoURL;
         shwCrds(urlSrch.get('tab'));
     }else{
         $('#mdlRgstr').modal('show');
-        actSsn=false;
     }
 });
-
-//Log Out
-document.getElementById("btnLgO").onclick=function(){
-    firebase.auth().signOut().then(function() {
-        document.getElementById("alrtClsSsn").innerHTML='<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert">Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-    }).catch(function(error) {
-        document.getElementById("alrtClsSsn").innerHTML='<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>'+error+'<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-        console.log(error);
-    });
-    setTimeout(function(){
-        document.getElementById("btnAlrtClsSsn").click();
-    },3000);
-    window.location.href='https://sciencecookies.net';
-    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-        document.getElementById("alrtClsSsn").innerHTML='';
-    });
-};
 
 function loaded(){
     function send(){

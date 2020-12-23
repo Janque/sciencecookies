@@ -2,7 +2,6 @@
 var db=firebase.firestore();
 
 //Check auth
-var displayName,email,photoURL,uid;
 firebase.auth().onAuthStateChanged(function(user) {
     if(user){
         document.getElementById('inEmail').value=email;
