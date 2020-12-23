@@ -9,14 +9,14 @@
   <title>Science Cookies - {{title}}</title>
 
   <!--Firebase app-->
-  <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
   <!--Firebase features-->
-  <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-analytics.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-database.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-functions.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-functions.js"></script>
 
   <!--Initialize Firebase-->
   <script>
@@ -76,10 +76,9 @@
             aria-haspopup="true" aria-expanded="false"><i class="fas fa-user" id="icnUsr"></i><img src="" height="30"
               class="d-inline-block align-center ml-2 rounded-circle" alt="" id="picUsr"></button>
           <div class="dropdown-menu dropdown-menu-right bg-dark pl-1" aria-labelledby="usrDrpdwn">
-            <a id="btnPrfl" class="btn btn-link text-decoration-none text-light d-none" href="../../perfil">Mi
-              perfíl</a>
-            <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none"
-              href="../../perfil?tab=pref">Preferencias</a>
+            <a id="btnPrfl" class="btn btn-link text-decoration-none text-light d-none" href="../../perfil">Mi perfíl</a>
+            <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none"href="../../perfil?tab=pref">Preferencias</a>
+            <a id="btnDraft" class="btn btn-link text-decoration-none text-light d-none" href="../../drafts">Borradores</a>
             <div class="dropdown-divider ml-1 mr-2"></div>
             <button id="btnLgO" class="btn btn-link text-decoration-none text-light d-none">Cerrar sesión</button>
             <button id="btnLgI" class="btn btn-link text-decoration-none text-light d-none" data-toggle="modal"
@@ -355,7 +354,8 @@
     integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
     crossorigin="anonymous"></script>
 
-  <script src="../../js/cookApp.js"></script>
+  <script src="../../js/global.js"></script>
+  <script src="../../js/newCookApp.js"></script>
 
   <!--AddThis-->
   <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f13599e10bd5c2b"></script>
