@@ -10,19 +10,22 @@ app.engine('hbs', engines.handlebars);
 app.set('views', './views');
 app.set('view engine', 'hbs');
 
-app.get('/galletas/:month/:title', (req, res) => {
+app.get('/galletas/:month/:file', (req, res) => {
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
     if (!/^\d{6}$/.test(req.params.month)) {
         res.redirect('http://sciencecookies.net/404');
     } else {
-        db.collection('galletasCont').where('title', '==', req.params.title).limit(1).get().then(snap => {
+        db.collection('galletasCont').where('file', '==', req.params.file).limit(1).get().then(snap => {
             if (snap.empty) {
                 res.redirect('http://sciencecookies.net/404');
                 return;
             }
             snap.forEach(doc => {
                 let dat = doc.data();
-
+                if(!dat.public){
+                    res.redirect('http://sciencecookies.net/404');
+                    return;
+                }
                 let content = [];
                 dat.cont.forEach(item => {
                     let sect = "";
@@ -52,7 +55,7 @@ app.get('/galletas/:month/:title', (req, res) => {
                                 sect += '<br>\n';
                             }
                             break;
-                        //Add more
+                        //Add more@#
                     }
                     content.push(sect);
                 });
@@ -64,6 +67,7 @@ app.get('/galletas/:month/:title', (req, res) => {
                     "cookieID": doc.id,
                     "content": content
                 });
+                return;
             });
         }).catch(err => console.log(err));
     }

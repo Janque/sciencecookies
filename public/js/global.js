@@ -11,25 +11,26 @@ var mod=false;
 var displayName,email,photoURL,uid;
 firebase.auth().onAuthStateChanged(function(user) {
     let modAuth=firebase.app().functions('us-east1').httpsCallable('modAuth');
-    modAuth(uid).then(res=>{
-        mod=res.data;
-    }).catch(err=>console.log(err));
     if(user){
         displayName=user.displayName;
         email=user.email;
         photoURL=user.photoURL;
         uid=user.uid;
         actSsn=true;
-        shwSsnBtns(true);
-        if(url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"){
-            if(!mod)window.location.href='https://sciencecookies.net';
-        }
+        modAuth(uid).then(res=>{
+            mod=res.data;
+            if(url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"){
+                if(!mod)window.location.href='https://sciencecookies.net';
+            }
+            shwSsnBtns(true);
+        }).catch(err=>console.log(err));
     }else{
-        actSsn=false;
-        shwSsnBtns(false);
         if(url.pathname.substring(0,7)=="/perfil"||url.pathname.substring(0,9)=="/contacto"||url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"){
             window.location.href='https://sciencecookies.net';
         }
+        actSsn=false;
+        mod=false;
+        shwSsnBtns(false);
     }
 });
 //Botones de sesion

@@ -298,6 +298,7 @@ for(let i=0;i<catnmb;i++){
         }
     };
 }
+
 function loaded(){
     initSrch(false);
     function send(){
