@@ -22,10 +22,10 @@ app.get('/galletas/:month/:file', (req, res) => {
             }
             snap.forEach(doc => {
                 let dat = doc.data();
-                if(!dat.public){
+                /*if(!dat.public){
                     res.redirect('http://sciencecookies.net/404');
                     return;
-                }
+                }*/
                 let content = [];
                 dat.cont.forEach(item => {
                     let sect = "";
@@ -60,8 +60,16 @@ app.get('/galletas/:month/:file', (req, res) => {
                     content.push(sect);
                 });
 
+                let d=dat.published.toDate();
+                let month=d.getFullYear().toString();
+                if(d.getMonth()<9){
+                    month+='0';
+                }
+                month+=(d.getMonth() + 1);
                 res.render('galleta', {
                     "description": dat.description,
+                    "month": month,
+                    "file":dat.file,
                     "title": dat.title,
                     "titleInf": dat.title,
                     "cookieID": doc.id,

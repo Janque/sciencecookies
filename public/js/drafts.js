@@ -92,7 +92,7 @@ function initSrch(stAf){
     shwSrch();
 }
 function shwSrch(){
-    document.getElementById('crdContainer').innerHTML="";
+    //document.getElementById('crdContainer').innerHTML="";
     srchRef.get().then(snap=>{
         let docs=snap.docs;
         nxtp=false;
@@ -147,6 +147,7 @@ function shwSrch(){
             btndrp.classList.add('btn');
             btndrp.classList.add('btn-light');
             btndrp.setAttribute('type','button');
+            btndrp.setAttribute('id','btnDrp'+doc.id);
             btndrp.setAttribute('data-toogle','dropdown');
             btndrp.setAttribute('aria-haspopup',"true");
             btndrp.setAttribute('aria-expanded',"false");
@@ -154,6 +155,7 @@ function shwSrch(){
             drp.appendChild(btndrp);
             let drpmenu=document.createElement('div');
             drpmenu.classList.add('dropdown-menu');
+            drpmenu.setAttribute('aria-labelledby','btnDrp'+doc.id);//@#
             let drpitm0=document.createElement('a');
             drpitm0.classList.add('dropdown-item');
             drpitm0.href='../editar/'+doc.data().file;
