@@ -5,9 +5,26 @@ const db = admin.firestore();
 
 //Auth for publicar.html
 exports.modAuth = functions.region('us-east1').https.onCall((uid) => {
-    if (uid == 'wjcSAh7VsCQp909D6x6LzyapDkl1' || uid == 'zle5Rq7VDtTkAp5Wm9WCWuEDGg33' || uid == 'r6jLy9UI6kS9ijF6thrXxDyTN242') return true;
     console.log(uid);
-    return false;
+    let data={
+        mod:false,
+        name:''
+    };
+    switch (uid){
+        case 'wjcSAh7VsCQp909D6x6LzyapDkl1': 
+            data.mod=true;
+            data.name=' Javier Pantoja';
+            break;
+        case 'zle5Rq7VDtTkAp5Wm9WCWuEDGg33':
+            data.mod=true;
+            data.name=' Paulina Vargas';
+            break;
+        case 'r6jLy9UI6kS9ijF6thrXxDyTN242':
+            data.mod=true;
+            data.name=' Andrea Garma';
+            break;
+    }
+    return data;
 });
 
 //Newsletter for new Cookie

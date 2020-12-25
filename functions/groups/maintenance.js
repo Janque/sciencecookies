@@ -21,3 +21,21 @@ exports.uptPop = functions.region('us-east1').pubsub.schedule('every 24 hours').
         return null;
     });
 });
+
+//Update today's CookieID's
+exports.uptIDs = functions.region('us-east1').pubsub.schedule('every 24 hours').onRun((context) => {
+    let t=admin.firestore.Timestamp.now().toDate();
+    today=(t.getFullYear()%100).toString();
+    today+=(t.getMonth() + 1);
+    today+=t.getDate();
+    return admin.database().ref('tdaysID').set({
+        "today":today,
+        "last": 0
+    }, err=>{
+        if (err) {
+            console.log("Data could not be saved." + err);
+        } else {
+            console.log("Data saved successfully.");
+        }
+    });
+});
