@@ -5,12 +5,12 @@ var store=firebase.storage();
 var urlSrch='';
 var url='';
 var actSsn=false;
-var mod=false;
+var mod=false,author="";
 
 //Check auth
 var displayName,email,photoURL,uid;
 firebase.auth().onAuthStateChanged(function(user) {
-    let modAuth=firebase.app().functions('us-east1').httpsCallable('modAuth');
+    let modAuth=firebase.app().functions('us-east1').httpsCallable('publish-modAuth');
     if(user){
         displayName=user.displayName;
         email=user.email;
@@ -18,7 +18,8 @@ firebase.auth().onAuthStateChanged(function(user) {
         uid=user.uid;
         actSsn=true;
         modAuth(uid).then(res=>{
-            mod=res.data;
+            mod=res.data.name;
+            author=res.data.name;
             if(url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"){
                 if(!mod)window.location.href='https://sciencecookies.net';
             }

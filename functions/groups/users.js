@@ -40,7 +40,7 @@ exports.createDBDoc = functions.region('us-east1').auth.user().onCreate((user) =
             vemail: false,
             vfl: true,
             rNews: true,
-        })
+        });
     }).then(() => {
         return db.collection('newsletters').doc('base').update({
             emails: admin.firestore.FieldValue.arrayUnion(user.email),
