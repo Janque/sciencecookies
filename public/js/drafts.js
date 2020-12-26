@@ -121,7 +121,7 @@ function loaded() {
     function plusCookie() {
         let title = document.getElementById('inTitle').value.trim();
         let file = rmDiacs(document.getElementById('inFile').value.trim().replaceAll(' ', '-'));
-        db.collection('drafts').where('file', '==', file).get().then(snap => {
+        db.collection('drafts').where('file', '==', file).limit(1).get().then(snap => {
             if (!snap.empty) {
                 document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
                     Ese nombre de archivo ya esta en uso.
@@ -182,6 +182,7 @@ function loaded() {
                                 file: file,
                                 owner: uid,
                                 public: false,
+                                beenPublic:false,
                                 dledit: false,
                                 ledit: new firebase.firestore.Timestamp.now(),
                                 published: new firebase.firestore.Timestamp.now()
