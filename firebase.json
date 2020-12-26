@@ -15,10 +15,24 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites":[{
-      "source":"/galletas/*/*",
-      "function":"dynCookies-showCookie"
-    }]
+    "rewrites": [
+      {
+        "source": "/galletas/*/*",
+        "function": "dynCookies-showCookie"
+      },
+      {
+        "source": "/editar/*",
+        "function": "dynCookies-showCookie"
+      },
+      {
+        "source": "/vista-previa/*",
+        "function": "dynCookies-showCookie"
+      },
+      {
+        "source": "/vista-email/*",
+        "function": "dynCookies-showCookie"
+      }
+    ]
   },
   "storage": {
     "rules": "storage.rules"

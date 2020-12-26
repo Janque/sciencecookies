@@ -20,13 +20,13 @@ firebase.auth().onAuthStateChanged(function(user) {
         modAuth(uid).then(res=>{
             mod=res.data.name;
             author=res.data.name;
-            if(url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"){
+            if(url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"||url.pathname.substring(0,13)=="/vista-previa"||url.pathname.substring(0,12)=="/vista-email"){
                 if(!mod)window.location.href='https://sciencecookies.net';
             }
             shwSsnBtns(true);
         }).catch(err=>console.log(err));
     }else{
-        if(url.pathname.substring(0,7)=="/perfil"||url.pathname.substring(0,9)=="/contacto"||url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"){
+        if(url.pathname.substring(0,7)=="/perfil"||url.pathname.substring(0,9)=="/contacto"||url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"||url.pathname.substring(0,13)=="/vista-previa"||url.pathname.substring(0,12)=="/vista-email"){
             window.location.href='https://sciencecookies.net';
         }
         actSsn=false;
@@ -51,7 +51,7 @@ function shwSsnBtns(ac){
             document.getElementById('btnDraft').classList.remove('d-none');
         }
         document.getElementById('btnLgO').classList.remove('d-none');
-        document.getElementById('btnLgI').classList.add('d-none');
+        if(document.getElementById('btnLgI'))document.getElementById('btnLgI').classList.add('d-none');
         if(url.pathname.substring(0,10)=="/galletas/"){
             db.collection('users').doc(uid).get().then(function(doc){
                 let fav=doc.data().fav;
@@ -88,7 +88,7 @@ function shwSsnBtns(ac){
         document.getElementById('btnPref').classList.add('d-none');
         document.getElementById('btnDraft').classList.add('d-none');
         document.getElementById('btnLgO').classList.add('d-none');
-        document.getElementById('btnLgI').classList.remove('d-none');
+        if(document.getElementById('btnLgI'))document.getElementById('btnLgI').classList.remove('d-none');
     }
     if(url.pathname.substring(0,10)=="/galletas/"){
         document.getElementById('btnFav').classList.remove('disabled');
