@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="shortcut icon" href="../../img/logoT.svg">
+  <link rel="shortcut icon" href="img/logoT.svg">
   <title>Science Cookies - Editar</title>
 
   <!--Firebase app-->
@@ -49,7 +49,7 @@
   <!--Google fonts-->
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="css/main.css">
 
 </head>
 
@@ -57,17 +57,17 @@
 
   <!--Navbar-->
   <nav class="navbar sticky-top navbar-expand-md navbar-dark" style="background-color: #791acd;">
-    <img src="../../img/wlogoT.svg" height="30" class="d-inline-block align-center mr-2" alt="Science Cookies Logo"
+    <img src="img/wlogoT.svg" height="30" class="d-inline-block align-center mr-2" alt="Science Cookies Logo"
       loading="lazy">
-    <a class="navbar-brand" href="../../index">Science Cookies</a>
+    <a class="navbar-brand" href="index">Science Cookies</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarM" aria-controls="navbarM"
       aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="navbarM">
       <ul class="navbar-nav mr-auto py-0">
-        <a class="btn btn-dark mx-2 my-1" href="../../index">Inicio</a>
-        <a class="btn btn-dark mx-2 my-1" href="../../quienes-somos">¿Quienes somos?</a>
-        <a class="btn btn-dark mx-2 my-1" href="../../contacto">Contacto</a>
-        <a class="btn btn-dark mx-2 my-1" href="../../archivo">Archivo</a>
+        <a class="btn btn-dark mx-2 my-1" href="index">Inicio</a>
+        <a class="btn btn-dark mx-2 my-1" href="quienes-somos">¿Quienes somos?</a>
+        <a class="btn btn-dark mx-2 my-1" href="contacto">Contacto</a>
+        <a class="btn btn-dark mx-2 my-1" href="archivo">Archivo</a>
       </ul>
       <div class="row justify-content-end">
         <div class="dropdown mr-4 dropleft">
@@ -75,9 +75,9 @@
             aria-haspopup="true" aria-expanded="false"><i class="fas fa-user" id="icnUsr"></i><img src="" height="30"
               class="d-inline-block align-center ml-2 rounded-circle" alt="" id="picUsr"></button>
           <div class="dropdown-menu dropdown-menu-right bg-dark pl-1" aria-labelledby="usrDrpdwn">
-            <a id="btnPrfl" class="btn btn-link text-decoration-none text-light d-none" href="../../perfil">Mi perfíl</a>
-            <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none"href="../../perfil?tab=pref">Preferencias</a>
-            <a id="btnDraft" class="btn btn-link text-decoration-none text-light d-none" href="../../drafts">Borradores</a>
+            <a id="btnPrfl" class="btn btn-link text-decoration-none text-light d-none" href="perfil">Mi perfíl</a>
+            <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none"href="perfil?tab=pref">Preferencias</a>
+            <a id="btnDraft" class="btn btn-link text-decoration-none text-light d-none" href="drafts">Borradores</a>
             <div class="dropdown-divider ml-1 mr-2"></div>
             <button id="btnLgO" class="btn btn-link text-decoration-none text-light d-none">Cerrar sesión</button>
             <button id="btnLgI" class="btn btn-link text-decoration-none text-light d-none" data-toggle="modal"
@@ -183,7 +183,7 @@
         </nav>
       </div>
       <div class="col-12 col-sm-9 col-md-6 col-xl-7 py-md-3 pl-md-3">
-        <p class="text-center"><img class="mt-3 mb-4 w-75" src="../../img/NLogoHalignT.svg"
+        <p class="text-center"><img class="mt-3 mb-4 w-75" src="img/NLogoHalignT.svg"
             alt="Science Cookies: artículos de ciencia con chispas de chocolate"></p>
         <div class="container-fluid mb-2 rounded-lg p-3" style="background-color:rebeccapurple;">
           <!--Aquí va el contenido-->
@@ -198,12 +198,6 @@
                 <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis velit atque quo voluptas soluta sit, blanditiis dolores iusto quod in id animi cumque nulla? Rerum necessitatibus in laboriosam sequi eos!</p>
               </div>
               <div id="sect0f">
-                <div class="row mb-2">
-                  <label class="col-sm-2 col-lg-4 col-form-label">Nombre del archivo</label>
-                  <div class="col">
-                    <input id="inFile" type="text" class="form-control" value="titulo-galleta" placeholder="titulo-galleta">
-                  </div>
-                </div>
                 <div class="row justify-content-center mb-2">
                   <div class="col col-lg-6">
                     <input id="inTitle" type="text" class="form-control form-control-lg text-center" placeholder="Título" value="Título">
@@ -275,9 +269,7 @@
             <br>
             <h3>Referencias</h3>
             <p><a href="https://google.com" target="_blank" class="text-warning text-break" rel="nofollow">https://google.com <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></p>
-            {{#each content}}
-              {{{this}}}
-            {{/each}}
+            
           </form>
           <!--Aquí termina el contenido-->
         </div>
@@ -297,19 +289,19 @@
         class="col-2 py-md-3 d-none d-sm-block bg-info sidebar text-dark text-center justify-content-center px-1 px-lg-2">
         <h5 class="text-center mx-auto">Publicidad</h5>
         <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65"><img class="w-100 mb-2"
-            src="../../publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
+            src="publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
         <a href="https://www.instagram.com/_pedacitode_cielo/"><img class="w-100 mb-2"
-            src="../../publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
+            src="publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
         <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37">
-          <img class="w-100" src="../../publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
-          <img class="w-100" src="../../publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
-          <img class="w-100 mb-2" src="../../publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
+          <img class="w-100" src="publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
+          <img class="w-100" src="publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
+          <img class="w-100 mb-2" src="publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
         </a>
         <a
           href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd"><img
-            class="w-100 mb-2" src="../../publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
+            class="w-100 mb-2" src="publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
         <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/"><img
-            class="w-100 mb-2" src="../../publicidad/Mondler.jpeg" alt="Mondler"></a>
+            class="w-100 mb-2" src="publicidad/Mondler.jpeg" alt="Mondler"></a>
       </div>
     </div>
     <!--Anuncios H-->
@@ -319,21 +311,21 @@
       </div>
       <div class="col-6 px-1">
         <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65"><img class="w-100 mb-2"
-            src="../../publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
+            src="publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
         <a href="https://www.instagram.com/_pedacitode_cielo/"><img class="w-100 mb-2"
-            src="../../publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
+            src="publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
         <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37">
-          <img class="w-100" src="../../publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
-          <img class="w-100" src="../../publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
-          <img class="w-100 mb-2" src="../../publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
+          <img class="w-100" src="publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
+          <img class="w-100" src="publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
+          <img class="w-100 mb-2" src="publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
         </a>
       </div>
       <div class="col-6 px-1">
         <a
           href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd"><img
-            class="w-100 mb-2" src="../../publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
+            class="w-100 mb-2" src="publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
         <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/"><img
-            class="w-100 mb-2" src="../../publicidad/Mondler.jpeg" alt="Mondler"></a>
+            class="w-100 mb-2" src="publicidad/Mondler.jpeg" alt="Mondler"></a>
       </div>
     </div>
   </div>
@@ -349,8 +341,8 @@
     integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
     crossorigin="anonymous"></script>
 
-  <script src="../js/global.js"></script>
-  <script src="../js/edit.js"></script>
+  <script src="js/global.js"></script>
+  <script src="js/edit.js"></script>
 
   <!--AddThis-->
   <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f13599e10bd5c2b"></script>
