@@ -21,14 +21,6 @@
         "function": "dynCookies-showCookie"
       },
       {
-        "source": "/editar/*",
-        "function": "dynCookies-showCookie"
-      },
-      {
-        "source": "/vista-previa/*",
-        "function": "dynCookies-showCookie"
-      },
-      {
         "source": "/vista-email/*",
         "function": "dynCookies-showCookie"
       }

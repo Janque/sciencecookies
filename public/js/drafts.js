@@ -181,6 +181,7 @@ function loaded() {
                                 description: "Sin descripción",
                                 file: file,
                                 owner: uid,
+                                java:"",
                                 public: false,
                                 beenPublic:false,
                                 dledit: false,
@@ -194,12 +195,12 @@ function loaded() {
                                 document.getElementById('bar').classList.add('bg-success');
                                 document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-success alert-dismissible fade show fixed-top" role="alert">
                                     Creado con exito. Redirigiendo...<br>
-                                    Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar/`+file+`">click aqui</a>.
+                                    Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?file=`+file+`">click aqui</a>.
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 </div>`;
                             }, 1000);
                             setTimeout(function () {
-                                window.location.href = '../editar/'+file;
+                                window.location.href = '../editar?file='+file;
                             }, 4000);
                         }).catch(err => console.log(err));
                     }
@@ -375,18 +376,10 @@ function shwSrch() {
             let drpitm0 = document.createElement('button');
             drpitm0.classList.add('dropdown-item');
             drpitm0.onclick=function(){
-                window.location.href = '../editar/' + doc.data().file;
+                window.location.href = '../editar?file=' + doc.data().file;
             };
             drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
             drpmenu.appendChild(drpitm0);
-            let drpitm1 = document.createElement('button');
-            drpitm1.classList.add('dropdown-item');
-            drpitm1.onclick=function(){
-                window.open('../vista-previa/' + doc.data().file, '_blank').focus();
-            };
-            drpitm1.setAttribute('target',"_blank");
-            drpitm1.innerHTML = 'Vista previa <i class="fas fa-eye"></i>';
-            drpmenu.appendChild(drpitm1);
             let drpitm2 = document.createElement('button');
             drpitm2.classList.add('dropdown-item');
             drpitm2.onclick=function(){
@@ -402,7 +395,7 @@ function shwSrch() {
             card.appendChild(h);
 
             let a = document.createElement('a');
-            a.href = '../editar/' + doc.data().file;
+            a.href = '../editar?file=' + doc.data().file;
             a.classList.add('text-decoration-none');
             a.classList.add('text-dark');
             let img = document.createElement('img');
