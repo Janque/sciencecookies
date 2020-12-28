@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Hallar una fuente de vida, como el agua, en la Luna sin atmósfera,  no es para nada usual. Averigua cómo fue posible uno de los mayores descubrimientos del 2020."/>
+    <link rel="shortcut icon" href="../../img/logoT.svg">
+    <title>Science Cookies - Agua en la Luna</title>
+
+    <!--Firebase app-->
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+    <!--Firebase features-->
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-functions.js"></script>
+
+    <!--Initialize Firebase-->
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig={
+        apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
+        authDomain: "sciencecookies.net",
+        databaseURL: "https://science-cookies.firebaseio.com",
+        projectId: "science-cookies",
+        storageBucket: "science-cookies.appspot.com",
+        messagingSenderId: "906770471712",
+        appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
+        measurementId: "G-1MYVREMBFV"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
+
+    <!--FirebaseUI-->
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth__es.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+    
+    <!--Font awesome-->
+    <script src="https://kit.fontawesome.com/cf642fd47e.js" crossorigin="anonymous"></script>
+
+    <!--Bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <!--Google fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../css/main.css">
+
+  </head>
+  <body>
+
+    <!--Navbar-->
+    <nav class="navbar sticky-top navbar-expand-md navbar-dark" style="background-color: #791acd;">
+      <img src="../../img/wlogoT.svg" height="30" class="d-inline-block align-center mr-2" alt="Science Cookies Logo" loading="lazy">
+      <a class="navbar-brand" href="../../index">Science Cookies</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarM" aria-controls="navbarM" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navbarM">
+        <ul class="navbar-nav mr-auto py-0">
+          <a class="btn btn-dark mx-2 my-1" href="../../index">Inicio</a>
+          <a class="btn btn-dark mx-2 my-1" href="../../quienes-somos">¿Quienes somos?</a>
+          <a class="btn btn-dark mx-2 my-1" href="../../contacto">Contacto</a>
+          <a class="btn btn-dark mx-2 my-1" href="../../archivo">Archivo</a>
+        </ul>
+        <div class="row justify-content-end">
+          <div class="dropdown mr-4 dropleft">
+            <button class="btn btn-dark dropdown-toggle p-2" type="button" id="usrDrpdwn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user" id="icnUsr"></i><img src="" height="30" class="d-inline-block align-center ml-2 rounded-circle" alt="" id="picUsr"></button>
+            <div class="dropdown-menu dropdown-menu-right bg-dark pl-1" aria-labelledby="usrDrpdwn">
+              <a id="btnPrfl" class="btn btn-link text-decoration-none text-light d-none" href="../../perfil">Mi perfíl</a>
+              <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none" href="../../perfil?tab=pref">Preferencias</a>
+              <div class="dropdown-divider ml-1 mr-2"></div>
+              <button id="btnLgO" class="btn btn-link text-decoration-none text-light d-none">Cerrar sesión</button>
+              <button id="btnLgI" class="btn btn-link text-decoration-none text-light d-none" data-toggle="modal" data-target="#mdlRgstr">Acceder</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Register modal -->
+    <div class="modal fade" id="mdlRgstr" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="mdlRgsL" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mdlRgsL">Inicia sesión o regístrate</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="firebaseui-auth-container"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="document.getElementById('mdlRgsL').innerHTML='Inicia sesión o regístrate';reporting=null">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Report modal-->
+    <div class="modal fade" id="mdlRprt" tabindex="-1" role="dialog" aria-labelledby="mdlRprtL" aria-hidden="true" data-backdrop="static">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mdlRprtL">Reportar contenido</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="frmRprt">
+              <div class="form-group row">
+                <label for="inReas" class="col-sm-2 col-form-label">Razón</label>
+                <div class="col-sm-10">
+                  <select id="inReas" class="form-control" required>
+                    <option value="">Escoge...</option>
+                    <option value="Spam o contenido comercial no deseado">Spam o contenido comercial no deseado</option>
+                    <option value="Abuso o acoso">Abuso o acoso</option>
+                    <option value="Fomenta el odio o la violencia">Fomenta el odio o la violencia</option>
+                    <option value="Lenguaje ofensivo">Lenguaje ofensivo</option>
+                    <option value="Material sexualmente explícito">Material sexualmente explícito</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inText" class="col-sm-2 col-form-label">Detalles</label>
+                <div class="col-sm-10">
+                  <textarea type="text" class="form-control" id="inText" placeholder="Opcional" rows="3" maxlength="300"></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" form="frmRprt">Reportar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Alertas-->
+    <div id="alrtClsSsn">
+      
+    </div>
+    
+    <!--Página-->
+    <div class="container-fluid text-white" style="background-color: black;background-image: url('../../img/fondo1.jpg');background-position: center top;background-attachment: fixed;">
+      <div class="row justify-content-around">
+        <div class="col-md-3 col-xl-2 sidebar my-0 ml-lg-3 mr-0 ml-md-2 py-md-1 pl-md-3 text-dark" style="background-color: #FFF8E7;">
+          <div class="row">
+            <h5 class="text-center my-auto mr-auto ml-3 ml-md-auto mt-md-2 d-md-none">Galletas recomendadas</h5>
+            <button class="btn d-md-none p-0 pr-2 mr-4" type="button" data-toggle="collapse" data-target="#sdbarL" aria-controls="sdbarL" aria-expanded="false" aria-label="Toggle docs navigation" style="font-size: 1.8rem;"><i class="fas fa-bars"></i></button>
+          </div>
+          <nav class="collapse sdbarCnt" id="sdbarL">
+            <div class="col justify-content-center px-5 px-md-0 px-lg-3 px-xl-2">
+              <h5 class="text-center">La galleta más nueva</h5>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd0"><div class="card mb-2">
+                <img id="crd0i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd0t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed0" ><div class="media mb-3">
+                <img id="rmed0i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed0t"></div>
+              </div></a>
+              <h5 class="text-center">Las galletas más populares</h5>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd1"><div class="card mb-2">
+                <img id="crd1i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd1t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd2"><div class="card mb-2">
+                <img id="crd2i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd2t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-none d-md-inline" id="crd3"><div class="card mb-2">
+                <img id="crd3i" src="" class="card-img-top" alt="">
+                <div class="card-body" id="crd3t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed1"><div class="media mb-3">
+                <img id="rmed1i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed1t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed2"><div class="media mb-3">
+                <img id="rmed2i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed2t"></div>
+              </div></a>
+              <a href="" class="text-decoration-none text-dark d-md-none" id="rmed3"><div class="media mb-3">
+                <img id="rmed3i" src="" class="align-self-center mr-3" alt="" width="64px" height="64px">
+                <div class="media-body" id="rmed3t"></div>
+              </div></a>
+            </div>
+          </nav>
+        </div>
+        <div class="col-12 col-sm-9 col-md-6 col-xl-7 py-md-3 pl-md-3">
+          <p class="text-center"><img class="mt-3 mb-4 w-75" src="../../img/NLogoHalignT.svg" alt="Science Cookies: artículos de ciencia con chispas de chocolate"></p>
+          <div class="container-fluid mb-2 rounded-lg p-3" style="background-color:rebeccapurple;">
+            <!--Aquí va el contenido-->
+            <h1 class="text-center">Agua en la Luna</h1>
+            <p>29/12/2020</p>
+            <p>Autor: Paulina Vargas</p>
+            <figure class="w-75 mx-auto">
+              <img src="20122902img/waterMolecule.jpg" alt="Moléculas de agua en la Luna" class="w-100">
+            </figure>
+            <p>Tras la llegada de los astronautas de Apolo a la Tierra en 1969, se creía que la superficie lunar era completamente seca, sin ningún indicio de contar con alguna fuente de hidratación y mucho menos agua. Pero esa creencia ha cambiado, pues el pasado 26 de octubre, la NASA ha compartido unos resultados publicados en  Natural Astronomy en los cuales se confirma la presencia de agua en la Luna.</p>
+            <p>Este descubrimiento fue posible gracias al observatorio estratosférico de astronomía infrarroja, SOFIA, por sus siglas en inglés (Stratospheric Observatory for Infrared Astronomy). SOFIA es un proyecto conjunto de la NASA y el Centro Aeroespacial Alemán, el cual consiste en un avión de pasajeros Boeing 747SP modificado para llevar un telescopio de 106 pulgadas de diámetro.</p>
+            <figure class="w-75 mx-auto">
+              <img src="20122902img/sofia.jpg" alt="SOFIA" class="w-100">
+              <figcaption style="font-size: 70%; font-weight: lighter;">SOFIA<br>Créditos de imágen: NASA</figcaption>
+            </figure>
+            <h4>Una prueba con grandes resultados</h4>
+            <p>SOFIA es originalmente utilizado para observar objetos distantes, como galaxias y agujeros negros, utilizando como guía las estrellas para poder mantener el telescopio fijo en lo observado. Pero siendo la Luna un objeto celeste tan cercano y brillante, no se tenía la certeza de que SOFIA pudiera mantenerse fijo en ella, puesto que ocuparía casi todo el campo visual que es utilizado para las estrellas guía.</p>
+            <p>En agosto de 2018, los operadores decidieron hacer una observación de la Luna de prueba, y en esa simple prueba encontraron mucho más de lo que se esperaba: hallaron moléculas de H2O en la Luna.</p>
+            <h4>¿Cómo se descubrió?</h4>
+            <p>Previamente a los descubrimientos de SOFIA, en 2015 ya se tenía un indicio de la presencia de cierta hidratación en la Luna, gracias a la información recopilada de 3 naves independientes, Moon Mineralogy Mapper (M<sub>3</sub>), Deep Impact Spacecraft, y Visual and Infrared Mapping Spectrometer (VIMS). Pues estas observaron un rasgo característico de absorción de 3 <i>&mu;</i>m en la Luna, el cual es propio del agua (H<sub>2</sub>O) y del hidroxilo (OH), pero eran incapaces de diferenciar entre estos compuestos.</p>
+            <p>Utilizando la banda de 3 <i>&mu;</i>m, el agua y el hidroxilo se perciben aparentemente iguales; sin embargo, tomando en cuenta que una vibración fundamental de las moléculas del agua emite en una línea espectral de 6 <i>&mu;</i>m, y que el hidroxilo no posee esa característica, se utilizó la banda de 6 <i>&mu;</i>m en SOFIA para poder confirmar la presencia de H<sub>2</sub>O en la Luna.</p>
+            <h4>Los resultados</h4>
+            <p>Las moléculas de agua fueron encontradas en el soleado Cráter Clavius, ubicado en el hemisferio sur de la Luna, y que es uno de los cráteres más grandes visibles desde la Tierra.</p>
+            <figure class="w-75 mx-auto">
+              <img src="20122902img/craters.jpg" alt="Cráteres de la Luna con hidratación" class="w-100">
+              <figcaption style="font-size: 70%; font-weight: lighter;">Cráteres de la Luna, que en Marzo de 2015, se estimaba que podrían contener hidratación; entre ellos, Clavius.<br>Créditos de imágen: Ernie Wright, NASA Visualization Explorer.</figcaption>
+            </figure>
+            <p>Se pudo estimar la presencia de 100 a 400 µg g−1 de agua; que teniendo un punto de comparación, el desierto del Sahara contiene 100 veces la cantidad de agua que SOFIA detectó en el suelo lunar.</p>
+            <p>En efecto, las cantidades de agua encontradas en la luna han sido muy pequeñas, pero resultan ser nada insignificantes, pues representa el planteamiento de nuevas interrogantes que demandan una respuesta. Aún no se sabe con exactitud cómo se generaron esas moléculas de agua o cómo llegaron a la luna, y más aún sorprendente, cómo lograron conservarse en la Luna a pesar de que esta no cuenta con una atmósfera y estando el agua en una zona soleada de la Luna.</p>
+            <p>Hasta ahora, existen únicamente estimaciones y teorías fundamentadas para tratar de darle una respuesta a estas interrogantes, como que pueden estar en forma de hielo bajo las sombras <sub><a href="https://www.nature.com/articles/s41550-020-1198-9#_blank" target="_blank" class="text-warning text-break" rel="nofollow">[1]<i class="fas fa-external-link-alt"></i></a></sub>, o el agua podría quedar atrapada en pequeñas estructuras en forma de perlas que se forman a partir del alto calor creado por los impactos de los micrometeoritos en la superficie lunar<sub><a href="https://www.nature.com/articles/s41550-020-01222-x#_blank" target="_blank" class="text-warning text-break" rel="nofollow">[2]<i class="fas fa-external-link-alt"></i></a></sub>.</p>
+            <p>Sin duda alguna, la presencia de agua, sea mucha o poca, ya representa un factor de gran impacto para las futuras misiones de exploración del universo. El programa Artemis de la NASA, ahora posee un nuevo factor a considerar para el próximo lanzamiento de la primera mujer y el siguiente hombre a la Luna en 2024.</p>
+            <h5>Referencias</h5>
+            <p><a href="https://www.nasa.gov/press-release/nasa-s-sofia-discovers-water-on-sunlit-surface-of-moon/" target="_blank" class="text-warning text-break" rel="nofollow">https://www.nasa.gov/press-release/nasa-s-sofia-discovers-water-on-sunlit-surface-of-moon/<i class="fas fa-external-link-alt"></i></a></p>
+            <p><a href="https://www.nature.com/articles/s41550-020-1198-9#_blank" target="_blank" class="text-warning text-break" rel="nofollow"><sub>[1]</sub> https://www.nature.com/articles/s41550-020-1198-9<i class="fas fa-external-link-alt"></i></a></p>
+            <p><a href="https://www.nature.com/articles/s41550-020-01222-x#_blank" target="_blank" class="text-warning text-break" rel="nofollow"><sub>[2]</sub> https://www.nature.com/articles/s41550-020-01222-x<i class="fas fa-external-link-alt"></i></a></p>
+            <p><a href="https://science.sciencemag.org/content/326/5952/562" target="_blank" class="text-warning text-break" rel="nofollow">https://science.sciencemag.org/content/326/5952/562<i class="fas fa-external-link-alt"></i></a></p>
+            <p><a href="https://science.sciencemag.org/content/326/5952/565" target="_blank" class="text-warning text-break" rel="nofollow">https://science.sciencemag.org/content/326/5952/565<i class="fas fa-external-link-alt"></i></a></p>
+            <p><a href="https://science.sciencemag.org/content/326/5952/568" target="_blank" class="text-warning text-break" rel="nofollow">https://science.sciencemag.org/content/326/5952/568<i class="fas fa-external-link-alt"></i></a></p>
+            <p><a href="https://svs.gsfc.nasa.gov/11756" target="_blank" class="text-warning text-break" rel="nofollow">https://svs.gsfc.nasa.gov/11756<i class="fas fa-external-link-alt"></i></a></p>
+            <!--Aquí termina el contenido-->
+          </div>
+          <div class="row justify-content-start mb-2" id="btnsFL">
+            <div class="col-auto">
+                <button class="btn btn-outline-light p-1 disabled mt-2 mx-2" id="btnFav">Añadir a favoritos <i class="far fa-heart"></i></button>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-outline-light p-1 disabled m-2" id="btnLike">Dar me gusta <i class="far fa-thumbs-up"></i></button>
+            </div>
+          </div>
+          <!--Comentarios-->
+          <div class="row">
+            <button class="btn btn-block btn-scckie mb-2 disabled" id="btnLdComs">Cargar comentarios</button>
+            <div class="container-fluid d-none" id="spnCom"><div class="text-center">
+              <div class="spinner-border text-primary" role="status"><span class="sr-only"></span></div>
+            </div></div>
+            <div class="container-fluid text-dark d-none" id="cntComs">
+              <div class="container-fluid bg-light p-2 rounded-lg mb-1">
+                <div class="row"><div class="col" id="comCount">Aún no hay comentarios</div></div>
+                <div class="dropdown-divider"></div>      
+                <form id="frmNwCom">
+                  <div class="form-group row">
+                    <div class="col-auto pr-0">
+                      <label for="inNwCom"><img src="" alt="" class="rounded-circle" height="35" width="35" id="ppCom"></label>
+                    </div>
+                    <div class="col">
+                      <textarea type="text" class="form-control-plaintext border-bottom" id="inNwCom" maxlength="200" placeholder="Nuevo comentario" required rows="3"></textarea>
+                      <small class="text-muted">Máximo 200 caracteres</small>
+                    </div>
+                  </div>
+                </form>
+                <div class="row justify-content-end d-none" id="frmNwComBtns">
+                  <div class="col-auto">
+                    <button class="btn btn-secondary" onclick="document.getElementById('inNwCom').value='';document.getElementById('frmNwComBtns').classList.add('d-none');replying=-1;document.getElementById('inNwCom').setAttribute('placeholder','Nuevo comentario');" id="btnCanCom">Cancelar</button>
+                    <button class="btn btn-scckie" type="submit" form="frmNwCom" id="btnAddCom">Comentar</button>
+                  </div>
+                </div>
+              </div>
+              <div class="container-fluid text-dark d-none p-0" id="cntComs2">
+              </div>
+            </div>
+            <button class="btn btn-block btn-scckie mb-2 disabled d-none" id="btnLdMrComs">Más comentarios</button>
+            <div class="container-fluid d-none" id="spnCom2"><div class="text-center">
+              <div class="spinner-border text-primary" role="status"><span class="sr-only"></span></div>
+            </div></div>
+          </div>
+        </div>
+        <!--Anuncios V-->
+        <div class="col-2 py-md-3 d-none d-sm-block bg-info sidebar text-dark text-center justify-content-center px-1 px-lg-2">
+          <h5 class="text-center mx-auto">Publicidad</h5>
+          <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65"><img class="w-100 mb-2" src="../../publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
+          <a href="https://www.instagram.com/_pedacitode_cielo/"><img class="w-100 mb-2" src="../../publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
+          <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37">
+            <img class="w-100" src="../../publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
+            <img class="w-100" src="../../publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
+            <img class="w-100 mb-2" src="../../publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
+          </a>
+          <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd"><img class="w-100 mb-2" src="../../publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
+          <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/"><img class="w-100 mb-2" src="../../publicidad/Mondler.jpeg" alt="Mondler"></a>
+        </div>
+      </div>
+      <!--Anuncios H-->
+      <div class="row bg-info px-2 text-dark d-sm-none justify-content-center">
+        <div class="col-12 pt-2">
+          <h5 class="text-center mx-auto">Publicidad</h5>
+        </div>
+        <div class="col-6 px-1">
+          <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65"><img class="w-100 mb-2" src="../../publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
+          <a href="https://www.instagram.com/_pedacitode_cielo/"><img class="w-100 mb-2" src="../../publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
+          <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37">
+            <img class="w-100" src="../../publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
+            <img class="w-100" src="../../publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
+            <img class="w-100 mb-2" src="../../publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
+          </a>
+        </div>
+        <div class="col-6 px-1">
+          <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd"><img class="w-100 mb-2" src="../../publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
+          <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/"><img class="w-100 mb-2" src="../../publicidad/Mondler.jpeg" alt="Mondler"></a>
+        </div>
+      </div>
+    </div>
+
+    <!--Id@#IMPORTANTE-->
+    <input class="form-check-input d-none" type="checkbox" id="getId" readonly value="20122902">
+    <input class="form-check-input d-none" type="checkbox" id="getTitle" readonly value="Agua en la Luna">
+    
+    <!--Bootstrap-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+    <script src="../../js/cookApp.js"></script>
+
+    <!--AddThis-->
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f13599e10bd5c2b"></script>
+  </body>
+</html>
