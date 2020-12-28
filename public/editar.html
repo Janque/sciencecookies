@@ -187,6 +187,24 @@
             alt="Science Cookies: artículos de ciencia con chispas de chocolate"></p>
         <div class="container-fluid mb-2 rounded-lg p-3" style="background-color:rebeccapurple;">
           <!--Aquí va el contenido-->
+          <form id="frmFile">
+            <div class="row mb-2">
+              <label class="col-sm-2 col-lg-4 col-form-label">Nombre del archivo</label>
+              <div class="col">
+                  <input id="inFile" type="text" class="form-control" value="titulo-galleta" placeholder="titulo-galleta">
+              </div>
+            </div>
+            <div class="row mb-2">
+                <label class="col-sm-2 col-form-label">Descripción</label>
+                <div class="col">
+                    <textarea required class="form-control" id="inDesc" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="row mb-2 justify-content-end">
+                <button class="btn btn-secondary" id="btnCanFile">Revertir</button>
+                <button class="btn btn-light btn-link-scckie mx-3" type="submit"><i class="fas fa-check"></i></button>
+            </div>
+          </form>
           <form id="frm">
             <!--
             <div id="sect0">
