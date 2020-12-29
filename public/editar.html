@@ -68,7 +68,7 @@
         <a class="btn btn-dark mx-2 my-1" href="quienes-somos">¿Quienes somos?</a>
         <a class="btn btn-dark mx-2 my-1" href="contacto">Contacto</a>
         <a class="btn btn-dark mx-2 my-1" href="archivo">Archivo</a>
-        <i id="tagLstSave" class="text-light text-muted mx-3 my-auto"></i>
+        <i id="tagLstSave" class="text-light mx-3 my-auto"></i>
       </ul>
       <div class="row justify-content-end">
         <div class="dropdown mr-4 dropleft">
@@ -123,8 +123,9 @@
         </div>
         <div class="modal-body">
           <div class="d-flex flex-wrap">
-            <button class="btn btn-scckie" onclick="plusSect('html');" data-dismiss="modal" >HTML</button>
-          </div>
+            <button class="btn btn-scckie m-2" onclick="plusSect('parra');" data-dismiss="modal" >Párrafo</button>
+            <button class="btn btn-scckie m-2" onclick="plusSect('html');" data-dismiss="modal" >HTML</button>
+          </div><!--Add more@#-->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Cancelar</button>
@@ -235,46 +236,7 @@
                 <button class="btn btn-light btn-link-scckie mx-3" type="submit"><i class="fas fa-check"></i></button>
             </div>
           </form>
-          <div id="cont">
-            <div id="sect1">
-              <div class="row mb-2 justify-content-end px-2">
-                <button class="btn btn-light btn-link-scckie" id="toggle1"><i class="fas fa-edit"></i></button>
-              </div>
-              <div id="sect1t">
-                <h2>subtitulo</h2>
-                <p>lorem ipsum aklsmdlansodao sdo amsod aoksmd okamsok doaksm ksa masok dnkas doka sokdmoaskn kdas ndksand okadsok </p>
-                <br>
-              </div>
-              <div id="sect1f">
-                <div class="row mb-2">
-                  <div class="col-sm-2">
-                    <label>Subtítulo</label>
-                    <select required id="inLevel1" class="form-control form-control-sm">
-                      <option value="" selected>Nivel</option>
-                      <option value="0">0</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                    </select>
-                  </div>
-                  <div class="col">
-                    <input id="inSubt1" type="text" class="form-control" value="" placeholder="Subtítulo">
-                  </div>
-                </div>
-                <div class="row mb-2">
-                  <label class="col-sm-2 col-form-label">Párrafo</label>
-                  <div class="col">
-                    <textarea required class="form-control" id="inParra1" rows="6">lor</textarea>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <h3>subsubtitulo</h3>
-            <p>lorem ipsum aklsmdlansodao sdo amsod aoksmd okamsok doaksm ksa masok dnkas doka sokdmoaskn kdas ndksand okadsok </p>
-            <p>lorem ipsum aklsmdlansodao sdo amsod aoksmd okamsok doaksm ksa masok dnkas doka sokdmoaskn kdas ndksand okadsok.</p>
-          </div>
+          <div id="cont"></div>
           <!--Aquí termina el contenido-->
         </div>
         <div class="row justify-content-start mb-2" id="btnsFL">
