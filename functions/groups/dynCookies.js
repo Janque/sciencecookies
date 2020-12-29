@@ -77,12 +77,45 @@ app.get('/galletas/:month/:file', (req, res) => {
                     "titleInf": dat.title,
                     "cookieID": doc.id,
                     "content": content,
-                    "java":dat.js
+                    "java": dat.js
                 });
                 return;
             });
         }).catch(err => console.log(err));
     }
+});
+
+app.get('/vista-email/:file', (req, res) => {
+    res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
+    db.collection('drafts').where('file', '==', req.params.file).limit(1).get().then(snap => {
+        if (snap.empty) {
+            res.redirect('http://sciencecookies.net/404');
+            return;
+        }
+        snap.forEach(doc => {
+            let dat = doc.data();
+
+            let d = dat.published.toDate();
+            let month = d.getFullYear().toString();
+            if (d.getMonth() < 9) {
+                month += '0';
+            }
+            month += (d.getMonth() + 1);
+
+            let toRender={
+                "authors": dat.authors,
+                "description": dat.description,
+                "month": month,
+                "file": dat.file,
+                "title": dat.title,
+                "estado":""
+            };
+            if(dat.beenPublic)toRender.estado="actualizado una";
+            else toRender.estado="cocinado una nueva";
+            res.render('mailPreview', toRender);
+            return;
+        });
+    }).catch(err => console.log(err));
 });
 
 exports.showCookie = functions.region('us-central1').https.onRequest(app);
