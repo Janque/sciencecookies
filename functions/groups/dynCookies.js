@@ -47,13 +47,11 @@ app.get('/galletas/:month/:file', (req, res) => {
                             });
                             break;
                         case 'parra':
-                            if (item.title > 0) {
+                            if (Number(item.title) > 0) {
+                                if(Number(item.title)==2)sect += '<br>\n';
                                 sect = '<h' + item.title + '>' + item.titleTxt + '</h' + item.title + '>\n';
                             }
                             sect += '<p>' + item.text + '</p>\n';
-                            if (item.br) {
-                                sect += '<br>\n';
-                            }
                             break;
                         case 'html':
                             sect = item.html;
