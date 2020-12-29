@@ -1,4 +1,6 @@
 let docDat, docId;
+let toDel = -1, toAdd = -1;
+let lastSave=Date.now(),saved=false;
 
 function loaded() {
     db.collection('galletasCont').where('file', '==', urlSrch.get('file')).limit(1).get().then(snap => {
@@ -9,21 +11,34 @@ function loaded() {
         snap.forEach(doc => {
             docDat = doc.data();
             docId = doc.id;
+            document.getElementById('inFile').value = docDat.file;
+            document.getElementById('inDesc').value = docDat.description;
             render();
             return;
         });
     }).catch(err => console.log(err));
 
-    function mainFrm() {
-        saveDoc();
-    }
-    document.getElementById("frm").addEventListener("submit", function (event) {
-        event.preventDefault();
-        mainFrm();
-    });
-
     function fileFrm() {
-
+        let file = document.getElementById('inFile').value;
+        db.collection('drafts').where('file', '==', file).limit(1).get().then(snap => {
+            if (!snap.empty && file != urlSrch.get('file')) {
+                document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
+                    Ese nombre de archivo ya esta en uso.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>`;
+            } else {
+                return db.collection('drafts').doc(docId).update({
+                    description: document.getElementById('inDesc').value.trim(),
+                    file: file
+                });
+            }
+        }).then(() => {
+            docDat.description = document.getElementById('inDesc').value.trim();
+            docDat.file = file;
+            return saveDoc();
+        }).then(() => {
+            window.location.href = '?file=' + file;
+        }).catch(err => console.log(err));
     }
     document.getElementById("frmFile").addEventListener("submit", function (event) {
         event.preventDefault();
@@ -31,9 +46,26 @@ function loaded() {
     });
 }
 
+let savedInterval;
 function saveDoc() {
-    //@#
-    console.log('Doc saved (not really)');
+    if(!saved)clearInterval(savedInterval);
+    saved=true;
+    savedInterval=setInterval(()=>{
+        let minutes=Math.floor((Date.now()-lastSave)/60000);
+        if(minutes<61)document.getElementById('tagLstSave').innerText="Guardado hace "+minutes+" minutos";
+        else document.getElementById('tagLstSave').innerText="Guardado hace "+Math.floor(minutes/60)+" horas";
+    }, 300000);
+    console.log('Saving...');
+    return db.collection('drafts').doc(docId).update(docDat);
+}
+function plusSect(type) {
+    if (type == 'html') {
+        docDat.cont.splice(toAdd, 0, {
+            type: type,
+            html: ""
+        });
+    }//@#Add more
+    render();
 }
 
 function classes(elm, cls) {
@@ -54,7 +86,7 @@ function toggleEl(elm) {
 }
 
 function render() {
-    document.getElementById('frm').innerHTML = "";
+    document.getElementById('cont').innerHTML = "";
     let publishDate;
     if (docDat.beenPublic) {
         publishDate = docDat.published;
@@ -71,30 +103,80 @@ function render() {
         let subt = document.createElement('div');
         subt.id = "sect" + idx + "t";
         let subf = document.createElement('div');
+        classes(subf, "d-none");
         subf.id = "sect" + idx + "f";
 
         let act = document.createElement('div');
         classes(act, 'row mb-2 px-2');
-        let btnDel, btnEdit, btnAdd;
+        let btnDel, btnEdit, btnCheck, btnAdd;
 
         if (item.type != 'head' && item.type != 'ref') {
             btnDel = document.createElement('button');
             classes(btnDel, 'btn btn-light btn-link-scckie ml-2');
             btnDel.innerHTML = '<i class="fas fa-trash-alt"></i>';
-            //@#Function
+            btnDel.onclick = function () {
+                if (toDel == idx) {
+                    toDel = -1;
+                    if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
+                    docDat.cont.splice(idx, 1);
+                    saveDoc().then(()=>{
+                        document.getElementById('tagLstSave').innerText="Se han guardado todos los cambios";
+                        lastSave=Date.now();
+                    }).catch(err=>{
+                        document.getElementById('tagLstSave').innerText="Error, no se han guardado todos los cambios: "+err.code;
+                        console.log(err);
+                    });
+                    render();
+                } else {
+                    document.getElementById("alrtClsSsn").innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
+                        <strong>¿Quieres eliminar ésta sección?</strong> Presiona de nuevo el botón para confirmar.
+                        <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>`;
+                    toDel = idx;
+                    setTimeout(() => {
+                        toDel = -1;
+                        document.getElementById("btnAlrtClsSsn").click();
+                    }, 3000);
+                }
+            }
             act.appendChild(btnDel);
         }
         if (item.type != 'ref') {
             btnEdit = document.createElement('button');
-            classes(btnEdit, 'btn btn-light btn-link-scckie ml-auto edit');
+            classes(btnEdit, 'btn btn-light btn-link-scckie ml-auto');
             btnEdit.innerHTML = '<i class="fas fa-edit"></i>';
-            btnEdit.setAttribute('type', 'button');
-            //@#Function
+            btnEdit.onclick = function () {
+                toggleEl(btnEdit);
+                toggleEl(btnCheck);
+                toggleEl(subf);
+            }
             act.appendChild(btnEdit);
+            btnCheck = document.createElement('button');
+            classes(btnCheck, 'btn btn-light btn-link-scckie ml-auto d-none');
+            btnCheck.innerHTML = '<i class="fas fa-check"></i>';
+            btnCheck.onclick = function () {
+                toggleEl(btnEdit);
+                toggleEl(btnCheck);
+                toggleEl(subf);
+                saveDoc().then(()=>{
+                    document.getElementById('tagLstSave').innerText="Se han guardado todos los cambios";
+                    lastSave=Date.now();
+                }).catch(err=>{
+                    document.getElementById('tagLstSave').innerText="Error, no se han guardado todos los cambios: "+err.code;
+                    console.log(err);
+                });
+            }
+            act.appendChild(btnCheck);
             btnAdd = document.createElement('button');
             classes(btnAdd, 'btn btn-light btn-link-scckie mx-2');
             btnAdd.innerHTML = '<i class="fas fa-plus"></i>';
-            //@#Function
+            btnAdd.setAttribute('data-toggle', "modal");
+            btnAdd.setAttribute('data-target', "#mdlPlusSect");
+            btnAdd.onclick = function () {
+                toAdd = idx + 1;
+            }
             act.appendChild(btnAdd);
         }
         sect.appendChild(act);
@@ -128,13 +210,12 @@ function render() {
             let in0 = document.createElement('input');
             classes(in0, "form-control form-control-lg text-center");
             in0.setAttribute('type', 'text');
-            in0.setAttribute('required', 'true');
             in0.setAttribute('placeholder', docDat.cont[0].title);
-            in0.value=docDat.cont[0].title;
+            in0.value = docDat.cont[0].title;
             fc0.appendChild(in0);
             fd0.appendChild(fc0);
             subf.appendChild(fd0);
-            in0.onchange = function () {
+            in0.oninput = function () {
                 docDat.cont[0].title = in0.value.trim();
                 h.innerHTML = docDat.cont[0].title;
             };
@@ -150,7 +231,7 @@ function render() {
             classes(in1, "form-control");
             in1.setAttribute('type', 'text');
             in1.setAttribute('readonly', 'true');
-            in1.value=d;
+            in1.value = d;
             fc1.appendChild(in1);
             fd1.appendChild(fl1);
             fd1.appendChild(fc1);
@@ -168,7 +249,7 @@ function render() {
                 classes(in2, "form-control");
                 in2.setAttribute('type', 'text');
                 in2.setAttribute('readonly', 'true');
-                in2.value=ld;
+                in2.value = ld;
                 fc2.appendChild(in2);
                 fd2.appendChild(fl2);
                 fd2.appendChild(fc2);
@@ -191,7 +272,7 @@ function render() {
             classes(inAu0, "form-check-input");
             inAu0.setAttribute('type', 'checkbox');
             if (docDat.cont[0].author.includes(' Andrea Garma')) inAu0.setAttribute('checked', 'true');
-            inAu0.value=' Andrea Garma';
+            inAu0.value = ' Andrea Garma';
             let inAuL0 = document.createElement('label');
             classes(inAuL0, "form-check-label");
             inAu0.setAttribute('for', 'authr0');
@@ -208,7 +289,7 @@ function render() {
             classes(inAu1, "form-check-input");
             inAu1.setAttribute('type', 'checkbox');
             if (docDat.cont[0].author.includes(' Javier Pantoja')) inAu1.setAttribute('checked', 'true');
-            inAu1.value=' Javier Pantoja';
+            inAu1.value = ' Javier Pantoja';
             let inAuL1 = document.createElement('label');
             classes(inAuL1, "form-check-label");
             inAu1.setAttribute('for', 'authr1');
@@ -225,7 +306,7 @@ function render() {
             classes(inAu2, "form-check-input");
             inAu2.setAttribute('type', 'checkbox');
             if (docDat.cont[0].author.includes(' Paulina Vargas')) inAu2.setAttribute('checked', 'true');
-            inAu2.value=' Paulina Vargas';
+            inAu2.value = ' Paulina Vargas';
             let inAuL2 = document.createElement('label');
             classes(inAuL2, "form-check-label");
             inAu2.setAttribute('for', 'authr2');
@@ -257,7 +338,7 @@ function render() {
             subf.appendChild(fd3);
         } else if (item.type == 'ref') {
             let h = document.createElement('h3');
-            h.innerHTML = 'Referencias';
+            h.innerHTML = '<br>Referencias';
             subt.appendChild(h);
             item.ref.forEach((ref, refIdx) => {
                 let refR = document.createElement('div');
@@ -322,14 +403,12 @@ function render() {
                 let in0 = document.createElement('input');
                 let in1 = document.createElement('select');
                 classes(in0, "form-control");
-                in0.setAttribute('required', 'true');
                 in0.setAttribute('type', 'text');
-                in0.value=ref.link;
+                in0.value = ref.link;
                 if (ref.type == 'web') in0.setAttribute('placeholder', 'https://google.com');
                 if (ref.type == 'cite') in0.setAttribute('placeholder', 'Referencia');
-                in0.onchange = function () { changeRef(); }
+                in0.oninput = function () { changeRef(); }
                 classes(in1, "form-control form-control-sm");
-                in1.setAttribute('required', 'true');
                 let inOpt0 = document.createElement('option');
                 inOpt0.value = "web";
                 if (ref.type == 'web') inOpt0.setAttribute('selected', 'true');
@@ -340,7 +419,7 @@ function render() {
                 inOpt1.value = "cite";
                 inOpt1.innerText = 'Otro';
                 in1.appendChild(inOpt1);
-                in1.onchange = function () { changeRef(); }
+                in1.oninput = function () { changeRef(); }
                 fc0.appendChild(in0);
                 fc1.appendChild(in1);
                 fr0.appendChild(fc0);
@@ -361,7 +440,6 @@ function render() {
                 rBtnCheck = document.createElement('button');
                 classes(rBtnCheck, 'btn btn-light btn-link-scckie ml-auto d-none');
                 rBtnCheck.innerHTML = '<i class="fas fa-check"></i>';
-                rBtnCheck.setAttribute('type', 'submit');
                 rBtnCheck.onclick = function () { toggleRef(); };
                 cBtn.appendChild(rBtnEdit);
                 cBtn.appendChild(rBtnCheck);
@@ -376,7 +454,7 @@ function render() {
 
                 subt.appendChild(refR);
 
-                if(ref.link==''){
+                if (ref.link == "") {
                     rBtnEdit.click();
                 }
             });
@@ -392,8 +470,8 @@ function render() {
             subt.appendChild(btnPlusRef1);
             function plusRef() {
                 docDat.cont[idx].ref.push({
-                    type:"web",
-                    link:""
+                    type: "web",
+                    link: ""
                 });
                 render();
             }
@@ -407,10 +485,35 @@ function render() {
                 sect += '<br>\n';
             }
         } else if (item.type == 'html') {
-            sect = item.html;
+            let html = document.createElement('div');
+            html.innerHTML = item.html;
+            subt.appendChild(html);
+
+            let fr0 = document.createElement('div');
+            classes(fr0, "row mb-2");
+            let fc0 = document.createElement('div');
+            classes(fc0, "col");
+            let in0 = document.createElement('textarea');
+            classes(in0, "form-control");
+            in0.setAttribute('rows', '8');
+            in0.value = item.html;
+            in0.onchange = function () {
+                docDat.cont[idx].html = html.innerHTML = in0.value.trim();
+            };
+            fc0.appendChild(in0);
+            fr0.appendChild(fc0);
+            subf.appendChild(fr0);
+
+            if (item.html == "") {
+                btnEdit.click();
+            }
         }//Add more@#*/
         sect.appendChild(subt);
         sect.appendChild(subf);
-        document.getElementById('frm').appendChild(sect);
+        document.getElementById('cont').appendChild(sect);
     });
+}
+
+document.getElementById('inFile').oninput = function () {
+    document.getElementById('inFile').value = rmDiacs(document.getElementById('inFile').value.trim().replaceAll(' ', '-'));
 }
