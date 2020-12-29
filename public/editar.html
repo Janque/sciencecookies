@@ -68,6 +68,7 @@
         <a class="btn btn-dark mx-2 my-1" href="quienes-somos">¿Quienes somos?</a>
         <a class="btn btn-dark mx-2 my-1" href="contacto">Contacto</a>
         <a class="btn btn-dark mx-2 my-1" href="archivo">Archivo</a>
+        <i id="tagLstSave" class="text-light text-muted mx-3 my-auto"></i>
       </ul>
       <div class="row justify-content-end">
         <div class="dropdown mr-4 dropleft">
@@ -104,7 +105,29 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal"
-            onclick="document.getElementById('mdlRgsL').innerHTML='Inicia sesión o regístrate';reporting=null">Cancelar</button>
+            onclick="document.getElementById('mdlRgsL').innerHTML='Inicia sesión o regístrate';">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Add section modal-->
+  <div class="modal fade" id="mdlPlusSect" tabindex="-1" aria-labelledby="mdlPlusSectL" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="mdlPlusSectL">Añadir una sección</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex flex-wrap">
+            <button class="btn btn-scckie" onclick="plusSect('html');" data-dismiss="modal" >HTML</button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Cancelar</button>
         </div>
       </div>
     </div>
@@ -116,6 +139,13 @@
   </div>
 
   <!--Página-->
+
+  <!--Side toolbar-->
+  <div class="tbar tbar-right btn-toolbar mb-3" role="toolbar">
+    <div class="btn-group-vertical mr-2 btn-group-lg" role="group">
+      <button class="btn btn-scckie" data-toggle="modal" data-target="#mdlPlusSect" onclick="toAdd=docDat.cont.length-1;"><i class="fas fa-plus"></i></button>
+    </div>
+  </div>
   <div class="container-fluid text-white"
     style="background-color: black;background-image: url('../../img/fondo1.jpg');background-position: center top;background-attachment: fixed;">
     <div class="row justify-content-around">
@@ -197,7 +227,7 @@
             <div class="row mb-2">
                 <label class="col-sm-2 col-form-label">Descripción</label>
                 <div class="col">
-                    <textarea required class="form-control" id="inDesc" rows="3"></textarea>
+                    <textarea class="form-control" id="inDesc" rows="3"></textarea>
                 </div>
             </div>
             <div class="row mb-2 justify-content-end">
@@ -205,47 +235,7 @@
                 <button class="btn btn-light btn-link-scckie mx-3" type="submit"><i class="fas fa-check"></i></button>
             </div>
           </form>
-          <form id="frm">
-            <!--
-            <div id="sect0">
-              <div class="row mb-2 justify-content-end px-2">
-                <button class="btn btn-light btn-link-scckie" id="toggle0"><i class="fas fa-edit"></i></button>
-              </div>
-              <div id="sect0t">
-                <h1 class="text-center">Título</h1>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis velit atque quo voluptas soluta sit, blanditiis dolores iusto quod in id animi cumque nulla? Rerum necessitatibus in laboriosam sequi eos!</p>
-              </div>
-              <div id="sect0f">
-                <div class="row justify-content-center mb-2">
-                  <div class="col col-lg-6">
-                    <input id="inTitle" type="text" class="form-control form-control-lg text-center" placeholder="Título" value="Título">
-                  </div>
-                </div>
-                <div class="row mb-2">
-                  <label class="col-sm-2 col-form-label">Publicado: </label>
-                  <div class="col">
-                    <input type="text" class="form-control" readonly value="FECHA">
-                  </div>
-                </div>
-                <div class="row mb-2">
-                  <label class="col-sm-2 col-form-label">Autor(es): </label>
-                  <div class="form-row justify-content-around pt-2">
-                    <div class="form-group col-auto mr-2"><div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="authr0" value=" Andrea Garma">
-                      <label class="form-check-label" for="authr0">Andrea Garma</label>
-                    </div></div>
-                    <div class="form-group col-auto mr-2"><div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="authr1" value=" Javier Pantoja">
-                      <label class="form-check-label" for="authr1">Javier Pantoja</label>
-                    </div></div>
-                    <div class="form-group col-auto"><div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="authr2" value=" Paulina Vargas">
-                      <label class="form-check-label" for="authr2">Paulina Vargas</label>
-                    </div></div>
-                  </div>
-                </div>
-              </div>
-            </div>-->
+          <div id="cont">
             <div id="sect1">
               <div class="row mb-2 justify-content-end px-2">
                 <button class="btn btn-light btn-link-scckie" id="toggle1"><i class="fas fa-edit"></i></button>
@@ -284,11 +274,7 @@
             <h3>subsubtitulo</h3>
             <p>lorem ipsum aklsmdlansodao sdo amsod aoksmd okamsok doaksm ksa masok dnkas doka sokdmoaskn kdas ndksand okadsok </p>
             <p>lorem ipsum aklsmdlansodao sdo amsod aoksmd okamsok doaksm ksa masok dnkas doka sokdmoaskn kdas ndksand okadsok.</p>
-            <br>
-            <h3>Referencias</h3>
-            <p><a href="https://google.com" target="_blank" class="text-warning text-break" rel="nofollow">https://google.com <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></p>
-            
-          </form>
+          </div>
           <!--Aquí termina el contenido-->
         </div>
         <div class="row justify-content-start mb-2" id="btnsFL">
