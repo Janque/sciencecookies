@@ -1,6 +1,6 @@
 let docDat, docId;
 let toDel = -1, toAdd = -1;
-let lastSave=Date.now(),saved=false;
+let lastSave = Date.now(), saved = false;
 
 function loaded() {
     db.collection('galletasCont').where('file', '==', urlSrch.get('file')).limit(1).get().then(snap => {
@@ -48,12 +48,12 @@ function loaded() {
 
 let savedInterval;
 function saveDoc() {
-    if(!saved)clearInterval(savedInterval);
-    saved=true;
-    savedInterval=setInterval(()=>{
-        let minutes=Math.floor((Date.now()-lastSave)/60000);
-        if(minutes<61)document.getElementById('tagLstSave').innerText="Guardado hace "+minutes+" minutos";
-        else document.getElementById('tagLstSave').innerText="Guardado hace "+Math.floor(minutes/60)+" horas";
+    if (!saved) clearInterval(savedInterval);
+    saved = true;
+    savedInterval = setInterval(() => {
+        let minutes = Math.floor((Date.now() - lastSave) / 60000);
+        if (minutes < 61) document.getElementById('tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
+        else document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
     }, 300000);
     console.log('Saving...');
     return db.collection('drafts').doc(docId).update(docDat);
@@ -64,7 +64,14 @@ function plusSect(type) {
             type: type,
             html: ""
         });
-    }//@#Add more
+    } else if (type == 'parra') {
+        docDat.cont.splice(toAdd, 0, {
+            type: type,
+            text="",
+            title=0
+        });
+    }
+    //Add more@#
     render();
 }
 
@@ -119,11 +126,11 @@ function render() {
                     toDel = -1;
                     if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
                     docDat.cont.splice(idx, 1);
-                    saveDoc().then(()=>{
-                        document.getElementById('tagLstSave').innerText="Se han guardado todos los cambios";
-                        lastSave=Date.now();
-                    }).catch(err=>{
-                        document.getElementById('tagLstSave').innerText="Error, no se han guardado todos los cambios: "+err.code;
+                    saveDoc().then(() => {
+                        document.getElementById('tagLstSave').innerText = "Se han guardado todos los cambios";
+                        lastSave = Date.now();
+                    }).catch(err => {
+                        document.getElementById('tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
                         console.log(err);
                     });
                     render();
@@ -160,11 +167,11 @@ function render() {
                 toggleEl(btnEdit);
                 toggleEl(btnCheck);
                 toggleEl(subf);
-                saveDoc().then(()=>{
-                    document.getElementById('tagLstSave').innerText="Se han guardado todos los cambios";
-                    lastSave=Date.now();
-                }).catch(err=>{
-                    document.getElementById('tagLstSave').innerText="Error, no se han guardado todos los cambios: "+err.code;
+                saveDoc().then(() => {
+                    document.getElementById('tagLstSave').innerText = "Se han guardado todos los cambios";
+                    lastSave = Date.now();
+                }).catch(err => {
+                    document.getElementById('tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
                     console.log(err);
                 });
             }
@@ -475,15 +482,53 @@ function render() {
                 });
                 render();
             }
-        } else if (item.type == 'parras') {
-            //@#AQUI
+        } else if (item.type == 'parra') {
             if (item.title > 0) {
-                sect = '<h' + item.title + '>' + item.titleTxt + '</h' + item.title + '>\n';
+                if (item.title == 2) sect.innerHTML = '<br>';
+                let h = document.createElement('h' + item.title)
+                h.innerHTML = item.titleTxt;
+                sect.appendChild(h);
             }
-            sect += '<p>' + item.text + '</p>\n';
-            if (item.br) {
-                sect += '<br>\n';
+            let p = document.createElement('p');
+            p.innerHTML = item.text;
+            sect.appendChild(p);
+
+            function changeParr(){
+
             }
+            let fr0 = document.createElement('div');
+            classes(fr0, "row");
+            let fc0 = document.createElement('div');
+            classes(fc0, "col");
+            let fc1 = document.createElement('div');
+            classes(fc1, "col-auto");
+            let in0 = document.createElement('input');
+            let in1 = document.createElement('select');
+            classes(in0, "form-control");
+            in0.setAttribute('type', 'text');
+            if(item.title>0){
+                in0.value = item.titleTxt;
+                in0.setAttribute('placeholder', 'Subtítulo');
+            }
+            in0.oninput = function () {changeParr();}
+            classes(in1, "form-control form-control-sm");
+            let inOpt0 = document.createElement('option');
+            inOpt0.value = "web";
+            if (ref.type == 'web') inOpt0.setAttribute('selected', 'true');
+            inOpt0.innerText = 'Web';
+            in1.appendChild(inOpt0);
+            let inOpt1 = document.createElement('option');
+            if (ref.type == 'cite') inOpt1.setAttribute('selected', 'true');
+            inOpt1.value = "cite";
+            inOpt1.innerText = 'Otro';
+            in1.appendChild(inOpt1);
+            in1.oninput = function () { changeParr(); }
+            fc0.appendChild(in0);
+            fc1.appendChild(in1);
+            fr0.appendChild(fc0);
+            fr0.appendChild(fc1);
+            cLinkFrm.appendChild(fr0);
+
         } else if (item.type == 'html') {
             let html = document.createElement('div');
             html.innerHTML = item.html;
