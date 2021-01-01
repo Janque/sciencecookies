@@ -12,7 +12,7 @@ exports.uptPop = functions.region('us-east1').pubsub.schedule('every 24 hours').
                     likes: cook.val().likes,
                     favs: cook.val().favs
                 });
-                db.collection('drafts').doc(itm).update({
+                db.collection('galletasCont').doc(itm).update({
                     pop: cook.val().pop
                 });
             });

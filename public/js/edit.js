@@ -1,6 +1,13 @@
+var store = firebase.storage();
+
 let docDat, docId;
 let toDel = -1, toAdd = -1;
 let lastSave = Date.now(), saved = false;
+
+let addFrom = -1;
+let toDelMed = -1, toAddMed = -1;
+let newMedia = null;
+let newMedSrc = null;
 
 function loaded() {
     db.collection('galletasCont').where('file', '==', urlSrch.get('file')).limit(1).get().then(snap => {
@@ -14,28 +21,24 @@ function loaded() {
             document.getElementById('inFile').value = docDat.file;
             document.getElementById('inDesc').value = docDat.description;
             render();
+            fillMed();
             return;
         });
     }).catch(err => console.log(err));
 
     function fileFrm() {
         let file = document.getElementById('inFile').value;
-        db.collection('drafts').where('file', '==', file).limit(1).get().then(snap => {
+        db.collection('galletasCont').where('file', '==', file).limit(1).get().then(snap => {
             if (!snap.empty && file != urlSrch.get('file')) {
                 document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
                     Ese nombre de archivo ya esta en uso.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>`;
             } else {
-                return db.collection('drafts').doc(docId).update({
-                    description: document.getElementById('inDesc').value.trim(),
-                    file: file
-                });
+                docDat.description = document.getElementById('inDesc').value.trim();
+                docDat.file = file;
+                return saveDoc();
             }
-        }).then(() => {
-            docDat.description = document.getElementById('inDesc').value.trim();
-            docDat.file = file;
-            return saveDoc();
         }).then(() => {
             window.location.href = '?file=' + file;
         }).catch(err => console.log(err));
@@ -43,6 +46,66 @@ function loaded() {
     document.getElementById("frmFile").addEventListener("submit", function (event) {
         event.preventDefault();
         fileFrm();
+    });
+
+    function addMed(atempt) {
+        let ref = store.ref('cookieMedia/' + docId + '/i' + atempt + newMedia.name);
+        ref.getDownloadURL().then(res => {
+            addMed(atempt + 1);
+        }).catch(err => {
+            if (err.code == 'storage/object-not-found') {
+                ref.put(newMedia).on('state_changed',
+                    function progress(snap) {
+                        setprog(document.getElementById('barNewMed'), (snap.bytesTransferred / snap.totalBytes) * 100);
+                    },
+                    function error(err) {
+                        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert"><strong>¡Ocurrió un error!</strong> ' + err.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                        setTimeout(function () {
+                            if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
+                        }, 3000);
+                        console.log(err);
+                        $('#mdlAddMed').modal('hide');
+                    },
+                    function complete() {
+                        ref.getDownloadURL().then(medUrl => {
+                            docDat.media.push({
+                                medFile: 'i' + atempt + newMedia.name,
+                                medUrl: medUrl
+                            });
+                            normSave();
+                            fillMed();
+                            $('#mdlAddMed').modal('hide');
+                            if (addFrom == 0) $('#mdlMedMan').modal('show');
+                            else $('#mdlMedCho').modal('show');
+                        }).catch(err => { console.log(err) });
+                    }
+                );
+            } else {
+                console.log(err);
+            }
+        });
+    }
+    function addExtMed() {
+        docDat.media.push({
+            medFile: 'externo',
+            medUrl: document.getElementById('inNewMedUrl').value
+        });
+        normSave();
+        fillMed();
+        $('#mdlAddMed').modal('hide');
+        if (addFrom == 0) $('#mdlMedMan').modal('show');
+        else $('#mdlMedCho').modal('show');
+    }
+    document.getElementById("frmAddMed").addEventListener("submit", function (event) {
+        event.preventDefault();
+        setprog(document.getElementById('barNewMed'), "0");
+        showEl(document.getElementById("barNewMedCont"));
+        hideEl(document.getElementById("frmAddMed"));
+        document.getElementById("btnCnfNewMed").setAttribute('disabled', 'true');
+        document.getElementById("btnCanNewMed0").setAttribute('disabled', 'true');
+        document.getElementById("btnCanNewMed1").setAttribute('disabled', 'true');
+        if (newMedSrc == "home") addMed(0);
+        else addExtMed();
     });
 }
 
@@ -59,9 +122,7 @@ function normSave() {
             let minutes = Math.floor((Date.now() - lastSave) / 60000);
             if (minutes < 60) document.getElementById('tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
             else document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
-            console.log('62');
         }, 300010);
-        console.log('64');
         document.getElementById('tagLstSave').innerText = "Se han guardado todos los cambios";
         lastSave = Date.now();
     }).catch(err => {
@@ -71,19 +132,36 @@ function normSave() {
 }
 
 function plusSect(type) {
+    let newSect = null;
     if (type == 'html') {
-        docDat.cont.splice(toAdd, 0, {
+        newSect = {
             type: type,
             html: ""
-        });
+        };
     } else if (type == 'parra') {
-        docDat.cont.splice(toAdd, 0, {
+        newSect = {
             type: type,
             text: "",
             title: "0"
-        });
+        };
+    } else if (type == 'youtube') {
+        newSect = {
+            type: type,
+            vidUrl: "",
+            ratio: "16by9"
+        };
+    } else if (type == 'medSimple') {
+        newSect = {
+            type: type,
+            medUrl: "img/noimg.png",
+            alt: "",
+            caption: "",
+            hasCapt: "true",
+            width:"75%"
+        };
     }
     //Add more@#
+    if (newSect != null) docDat.cont.splice(toAdd, 0, newSect);
     render();
 }
 
@@ -104,6 +182,139 @@ function toggleEl(elm) {
     elm.classList.toggle('d-none');
 }
 
+function setprog(bar, n) {
+    bar.setAttribute('aria-valuenow', n);
+    bar.style.width = n + '%';
+    bar.innerText = n + '%';
+}
+
+function removeMedia(medFileName) {
+    return store.ref('cookieMedia/' + docId + '/' + medFileName).delete();
+}
+
+function fillMed() {
+    document.getElementById('contMedMan').innerHTML = `<div class="col mb-4">
+        <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
+            <a type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" onclick="addFrom=0;">
+                <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
+            </a>
+        </div>
+    </div>`;
+    document.getElementById('contMedCho').innerHTML = `<div class="col mb-4">
+        <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
+            <a type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" onclick="addFrom=1;">
+                <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
+            </a>
+        </div>
+    </div>`;
+
+    docDat.media.forEach((itm, idx) => {
+        let col0 = document.createElement('div');
+        classes(col0, "col mb-4");
+        let card0 = document.createElement('div');
+        classes(card0, "card text-light bg-dark");
+        col0.appendChild(card0);
+        let img0 = document.createElement('img');
+        classes(img0, "card-img");
+        img0.src = itm.medUrl;
+        card0.appendChild(img0);
+        let over0 = document.createElement('div');
+        classes(over0, "card-img-overlay pt-0");
+        over0.style.paddingLeft = ".9rem";
+        over0.style.paddingRight = ".9rem";
+        card0.appendChild(over0);
+        let btns0 = document.createElement('div');
+        classes(btns0, "row mb-2 p-0");
+        over0.appendChild(btns0);
+        let medBtnDel = document.createElement('button');
+        classes(medBtnDel, "btn btn-light btn-scckie btn-sm");
+        medBtnDel.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        medBtnDel.onclick = function () {
+            if (toDelMed == idx) {
+                toDelMed = -1;
+                if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
+                if (itm.medFile != 'externo') {
+                    removeMedia(itm.medFile).then(() => {
+                        if (itm.medUrl == docDat.picUrl) {
+                            docDat.picUrl = "";
+                        }
+                        docDat.media.splice(idx, 1);
+                        fillMed();
+                        normSave();
+                    }).catch(err => console.log(err));
+                } else {
+                    if (itm.medUrl == docDat.picUrl) {
+                        docDat.picUrl = "";
+                    }
+                    docDat.media.splice(idx, 1);
+                    fillMed();
+                    normSave();
+                }
+            } else {
+                document.getElementById("alrtClsSsn").innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
+                    <strong>¿Quieres eliminar esta imagen?</strong> Presiona de nuevo el botón para confirmar.
+                    <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>`;
+                toDelMed = idx;
+                setTimeout(() => {
+                    toDelMed = -1;
+                    if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
+                }, 3000);
+            }
+        };
+        btns0.appendChild(medBtnDel);
+        let medBtnUnstar = document.createElement('button');
+        let medBtnStar = document.createElement('button');
+        if (itm.medUrl == docDat.picUrl) {
+            classes(medBtnUnstar, "btn btn-light btn-scckie btn-sm ml-auto");
+            medBtnUnstar.innerHTML = '<i class="fas fa-star"></i>';
+            medBtnUnstar.onclick = function () {
+                docDat.picUrl = "";
+                fillMed();
+                normSave();
+            };
+            btns0.appendChild(medBtnUnstar);
+        } else {
+            classes(medBtnStar, "btn btn-light btn-scckie btn-sm ml-auto");
+            medBtnStar.innerHTML = '<i class="far fa-star"></i>';
+            medBtnStar.onclick = function () {
+                docDat.picUrl = itm.medUrl;
+                fillMed();
+                normSave();
+            };
+            btns0.appendChild(medBtnStar);
+        }
+
+        document.getElementById('contMedMan').appendChild(col0);
+
+
+        let col1 = document.createElement('div');
+        classes(col1, "col mb-4");
+        let btnA1 = document.createElement('a');
+        classes(btnA1, 'text-decoration-none');
+        btnA1.setAttribute('type', 'button');
+        btnA1.onclick = function () {
+            if (toAddMed == -1) return;
+            docDat.cont[toAddMed].medUrl = itm.medUrl;
+            render();
+            normSave();
+        };
+        btnA1.setAttribute("data-dismiss", "modal");
+        col1.appendChild(btnA1);
+        let card1 = document.createElement('div');
+        classes(card1, "card text-light bg-dark");
+        btnA1.appendChild(card1);
+        let img1 = document.createElement('img');
+        classes(img1, "card-img");
+        img1.src = itm.medUrl;
+        card1.appendChild(img1);
+
+        document.getElementById('contMedCho').appendChild(col1);
+    });
+}
+
 function render() {
     document.getElementById('cont').innerHTML = "";
     let publishDate;
@@ -117,7 +328,7 @@ function render() {
         sect.id = 'sect' + idx;
         let div = document.createElement('div');
         classes(div, 'dropdown-divider mx-2')
-        sect.appendChild(div);
+        if (item.type != 'head') sect.appendChild(div);
 
         let subt = document.createElement('div');
         subt.id = "sect" + idx + "t";
@@ -142,7 +353,7 @@ function render() {
                     render();
                 } else {
                     document.getElementById("alrtClsSsn").innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                        <strong>¿Quieres eliminar ésta sección?</strong> Presiona de nuevo el botón para confirmar.
+                        <strong>¿Quieres eliminar esta sección?</strong> Presiona de nuevo el botón para confirmar.
                         <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -150,7 +361,7 @@ function render() {
                     toDel = idx;
                     setTimeout(() => {
                         toDel = -1;
-                        document.getElementById("btnAlrtClsSsn").click();
+                        if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
                     }, 3000);
                 }
             }
@@ -165,11 +376,11 @@ function render() {
                 toggleEl(btnCheck);
                 toggleEl(subf);
                 if (document.getElementById('tagLstSave').innerText == "Se han guardado todos los cambios") {
-                    let minutes=Math.floor((Date.now() - lastSave) / 60000);
-                    if(minutes>0){
-                        if(minutes>59)document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
+                    let minutes = Math.floor((Date.now() - lastSave) / 60000);
+                    if (minutes > 0) {
+                        if (minutes > 59) document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
                         else document.getElementById('tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
-                    }else document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor((Date.now() - lastSave) / 1000) + " segundos";
+                    } else document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor((Date.now() - lastSave) / 1000) + " segundos";
                 }
             }
             act.appendChild(btnEdit);
@@ -230,7 +441,7 @@ function render() {
             fd0.appendChild(fc0);
             subf.appendChild(fd0);
             in0.oninput = function () {
-                docDat.cont[0].title = in0.value.trim();
+                docDat.title = docDat.cont[0].title = in0.value.trim();
                 h.innerHTML = docDat.cont[0].title;
             };
 
@@ -335,6 +546,7 @@ function render() {
                 if (a2) arr.push(" Paulina Vargas");
                 if (arr.empty) arr.push(' Anónimo');
                 docDat.cont[0].author = arr.slice();
+                docDat.authors = arr.slice();
                 pAuth.innerText = "Autor(es):" + docDat.cont[0].author;
             }
             inAu0.onclick = function () {
@@ -543,13 +755,12 @@ function render() {
             in1.oninput = function () {
                 docDat.cont[idx].title = in1.value;
                 if (Number(in1.value) > 0) {
-                    docDat.cont[idx].titleTxt = in0.value;
                     in0.setAttribute('placeholder', 'Subtítulo');
                     in0.removeAttribute('readonly');
                     if (Number(item.title) == 2) subt.innerHTML = '<br>';
                     else subt.innerHTML = "";
                     h = document.createElement('h' + item.title)
-                    h.innerHTML = item.titleTxt;
+                    h.innerHTML = docDat.cont[idx].titleTxt = in0.value;
                     subt.appendChild(h);
                     subt.appendChild(p);
                 } else {
@@ -557,6 +768,8 @@ function render() {
                     in0.setAttribute('placeholder', '');
                     in0.setAttribute('readonly', 'true');
                     docDat.cont[idx].titleTxt = in0.value;
+                    subt.innerHTML = "";
+                    subt.appendChild(p);
                 }
             }
             fc0.appendChild(in0);
@@ -606,6 +819,184 @@ function render() {
             if (item.html == "") {
                 btnEdit.click();
             }
+        } else if (item.type == 'youtube') {
+            let yt = document.createElement('div');
+            classes(yt, "embed-responsive embed-responsive-" + item.ratio);
+            let iframe = document.createElement('iframe');
+            iframe.src = item.vidUrl;
+            iframe.setAttribute('frameborder', "0");
+            iframe.setAttribute('allow', "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
+            iframe.setAttribute('allowfullscreen', "true");
+            yt.appendChild(iframe);
+            subt.appendChild(yt);
+
+            let fr0 = document.createElement('div');
+            classes(fr0, "row");
+            let fc0 = document.createElement('div');
+            classes(fc0, "col");
+            let fc1 = document.createElement('div');
+            classes(fc1, "col-auto");
+            let in0L = document.createElement('label');
+            in0L.innerText = "URL";
+            let in0 = document.createElement('input');
+            classes(in0, "form-control");
+            in0.setAttribute('type', 'text');
+            in0.value = item.vidUrl;
+            in0.onchange = function () {
+                let convUrl = in0.value.trim();
+                if (convUrl.length == 11) convUrl = "https://www.youtube.com/embed/" + convUrl;
+                else {
+                    let part, i = 1;
+                    do {
+                        part = convUrl[i - 1] + convUrl[i];
+                        i++;
+                    } while (part != "e/" && part != "v=");
+                    convUrl = "https://www.youtube.com/embed/" + convUrl.substr(i, 11);
+                }
+                docDat.cont[idx].vidUrl = iframe.src = convUrl;
+            }
+            let help0 = document.createElement('small');
+            classes(help0, "text-muted");
+            help0.innerText = "aaaaaaaaaaa o https://youtu.be/aaaaaaaaaaa o https://www.youtube.com/watch?v=aaaaaaaaaaa";
+            let in1L = document.createElement('label');
+            in1L.innerText = "Ratio";
+            let in1 = document.createElement('select');
+            classes(in1, "form-control form-control-sm");
+            let ratios = ['21by9', '16by9', '4by3', '1by1'];
+            for (let i = 0; i < 4; i++) {
+                let inOpt = document.createElement('option');
+                inOpt.value = ratios[i];
+                if (item.ratio == ratios[i]) inOpt.setAttribute('selected', 'true');
+                inOpt.innerText = ratios[i].replaceAll('by', ':');
+                in1.appendChild(inOpt);
+            }
+            in1.oninput = function () {
+                docDat.cont[idx].ratio = in1.value;
+                ratios.forEach(rat => {
+                    yt.classList.remove('embed-responsive-' + rat);
+                })
+                classes(yt, "embed-responsive-" + item.ratio);
+            }
+            fc0.appendChild(in0L);
+            fc0.appendChild(in0);
+            fc0.appendChild(help0);
+            fc1.appendChild(in1L);
+            fc1.appendChild(in1);
+            fr0.appendChild(fc0);
+            fr0.appendChild(fc1);
+            subf.appendChild(fr0);
+
+            if (item.vidUrl == "") {
+                btnEdit.click();
+            }
+        } else if (item.type == 'medSimple') {
+            let fig = document.createElement('figure');
+            classes(fig, "mx-auto");
+            fig.style.width=item.width;
+            fig.style.position = "relative";
+            fig.style.borderRadius = ".25rem";
+            let img0 = document.createElement('img');
+            img0.setAttribute('alt', item.alt);
+            img0.src = item.medUrl;
+            classes(img0, "w-100");
+            fig.appendChild(img0);
+            let over0 = document.createElement('div');
+            classes(over0, "card-img-overlay pt-0");
+            over0.style.paddingLeft = ".9rem";
+            over0.style.paddingRight = ".9rem";
+            let btns0 = document.createElement('div');
+            classes(btns0, "row mb-2 p-0");
+            over0.appendChild(btns0);
+            let btnChange = document.createElement('button');
+            classes(btnChange, "btn btn-light btn-scckie btn-sm ml-auto");
+            btnChange.innerHTML = '<i class="fas fa-exchange-alt"></i>';
+            btnChange.setAttribute('data-toggle', "modal")
+            btnChange.setAttribute('data-target', "#mdlMedCho")
+            btnChange.onclick = function () {
+                toAddMed = idx;
+            };
+            btns0.appendChild(btnChange);
+            fig.appendChild(over0);
+            let capt = document.createElement('figcaption');
+            capt.style.fontSize = "70%";
+            capt.style.fontWeight = "lighter";
+            capt.innerHTML = item.caption;
+            if (item.hasCapt) {
+                fig.appendChild(capt);
+            }
+            subt.appendChild(fig);
+
+            let fr0 = document.createElement('div');
+            classes(fr0, "row");
+            let fc0 = document.createElement('div');
+            classes(fc0, "col");
+            let fc1 = document.createElement('div');
+            classes(fc1, "col-auto");
+            let in0L = document.createElement('label');
+            in0L.innerText = "Pie de foto";
+            let in0 = document.createElement('input');
+            classes(in0, "form-control");
+            in0.setAttribute('type', 'text');
+            in0.value = item.caption;
+            in0.oninput = function () {
+                capt.innerHTML = docDat.cont[idx].caption = in0.value.trim();
+            }
+            let in1 = document.createElement('select');
+            classes(in1, "form-control form-control-sm");
+            let inOpt0 = document.createElement('option');
+            inOpt0.value = "true";
+            if (item.hasCapt == "true") inOpt0.setAttribute('selected', 'true');
+            inOpt0.innerText = "Sí";
+            in1.appendChild(inOpt0);
+            let inOpt1 = document.createElement('option');
+            inOpt1.value = "false";
+            if (item.hasCapt == "false") inOpt1.setAttribute('selected', 'true');
+            inOpt1.innerText = "No";
+            in1.appendChild(inOpt1);
+            in1.oninput = function () {
+                docDat.cont[idx].hasCapt = in1.value;
+                if (in1.value == "true") {
+                    capt.innerHTML = in0.value = docDat.cont[idx].caption;
+                    in0.removeAttribute('readonly');
+                    fig.appendChild(capt);
+                } else {
+                    in0.value = docDat.cont[idx].caption = "";
+                    in0.setAttribute('readonly', 'true');
+                    capt.innerHTML = "";
+                    fig.innerHTML = "";
+                    fig.appendChild(img0);
+                    fig.appendChild(over0);
+                }
+            }
+            fc0.appendChild(in0L);
+            fc0.appendChild(in0);
+            fc1.appendChild(in1);
+            fr0.appendChild(fc0);
+            fr0.appendChild(fc1);
+            subf.appendChild(fr0);
+
+            let fr1 = document.createElement('div');
+            classes(fr1, "row");
+            let f1c0 = document.createElement('div');
+            classes(f1c0, "col");
+            let in2L = document.createElement('label');
+            in2L.innerText = "Alt";
+            let in2 = document.createElement('input');
+            classes(in2, "form-control");
+            in2.setAttribute('type', 'text');
+            in2.value = item.alt;
+            in2.oninput = function () {
+                docDat.cont[idx].alt = in2.value.trim();
+                img0.setAttribute('alt', in2.value.trim());
+            }
+            f1c0.appendChild(in2L);
+            f1c0.appendChild(in2);
+            fr1.appendChild(f1c0);
+            subf.appendChild(fr1);
+
+            if (item.medUrl == "img/noimg.png" || (item.hasCapt == "true" && item.caption == "")) {
+                btnEdit.click();
+            }
         }//Add more@#*/
         sect.appendChild(subt);
         sect.appendChild(subf);
@@ -614,5 +1005,65 @@ function render() {
 }
 
 document.getElementById('inFile').oninput = function () {
-    document.getElementById('inFile').value = rmDiacs(document.getElementById('inFile').value.trim().replaceAll(' ', '-'));
+    document.getElementById('inFile').value = ultraClean(document.getElementById('inFile').value);
+}
+
+document.getElementById('inJava').onchange = function () {
+    docDat.js = document.getElementById('javaIns').innerHTML = document.getElementById('inJava').value;
+}
+document.getElementById('btnEditJs').onclick = function () {
+    toggleEl(document.getElementById('btnEditJs'));
+    toggleEl(document.getElementById('btnCheckJs'));
+    document.getElementById('inJava').removeAttribute('readonly');
+};
+document.getElementById('btnCheckJs').onclick = function () {
+    toggleEl(document.getElementById('btnEditJs'));
+    toggleEl(document.getElementById('btnCheckJs'));
+    document.getElementById('inJava').setAttribute('readonly', 'true');
+    normSave();
+};
+
+$('#mdlAddMed').on('hidden.bs.modal', e => {
+    document.getElementById("prevNewMed").src = '';
+    document.getElementById('inNewMedL').innerHTML = 'Elige una imagen';
+    document.getElementById('inNewMedUrl').value = "";
+    document.getElementById('inNewMed').removeAttribute('required');
+    document.getElementById('inNewMedUrl').removeAttribute('required');
+    hideEl(document.getElementById("barNewMedCont"));
+    hideEl(document.getElementById("inNewMedFileCont"));
+    hideEl(document.getElementById("inNewMedUrlCont"));
+    showEl(document.getElementById("frmAddMed"));
+    document.getElementById("btnCnfNewMed").removeAttribute('disabled');
+    document.getElementById("btnCanNewMed0").removeAttribute('disabled');
+    document.getElementById("btnCanNewMed1").removeAttribute('disabled');
+})
+document.getElementById('inNewMed').addEventListener('change', e => {
+    newMedia = e.target.files[0];
+    function prevMed() {
+        var read = new FileReader();
+        read.readAsDataURL(newMedia);
+        read.onload = function (e2) {
+            document.getElementById("prevNewMed").src = e2.target.result;
+        };
+    };
+    newMedia.name = ultraClean(newMedia.name);
+    document.getElementById('inNewMedL').innerHTML = newMedia.name;
+    prevMed(newMedia);
+});
+document.getElementById('inNewMedUrl').onchange = function () {
+    document.getElementById("prevNewMed").src = document.getElementById('inNewMedUrl').value;
+};
+document.getElementById('inMedSrc0').onclick = function () {
+    newMedSrc = "home";
+    document.getElementById('inNewMed').setAttribute('required', 'true');
+    document.getElementById('inNewMedUrl').removeAttribute('required');
+    showEl(document.getElementById("inNewMedFileCont"));
+    hideEl(document.getElementById("inNewMedUrlCont"));
+}
+document.getElementById('inMedSrc1').onclick = function () {
+    newMedSrc = "out";
+    document.getElementById('inNewMed').removeAttribute('required');
+    document.getElementById('inNewMedUrl').setAttribute('required', 'true');
+    hideEl(document.getElementById("inNewMedFileCont"));
+    showEl(document.getElementById("inNewMedUrlCont"));
 }

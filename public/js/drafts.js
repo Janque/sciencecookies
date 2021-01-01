@@ -17,10 +17,11 @@ function loaded() {
         e.preventDefault();
         newSrch();
     });
+    
     function plusCookie() {
         let title = document.getElementById('inTitle').value.trim();
         let file = document.getElementById('inFile').value;
-        db.collection('drafts').where('file', '==', file).limit(1).get().then(snap => {
+        db.collection('galletasCont').where('file', '==', file).limit(1).get().then(snap => {
             if (!snap.empty) {
                 document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
                     Ese nombre de archivo ya esta en uso.
@@ -50,44 +51,33 @@ function loaded() {
                         </div>`;
                         console.log(err);
                     } else {
-                        setprog('12');
-                        db.collection('drafts').doc(id).set({
+                        setprog('52');
+                        db.collection('galletasCont').doc(id).set({
                             authors: [author],
+                            cont: [
+                                {
+                                    type: "head",
+                                    title: title,
+                                    author: [author]
+                                },
+                                {
+                                    type: "ref",
+                                    ref: []
+                                }
+                            ],
+                            media: [],
                             description: "Sin descripción",
+                            picUrl: "",
                             file: file,
                             owner: uid,
-                            picUrl: "",
-                            pop: 0,
+                            java: "",
                             public: false,
                             beenPublic: false,
-                            title: title,
+                            dledit: false,
                             created: new firebase.firestore.Timestamp.now(),
                             ledit: new firebase.firestore.Timestamp.now(),
-                            published: new firebase.firestore.Timestamp.now()
-                        }).then(() => {
-                            setprog('52');
-                            return db.collection('galletasCont').doc(id).set({
-                                cont: [
-                                    {
-                                        type: "head",
-                                        title: title,
-                                        author: [author]
-                                    },
-                                    {
-                                        type: "ref",
-                                        ref: []
-                                    }
-                                ],
-                                description: "Sin descripción",
-                                file: file,
-                                owner: uid,
-                                java: "",
-                                public: false,
-                                beenPublic: false,
-                                dledit: false,
-                                ledit: new firebase.firestore.Timestamp.now(),
-                                published: new firebase.firestore.Timestamp.now()
-                            });
+                            published: new firebase.firestore.Timestamp.now(),
+                            pop: 0
                         }).then(() => {
                             setprog('80');
                             setTimeout(function () {
@@ -160,29 +150,29 @@ function initSrch(stAf) {
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         if (kywords == undefined || kywords == null || kywords == "") {
             if (!desc) {
-                srchRef = db.collection('drafts').orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = db.collection('galletasCont').orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
             } else {
-                srchRef = db.collection('drafts').orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = db.collection('galletasCont').orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
             }
         } else {
             if (!desc) {
-                srchRef = db.collection('drafts').where('title', '==', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
             } else {
-                srchRef = db.collection('galletas').where('title', '==', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
             }
         }
     } else {
         if (kywords == undefined || kywords == null || kywords == "") {
             if (!desc) {
-                srchRef = db.collection('drafts').orderBy(srtOrd).limit(previewLim);
+                srchRef = db.collection('galletasCont').orderBy(srtOrd).limit(previewLim);
             } else {
-                srchRef = db.collection('drafts').orderBy(srtOrd, 'desc').limit(previewLim);
+                srchRef = db.collection('galletasCont').orderBy(srtOrd, 'desc').limit(previewLim);
             }
         } else {
             if (!desc) {
-                srchRef = db.collection('galletas').where('title', '==', kywords).orderBy(srtOrd).limit(previewLim);
+                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd).limit(previewLim);
             } else {
-                srchRef = db.collection('galletas').where('title', '==', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
+                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
             }
         }
     }
@@ -193,7 +183,7 @@ function shwSrch() {
         document.getElementById('crdContainer').innerHTML = `<div class="col mb-4">
             <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
                 <a type="button" data-toggle="modal" data-target="#mdlPlus" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center">
-                    <h1 style="font-size: 6rem;"><i class="far fa-plus-square"></i></h1>
+                    <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
                 </a>
             </div>
         </div>`;
