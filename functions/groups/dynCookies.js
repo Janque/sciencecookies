@@ -56,6 +56,19 @@ app.get('/galletas/:month/:file', (req, res) => {
                         case 'html':
                             sect = item.html;
                             break;
+                        case 'youtube':
+                            sect='<div class="embed-responsive embed-responsive-' + item.ratio+'">\n';
+                            sect+='<iframe src="'+item.vidUrl+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true">\n';
+                            sect+='</iframe></div>\n';
+                            break;
+                        case 'medSimple':
+                            sect='<figure class="mx-auto" style="position:relative; border-radius:.25rem; width:'+item.width+'">\n';
+                            sect+='<img alt="'+item.alt+'" src="'+item.medUrl+'" class="w-100">\n';
+                            if(item.hasCapt=="true"){
+                                sect+='<figcaption style="font-size:70%; font-weight:lighter;">'+item.caption+'</figcaption>\n';
+                            }
+                            sect+='</figure>\n';
+                            break;
                         //Add more@#
                     }
                     content.push(sect);
@@ -85,7 +98,7 @@ app.get('/galletas/:month/:file', (req, res) => {
 
 app.get('/vista-email/:file', (req, res) => {
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
-    db.collection('drafts').where('file', '==', req.params.file).limit(1).get().then(snap => {
+    db.collection('galletasCont').where('file', '==', req.params.file).limit(1).get().then(snap => {
         if (snap.empty) {
             res.redirect('http://sciencecookies.net/404');
             return;
@@ -104,6 +117,7 @@ app.get('/vista-email/:file', (req, res) => {
                 "authors": dat.authors,
                 "description": dat.description,
                 "month": month,
+                "picUrlz": dat.picUrl,
                 "file": dat.file,
                 "title": dat.title,
                 "estado":""
