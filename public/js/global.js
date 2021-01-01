@@ -1,6 +1,5 @@
 //Init database
 var db=firebase.firestore();
-var store=firebase.storage();
 
 var urlSrch='';
 var url='';
@@ -271,4 +270,8 @@ function rmDiacs(s) {
     return s.replace(/[^\u0000-\u007E]/g, function (a) {
         return diacs[a] || a;
     });
+}
+
+function ultraClean(str){
+    return rmDiacs(str.replaceAll('\#','\-').replaceAll('\[','\-').replaceAll('\]','\-').replaceAll('\*','\-').replaceAll('\?','\-').trim().replaceAll(' ','\-'));
 }
