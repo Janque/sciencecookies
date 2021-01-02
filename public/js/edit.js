@@ -1,4 +1,5 @@
 var store = firebase.storage();
+var rtDb = firebase.database();
 
 let docDat, docId;
 let toDel = -1, toAdd = -1;
@@ -9,8 +10,10 @@ let toDelMed = -1, toAddMed = -1;
 let newMedia = null;
 let newMedSrc = null;
 
+let keywords = [];
+
 function loaded() {
-    db.collection('galletasCont').where('file', '==', urlSrch.get('file')).limit(1).get().then(snap => {
+    db.collection('galletasCont').where('file', '==', urlSrch.get('file')).limit(1).onSnapshot(snap => {
         if (snap.empty) {
             window.location.href = '../404';
             return;
@@ -22,9 +25,25 @@ function loaded() {
             document.getElementById('inDesc').value = docDat.description;
             render();
             fillMed();
-            return;
+            if (docDat.public) {
+                //@#document.getElementById('btnPrevCook').classList.remove('d-none');
+                document.getElementById('btnPrivate').classList.remove('d-none');
+                document.getElementById('btnAprove').classList.add('d-none');
+                document.getElementById('btnPub').classList.add('d-none');
+            } else {
+                //@#document.getElementById('btnPrevCook').classList.add('d-none');
+                document.getElementById('btnPrivate').classList.add('d-none');
+                document.getElementById('btnAprove').classList.remove('d-none');
+                document.getElementById('btnPub').classList.remove('d-none');
+            }
+            if (docDat.revised.includes(uid)) {
+                document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
+            } else {
+                document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
+            }
+            fillKW();
         });
-    }).catch(err => console.log(err));
+    }, err => console.log(err))
 
     function fileFrm() {
         let file = document.getElementById('inFile').value;
@@ -91,7 +110,6 @@ function loaded() {
             medUrl: document.getElementById('inNewMedUrl').value
         });
         normSave();
-        fillMed();
         $('#mdlAddMed').modal('hide');
         if (addFrom == 0) $('#mdlMedMan').modal('show');
         else $('#mdlMedCho').modal('show');
@@ -157,29 +175,12 @@ function plusSect(type) {
             alt: "",
             caption: "",
             hasCapt: "true",
-            width:"75%"
+            width: "75%"
         };
     }
     //Add more@#
     if (newSect != null) docDat.cont.splice(toAdd, 0, newSect);
     render();
-}
-
-function classes(elm, cls) {
-    cls = cls.split(' ');
-    cls.forEach(itm => {
-        elm.classList.add(itm);
-    });
-}
-
-function hideEl(elm) {
-    elm.classList.add('d-none');
-}
-function showEl(elm) {
-    elm.classList.remove('d-none');
-}
-function toggleEl(elm) {
-    elm.classList.toggle('d-none');
 }
 
 function setprog(bar, n) {
@@ -239,7 +240,6 @@ function fillMed() {
                             docDat.picUrl = "";
                         }
                         docDat.media.splice(idx, 1);
-                        fillMed();
                         normSave();
                     }).catch(err => console.log(err));
                 } else {
@@ -247,7 +247,6 @@ function fillMed() {
                         docDat.picUrl = "";
                     }
                     docDat.media.splice(idx, 1);
-                    fillMed();
                     normSave();
                 }
             } else {
@@ -272,7 +271,6 @@ function fillMed() {
             medBtnUnstar.innerHTML = '<i class="fas fa-star"></i>';
             medBtnUnstar.onclick = function () {
                 docDat.picUrl = "";
-                fillMed();
                 normSave();
             };
             btns0.appendChild(medBtnUnstar);
@@ -281,7 +279,6 @@ function fillMed() {
             medBtnStar.innerHTML = '<i class="far fa-star"></i>';
             medBtnStar.onclick = function () {
                 docDat.picUrl = itm.medUrl;
-                fillMed();
                 normSave();
             };
             btns0.appendChild(medBtnStar);
@@ -298,7 +295,6 @@ function fillMed() {
         btnA1.onclick = function () {
             if (toAddMed == -1) return;
             docDat.cont[toAddMed].medUrl = itm.medUrl;
-            render();
             normSave();
         };
         btnA1.setAttribute("data-dismiss", "modal");
@@ -350,7 +346,6 @@ function render() {
                     if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
                     docDat.cont.splice(idx, 1);
                     normSave();
-                    render();
                 } else {
                     document.getElementById("alrtClsSsn").innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
                         <strong>¿Quieres eliminar esta sección?</strong> Presiona de nuevo el botón para confirmar.
@@ -682,7 +677,6 @@ function render() {
                 rBtnDel.innerHTML = '<i class="fas fa-trash-alt"></i>';
                 rBtnDel.onclick = function () {
                     docDat.cont[idx].ref.splice(refIdx, 1);
-                    render();
                     normSave();
                 };
                 cBtn.appendChild(rBtnDel);
@@ -892,7 +886,7 @@ function render() {
         } else if (item.type == 'medSimple') {
             let fig = document.createElement('figure');
             classes(fig, "mx-auto");
-            fig.style.width=item.width;
+            fig.style.width = item.width;
             fig.style.position = "relative";
             fig.style.borderRadius = ".25rem";
             let img0 = document.createElement('img');
@@ -994,7 +988,7 @@ function render() {
             fr1.appendChild(f1c0);
             subf.appendChild(fr1);
 
-            if (item.medUrl == "img/noimg.png" || (item.hasCapt == "true" && item.caption == "")) {
+            if (item.hasCapt == "true" && item.caption == "") {
                 btnEdit.click();
             }
         }//Add more@#*/
@@ -1067,3 +1061,324 @@ document.getElementById('inMedSrc1').onclick = function () {
     hideEl(document.getElementById("inNewMedFileCont"));
     showEl(document.getElementById("inNewMedUrlCont"));
 }
+
+document.getElementById('btnPrevCook').onclick = function () {
+    if (docDat.public) {
+        let d = docDat.published.toDate();
+        let month = d.getFullYear().toString();
+        if (d.getMonth() < 9) {
+            month += '0';
+        }
+        month += (d.getMonth() + 1);
+        window.open('../galletas/' + month + '/' + docDat.file, '_blank').focus();
+    }
+};
+document.getElementById('btnPrevMail').onclick = function () {
+    window.open('../vista-email/' + docDat.file, '_blank').focus();
+};
+
+document.getElementById('btnPrivate').onclick = function () {
+    db.collection('galletasCont').doc(docId).update({
+        public: false
+    });
+};
+
+document.getElementById('btnAprove').onclick = function () {
+    if (docDat.revised.includes(uid)) {
+        docDat.revised.splice(docDat.revised.indexOf(uid), 1);
+        document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
+    } else {
+        docDat.revised.push(uid);
+        document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
+    }
+    normSave();
+};
+
+$('#mdlPublish').on('show.bs.modal', e => {
+    let rev = docDat.revised.length;
+    if (!docDat.revised.includes(uid)) rev++;
+    if (rev < 2) {
+        classes(document.getElementById('btnCnfPublish'), "d-none");
+        document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
+        document.getElementById('frmPublish').classList.add('d-none');
+    } else {
+        document.getElementById('btnCnfPublish').classList.remove("d-none");
+        document.getElementById('mdlPublishTxt').innerText = "La galleta está lista para publicar";
+        document.getElementById('frmPublish').classList.remove('d-none');
+        if (docDat.beenPublic) document.getElementById('sendUptCont').classList.remove('d-none');
+    }
+});
+
+function finishPub() {
+    document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+    setprog(document.getElementById('barPublish'), '100');
+    classes(document.getElementById('barPublish'), 'bg-success');
+    let d = docDat.published.toDate();
+    let month = d.getFullYear().toString();
+    if (d.getMonth() < 9) {
+        month += '0';
+    }
+    month += (d.getMonth() + 1);
+    setTimeout(function () {
+        window.open('../galletas/' + month + '/' + docDat.file, '_blank').focus();
+    }, 2500);
+    console.log("Data saved successfully.");
+    setTimeout(function () {
+        document.getElementById("btnAlrtClsSsn").click();
+    }, 3000);
+    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+        document.getElementById("alrtClsSsn").innerHTML = '';
+    });
+    $('#mdlPublish').modal('hide');
+}
+function fillKW() {
+    let n = 0
+    function prog() {
+        setprog(document.getElementById('barPublish'), Math.floor(n).toString());
+    }
+    keywords = [];
+    keywords.push(docDat.published.toDate().getFullYear().toString());
+    keywords.push(docDat.ledit.toDate().getFullYear().toString());
+    n++;
+    prog();
+    //Categorías@#
+    if (document.getElementById('cat0').checked) keywords.push('astronomia');
+    if (document.getElementById('cat1').checked) keywords.push('biologia');
+    if (document.getElementById('cat2').checked) keywords.push('curiosidades');
+    if (document.getElementById('cat3').checked) keywords.push('fisica');
+    if (document.getElementById('cat4').checked) keywords.push('tecnologia');
+    n++;
+    prog();
+    docDat.authors.forEach(itm => {
+        itm.substring(1).split(' ').forEach(c => {
+            keywords.push(ultraClean(c));
+        });
+        n+=(3/docDat.authors.length);
+        prog();
+    });
+
+    let toKW = [];
+
+    docDat.title.split(' ').forEach(itm => {
+        toKW.push(itm.replaceAll(/\<.?.*\>/gi, " ").trim());
+    });
+    n++;
+    prog();
+
+    docDat.description.split(' ').forEach(itm => {
+        toKW.push(itm.replaceAll(/\<.?.*\>/gi, " ").trim());
+        n+=(3/docDat.description.split(' ').length);
+        prog();
+    });
+
+    docDat.cont.forEach(sect => {
+        if (sect.type == 'parra') {
+            if (Number(sect.title) > 0) {
+                sect.titleTxt.split(' ').forEach(itm => {
+                    toKW.push(itm.replaceAll(/\<.?.*\>/gi, " ").trim());
+                });
+            }
+            sect.text.split(' ').forEach(itm => {
+                toKW.push(itm.replaceAll(/\<.?.*\>/gi, " ").trim());
+                n+=(14/docDat.cont.length/sect.text.split(' ').length);
+                prog();
+            });
+        } else if (sect.type == 'medSimple') {
+            if (sect.alt != "") {
+                sect.alt.split(' ').forEach(itm => {
+                    toKW.push(itm.replaceAll(/\<.?.*\>/gi, " ").trim());
+                });
+            }
+            if (sect.caption != "") {
+                sect.caption.split(' ').forEach(itm => {
+                    toKW.push(itm.replaceAll(/\<.?.*\>/gi, " ").trim());
+                });
+            }
+            n+=(14/docDat.cont.length);
+            prog();
+        }
+        //@#
+    });
+
+    let rToKW = [];
+    let l = toKW.length;
+    for (let i = 0; i < l; i++) {
+        let wrd = toKW[i];
+        let r = wrd.indexOf(' ');
+        if (r != -1) {
+            wrd.split.forEach(itm => {
+                rToKW.push(itm);
+            });
+            toKW.splice(i, 1);
+            i--;
+        }
+    };
+
+    rToKW.forEach(itm => {
+        toKW.push(itm);
+    });
+    n++
+    prog();
+
+    l = toKW.length;
+    for (let i = 0; i < l; i++) {
+        toKW.splice(i, 1, ultraClean(toKW[i]));
+        n+=(3/toKW.length);
+        prog();
+    };
+
+    let kWObj = {}, sum = 0, wCount = 0;
+    toKW.forEach(itm => {
+        let num = kWObj[itm];
+        if (!num) {
+            kWObj[itm] = 1;
+            wCount++;
+        }
+        else kWObj[itm]++;
+        sum++;
+        n+=(3/toKW.length);
+        prog();
+    });
+
+    for (const [key, value] of Object.entries(kWObj)) {
+        if (value > sum / wCount) {
+            keywords.push(key);
+        }
+        n+=(3/Object.entries(kWObj).length);
+        prog();
+    }
+
+    console.log(keywords);
+}
+document.getElementById('btnCnfPublish').onclick = function () {
+    if (docDat.public) return;
+    setprog(document.getElementById('barPublish'), '0');
+    document.getElementById('barPublishCont').classList.remove('d-none');
+    fillKW();
+    if (docId <= 20122902) {
+        setprog(document.getElementById('barPublish'), '30');
+        let d = docDat.published.toDate();
+        let month = d.getFullYear().toString();
+        if (d.getMonth() < 9) {
+            month += '0';
+        }
+        month += (d.getMonth() + 1);
+        setprog(document.getElementById('barPublish'), '47');
+        db.collection('galletas').doc(docId).update({
+            dledit: false,
+            notify: false,
+            title: docDat.title,
+            descrip: docDat.description,
+            url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
+            picUrl: docDat.picUrl,
+            authrs: docDat.authors,
+            cats: keywords
+        }).then(() => {
+            setprog(document.getElementById('barPublish'), '76');
+            finishPub();
+        }).catch(err => { console.log(err) });
+    } else {
+        if (!docDat.beenPublic) {
+            setprog(document.getElementById('barPublish'), '30');
+            db.collection('galletasCont').doc(docId).update({
+                beenPublic: true,
+                public: true,
+                ledit: new firebase.firestore.Timestamp.now(),
+                published: new firebase.firestore.Timestamp.now(),
+                revised: []
+            }).then(() => {
+                setprog(document.getElementById('barPublish'), '49');
+                let d = docDat.published.toDate();
+                let month = d.getFullYear().toString();
+                if (d.getMonth() < 9) {
+                    month += '0';
+                }
+                month += (d.getMonth() + 1);
+                return db.collection('galletas').doc(docId).set({
+                    likes: 0,
+                    favs: 0,
+                    pop: 0,
+                    ledit: new firebase.firestore.Timestamp.now(),
+                    date: new firebase.firestore.Timestamp.now(),
+                    dledit: false,
+                    notify: true,
+                    title: docDat.title,
+                    descrip: docDat.description,
+                    url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
+                    picUrl: docDat.picUrl,
+                    authrs: docDat.authors,
+                    cats: keywords
+                })
+            }).then(function () {
+                setprog(document.getElementById('barPublish'), '78');
+                rtDb.ref('galletas/' + docId).set({
+                    pop: 0,
+                    likes: 0,
+                    favs: 0
+                }, err => {
+                    if (err) {
+                        console.log("Data could not be saved." + err);
+                    } else {
+                        setprog(document.getElementById('barPublish'), '84');
+                        finishPub();
+                    }
+                });
+            }).catch(function (error) {
+                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                console.log(error);
+                setTimeout(function () {
+                    document.getElementById("btnAlrtClsSsn").click();
+                }, 3000);
+                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+                    document.getElementById("alrtClsSsn").innerHTML = '';
+                });
+            });
+        } else {
+            setprog(document.getElementById('barPublish'), '30');
+            db.collection('galletasCont').doc(docId).update({
+                public: true,
+                ledit: new firebase.firestore.Timestamp.now(),
+                revised: []
+            }).then(() => {
+                setprog(document.getElementById('barPublish'), '42');
+                let d = docDat.published.toDate();
+                let month = d.getFullYear().toString();
+                if (d.getMonth() < 9) {
+                    month += '0';
+                }
+                month += (d.getMonth() + 1);
+                let cook = {
+                    title: docDat.title,
+                    descrip: docDat.description,
+                    url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
+                    picUrl: docDat.picUrl,
+                    authrs: docDat.authors,
+                    cats: keywords
+                };
+                setprog(document.getElementById('barPublish'), '57');
+                if (document.getElementById('inSendUpt').checked) {
+                    cook.ledit = new firebase.firestore.Timestamp.now();
+                    cook.dledit = true;
+                    cook.notify = true;
+                } else {
+                    cook.dledit = false;
+                    cook.notify = false;
+                }
+                setprog(document.getElementById('barPublish'), '66');
+                return db.collection('galletas').doc(docId).update(cook);
+            }).then(() => {
+                setprog(document.getElementById('barPublish'), '75');
+                finishPub();
+            }).catch(error => {
+                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                console.log(error);
+                setTimeout(function () {
+                    document.getElementById("btnAlrtClsSsn").click();
+                }, 3000);
+                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+                    document.getElementById("alrtClsSsn").innerHTML = '';
+                });
+            });
+        }
+    }
+};

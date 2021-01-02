@@ -26,7 +26,9 @@ exports.uptPop = functions.region('us-east1').pubsub.schedule('every 24 hours').
 exports.uptIDs = functions.region('us-east1').pubsub.schedule('every 24 hours').onRun((context) => {
     let t=admin.firestore.Timestamp.now().toDate();
     today=(t.getFullYear()%100).toString();
+    if(t.getMonth()<9)today+='0';
     today+=(t.getMonth() + 1);
+    if(t.getDate()<10)today+='0';
     today+=t.getDate();
     return admin.database().ref('tdaysID').set({
         "today":today,

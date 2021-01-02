@@ -6,6 +6,22 @@ var url='';
 var actSsn=false;
 var mod=false,author="";
 
+function classes(elm, cls) {
+    cls = cls.split(' ');
+    cls.forEach(itm => {
+        elm.classList.add(itm);
+    });
+}
+function hideEl(elm) {
+    elm.classList.add('d-none');
+}
+function showEl(elm) {
+    elm.classList.remove('d-none');
+}
+function toggleEl(elm) {
+    elm.classList.toggle('d-none');
+}
+
 //Check auth
 var displayName,email,photoURL,uid;
 firebase.auth().onAuthStateChanged(function(user) {
@@ -17,7 +33,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         uid=user.uid;
         actSsn=true;
         modAuth(uid).then(res=>{
-            mod=res.data.name;
+            mod=res.data.mod;
             author=res.data.name;
             if(url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"||url.pathname.substring(0,13)=="/vista-previa"||url.pathname.substring(0,12)=="/vista-email"){
                 if(!mod)window.location.href='https://sciencecookies.net';
@@ -144,11 +160,11 @@ function shwRecom(){
     db.collection('galletas').orderBy('date','desc').limit(1).get().then(snap=>{
         let docs=snap.docs;
         docs.forEach(function(doc){
-            document.getElementById('crd0').href='https://sciencecookies.net/galletas/'+doc.data().url;
+            document.getElementById('crd0').href=doc.data().url;
             document.getElementById('crd0i').src=doc.data().picUrl;
             let d=doc.data().date.toDate();
             document.getElementById('crd0t').innerHTML='                                      <h5 class="card-title">'+doc.data().title+'</h5>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
-            document.getElementById('rmed0').href='https://sciencecookies.net/galletas/'+doc.data().url;
+            document.getElementById('rmed0').href=doc.data().url;
             document.getElementById('rmed0i').src=doc.data().picUrl;
             d=doc.data().date.toDate();
             document.getElementById('rmed0t').innerHTML='                                    <h6 class="card-title"><strong>'+doc.data().title+'</strong></h6>                <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
@@ -158,11 +174,11 @@ function shwRecom(){
         let docs=snap.docs;
         let idx=1;
         docs.forEach(function(doc){
-            document.getElementById('crd'+idx).href='https://sciencecookies.net/galletas/'+doc.data().url;
+            document.getElementById('crd'+idx).href=doc.data().url;
             document.getElementById('crd'+idx+'i').src=doc.data().picUrl;
             let d=doc.data().date.toDate();
             document.getElementById('crd'+idx+'t').innerHTML='                                <h5 class="card-title">'+doc.data().title+'</h5>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
-            document.getElementById('rmed'+idx).href='https://sciencecookies.net/galletas/'+doc.data().url;
+            document.getElementById('rmed'+idx).href=doc.data().url;
             document.getElementById('rmed'+idx+'i').src=doc.data().picUrl;
             d=doc.data().date.toDate();
             document.getElementById('rmed'+idx+'t').innerHTML='                              <h6 class="card-title"><strong>'+doc.data().title+'</strong></h6>                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
