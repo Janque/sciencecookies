@@ -17,7 +17,7 @@ function loaded() {
         e.preventDefault();
         newSrch();
     });
-    
+
     function plusCookie() {
         let title = document.getElementById('inTitle').value.trim();
         let file = document.getElementById('inFile').value;
@@ -68,9 +68,11 @@ function loaded() {
                             media: [],
                             description: "Sin descripción",
                             picUrl: "",
+                            title: title,
                             file: file,
                             owner: uid,
                             java: "",
+                            revised: [],
                             public: false,
                             beenPublic: false,
                             dledit: false,
@@ -195,7 +197,13 @@ function shwSrch() {
         nxtp = false;
         let idx = 0;
         if (docs.length < 1) {
-            document.getElementById('crdContainer').innerHTML = '<h5 class="mt-0 text-center">No se han encontrado resultados</h5>';
+            document.getElementById('crdContainer').innerHTML = `<h5 class="mt-0 text-center">No se han encontrado resultados</h5><div class="col mb-4">
+            <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
+                <a type="button" data-toggle="modal" data-target="#mdlPlus" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center">
+                    <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
+                </a>
+            </div>
+        </div>`;
         }
         docs.forEach(function (doc) {
             let col = document.createElement('col');
@@ -270,14 +278,37 @@ function shwSrch() {
             };
             drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
             drpmenu.appendChild(drpitm0);
-            let drpitm2 = document.createElement('button');
-            drpitm2.classList.add('dropdown-item');
-            drpitm2.onclick = function () {
+            let drpitm1 = document.createElement('button');
+            drpitm1.classList.add('dropdown-item');
+            drpitm1.onclick = function () {
                 window.open('../vista-email/' + doc.data().file, '_blank').focus();
             };
-            drpitm2.setAttribute('target', "_blank");
-            drpitm2.innerHTML = 'Vista correo <i class="fas fa-eye"></i>';
-            drpmenu.appendChild(drpitm2);
+            drpitm1.innerHTML = 'Vista correo <i class="fas fa-envelope"></i>';
+            drpmenu.appendChild(drpitm1);
+            let drpitm2 = document.createElement('button');
+            let drpitm3 = document.createElement('button');
+            let d = doc.data().created.toDate();
+            if (doc.data().public) {
+                drpitm2.classList.add('dropdown-item');
+                drpitm2.onclick = function () {
+                    let month = d.getFullYear().toString();
+                    if (d.getMonth() < 9) {
+                        month += '0';
+                    }
+                    month += (d.getMonth() + 1);
+                    window.open('../galletas/' + month + '/' + doc.data().file, '_blank').focus();
+                };
+                drpitm2.innerHTML = 'Volver privado <i class="fas fa-eye"></i>';
+                drpmenu.appendChild(drpitm2);
+                drpitm3.classList.add('dropdown-item');
+                drpitm3.onclick = function () {
+                    db.collection('galletasCont').doc(doc.id).update({
+                        public: false
+                    });
+                };
+                drpitm3.innerHTML = 'Volver privado <i class="fas fa-lock"></i>';
+                drpmenu.appendChild(drpitm3);
+            }
             drp.appendChild(drpmenu);
             col1.appendChild(drp);
             row.appendChild(col1);
@@ -300,7 +331,6 @@ function shwSrch() {
             let f = document.createElement('div');
             f.classList.add('card-footer');
             f.classList.add('text-muted');
-            let d = doc.data().created.toDate();
             f.innerHTML = '<p>Creado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             d = doc.data().ledit.toDate();
             f.innerHTML += '<p>Acutalizado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';

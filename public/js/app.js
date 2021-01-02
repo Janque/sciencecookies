@@ -1,3 +1,4 @@
+//Categorías@#
 const catnmb=5,allCats=['astronomia','biologia','curiosidades','fisica','tecnologia'];
 const previewLim=20;
 
@@ -43,7 +44,7 @@ function initSrch(stAf){
             document.getElementById("inSrchOrd1").selected=true;
         }
         if(srtOrd=='old'){
-            srtOrd='date';
+            srtOrd='ledit';
             desc=false;
             document.getElementById("inSrchOrd2").selected=true;
         }
@@ -52,20 +53,20 @@ function initSrch(stAf){
             document.getElementById("inSrchOrd3").selected=true;
         }
     }else{
-        srtOrd='date';
+        srtOrd='ledit';
         desc=true;
     }
     if(page>1&&stAf&&paglast[page-1]!=null&&paglast[page-1]!=undefined){
         if(!desc){
-            srchRef=db.collection('galletas').where('cats','array-contains-any',kywords).orderBy(srtOrd).startAfter(paglast[page-1]).limit(previewLim);
+            srchRef=db.collection('galletas').where('public','==',true).where('cats','array-contains-any',kywords).orderBy(srtOrd).startAfter(paglast[page-1]).limit(previewLim);
         }else{
-            srchRef=db.collection('galletas').where('cats','array-contains-any',kywords).orderBy(srtOrd,'desc').startAfter(paglast[page-1]).limit(previewLim);
+            srchRef=db.collection('galletas').where('public','==',true).where('cats','array-contains-any',kywords).orderBy(srtOrd,'desc').startAfter(paglast[page-1]).limit(previewLim);
         }
     }else{
         if(!desc){
-            srchRef=db.collection('galletas').where('cats','array-contains-any',kywords).orderBy(srtOrd).limit(previewLim);
+            srchRef=db.collection('galletas').where('public','==',true).where('cats','array-contains-any',kywords).orderBy(srtOrd).limit(previewLim);
         }else{
-            srchRef=db.collection('galletas').where('cats','array-contains-any',kywords).orderBy(srtOrd,'desc').limit(previewLim);
+            srchRef=db.collection('galletas').where('public','==',true).where('cats','array-contains-any',kywords).orderBy(srtOrd,'desc').limit(previewLim);
         }
     }
     shwSrch();
@@ -95,28 +96,64 @@ function initSrch(stAf){
     }).catch(err=>{console.log('err')});
 }
 function shwSrch(){
-    for(let i=0;i<20;i++){
-        document.getElementById('med'+i).classList.add('d-none');
-        if(i!=0)document.getElementById('div'+i).classList.add('d-none');
-        document.getElementById('med'+i).href='';
-        document.getElementById('med'+i+'img').classList.remove('d-none');
-        document.getElementById('med'+i+'img').src='';
-        document.getElementById('med'+i+'t').innerHTML='';
-    }
+    document.getElementById('cookiesCont').innerHTML="";
     srchRef.get().then(snap=>{
         let docs=snap.docs;
         nxtp=false;
-        let idx=0;
-        if(docs.length<1){
-            document.getElementById('med'+idx+'img').classList.add('d-none');
-            document.getElementById('med'+idx+'t').innerHTML='<h5 class="mt-0 text-center">No se han encontrado resultados</h5>';
-            document.getElementById('med'+idx).classList.remove('d-none');
+        if(docs.length==0){
+            let a=document.createElement('a');
+            classes(a,"text-decoration-none text-light");
+            let med=document.createElement('div');
+            classes(med,"media mb-3");
+            let bod=document.createElement('div');
+            classes(bod,"media-body");
+            bod.innerHTML='<h5 class="mt-0 text-center">No se han encontrado resultados</h5>';
+            a.appendChild(med);
+            med.appendChild(bod);
+            document.getElementById('cookiesCont').appendChild(a);
         }
-        docs.forEach(function(doc){
-            document.getElementById('med'+idx).href='galletas/'+doc.data().url;
-            document.getElementById('med'+idx+'img').src=doc.data().picUrl;
-            let d=doc.data().date.toDate();
-            document.getElementById('med'+idx+'t').innerHTML='                                <h5 class="mt-0">'+doc.data().title+'</h5>                                        <p>'+doc.data().descrip+'</p>                                                   <p class="mb-0">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
+        docs.forEach((doc,idx)=>{
+            if(idx!=0){
+                let divi=document.createElement('div');
+                classes(divi,"dropdown-divider d-md-none");
+                document.getElementById('cookiesCont').appendChild(divi);
+            }
+            let a=document.createElement('a');
+            classes(a,"text-decoration-none text-light");
+            a.href=doc.data.url;
+            let med=document.createElement('div');
+            classes(med,"media mb-3");
+            let img=document.createElement('img');
+            classes(img,"align-self-center mr-3");
+            img.style.width="64px";
+            img.style.height="64px";
+            img.src=doc.data().picUrl;
+            let bod=document.createElement('div');
+            classes(bod,"media-body");
+            let tit=document.createElement('h5');
+            classes(tit,"mt-0");
+            tit.innerHTML=doc.data().title;
+            bod.appendChild(tit);
+            let descr=document.createElement('p');
+            descr.innerHTML=doc.data().descrip;
+            bod.appendChild(descr);
+            let dates=document.createElement('p');
+            if(doc.data().dledit){
+                let dl=doc.data().ledit.toDate();
+                dates.innerText='Actualizado: '+dl.getDate()+'/'+(dl.getMonth()+1)+'/'+dl.getFullYear();
+            }else{
+                let d=doc.data().date.toDate();
+                dates.innerText='Publicado: '+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+            }
+            bod.appendChild(dates);
+            let auhtTxt=document.createElement('p');
+            classes(auhtTxt,"mb-0");
+            auhtTxt.innerText=' Autor(es):'+doc.data().authrs;
+            bod.appendChild(auhtTxt);
+            a.appendChild(med);
+            med.appendChild(img);
+            med.appendChild(bod);
+            document.getElementById('cookiesCont').appendChild(a);
             if(idx==previewLim-1){
                 if(paglast[page]==undefined||paglast[page]==null){
                     paglast.push(docs[docs.length-1]);
@@ -127,9 +164,6 @@ function shwSrch(){
                 document.getElementById("pgNavT").classList.remove('d-none');
                 document.getElementById("pgNavB").classList.remove('d-none');
             }
-            document.getElementById('med'+idx).classList.remove('d-none');
-            if(idx!=0)document.getElementById('div'+idx).classList.remove('d-none');
-            idx++;
         });
         if(!nxtp){
             document.getElementById("pgTNxt").setAttribute('disabled','true');
@@ -145,7 +179,7 @@ function shwSrch(){
             document.getElementById("pgTPrv").removeAttribute('disabled');
             document.getElementById("pgBPrv").removeAttribute('disabled');
         }
-    }).catch(err=>{console.log('Error')});
+    }).catch(err=>{console.log(err)});//@#
 }
 
 document.getElementById("pgTPrv").onclick=function(){reSrch(-1);};
