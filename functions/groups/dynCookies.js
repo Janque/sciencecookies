@@ -117,7 +117,7 @@ app.get('/vista-email/:file', (req, res) => {
                 "authors": dat.authors,
                 "description": dat.description,
                 "month": month,
-                "picUrlz": dat.picUrl,
+                "picUrl": dat.picUrl,
                 "file": dat.file,
                 "title": dat.title,
                 "estado":""

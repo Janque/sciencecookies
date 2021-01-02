@@ -36,7 +36,7 @@ var transporter = nodemailer.createTransport({
     }
 });
 exports.newsletter = functions.region('us-east1').firestore.document('galletas/{galleta}').onCreate((snap, context) => {
-    return db.collection('newsletters').doc('base').get().then(doc => {
+    return db.collection('newsletters').doc('test').get().then(doc => {
         const emails = doc.data().emails;
         const dat = snap.data();
         const mailOptions = {
