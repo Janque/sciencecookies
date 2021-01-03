@@ -88,7 +88,7 @@ app.get('/galletas/:month/:file', (req, res) => {
                     "titleInf": dat.title,
                     "cookieID": doc.id,
                     "content": content,
-                    "java": dat.js
+                    "java": dat.java
                 });
                 return;
             });
