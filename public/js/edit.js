@@ -1266,6 +1266,8 @@ document.getElementById('btnCnfPublish').onclick = function () {
         setprog(document.getElementById('barPublish'), '47');
         db.collection('galletas').doc(docId).update({
             dledit: false,
+            ledit:docDat.created,
+            public:true,
             notify: false,
             title: docDat.title,
             descrip: docDat.description,
