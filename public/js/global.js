@@ -2,7 +2,7 @@
 var db=firebase.firestore();
 
 var urlSrch='';
-var url='';
+var url=new URL(window.location.href);
 var actSsn=false;
 var mod=false,author="";
 
