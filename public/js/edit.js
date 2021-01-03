@@ -264,10 +264,35 @@ function fillMed() {
             }
         };
         btns0.appendChild(medBtnDel);
+        let tooltip = document.createElement('div');
+        classes(tooltip, "tooltip ml-auto");
+        let medBtnCopy = document.createElement('button');
+        classes(medBtnCopy, "btn btn-light btn-scckie btn-sm");
+        let tltipTxt=document.createElement('span');
+        classes(tltipTxt,"tooltipText");
+        tltipTxt.innerText="Copiar";
+        medBtnCopy.appendChild(tltipTxt);
+        medBtnCopy.innerHTML += '<i class="fas fa-link"></i>';
+        medBtnCopy.onclick = function () {
+            let copyText = document.getElementById("toCopy");
+            copyText.classList.remove('d-none');
+            copyText.value = itm.medUrl;
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            classes(copyText, "d-none");
+
+            tltipTxt.innerHTML = "Copiado: " + copyText.value;
+        };
+        medBtnCopy.onmouseout = function () {
+            tltipTxt.innerHTML = "Copiar";
+        }
+        tooltip.appendChild(medBtnCopy);
+        btns0.appendChild(tooltip);
         let medBtnUnstar = document.createElement('button');
         let medBtnStar = document.createElement('button');
         if (itm.medUrl == docDat.picUrl) {
-            classes(medBtnUnstar, "btn btn-light btn-scckie btn-sm ml-auto");
+            classes(medBtnUnstar, "btn btn-light btn-scckie btn-sm ml-1");
             medBtnUnstar.innerHTML = '<i class="fas fa-star"></i>';
             medBtnUnstar.onclick = function () {
                 docDat.picUrl = "";
@@ -275,7 +300,7 @@ function fillMed() {
             };
             btns0.appendChild(medBtnUnstar);
         } else {
-            classes(medBtnStar, "btn btn-light btn-scckie btn-sm ml-auto");
+            classes(medBtnStar, "btn btn-light btn-scckie btn-sm ml-1");
             medBtnStar.innerHTML = '<i class="far fa-star"></i>';
             medBtnStar.onclick = function () {
                 docDat.picUrl = itm.medUrl;
@@ -600,18 +625,11 @@ function render() {
                     in1.value = in1.value.trim();
                     docDat.cont[idx].ref[refIdx].link = in0.value;
                     docDat.cont[idx].ref[refIdx].type = in1.value;
-                    docDat.cont[idx].ref.sort((a, b) => {
-                        let linkA = a.link.toUpperCase();
-                        let linkB = b.link.toUpperCase();
-                        if (linkA < linkB) return -1;
-                        if (linkA > linkB) return 1;
-                        return 0;
-                    });
-                    if (in1.value == 'web') {
-                        makeRefWeb(in0.value);
+                    if (ref.type == 'web') {
+                        makeRefWeb(ref.link);
                         in0.setAttribute('placeholder', 'https://google.com');
-                    } else if (in1.value == 'cite') {
-                        makeRefCite(in0.value);
+                    } else if (ref.type == 'cite') {
+                        makeRefCite(ref.link);
                         in0.setAttribute('placeholder', 'Referencia');
                     }
                 }
@@ -628,7 +646,7 @@ function render() {
                 in0.value = ref.link;
                 if (ref.type == 'web') in0.setAttribute('placeholder', 'https://google.com');
                 if (ref.type == 'cite') in0.setAttribute('placeholder', 'Referencia');
-                in0.oninput = function () { changeRef(); }
+                in0.onchange = function () { changeRef(); }
                 classes(in1, "form-control form-control-sm");
                 let inOpt0 = document.createElement('option');
                 inOpt0.value = "web";
@@ -640,7 +658,7 @@ function render() {
                 inOpt1.value = "cite";
                 inOpt1.innerText = 'Otro';
                 in1.appendChild(inOpt1);
-                in1.oninput = function () { changeRef(); }
+                in1.onchange = function () { changeRef(); }
                 fc0.appendChild(in0);
                 fc1.appendChild(in1);
                 fr0.appendChild(fc0);
@@ -668,6 +686,13 @@ function render() {
                 rBtnCheck.innerHTML = '<i class="fas fa-check"></i>';
                 rBtnCheck.onclick = function () {
                     toggleRef();
+                    docDat.cont[idx].ref.sort((a, b) => {
+                        let linkA = a.link.toUpperCase();
+                        let linkB = b.link.toUpperCase();
+                        if (linkA < linkB) return -1;
+                        if (linkA > linkB) return 1;
+                        return 0;
+                    });
                     normSave();
                 };
                 cBtn.appendChild(rBtnEdit);
@@ -1003,7 +1028,7 @@ document.getElementById('inFile').oninput = function () {
 }
 
 document.getElementById('inJava').onchange = function () {
-    docDat.js = document.getElementById('javaIns').innerHTML = document.getElementById('inJava').value;
+    docDat.java = document.getElementById('javaIns').innerHTML = document.getElementById('inJava').value;
 }
 document.getElementById('btnEditJs').onclick = function () {
     toggleEl(document.getElementById('btnEditJs'));
@@ -1153,7 +1178,7 @@ function fillKW() {
         itm.substring(1).split(' ').forEach(c => {
             keywords.push(ultraClean(c));
         });
-        n+=(3/docDat.authors.length);
+        n += (3 / docDat.authors.length);
         prog();
     });
 
@@ -1167,7 +1192,7 @@ function fillKW() {
 
     docDat.description.split(' ').forEach(itm => {
         toKW.push(itm.replaceAll(/\<.?.*\>/gi, " ").trim());
-        n+=(3/docDat.description.split(' ').length);
+        n += (3 / docDat.description.split(' ').length);
         prog();
     });
 
@@ -1180,7 +1205,7 @@ function fillKW() {
             }
             sect.text.split(' ').forEach(itm => {
                 toKW.push(itm.replaceAll(/\<.?.*\>/gi, " ").trim());
-                n+=(14/docDat.cont.length/sect.text.split(' ').length);
+                n += (14 / docDat.cont.length / sect.text.split(' ').length);
                 prog();
             });
         } else if (sect.type == 'medSimple') {
@@ -1194,7 +1219,7 @@ function fillKW() {
                     toKW.push(itm.replaceAll(/\<.?.*\>/gi, " ").trim());
                 });
             }
-            n+=(14/docDat.cont.length);
+            n += (14 / docDat.cont.length);
             prog();
         }
         //@#
@@ -1206,11 +1231,12 @@ function fillKW() {
         let wrd = toKW[i];
         let r = wrd.indexOf(' ');
         if (r != -1) {
-            wrd.split.forEach(itm => {
+            wrd.split(' ').forEach(itm => {
                 rToKW.push(itm);
             });
             toKW.splice(i, 1);
             i--;
+            l--;
         }
     };
 
@@ -1223,20 +1249,23 @@ function fillKW() {
     l = toKW.length;
     for (let i = 0; i < l; i++) {
         toKW.splice(i, 1, ultraClean(toKW[i]));
-        n+=(3/toKW.length);
+        n += (3 / toKW.length);
         prog();
     };
 
     let kWObj = {}, sum = 0, wCount = 0;
+    let banWrds=[];//@#
     toKW.forEach(itm => {
-        let num = kWObj[itm];
-        if (!num) {
-            kWObj[itm] = 1;
-            wCount++;
+        if(!banWrds.includes(itm)){
+            let num = kWObj[itm];
+            if (!num) {
+                kWObj[itm] = 1;
+                wCount++;
+            }
+            else kWObj[itm]++;
+            sum++;
         }
-        else kWObj[itm]++;
-        sum++;
-        n+=(3/toKW.length);
+        n += (3 / toKW.length);
         prog();
     });
 
@@ -1244,7 +1273,7 @@ function fillKW() {
         if (value > sum / wCount) {
             keywords.push(key);
         }
-        n+=(3/Object.entries(kWObj).length);
+        n += (3 / Object.entries(kWObj).length);
         prog();
     }
 
@@ -1266,8 +1295,8 @@ document.getElementById('btnCnfPublish').onclick = function () {
         setprog(document.getElementById('barPublish'), '47');
         db.collection('galletas').doc(docId).update({
             dledit: false,
-            ledit:docDat.created,
-            public:true,
+            ledit: docDat.created,
+            public: true,
             notify: false,
             title: docDat.title,
             descrip: docDat.description,
