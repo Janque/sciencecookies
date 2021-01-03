@@ -157,7 +157,7 @@ window.addEventListener("load",function(){
 });
 
 function shwRecom(){
-    db.collection('galletas').orderBy('date','desc').limit(1).get().then(snap=>{
+    db.collection('galletas').where('public','==',true).orderBy('date','desc').limit(1).get().then(snap=>{
         let docs=snap.docs;
         docs.forEach(function(doc){
             document.getElementById('crd0').href=doc.data().url;
@@ -169,8 +169,8 @@ function shwRecom(){
             d=doc.data().date.toDate();
             document.getElementById('rmed0t').innerHTML='                                    <h6 class="card-title"><strong>'+doc.data().title+'</strong></h6>                <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
         })
-    });
-    db.collection('galletas').orderBy('pop','desc').limit(3).get().then(snap=>{
+    }).catch(err=>console.log(err));
+    db.collection('galletas').where('public','==',true).orderBy('pop','desc').limit(3).get().then(snap=>{
         let docs=snap.docs;
         let idx=1;
         docs.forEach(function(doc){
@@ -184,7 +184,7 @@ function shwRecom(){
             document.getElementById('rmed'+idx+'t').innerHTML='                              <h6 class="card-title"><strong>'+doc.data().title+'</strong></h6>                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
             idx++;
         })
-    });
+    }).catch(err=>console.log(err));
 }
 
 var defDiacs = [
