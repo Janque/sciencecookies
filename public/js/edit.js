@@ -1119,6 +1119,30 @@ document.getElementById('btnAprove').onclick = function () {
     normSave();
 };
 
+$('#mdlAddMed').on('hide.bs.modal', e => {
+    document.getElementById('frmAddMed').innerHTML=`<div class="row mb-3">
+        <div class="form-check form-check-inline ml-3">
+            <input class="form-check-input" type="radio" name="radsMedSrc" id="inMedSrc0" value="home" required>
+            <label class="form-check-label" for="inMedSrc0">Propio</label>
+        </div>
+        <div class="form-check form-check-inline ml-3">
+            <input class="form-check-input" type="radio" name="radsMedSrc" id="inMedSrc1" value="out">
+            <label class="form-check-label" for="inMedSrc1">Externo</label>
+        </div>
+    </div>
+    <div class="custom-file mb-5 d-none" id="inNewMedFileCont">
+        <input type="file" class="custom-file-input" id="inNewMed">
+        <label class="custom-file-label" for="inNewMed" data-browse="Elegir" id="inNewMedL">Subir archivo</label>
+    </div>
+    <div class="row mb-2 d-none" id="inNewMedUrlCont">
+        <div class="col">
+            <label for="inNewMedUrl">URL del archivo</label>
+            <input id="inNewMedUrl" class="form-control" type="text" placeholder="https://imagen.com">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block" id="btnCnfNewMed">Añadir</button>`;
+});
+
 $('#mdlPublish').on('show.bs.modal', e => {
     let rev = docDat.revised.length;
     if (!docDat.revised.includes(uid)) rev++;
