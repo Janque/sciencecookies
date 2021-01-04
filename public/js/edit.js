@@ -273,7 +273,7 @@ function fillMed() {
         tltipTxt.innerHTML = "Copiar";
         medBtnCopy.appendChild(tltipTxt);
         medBtnCopy.innerHTML += '<i class="fas fa-link"></i>';
-        medBtnCopy.onclick=function(){
+        medBtnCopy.onclick = function () {
             /*var copyText = document.getElementById("toCopy");
             //copyText.classList.remove('d-none');
             copyText.select();
@@ -1022,12 +1022,12 @@ function render() {
         sect.appendChild(subf);
         document.getElementById('cont').appendChild(sect);
     });
-    document.getElementById('inJava').innerText=docDat.java;
-    document.getElementById('javaIns').innerHTML=docDat.java;
+    document.getElementById('inJava').innerText = docDat.java;
+    document.getElementById('javaIns').innerHTML = docDat.java;
 }
 
 document.getElementById('inFile').oninput = function () {
-    document.getElementById('inFile').value = ultraClean(document.getElementById('inFile').value);
+    document.getElementById('inFile').value = ultraClean(document.getElementById('inFile').value, '-');
 }
 
 document.getElementById('inJava').onchange = function () {
@@ -1068,7 +1068,7 @@ document.getElementById('inNewMed').addEventListener('change', e => {
             document.getElementById("prevNewMed").src = e2.target.result;
         };
     };
-    newMedia.name = ultraClean(newMedia.name);
+    newMedia.name = ultraClean(newMedia.name, '');
     document.getElementById('inNewMedL').innerHTML = newMedia.name;
     prevMed(newMedia);
 });
@@ -1123,8 +1123,8 @@ document.getElementById('btnAprove').onclick = function () {
 };
 
 $('#mdlAddMed').on('hiden.bs.modal', e => {
-    document.getElementById('inMedSrc0').setAttribute('checked','false');
-    document.getElementById('inMedSrc1').setAttribute('checked','false');
+    document.getElementById('inMedSrc0').setAttribute('checked', 'false');
+    document.getElementById('inMedSrc1').setAttribute('checked', 'false');
     document.getElementById('inNewMed').removeAttribute('required');
     document.getElementById('inNewMedUrl').removeAttribute('required');
     hideEl(document.getElementById("inNewMedFileCont"));
@@ -1188,7 +1188,7 @@ function fillKW() {
     prog();
     docDat.authors.forEach(itm => {
         itm.substring(1).split(' ').forEach(c => {
-            keywords.push(ultraClean(c));
+            keywords.push(ultraClean(c, ''));
         });
         n += (3 / docDat.authors.length);
         prog();
@@ -1260,13 +1260,13 @@ function fillKW() {
 
     l = toKW.length;
     for (let i = 0; i < l; i++) {
-        toKW.splice(i, 1, ultraClean(toKW[i]));
+        toKW.splice(i, 1, ultraClean(toKW[i], ''));
         n += (3 / toKW.length);
         prog();
     };
 
     let kWObj = {}, sum = 0, wCount = 0;
-    let banWrds = [];//@#
+    let banWrds = ["1", "2", "3", "4", "6", "7", "8", "9", "0", "tan", "ser", "los", "como", "serian", "pero", "podemos", "su", "o", "la", "del", "es", "si", "en", "otro", "de", "que", "tendrian", "con", "no", "se", "una", "y", "mas", "el", "a", "embargo", "las", "sin", "un", "para", "por", "les", ""];//@#
     toKW.forEach(itm => {
         if (!banWrds.includes(itm)) {
             let num = kWObj[itm];

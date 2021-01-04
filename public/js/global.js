@@ -288,6 +288,11 @@ function rmDiacs(s) {
     });
 }
 
-function ultraClean(str){
-    return rmDiacs(str.replaceAll('\#','\-').replaceAll('\[','\-').replaceAll('\]','\-').replaceAll('\*','\-').replaceAll('\?','\-').trim().replaceAll(' ','\-'));
+function ultraClean(str,rep){
+    str=rmDiacs(str.trim());
+    let banChars=",.^*!¡'?¿#@[]-:;ªº$%&()=/+{} ";
+    banChars.split('').forEach(c=>{
+        str=str.replaceAll(c,rep);
+    });
+    return str;
 }
