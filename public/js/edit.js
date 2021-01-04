@@ -1121,8 +1121,8 @@ document.getElementById('btnAprove').onclick = function () {
 };
 
 $('#mdlAddMed').on('hiden.bs.modal', e => {
-    document.getElementById('inMedSrc0').checked=false;
-    document.getElementById('inMedSrc1').checked=false;
+    document.getElementById('inMedSrc0').setAttribute('checked','false');
+    document.getElementById('inMedSrc1').setAttribute('checked','false');
     document.getElementById('inNewMed').removeAttribute('required');
     document.getElementById('inNewMedUrl').removeAttribute('required');
     hideEl(document.getElementById("inNewMedFileCont"));
