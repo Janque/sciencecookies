@@ -265,24 +265,24 @@ function fillMed() {
         };
         btns0.appendChild(medBtnDel);
         let tooltip = document.createElement('div');
-        classes(tooltip, "tooltip ml-auto");
+        classes(tooltip, "tooltipn ml-auto");
         let medBtnCopy = document.createElement('button');
         classes(medBtnCopy, "btn btn-light btn-scckie btn-sm");
-        let tltipTxt=document.createElement('span');
-        classes(tltipTxt,"tooltipText");
-        tltipTxt.innerText="Copiar";
+        let tltipTxt = document.createElement('span');
+        classes(tltipTxt, "tooltipTextn");
+        tltipTxt.innerHTML = "Copiar";
         medBtnCopy.appendChild(tltipTxt);
         medBtnCopy.innerHTML += '<i class="fas fa-link"></i>';
-        medBtnCopy.onclick = function () {
-            let copyText = document.getElementById("toCopy");
-            copyText.classList.remove('d-none');
-            copyText.value = itm.medUrl;
+        medBtnCopy.onclick=function(){
+            /*var copyText = document.getElementById("toCopy");
+            //copyText.classList.remove('d-none');
             copyText.select();
             copyText.setSelectionRange(0, 99999);
             document.execCommand("copy");
-            classes(copyText, "d-none");
+            //classes(copyText, "d-none");*/
+            window.open(itm.medUrl).focus();
 
-            tltipTxt.innerHTML = "Copiado: " + copyText.value;
+            tltipTxt.innerHTML = "URL copiado";
         };
         medBtnCopy.onmouseout = function () {
             tltipTxt.innerHTML = "Copiar";
@@ -1254,9 +1254,9 @@ function fillKW() {
     };
 
     let kWObj = {}, sum = 0, wCount = 0;
-    let banWrds=[];//@#
+    let banWrds = [];//@#
     toKW.forEach(itm => {
-        if(!banWrds.includes(itm)){
+        if (!banWrds.includes(itm)) {
             let num = kWObj[itm];
             if (!num) {
                 kWObj[itm] = 1;
