@@ -26,12 +26,12 @@ function loaded() {
             render();
             fillMed();
             if (docDat.public) {
-                //@#document.getElementById('btnPrevCook').classList.remove('d-none');
+                document.getElementById('btnPrevCook').classList.remove('d-none');
                 document.getElementById('btnPrivate').classList.remove('d-none');
                 document.getElementById('btnAprove').classList.add('d-none');
                 document.getElementById('btnPub').classList.add('d-none');
             } else {
-                //@#document.getElementById('btnPrevCook').classList.add('d-none');
+                document.getElementById('btnPrevCook').classList.add('d-none');
                 document.getElementById('btnPrivate').classList.add('d-none');
                 document.getElementById('btnAprove').classList.remove('d-none');
                 document.getElementById('btnPub').classList.remove('d-none');
