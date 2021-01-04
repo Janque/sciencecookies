@@ -337,8 +337,6 @@ function fillMed() {
 }
 
 function render() {
-    document.getElementById('inJava').innerText=docDat.java;
-    document.getElementById('javaIns').innerHTML=docDat.java;
     document.getElementById('cont').innerHTML = "";
     let publishDate;
     if (docDat.beenPublic) {
@@ -1024,6 +1022,8 @@ function render() {
         sect.appendChild(subf);
         document.getElementById('cont').appendChild(sect);
     });
+    document.getElementById('inJava').innerText=docDat.java;
+    document.getElementById('javaIns').innerHTML=docDat.java;
 }
 
 document.getElementById('inFile').oninput = function () {
