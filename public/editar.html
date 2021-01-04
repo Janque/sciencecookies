@@ -52,12 +52,12 @@
   <link rel="stylesheet" href="css/main.css">
 
   <style>
-    .tooltip {
+    .tooltipn {
       position: relative;
       display: inline-block;
     }
-    
-    .tooltip .tooltiptext {
+
+    .tooltipn .tooltipTextn {
       visibility: hidden;
       width: 140px;
       background-color: #555;
@@ -67,25 +67,25 @@
       padding: 5px;
       position: absolute;
       z-index: 1;
-      bottom: 150%;
+      top: 150%;
       left: 50%;
       margin-left: -75px;
       opacity: 0;
       transition: opacity 0.3s;
     }
-    
-    .tooltip .tooltiptext::after {
+
+    .tooltipn .tooltipTextn::after {
       content: "";
       position: absolute;
-      top: 100%;
+      bottom: 100%;
       left: 50%;
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: #555 transparent transparent transparent;
+      border-color: transparent transparent  #555 transparent;
     }
-    
-    .tooltip:hover .tooltiptext {
+
+    .tooltipn:hover .tooltipTextn {
       visibility: visible;
       opacity: 1;
     }
@@ -500,7 +500,7 @@
       </div>
     </div>
   </div>
-  <input type="text" id="toCopy" class="d-none">
+  <input type="text" id="toCopy" class="d-none" value="something">
 
   <!--Bootstrap-->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
