@@ -370,6 +370,7 @@ function render() {
                     toDel = -1;
                     if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
                     docDat.cont.splice(idx, 1);
+                    render();//Important
                     normSave();
                 } else {
                     document.getElementById("alrtClsSsn").innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
