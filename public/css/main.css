@@ -17,7 +17,11 @@
 }
 body{
   font-family: 'Raleway', sans-serif;
-  font-weight: bolder;
+  font-weight: 600;
+}
+strong{
+  font-weight: 900;
+  color: #f8f9fa;
 }
 .btn-scckie{
   color: #f8f9fa;
@@ -31,21 +35,27 @@ body{
 }
 h1{
   font-size: 2.5rem;
+  font-weight:700;
 }
 h2{
   font-size: 1.5rem;
+  font-weight:700;
 }
 h3{
   font-size: 1.3rem;
+  font-weight:700;
 }
 h4{
   font-size: 1.2rem;
+  font-weight:700;
 }
 h5{
   font-size: 1.15rem;
+  font-weight:700;
 }
 h6{
   font-size: 1.1rem;
+  font-weight:700;
 }
 .tbar {
   position: fixed;
