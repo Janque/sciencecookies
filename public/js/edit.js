@@ -75,7 +75,7 @@ function loaded() {
             if (err.code == 'storage/object-not-found') {
                 ref.put(newMedia).on('state_changed',
                     function progress(snap) {
-                        setprog(document.getElementById('barNewMed'), (snap.bytesTransferred / snap.totalBytes) * 100);
+                        setprog(document.getElementById('barNewMed'), Math.floor((snap.bytesTransferred / snap.totalBytes) * 100));
                     },
                     function error(err) {
                         document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert"><strong>¡Ocurrió un error!</strong> ' + err.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
