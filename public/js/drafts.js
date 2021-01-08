@@ -298,7 +298,7 @@ function shwSrch() {
                     month += (d.getMonth() + 1);
                     window.open('../galletas/' + month + '/' + doc.data().file, '_blank').focus();
                 };
-                drpitm2.innerHTML = 'Volver privado <i class="fas fa-eye"></i>';
+                drpitm2.innerHTML = 'Ver artículo <i class="fas fa-eye"></i>';
                 drpmenu.appendChild(drpitm2);
                 drpitm3.classList.add('dropdown-item');
                 drpitm3.onclick = function () {
