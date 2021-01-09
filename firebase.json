@@ -14,6 +14,16 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/galletas/**/**",
+        "function": "dynCookies-showCookie"
+      },
+      {
+        "source": "/vista-email/**",
+        "function": "dynCookies-showCookie"
+      }
     ]
   },
   "storage": {

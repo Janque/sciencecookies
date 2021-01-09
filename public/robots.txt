@@ -4,5 +4,8 @@ disallow: /img/fondo1.jpg
 disallow: /publicidad
 disallow: /publicar.html
 disallow: /ver-perfil.html
+disallow: /editar.html
+disallow: /drafts.html
+disallow: /vista-previa.html
 
 Sitemap: http://sciencecookies.net/sitemap.xml
