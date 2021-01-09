@@ -289,7 +289,7 @@ function rmDiacs(s) {
 }
 
 function ultraClean(str,rep){
-    str=rmDiacs(str.trim());
+    str=rmDiacs(str.trim().toLowerCase());
     let banChars=",.^*!¡'?¿#@[]-:;ªº$%&()=/+{} ";
     banChars.split('').forEach(c=>{
         str=str.replaceAll(c,rep);
