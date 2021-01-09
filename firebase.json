@@ -17,11 +17,11 @@
     ],
     "rewrites": [
       {
-        "source": "/galletas/*/*",
+        "source": "/galletas/**/**",
         "function": "dynCookies-showCookie"
       },
       {
-        "source": "/vista-email/*",
+        "source": "/vista-email/**",
         "function": "dynCookies-showCookie"
       }
     ]
