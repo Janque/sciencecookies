@@ -1317,6 +1317,13 @@ document.getElementById('btnCnfPublish').onclick = function () {
             authrs: docDat.authors,
             cats: keywords
         }).then(() => {
+            setprog(document.getElementById('barPublish'), '68');
+            return db.collection('galletasCont').doc(docId).update({
+                beenPublic: true,
+                public: true,
+                revised: []
+            });
+        }).then(() => {
             setprog(document.getElementById('barPublish'), '76');
             finishPub();
         }).catch(err => { console.log(err) });
