@@ -1266,7 +1266,7 @@ function fillKW() {
     };
 
     let kWObj = {}, sum = 0, wCount = 0;
-    let banWrds = ["1", "2", "3", "4", "6", "7", "8", "9", "0", "tan", "ser", "los", "como", "serian", "pero", "podemos", "su", "o", "la", "del", "es", "si", "en", "otro", "de", "que", "tendrian", "con", "no", "se", "una", "y", "mas", "el", "a", "embargo", "las", "sin", "un", "para", "por", "les", ""];//@#
+    let banWrds = ["1", "2", "3", "4", "6", "7", "8", "9", "0", "tan", "ser", "los", "serian", "pero", "podemos", "su", "o", "y", "e", "la", "del", "es", "si", "en", "otro", "de", "tendrian", "no", "se", "una", "mas", "el", "a", "embargo", "las", "sin", "con", "un", "para", "por", "les", "", "vez", "gran", "este", "esta", "estos", "estas", "nos", "al", "dio", "has", "preguntado", "el", "lo", "tu", "tus", "hacen", "otros", "para", "ellos", "ellas", "ese", "esa", "esos", "esas", "detras", "delante", "nos", "le", "muy", "casi", "son", "pues", "a", "ha", "han"];//@#
     toKW.forEach(itm => {
         if (!banWrds.includes(itm)) {
             let num = kWObj[itm];
