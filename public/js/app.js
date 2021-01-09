@@ -120,7 +120,7 @@ function shwSrch(){
             }
             let a=document.createElement('a');
             classes(a,"text-decoration-none text-light");
-            a.href=doc.data.url;
+            a.href=doc.data().url;
             let med=document.createElement('div');
             classes(med,"media mb-3");
             let img=document.createElement('img');
