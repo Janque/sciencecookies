@@ -47,13 +47,11 @@ app.get('/galletas/:month/:file', (req, res) => {
                         case 'ref':
                             sect = '<h3>Referencias</h3>\n';
                             item.ref.forEach(link => {
-                                item.ref.forEach(link => {
-                                    if(link.type=="web"){
-                                        sect += '<p><a href="' + link.link + '" target="_blank" class="text-warning text-break" rel="nofollow">' + link.link + ' <i class="fas fa-external-link-alt"></i></a></p>\n';
-                                    }else{
-                                        sect+='<p>'+ link.link +'</p>\n';
-                                    }
-                                });
+                                if(link.type=="web"){
+                                    sect += '<p><a href="' + link.link + '" target="_blank" class="text-warning text-break" rel="nofollow">' + link.link + ' <i class="fas fa-external-link-alt"></i></a></p>\n';
+                                }else{
+                                    sect+='<p>'+ link.link +'</p>\n';
+                                }
                             });
                             break;
                         case 'parra':
