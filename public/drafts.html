@@ -3,16 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="¿Tienes alguna sugerencia o duda? ¿Quieres reportar un fallo? Aquí puedes hacerlo."/>
-    <link rel="canonical" href="https://sciencecookies.net/contacto"/>
+    <meta name="description" content="Revisa y administra tus borradores"/>
+    <link rel="canonical" href="https://sciencecookies.net/drafts"/>
     <link rel="shortcut icon" href="img/logoT.svg">
-    <title>Science Cookies - Contacto</title>
+    <title>Science Cookies - Borradores</title>
 
     <!--Firebase app-->
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
     <!--Firebase features-->
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-functions.js"></script>
 
@@ -61,7 +62,7 @@
         <ul class="navbar-nav mr-auto py-0">
           <a class="btn btn-dark mx-2 my-1" href="https://sciencecookies.net">Inicio</a>
           <a class="btn btn-dark mx-2 my-1" href="quienes-somos">¿Quienes somos?</a>
-          <a class="btn btn-dark mx-2 my-1 active">Contacto</a>
+          <a class="btn btn-dark mx-2 my-1" href="contacto">Contacto</a>
           <a class="btn btn-dark mx-2 my-1" href="archivo">Archivo</a>
         </ul>
         <div class="row justify-content-end">
@@ -73,6 +74,7 @@
               <a id="btnDraft" class="btn btn-link text-decoration-none text-light d-none" href="drafts">Borradores</a>
               <div class="dropdown-divider ml-1 mr-2"></div>
               <button id="btnLgO" class="btn btn-link text-decoration-none text-light d-none">Cerrar sesión</button>
+              <button id="btnLgI" class="btn btn-link text-decoration-none text-light d-none" data-toggle="modal" data-target="#mdlRgstr">Acceder</button>
             </div>
           </div>
         </div>
@@ -84,13 +86,51 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="mdlRgsL">Debes iniciar sesión o regístrarte para continuar</h5>
+            <h5 class="modal-title" id="mdlRgsL">Inicia sesión o regístrate</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
           <div class="modal-body">
             <div id="firebaseui-auth-container"></div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="window.location.href='https://sciencecookies.net'">Cancelar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Plus modal-->
+    <div class="modal fade" id="mdlPlus" tabindex="-1" aria-labelledby="mdlPlusL" aria-hidden="true">
+      <div id="alrtPlusContainer"></div>
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mdlPlusL">Crear una nueva galleta</h5>
+            <button id="btnCanPlus1" type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="frmPlus">
+              <div class="form-group">
+                <label for="inTitle">Título de la galleta</label>
+                <input class="form-control" type="text" placeholder="Nueva galleta" id="inTitle" required>
+              </div>
+              <div class="form-group">
+                <label for="inFile">Nombre del archivo</label>
+                <input class="form-control" type="text" placeholder="nueva-galleta" id="inFile" required>
+              </div>
+              <div class="dropdown-divider"></div>
+              <button id="btnPlusConf" type="submit" class="btn btn-primary btn-block">Crear</button>
+              <div class="progress d-none" id="barCont">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="bar"></div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button id="btnCanPlus0" type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Cancelar</button>
           </div>
         </div>
       </div>
@@ -102,6 +142,14 @@
     </div>
     
     <!--Página-->
+    
+    <!--Side toolbar-->
+    <div class="tbar tbar-right btn-toolbar mb-3" role="toolbar">
+      <div class="btn-group-vertical mr-2 btn-group-lg" role="group">
+        <button type="button" class="btn btn-scckie" id="btnPlus"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+
     <div class="container-fluid text-white" style="background-color: black;background-image: url('img/fondo1.jpg');background-position: center top;background-attachment: fixed;">
       <div class="row justify-content-around">
         <div class="col-md-3 col-xl-2 sidebar my-0 ml-lg-3 mr-0 ml-md-2 py-md-1 pl-md-3 text-dark" style="background-color: #FFF8E7;">
@@ -150,47 +198,60 @@
         </div>
         <div class="col-12 col-sm-9 col-md-6 col-xl-7 py-md-3 pl-md-3">
           <p class="text-center"><img class="mt-3 mb-4 w-75" src="img/NLogoHalignT.svg" alt="Science Cookies: artículos de ciencia con chispas de chocolate"></p>
-          <div class="container-fluid justify-content-center">
-            <h3 class="text-center">Envíanos un mensaje</h3><br>
-            <p>Si tienes alguna sugerencia, comentario o quieres reportar un fallo, puedes hacerlo aquí.</p><br>
-            <form id="frmCont">
-              <div class="form-group row">
-                <label for="inEmail" class="col-sm-2 col-form-label">Email</label>
-                <div class="col-sm-10">
-                  <input type="text" readonly class="form-control-plaintext text-light" id="inEmail" value="">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="inSubj" class="col-sm-2 col-form-label">Asunto</label>
-                <div class="col-sm-10">
-                  <select id="inSubj" class="form-control" required>
-                    <option value="">Escoge...</option>
-                    <option value="Sugerir una galleta" id="inOsuger">Sugerir una galleta</option>
-                    <option value="Reportar un fallo" id="inOfallo">Reportar un fallo</option>
-                    <option value="Sobre los Términos de Servicio" id="inOtos">Sobre los Términos de Servicio</option>
-                    <option value="Sobre la Política de Privacidad" id="inOpriv">Sobre la Política de Privacidad</option>
-                    <option value="Otro" id="inOotro">Otro</option>
+          <div class="container-fluid mb-2 rounded-lg p-3" style="background-color:rebeccapurple;">
+            <!--Aquí va el contenido-->
+            <form class="mb-4" id="frmSrch">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar galletas..." aria-describedby="frmBtns" maxlength="100" id="srcBox">
+                <div class="input-group-append" id="frmBtns">
+                  <select class="custom-select rounded-0" id="inOrd">
+                    <option value="created" id="inSrchOrd0">Creación</option>
+                    <option value="published" id="inSrchOrd1">Publicación</option>
+                    <option value="ledit" id="inSrchOrd2">Edición</option>
+                    <option value="pop" id="inSrchOrd3">Popularidad</option>
                   </select>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="inText" class="col-sm-2 col-form-label">Mensaje</label>
-                <div class="col-sm-10">
-                  <textarea type="text" class="form-control" id="inText" required></textarea>
-                </div>
-              </div>
-              <div class="form-group d-flex">
-                <div class="flex-grow-1">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="inAcpt" required>
-                    <label class="form-check-label" for="inAcpt">Estoy de acuerdo con los <a href="docs/tos" class="text-warning">Términos de servicio</a> y la <a href="docs/privacidad" class="text-warning">Política de privacidad</a></label>
-                  </div>
-                </div>
-                <div class="">
-                  <button class="btn btn-outline-success px-4 px-sm-5 px-md-3 px-lg-5" type="submit">Enviar</button>
+                  <select class="custom-select rounded-0" id="inDir">
+                    <option value="desc" id="inSrchDir0">Decendente</option>
+                    <option value="asc" id="inSrchDir1">Acendente</option>
+                  </select>
+                  <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
                 </div>
               </div>
             </form>
+            <nav aria-label="pageNavT" class="d-none" id="pgNavT">
+              <ul class="pagination justify-content-end">
+                <li class="page-item">
+                  <button class="page-link text-light bg-transparent" aria-label="pgTPrv" id="pgTPrv">
+                    <span aria-hidden="true">&laquo;</span>
+                  </button>
+                </li>
+                <li class="page-item"><span class="page-link text-light bg-transparent" id="disPgT">1</span></li>
+                <li class="page-item">
+                  <button class="page-link text-light bg-transparent" aria-label="pgTNxt" id="pgTNxt">
+                    <span aria-hidden="true">&raquo;</span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-1 row-cols-lg-2 row-cols-xl-3" id="crdContainer">
+              <!--Cards-->
+            </div>
+            <nav aria-label="pageNavB" class="d-none" id="pgNavB">
+              <ul class="pagination justify-content-end">
+                <li class="page-item">
+                  <button class="page-link text-light bg-transparent" aria-label="pgBPrv" id="pgBPrv">
+                    <span aria-hidden="true">&laquo;</span>
+                  </button>
+                </li>
+                <li class="page-item"><span class="page-link text-light bg-transparent" id="disPgB">1</span></li>
+                <li class="page-item">
+                  <button class="page-link text-light bg-transparent" aria-label="pgBNxt" id="pgBNxt">
+                    <span aria-hidden="true">&raquo;</span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+            <!--Aquí termina el contenido-->
           </div>
         </div>
         <!--Anuncios V-->
@@ -234,7 +295,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
     <script src="js/global.js"></script>
-    <script src="js/contApp.js"></script>
+    <script src="js/drafts.js"></script>
 
     <!--AddThis-->
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f13599e10bd5c2b"></script>
