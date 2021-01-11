@@ -82,7 +82,7 @@
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: transparent transparent  #555 transparent;
+      border-color: transparent transparent #555 transparent;
     }
 
     .tooltipn:hover .tooltipTextn {
@@ -117,7 +117,8 @@
               class="d-inline-block align-center ml-2 rounded-circle" alt="" id="picUsr"></button>
           <div class="dropdown-menu dropdown-menu-right bg-dark pl-1" aria-labelledby="usrDrpdwn">
             <a id="btnPrfl" class="btn btn-link text-decoration-none text-light d-none" href="perfil">Mi perfíl</a>
-            <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none" href="perfil?tab=pref">Preferencias</a>
+            <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none"
+              href="perfil?tab=pref">Preferencias</a>
             <a id="btnDraft" class="btn btn-link text-decoration-none text-light d-none" href="drafts">Borradores</a>
             <div class="dropdown-divider ml-1 mr-2"></div>
             <button id="btnLgO" class="btn btn-link text-decoration-none text-light d-none">Cerrar sesión</button>
@@ -167,7 +168,8 @@
             <button class="btn btn-scckie m-2" onclick="plusSect('html');" data-dismiss="modal">HTML</button>
             <button class="btn btn-scckie m-2" onclick="plusSect('youtube');" data-dismiss="modal">Youtube</button>
             <button class="btn btn-scckie m-2" onclick="plusSect('medSimple');" data-dismiss="modal">Multimedia</button>
-          </div><!--Add more@#-->
+          </div>
+          <!--Add more@#-->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Cancelar</button>
@@ -190,9 +192,11 @@
           <div class="row row-cols-1 row-cols-md-3" id="contMedMan">
             <div class="col mb-4">
               <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
-                  <a type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" onclick="addFrom=0;">
-                    <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
-                  </a>
+                <a type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close"
+                  class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center"
+                  onclick="addFrom=0;">
+                  <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
+                </a>
               </div>
             </div>
           </div>
@@ -218,9 +222,11 @@
           <div class="row row-cols-1 row-cols-md-3" id="contMedCho">
             <div class="col mb-4">
               <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
-                  <a type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" onclick="addFrom=0;">
-                    <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
-                  </a>
+                <a type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close"
+                  class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center"
+                  onclick="addFrom=0;">
+                  <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
+                </a>
               </div>
             </div>
           </div>
@@ -233,45 +239,50 @@
   </div>
 
   <!--Add media modal-->
-  <div class="modal fade" id="mdlAddMed" tabindex="-1" role="dialog" aria-labelledby="mdlAddMedL" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal fade" id="mdlAddMed" tabindex="-1" role="dialog" aria-labelledby="mdlAddMedL" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="mdlAddMedL">Escoge un archivo multimedia para añadir a la galleta</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btnCanNewMed1"><span aria-hidden="true">&times;</span></button>
+        <div class="modal-header">
+          <h5 class="modal-title" id="mdlAddMedL">Escoge un archivo multimedia para añadir a la galleta</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btnCanNewMed1"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3 w-100 py-0 justify-content-center mx-auto"><img id="prevNewMed" class="w-75 m-0" src="">
           </div>
-          <div class="modal-body">
-            <div class="row mb-3 w-100 py-0 justify-content-center mx-auto"><img id="prevNewMed" class="w-75 m-0" src=""></div>
-            <form id="frmAddMed">
-              <div class="row mb-3">
-                <div class="form-check form-check-inline ml-3">
-                  <input class="form-check-input" type="radio" name="radsMedSrc" id="inMedSrc0" value="home" required>
-                  <label class="form-check-label" for="inMedSrc0">Propio</label>
-                </div>
-                <div class="form-check form-check-inline ml-3">
-                  <input class="form-check-input" type="radio" name="radsMedSrc" id="inMedSrc1" value="out">
-                  <label class="form-check-label" for="inMedSrc1">Externo</label>
-                </div>
+          <form id="frmAddMed">
+            <div class="row mb-3">
+              <div class="form-check form-check-inline ml-3">
+                <input class="form-check-input" type="radio" name="radsMedSrc" id="inMedSrc0" value="home" required>
+                <label class="form-check-label" for="inMedSrc0">Propio</label>
               </div>
-              <div class="custom-file mb-5 d-none" id="inNewMedFileCont">
-                <input type="file" class="custom-file-input" id="inNewMed">
-                <label class="custom-file-label" for="inNewMed" data-browse="Elegir" id="inNewMedL">Subir archivo</label>
+              <div class="form-check form-check-inline ml-3">
+                <input class="form-check-input" type="radio" name="radsMedSrc" id="inMedSrc1" value="out">
+                <label class="form-check-label" for="inMedSrc1">Externo</label>
               </div>
-              <div class="row mb-2 d-none" id="inNewMedUrlCont">
-                <div class="col">
-                  <label for="inNewMedUrl">URL del archivo</label>
-                  <input id="inNewMedUrl" class="form-control" type="text" placeholder="https://imagen.com">
-                </div>
-              </div>
-              <button type="submit" class="btn btn-primary btn-block" id="btnCnfNewMed">Añadir</button>
-            </form>
-            <div class="progress mb-2 d-none" id="barNewMedCont">
-              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="barNewMed"></div>
             </div>
+            <div class="custom-file mb-5 d-none" id="inNewMedFileCont">
+              <input type="file" class="custom-file-input" id="inNewMed">
+              <label class="custom-file-label" for="inNewMed" data-browse="Elegir" id="inNewMedL">Subir archivo</label>
+            </div>
+            <div class="row mb-2 d-none" id="inNewMedUrlCont">
+              <div class="col">
+                <label for="inNewMedUrl">URL del archivo</label>
+                <input id="inNewMedUrl" class="form-control" type="text" placeholder="https://imagen.com">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="btnCnfNewMed">Añadir</button>
+          </form>
+          <div class="progress mb-2 d-none" id="barNewMedCont">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0"
+              aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="barNewMed"></div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal" id="btnCanNewMed0">Cancelar</button>
-          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal"
+            id="btnCanNewMed0">Cancelar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -280,52 +291,69 @@
   <div class="modal fade" id="mdlPublish" tabindex="-1" role="dialog" aria-labelledby="mdlPublishL" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="mdlPublishL">Hacer pública la galleta</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btnCanPublish1"><span aria-hidden="true">&times;</span></button>
-          </div>
-          <div class="modal-body">
-            <p id="mdlPublishTxt"></p>
-            <form id="frmPublish" class="d-none">
-              <!--Categorías@#-->
-              <div class="form-row justify-content-around">
-                <div class="form-group col-auto"><div class="form-check">
+        <div class="modal-header">
+          <h5 class="modal-title" id="mdlPublishL">Hacer pública la galleta</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btnCanPublish1"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <p id="mdlPublishTxt"></p>
+          <form id="frmPublish" class="d-none">
+            <!--Categorías@#-->
+            <div class="form-row justify-content-around">
+              <div class="form-group col-auto">
+                <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="cat0" value="astronomia">
                   <label class="form-check-label" for="cat0">Astronomía</label>
-                </div></div>
-                <div class="form-group col-auto"><div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="cat1" value="biologia">
-                  <label class="form-check-label" for="cat1">Biología</label>
-                </div></div>
-                <div class="form-group col-auto"><div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="cat2" value="curiosidades">
-                  <label class="form-check-label" for="cat2">Curiosidades</label>
-                </div></div>
-                <div class="form-group col-auto"><div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="cat3" value="fisica">
-                  <label class="form-check-label" for="cat3">Física</label>
-                </div></div>
-                <div class="form-group col-auto"><div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="cat4" value="tecnologia">
-                  <label class="form-check-label" for="cat4">Tecnología</label>
-                </div></div>
-              </div>
-              <div class="from-row d-none" id="sendUptCont">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="inSendUpt">
-                  <label class="form-check-label" for="inSendUpt">Notificar actualización</label>
                 </div>
               </div>
-            </form>
-            <img src="" alt="" class="@# d-none">
-            <div class="progress my-2 d-none" id="barPublishCont">
-              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="barPublish"></div>
+              <div class="form-group col-auto">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="cat1" value="biologia">
+                  <label class="form-check-label" for="cat1">Biología</label>
+                </div>
+              </div>
+              <div class="form-group col-auto">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="cat2" value="curiosidades">
+                  <label class="form-check-label" for="cat2">Curiosidades</label>
+                </div>
+              </div>
+              <div class="form-group col-auto">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="cat3" value="fisica">
+                  <label class="form-check-label" for="cat3">Física</label>
+                </div>
+              </div>
+              <div class="form-group col-auto">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="cat4" value="tecnologia">
+                  <label class="form-check-label" for="cat4">Tecnología</label>
+                </div>
+              </div>
             </div>
+            <div class="from-row d-none" id="sendUptCont">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="inSendUpt">
+                <label class="form-check-label" for="inSendUpt">Notificar actualización</label>
+              </div>
+              <div class="row my-2 d-none" id="uptDescCont">
+                <div class="col">
+                  <label>Descripción de la actualización</label>
+                  <textarea class="form-control" id="inUptDesc" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
+          <img src="" alt="" class="@# d-none">
+          <div class="progress my-2 d-none" id="barPublishCont">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="barPublish"></div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-scckie btn-block" id="btnCnfPublish">Publicar</button>
-            <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal" id="btnCanPublish0">Cancelar</button>
-          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-scckie btn-block" id="btnCnfPublish">Publicar</button>
+          <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal" id="btnCanPublish0">Cancelar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -340,13 +368,15 @@
   <!--Side toolbar-->
   <div class="tbar tbar-right btn-toolbar mb-3" role="toolbar">
     <div class="btn-group-vertical mr-2 btn-group-lg" role="group">
-      <button class="btn btn-scckie" data-toggle="modal" data-target="#mdlPlusSect" onclick="toAdd=docDat.cont.length-1;"><i class="fas fa-plus"></i></button>
+      <button class="btn btn-scckie" data-toggle="modal" data-target="#mdlPlusSect"
+        onclick="toAdd=docDat.cont.length-1;"><i class="fas fa-plus"></i></button>
       <button class="btn btn-scckie" data-toggle="modal" data-target="#mdlMedMan"><i class="fas fa-image"></i></button>
       <button class="btn btn-scckie d-none" id="btnPrevCook"><i class="fas fa-eye"></i></button>
       <button class="btn btn-scckie" id="btnPrevMail"><i class="fas fa-envelope"></i></button>
       <button class="btn btn-scckie d-none" id="btnPrivate"><i class="fas fa-lock"></i></button>
       <button class="btn btn-scckie d-none" id="btnAprove"><i class="far fa-check-square"></i></button>
-      <button class="btn btn-scckie d-none" id="btnPub" data-toggle="modal" data-target="#mdlPublish"><i class="fas fa-paper-plane"></i></button>
+      <button class="btn btn-scckie d-none" id="btnPub" data-toggle="modal" data-target="#mdlPublish"><i
+          class="fas fa-paper-plane"></i></button>
     </div>
   </div>
   <div class="container-fluid text-white"
@@ -424,18 +454,18 @@
             <div class="row mb-2">
               <label class="col-sm-2 col-lg-4 col-form-label">Nombre del archivo</label>
               <div class="col">
-                  <input id="inFile" type="text" class="form-control" value="titulo-galleta" placeholder="titulo-galleta">
+                <input id="inFile" type="text" class="form-control" value="titulo-galleta" placeholder="titulo-galleta">
               </div>
             </div>
             <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">Descripción</label>
-                <div class="col">
-                    <textarea class="form-control" id="inDesc" rows="3"></textarea>
-                </div>
+              <label class="col-sm-2 col-form-label">Descripción</label>
+              <div class="col">
+                <textarea class="form-control" id="inDesc" rows="3"></textarea>
+              </div>
             </div>
             <div class="row mb-2 justify-content-end">
-                <button class="btn btn-secondary" id="btnCanFile">Revertir</button>
-                <button class="btn btn-light btn-link-scckie mx-3" type="submit"><i class="fas fa-check"></i></button>
+              <button class="btn btn-secondary" id="btnCanFile">Revertir</button>
+              <button class="btn btn-light btn-link-scckie mx-3" type="submit"><i class="fas fa-check"></i></button>
             </div>
           </form>
         </div>
@@ -443,8 +473,10 @@
         </div>
         <div class="container-fluid mb-2 rounded-lg p-3" style="background-color:rgb(87, 35, 139);">
           <div class="row mb-2 px-2">
-            <button class="btn btn-light btn-link-scckie ml-auto mr-2" id="btnEditJs"><i class="fas fa-edit" aria-hidden="true"></i></button>
-            <button class="btn btn-light btn-link-scckie ml-auto mr-2 d-none" id="btnCheckJs"><i class="fas fa-check" aria-hidden="true"></i></button>
+            <button class="btn btn-light btn-link-scckie ml-auto mr-2" id="btnEditJs"><i class="fas fa-edit"
+                aria-hidden="true"></i></button>
+            <button class="btn btn-light btn-link-scckie ml-auto mr-2 d-none" id="btnCheckJs"><i class="fas fa-check"
+                aria-hidden="true"></i></button>
           </div>
           <div class="row mb-2">
             <div class="col">
