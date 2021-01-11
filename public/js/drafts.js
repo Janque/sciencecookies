@@ -93,7 +93,7 @@ function loaded() {
                             }, 1000);
                             setTimeout(function () {
                                 window.location.href = '../editar?file=' + file;
-                            }, 4000);
+                            }, 3000);
                         }).catch(err => console.log(err));
                     }
                 });
