@@ -1090,6 +1090,16 @@ document.getElementById('inMedSrc1').onclick = function () {
     showEl(document.getElementById("inNewMedUrlCont"));
 }
 
+document.getElementById('inSendUpt').onclick = function () {
+    if(document.getElementById('inSendUpt').checked){
+        showEl(document.getElementById('uptDescCont'));
+        document.getElementById('inUptDesc').setAttribute('required','true');
+    }else{
+        hideEl(document.getElementById('uptDescCont'));
+        document.getElementById('inUptDesc').removeAttribute('required');
+    }
+}
+
 document.getElementById('btnPrevCook').onclick = function () {
     if (docDat.public) {
         let d = docDat.published.toDate();
@@ -1413,6 +1423,14 @@ document.getElementById('btnCnfPublish').onclick = function () {
                 } else {
                     cook.dledit = false;
                     cook.notify = false;
+                }
+                setprog(document.getElementById('barPublish'), '61');
+                if(document.getElementById('inSendUpt').checked){
+                    cook.uptMsg=true;
+                    cook.uptDescrip=document.getElementById('inDesc').value.trim();
+                }else{
+                    cook.uptMsg=false;
+                    cook.uptDescrip='';
                 }
                 setprog(document.getElementById('barPublish'), '66');
                 return db.collection('galletas').doc(docId).update(cook);
