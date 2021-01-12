@@ -36,7 +36,7 @@ var transporter = nodemailer.createTransport({
     }
 });
 exports.newsletter = functions.region('us-east1').firestore.document('galletas/{galleta}').onCreate((snap, context) => {
-    return db.collection('newsletters').doc('test').get().then(doc => {
+    return db.collection('newsletters').doc('base').get().then(doc => {
         const emails = doc.data().emails;
         const dat = snap.data();
         const mailOptions = {
@@ -481,10 +481,11 @@ exports.newsletter = functions.region('us-east1').firestore.document('galletas/{
     })
 });
 
+//Newsletter for Cookie uptdate
 exports.updatesNewsletter = functions.region('us-east1').firestore.document('galletas/{galleta}').onUpdate((change, context) => {
     const dat = change.after.data();
     if(!dat.notify)return;
-    return db.collection('newsletters').doc('test').get().then(doc => {
+    return db.collection('newsletters').doc('base').get().then(doc => {
         const emails = doc.data().emails;
         let htmlStr;
         if(true){
