@@ -946,6 +946,37 @@ function render() {
             }
             subt.appendChild(fig);
 
+            let rcont=document.createElement('div');
+            classes(rcont,"form-group mb-2");
+            let rnL=document.createElement('label');
+            rnL.innerText="Tamaño";
+            let ranR=document.createElement('div');
+            classes(ranR,"row");
+            let ranRC0=document.createElement('div');
+            classes(ranRC0,"col align-center d-flex pr-0");
+            let in3=document.createElement('input');
+            in3.setAttribute('type','range');
+            in3.setAttribute('max','100');
+            in3.setAttribute('min','0');
+            in3.setAttribute('step','1');
+            in3.value='75';
+            classes(in3,"form-control-range");
+            in3.oninput=function(){
+                valL.innerHTML = in3.value+'%';
+                fig.style.width=docDat.cont[idx].width=in3.value+'%';
+            }
+            ranRC0.appendChild(in3);
+            let valL=document.createElement('span');
+            classes(valL,"badge badge-primary range-value-L");
+            valL.innerText='75%';
+            let ranRC1=document.createElement('div');
+            classes(ranRC1,"col-auto");
+            ranRC1.appendChild(valL);
+            ranR.appendChild(ranRC0);
+            ranR.appendChild(ranRC1);
+            rcont.appendChild(rnL);
+            rcont.appendChild(ranR);
+            subf.appendChild(rcont);
             let fr0 = document.createElement('div');
             classes(fr0, "row");
             let fc0 = document.createElement('div');
