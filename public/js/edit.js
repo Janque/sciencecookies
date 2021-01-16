@@ -946,31 +946,31 @@ function render() {
             }
             subt.appendChild(fig);
 
-            let rcont=document.createElement('div');
-            classes(rcont,"form-group mb-2");
-            let rnL=document.createElement('label');
-            rnL.innerText="Tamaño";
-            let ranR=document.createElement('div');
-            classes(ranR,"row");
-            let ranRC0=document.createElement('div');
-            classes(ranRC0,"col align-center d-flex pr-0");
-            let in3=document.createElement('input');
-            in3.setAttribute('type','range');
-            in3.setAttribute('max','100');
-            in3.setAttribute('min','0');
-            in3.setAttribute('step','1');
-            in3.value='75';
-            classes(in3,"form-control-range");
-            in3.oninput=function(){
-                valL.innerHTML = in3.value+'%';
-                fig.style.width=docDat.cont[idx].width=in3.value+'%';
+            let rcont = document.createElement('div');
+            classes(rcont, "form-group mb-2");
+            let rnL = document.createElement('label');
+            rnL.innerText = "Tamaño";
+            let ranR = document.createElement('div');
+            classes(ranR, "row");
+            let ranRC0 = document.createElement('div');
+            classes(ranRC0, "col align-center d-flex pr-0");
+            let in3 = document.createElement('input');
+            in3.setAttribute('type', 'range');
+            in3.setAttribute('max', '100');
+            in3.setAttribute('min', '0');
+            in3.setAttribute('step', '1');
+            in3.value = '75';
+            classes(in3, "form-control-range");
+            in3.oninput = function () {
+                valL.innerHTML = in3.value + '%';
+                fig.style.width = docDat.cont[idx].width = in3.value + '%';
             }
             ranRC0.appendChild(in3);
-            let valL=document.createElement('span');
-            classes(valL,"badge badge-primary range-value-L");
-            valL.innerText='75%';
-            let ranRC1=document.createElement('div');
-            classes(ranRC1,"col-auto");
+            let valL = document.createElement('span');
+            classes(valL, "badge badge-primary range-value-L");
+            valL.innerText = '75%';
+            let ranRC1 = document.createElement('div');
+            classes(ranRC1, "col-auto");
             ranRC1.appendChild(valL);
             ranR.appendChild(ranRC0);
             ranR.appendChild(ranRC1);
@@ -1122,10 +1122,10 @@ document.getElementById('inMedSrc1').onclick = function () {
 }
 
 document.getElementById('inSendUpt').onclick = function () {
-    if(document.getElementById('inSendUpt').checked){
+    if (document.getElementById('inSendUpt').checked) {
         showEl(document.getElementById('uptDescCont'));
-        document.getElementById('inUptDesc').setAttribute('required','true');
-    }else{
+        document.getElementById('inUptDesc').setAttribute('required', 'true');
+    } else {
         hideEl(document.getElementById('uptDescCont'));
         document.getElementById('inUptDesc').removeAttribute('required');
     }
@@ -1188,9 +1188,9 @@ $('#mdlPublish').on('show.bs.modal', e => {
 });
 
 function finishPub() {
-    document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
     setprog(document.getElementById('barPublish'), '100');
     classes(document.getElementById('barPublish'), 'bg-success');
+    document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
     let d = docDat.published.toDate();
     let month = d.getFullYear().toString();
     if (d.getMonth() < 9) {
@@ -1337,147 +1337,132 @@ document.getElementById('btnCnfPublish').onclick = function () {
     setprog(document.getElementById('barPublish'), '0');
     document.getElementById('barPublishCont').classList.remove('d-none');
     fillKW();
-    if (docId <= 20122902) {
+    if (!docDat.beenPublic) {
         setprog(document.getElementById('barPublish'), '30');
-        let d = docDat.published.toDate();
-        let month = d.getFullYear().toString();
-        if (d.getMonth() < 9) {
-            month += '0';
-        }
-        month += (d.getMonth() + 1);
-        setprog(document.getElementById('barPublish'), '47');
-        db.collection('galletas').doc(docId).update({
-            dledit: false,
-            ledit: docDat.created,
+        db.collection('galletasCont').doc(docId).update({
+            beenPublic: true,
             public: true,
-            notify: false,
-            title: docDat.title,
-            descrip: docDat.description,
-            url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
-            picUrl: docDat.picUrl,
-            authrs: docDat.authors,
-            cats: keywords
+            ledit: new firebase.firestore.Timestamp.now(),
+            published: new firebase.firestore.Timestamp.now(),
+            revised: []
         }).then(() => {
-            setprog(document.getElementById('barPublish'), '68');
-            return db.collection('galletasCont').doc(docId).update({
-                beenPublic: true,
-                public: true,
-                revised: []
-            });
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '76');
-            finishPub();
-        }).catch(err => { console.log(err) });
-    } else {
-        if (!docDat.beenPublic) {
-            setprog(document.getElementById('barPublish'), '30');
-            db.collection('galletasCont').doc(docId).update({
-                beenPublic: true,
-                public: true,
+            setprog(document.getElementById('barPublish'), '49');
+            let d = docDat.published.toDate();
+            let month = d.getFullYear().toString();
+            if (d.getMonth() < 9) {
+                month += '0';
+            }
+            month += (d.getMonth() + 1);
+            return db.collection('galletas').doc(docId).set({
+                likes: 0,
+                favs: 0,
+                pop: 0,
                 ledit: new firebase.firestore.Timestamp.now(),
-                published: new firebase.firestore.Timestamp.now(),
-                revised: []
-            }).then(() => {
-                setprog(document.getElementById('barPublish'), '49');
-                let d = docDat.published.toDate();
-                let month = d.getFullYear().toString();
-                if (d.getMonth() < 9) {
-                    month += '0';
-                }
-                month += (d.getMonth() + 1);
-                return db.collection('galletas').doc(docId).set({
-                    likes: 0,
-                    favs: 0,
-                    pop: 0,
-                    ledit: new firebase.firestore.Timestamp.now(),
-                    date: new firebase.firestore.Timestamp.now(),
-                    dledit: false,
-                    notify: true,
-                    title: docDat.title,
-                    descrip: docDat.description,
-                    url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
-                    picUrl: docDat.picUrl,
-                    authrs: docDat.authors,
-                    cats: keywords
+                date: new firebase.firestore.Timestamp.now(),
+                dledit: false,
+                notify: true,
+                title: docDat.title,
+                descrip: docDat.description,
+                url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
+                picUrl: docDat.picUrl,
+                authrs: docDat.authors,
+                cats: keywords
+            })
+        }).then(() => {
+            setprog(document.getElementById('barPublish'), '63');
+            return db.collection('sitema').doc('0').update({
+                pages: firebase.firestore.FieldValue.arrayUnion({
+                  loc: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
+                  changefreq: 'none',
+                  priority: "0.8"
                 })
-            }).then(function () {
-                setprog(document.getElementById('barPublish'), '78');
-                rtDb.ref('galletas/' + docId).set({
-                    pop: 0,
-                    likes: 0,
-                    favs: 0
-                }, err => {
-                    if (err) {
-                        console.log("Data could not be saved." + err);
-                    } else {
-                        setprog(document.getElementById('barPublish'), '84');
-                        finishPub();
-                    }
-                });
-            }).catch(function (error) {
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                console.log(error);
-                setTimeout(function () {
-                    document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
-                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                    document.getElementById("alrtClsSsn").innerHTML = '';
-                });
             });
-        } else {
-            setprog(document.getElementById('barPublish'), '30');
-            db.collection('galletasCont').doc(docId).update({
-                public: true,
-                ledit: new firebase.firestore.Timestamp.now(),
-                revised: []
-            }).then(() => {
-                setprog(document.getElementById('barPublish'), '42');
-                let d = docDat.published.toDate();
-                let month = d.getFullYear().toString();
-                if (d.getMonth() < 9) {
-                    month += '0';
-                }
-                month += (d.getMonth() + 1);
-                let cook = {
-                    title: docDat.title,
-                    descrip: docDat.description,
-                    url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
-                    picUrl: docDat.picUrl,
-                    authrs: docDat.authors,
-                    cats: keywords
-                };
-                setprog(document.getElementById('barPublish'), '57');
-                if (document.getElementById('inSendUpt').checked) {
-                    cook.ledit = new firebase.firestore.Timestamp.now();
-                    cook.dledit = true;
-                    cook.notify = true;
+        }).then(() => {
+            setprog(document.getElementById('barPublish'), '78');
+            rtDb.ref('galletas/' + docId).set({
+                pop: 0,
+                likes: 0,
+                favs: 0
+            }, err => {
+                if (err) {
+                    console.log("Data could not be saved." + err);
                 } else {
-                    cook.dledit = false;
-                    cook.notify = false;
+                    setprog(document.getElementById('barPublish'), '84');
+                    finishPub();
                 }
-                setprog(document.getElementById('barPublish'), '61');
-                if(document.getElementById('inSendUpt').checked){
-                    cook.uptMsg=true;
-                    cook.uptDescrip=document.getElementById('inDesc').value.trim();
-                }else{
-                    cook.uptMsg=false;
-                    cook.uptDescrip='';
-                }
-                setprog(document.getElementById('barPublish'), '66');
-                return db.collection('galletas').doc(docId).update(cook);
-            }).then(() => {
-                setprog(document.getElementById('barPublish'), '75');
-                finishPub();
-            }).catch(error => {
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                console.log(error);
-                setTimeout(function () {
-                    document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
-                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                    document.getElementById("alrtClsSsn").innerHTML = '';
-                });
             });
-        }
+        }).catch(error => {
+            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+            console.log(error);
+            setTimeout(function () {
+                document.getElementById("btnAlrtClsSsn").click();
+            }, 3000);
+            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+                document.getElementById("alrtClsSsn").innerHTML = '';
+            });
+        });
+    } else {
+        setprog(document.getElementById('barPublish'), '30');
+        db.collection('galletasCont').doc(docId).update({
+            public: true,
+            ledit: new firebase.firestore.Timestamp.now(),
+            revised: []
+        }).then(() => {
+            setprog(document.getElementById('barPublish'), '42');
+            let d = docDat.published.toDate();
+            let month = d.getFullYear().toString();
+            if (d.getMonth() < 9) {
+                month += '0';
+            }
+            month += (d.getMonth() + 1);
+            let cook = {
+                title: docDat.title,
+                descrip: docDat.description,
+                url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
+                picUrl: docDat.picUrl,
+                authrs: docDat.authors,
+                cats: keywords
+            };
+            setprog(document.getElementById('barPublish'), '57');
+            if (document.getElementById('inSendUpt').checked) {
+                cook.ledit = new firebase.firestore.Timestamp.now();
+                cook.dledit = true;
+                cook.notify = true;
+            } else {
+                cook.dledit = false;
+                cook.notify = false;
+            }
+            setprog(document.getElementById('barPublish'), '61');
+            if (document.getElementById('inSendUpt').checked) {
+                cook.uptMsg = true;
+                cook.uptDescrip = document.getElementById('inDesc').value.trim();
+            } else {
+                cook.uptMsg = false;
+                cook.uptDescrip = '';
+            }
+            setprog(document.getElementById('barPublish'), '66');
+            return db.collection('galletas').doc(docId).update(cook);
+        }).then(() => {
+            setprog(document.getElementById('barPublish'), '70');
+            return db.collection('sitema').doc('0').update({
+                pages: firebase.firestore.FieldValue.arrayUnion({
+                  loc: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
+                  changefreq: 'none',
+                  priority: "0.8"
+                })
+            });
+        }).then(() => {
+            setprog(document.getElementById('barPublish'), '78');
+            finishPub();
+        }).catch(error => {
+            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+            console.log(error);
+            setTimeout(function () {
+                document.getElementById("btnAlrtClsSsn").click();
+            }, 3000);
+            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+                document.getElementById("alrtClsSsn").innerHTML = '';
+            });
+        });
     }
 };
