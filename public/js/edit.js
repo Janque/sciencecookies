@@ -1370,11 +1370,13 @@ document.getElementById('btnCnfPublish').onclick = function () {
             })
         }).then(() => {
             setprog(document.getElementById('barPublish'), '63');
+            let htime=new firebase.firestore.Timestamp.now();
             return db.collection('sitema').doc('0').update({
                 pages: firebase.firestore.FieldValue.arrayUnion({
                   loc: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
                   changefreq: 'none',
-                  priority: "0.8"
+                  priority: "0.8",
+                  lastmod: htime.toDate().toISOString().substr(0, 10)
                 })
             });
         }).then(() => {
@@ -1444,11 +1446,13 @@ document.getElementById('btnCnfPublish').onclick = function () {
             return db.collection('galletas').doc(docId).update(cook);
         }).then(() => {
             setprog(document.getElementById('barPublish'), '70');
+            let htime=new firebase.firestore.Timestamp.now();
             return db.collection('sitema').doc('0').update({
                 pages: firebase.firestore.FieldValue.arrayUnion({
                   loc: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
                   changefreq: 'none',
-                  priority: "0.8"
+                  priority: "0.8",
+                  lastmod: htime.toDate().toISOString().substr(0, 10)
                 })
             });
         }).then(() => {
