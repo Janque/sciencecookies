@@ -24,16 +24,16 @@ exports.uptPop = functions.region('us-east1').pubsub.schedule('every 24 hours').
 
 //Update today's CookieID's
 exports.uptIDs = functions.region('us-east1').pubsub.schedule('every 24 hours').onRun((context) => {
-    let t=admin.firestore.Timestamp.now().toDate();
-    today=(t.getFullYear()%100).toString();
-    if(t.getMonth()<9)today+='0';
-    today+=(t.getMonth() + 1);
-    if(t.getDate()<10)today+='0';
-    today+=t.getDate();
+    let t = admin.firestore.Timestamp.now().toDate();
+    today = (t.getFullYear() % 100).toString();
+    if (t.getMonth() < 9) today += '0';
+    today += (t.getMonth() + 1);
+    if (t.getDate() < 10) today += '0';
+    today += t.getDate();
     return admin.database().ref('tdaysID').set({
-        "today":today,
+        "today": today,
         "last": 0
-    }, err=>{
+    }, err => {
         if (err) {
             console.log("Data could not be saved." + err);
         } else {
@@ -41,3 +41,19 @@ exports.uptIDs = functions.region('us-east1').pubsub.schedule('every 24 hours').
         }
     });
 });
+
+//Update sitemap
+/*
+let htime = new firebase.firestore.Timestamp.now();
+            return db.collection('sitema').doc('0').update({
+                pages: firebase.firestore.FieldValue.arrayUnion({
+                    loc: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
+                    changefreq: 'none',
+                    priority: "0.8",
+                    lastmod: htime.toDate().toISOString().substr(0, 10),
+                    image: {
+                        title: docDat.title,
+                        loq: docDat.picUrl
+                    }
+                })
+            });*/
