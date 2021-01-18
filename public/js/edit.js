@@ -1360,7 +1360,9 @@ document.getElementById('btnCnfPublish').onclick = function () {
                 ledit: new firebase.firestore.Timestamp.now(),
                 date: new firebase.firestore.Timestamp.now(),
                 dledit: false,
-                notify: true,
+                notify: false,
+                beenPublic: true,
+                public: true,
                 title: docDat.title,
                 descrip: docDat.description,
                 url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
@@ -1412,7 +1414,8 @@ document.getElementById('btnCnfPublish').onclick = function () {
                 url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
                 picUrl: docDat.picUrl,
                 authrs: docDat.authors,
-                cats: keywords
+                cats: keywords,
+                public: true,
             };
             setprog(document.getElementById('barPublish'), '57');
             if (document.getElementById('inSendUpt').checked) {

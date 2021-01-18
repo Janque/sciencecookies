@@ -5,6 +5,7 @@ const db = admin.firestore();
 //Update popularity from RTDB to FSDB
 exports.uptPop = functions.region('us-east1').pubsub.schedule('every 24 hours').onRun((context) => {
     return admin.database().ref('uptCook').once('value', data => {
+        if(!data)return null;
         Object.keys(data.val()).forEach(itm => {
             admin.database().ref('galletas/' + itm).once('value', cook => {
                 db.collection('galletas').doc(itm).update({
@@ -38,6 +39,7 @@ exports.uptIDs = functions.region('us-east1').pubsub.schedule('every 24 hours').
             console.log("Data could not be saved." + err);
         } else {
             console.log("Data saved successfully.");
+            return null;
         }
     });
 });
