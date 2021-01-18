@@ -1361,7 +1361,6 @@ document.getElementById('btnCnfPublish').onclick = function () {
                 date: new firebase.firestore.Timestamp.now(),
                 dledit: false,
                 notify: false,
-                beenPublic: true,
                 public: true,
                 title: docDat.title,
                 descrip: docDat.description,
