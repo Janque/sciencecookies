@@ -1,7 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore();
-const axios = require('axios');
 
 //Update sitemap
 exports.updateSitemap = functions.region('us-east1').firestore.document('galletas/{galleta}').onWrite((change, context) => {
@@ -27,9 +26,6 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('galleta
         });
     }).then(() => {
         console.log('Sitemap updated');
-        return axios.get('https://www.google.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
-    }).then(() => {
-        console.log('Pinged Google');
         return;
     }).catch(err => {
         console.log('Failed to update sitemap: ', err.code);
