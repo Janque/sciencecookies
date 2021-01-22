@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore();
+const axios = require('axios');
 
 //Update sitemap
 exports.updateSitemap = functions.region('us-east1').firestore.document('galletas/{galleta}').onWrite((change, context) => {
@@ -26,6 +27,9 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('galleta
         });
     }).then(() => {
         console.log('Sitemap updated');
+        return axios.get('https://www.google.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
+    }).then(() => {
+        console.log('Pinged Google');
         return;
     }).catch(err => {
         console.log('Failed to update sitemap: ', err.code);
@@ -39,9 +43,11 @@ exports.serveSitemap = functions.region('us-central1').https.onRequest(async (re
         let urlStr = "<url><loc>";
         urlStr += url.loc;
         urlStr += "</loc>";
-        urlStr += "<priority>";
-        urlStr += url.priority;
-        urlStr += "</priority>";
+        if (url.priority) {
+            urlStr += "<priority>";
+            urlStr += url.priority;
+            urlStr += "</priority>";
+        }
         if (url.changefreq) {
             urlStr += "<changefreq>";
             urlStr += url.changefreq;
@@ -55,7 +61,7 @@ exports.serveSitemap = functions.region('us-central1').https.onRequest(async (re
         if (url.image) {
             urlStr += "<image:image>";
             urlStr += "<image:loc>";
-            urlStr += url.image.loc.replace('&','&amp;');
+            urlStr += url.image.loc.replace('&', '&amp;');
             urlStr += "</image:loc>";
             if (url.image.title) {
                 urlStr += "<image:title>";
@@ -73,17 +79,17 @@ exports.serveSitemap = functions.region('us-central1').https.onRequest(async (re
         return urlStr;
     }
     const doc = await db.collection('sitemap').doc('1').get();
-    let sitemap='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">';
-    doc.data().static.forEach(url=>{
-        sitemap+=makeUrl(url);
+    let sitemap = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">';
+    doc.data().static.forEach(url => {
+        sitemap += makeUrl(url);
     });
-    doc.data().archive.forEach(url=>{
-        sitemap+=makeUrl(url);
+    doc.data().archive.forEach(url => {
+        sitemap += makeUrl(url);
     });
-    doc.data().cookies.forEach(url=>{
-        sitemap+=makeUrl(url);
+    doc.data().cookies.forEach(url => {
+        sitemap += makeUrl(url);
     });
-    sitemap+="</urlset>"
+    sitemap += "</urlset>"
     res.set('Content-Type', 'text/xml');
     res.status(200).send(sitemap);
     return;
