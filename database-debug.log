@@ -1,9 +1,12 @@
 WARNING: An illegal reflective access operation has occurred
-WARNING: Illegal reflective access by io.netty.util.internal.ReflectionUtil (file:/Users/javier/.cache/firebase/emulators/firebase-database-emulator-v4.5.0.jar) to field sun.nio.ch.SelectorImpl.selectedKeys
+WARNING: Illegal reflective access by io.netty.util.internal.ReflectionUtil (file:/Users/javier/.cache/firebase/emulators/firebase-database-emulator-v4.7.2.jar) to field sun.nio.ch.SelectorImpl.selectedKeys
 WARNING: Please consider reporting this to the maintainers of io.netty.util.internal.ReflectionUtil
 WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
 WARNING: All illegal access operations will be denied in a future release
-12:41:04.017 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
-12:41:04.265 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
-12:42:51.161 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
-12:42:51.170 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.
+16:36:24.377 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+16:36:24.491 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
+16:37:31.562 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
+16:37:31.566 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: science-cookies
+16:37:31.570 [NamespaceSystem-akka.actor.default-dispatcher-7] INFO com.firebase.core.namespace.NamespaceActor - Stopping namespace actor for science-cookies
+16:37:31.571 [NamespaceSystem-akka.actor.default-dispatcher-7] INFO com.firebase.core.namespace.NamespaceActor - Gauges removed for science-cookies
+16:37:31.573 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.

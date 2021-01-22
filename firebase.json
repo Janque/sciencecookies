@@ -23,6 +23,10 @@
       {
         "source": "/vista-email/**",
         "function": "dynCookies-showCookie"
+      },
+      {
+        "source": "/sitemap.xml",
+        "function": "sitemap-serveSitemap"
       }
     ]
   },
