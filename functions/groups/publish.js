@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const nodemailer = require('nodemailer');
 const admin = require('firebase-admin');
 const db = admin.firestore();
+const axios = require('axios');
 
 //Auth for publicar.html
 exports.modAuth = functions.region('us-east1').https.onCall((uid) => {
@@ -36,10 +37,11 @@ var transporter = nodemailer.createTransport({
     }
 });
 exports.newsletter = functions.region('us-east1').firestore.document('galletas/{galleta}').onCreate((snap, context) => {
+    let emils, mailOptions;
+    const dat = snap.data();
     return db.collection('newsletters').doc('base').get().then(doc => {
-        const emails = doc.data().emails;
-        const dat = snap.data();
-        const mailOptions = {
+        emails = doc.data().emails;
+        mailOptions = {
             from: `Science Cookies <blog.sciencecookies@gmail.com>`,
             bcc: emails,
             subject: 'Nueva galleta',
@@ -469,11 +471,16 @@ exports.newsletter = functions.region('us-east1').firestore.document('galletas/{
         </body>
         </html>`,
         };
+        return axios.get('https://www.google.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
+    }).then(() => {
         return transporter.sendMail(mailOptions, (error, data) => {
             if (error) {
                 console.log(error);
+                return;
+            } else {
+                console.log("Sent!");
+                return;
             }
-            console.log("Sent!");
         });
     }).catch(err => {
         console.log(err);
@@ -483,13 +490,14 @@ exports.newsletter = functions.region('us-east1').firestore.document('galletas/{
 
 //Newsletter for Cookie uptdate
 exports.updatesNewsletter = functions.region('us-east1').firestore.document('galletas/{galleta}').onUpdate((change, context) => {
+    let emils, mailOptions;
     const dat = change.after.data();
-    if(!dat.notify)return;
+    if (!dat.notify) return;
     return db.collection('newsletters').doc('base').get().then(doc => {
-        const emails = doc.data().emails;
+        emails = doc.data().emails;
         let htmlStr;
-        if(true){
-            htmlStr=`<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        if (true) {
+            htmlStr = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
             <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -796,8 +804,8 @@ exports.updatesNewsletter = functions.region('us-east1').firestore.document('gal
                                             </tr>
                                         </tbody>`;
         }
-        if(dat.uptMsg){
-            htmlStr+=`<tbody>
+        if (dat.uptMsg) {
+            htmlStr += `<tbody>
                 <tr>
                 <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">`+ dat.uptDescrip + `</td>
                 </tr>
@@ -806,8 +814,8 @@ exports.updatesNewsletter = functions.region('us-east1').firestore.document('gal
                 </tr>
             </tbody>`;
         }
-        if(true){
-            htmlStr+=`<tbody>
+        if (true) {
+            htmlStr += `<tbody>
                 <tr>
                 <td style="padding-top: 5px" valign="top" align="center">
                     <table border="0" cellpadding="0" cellspacing="0" role="presentation">
@@ -927,17 +935,22 @@ exports.updatesNewsletter = functions.region('us-east1').firestore.document('gal
     </body>
     </html>`;
         }
-        const mailOptions = {
+        mailOptions = {
             from: `Science Cookies <blog.sciencecookies@gmail.com>`,
             bcc: emails,
             subject: 'Actualización de una galleta',
             html: htmlStr,
         };
+        return axios.get('https://www.google.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
+    }).then(() => {
         return transporter.sendMail(mailOptions, (error, data) => {
             if (error) {
                 console.log(error);
+                return;
+            } else {
+                console.log("Sent!");
+                return;
             }
-            console.log("Sent!");
         });
     }).catch(err => {
         console.log(err);
