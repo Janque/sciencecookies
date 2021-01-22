@@ -12,6 +12,7 @@
     "node": "12"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "consolidate": "^0.16.0",
     "firebase-admin": "^9.4.2",
     "firebase-functions": "^3.13.0",
