@@ -34,7 +34,7 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('galleta
 });
 
 //Download & serve sitemap
-exports.serveSitemap = functions.region('us-east1').https.onRequest(async (req, res) => {
+exports.serveSitemap = functions.region('us-central1').https.onRequest(async (req, res) => {
     function makeUrl(url) {
         let urlStr = "<url><loc>";
         urlStr += url.loc;
