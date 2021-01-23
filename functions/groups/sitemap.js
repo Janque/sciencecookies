@@ -4,31 +4,51 @@ const db = admin.firestore();
 
 //Update sitemap
 exports.updateSitemap = functions.region('us-east1').firestore.document('galletas/{galleta}').onWrite((change, context) => {
-    let urls = [];
-    return db.collection('galletas').get().then(snap => {
+//exports.updateSitemap = functions.region('us-central1').https.onRequest((change, context) => {
+    function getTri(m) {
+        if (m <= 2) return 'ene-mar';
+        if (m <= 5) return 'abr-jun';
+        if (m <= 8) return 'jul-sep';
+        return 'oct-dic';
+    }
+    return db.collection('galletas').where('public', '==', true).orderBy('date').get().then(snap => {
+        let urls = [];
+        let archUrls = [{
+            loc: 'https://sciencecookies.net/archivo',
+            priority: '0.7',
+            lastmod: admin.firestore.Timestamp.now()
+        }];
+        let year = 2020, tri = 'abr-jun';
         snap.forEach(doc => {
             let dat = doc.data();
-            if (dat.public) {
-                let urlObj = {
-                    loc: dat.url,
-                    priority: 0.8,
-                    lastmod: dat.ledit.toDate().toISOString(),
-                    image: {
-                        loc: dat.picUrl,
-                        title: dat.title
-                    }
+            urls.push({
+                loc: dat.url,
+                priority: '0.8',
+                lastmod: dat.ledit.toDate().toISOString(),
+                image: {
+                    loc: dat.picUrl,
+                    title: dat.title
                 }
-                urls.push(urlObj);
+            });
+            let lyear = dat.date.toDate().getFullYear(), ltri = getTri(dat.date.toDate().getMonth());
+            if (lyear != year || ltri != tri) {
+                tri = ltri
+                year = lyear
+                archUrls.push({
+                    loc: 'https://sciencecookies.net/archivo/' + year + '/' + tri,
+                    priority: '0.6'
+                });
             }
         });
         return db.collection('sitemap').doc('1').update({
+            archive: archUrls,
             cookies: urls
         });
     }).then(() => {
         console.log('Sitemap updated');
         return;
     }).catch(err => {
-        console.log('Failed to update sitemap: ', err.code);
+        console.log('Failed to update sitemap: ', err);
         return;
     });
 });

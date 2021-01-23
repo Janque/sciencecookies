@@ -1,10 +1,10 @@
 //Init database
-var db=firebase.firestore();
+var db = firebase.firestore();
 
-var urlSrch='';
-var url=new URL(window.location.href);
-var actSsn=false;
-var mod=false,author="";
+var urlSrch = '';
+var url = new URL(window.location.href);
+var actSsn = false;
+var mod = false, author = "";
 
 function classes(elm, cls) {
     cls = cls.split(' ');
@@ -23,89 +23,89 @@ function toggleEl(elm) {
 }
 
 //Check auth
-var displayName,email,photoURL,uid;
-firebase.auth().onAuthStateChanged(function(user) {
-    let modAuth=firebase.app().functions('us-east1').httpsCallable('publish-modAuth');
-    if(user){
-        displayName=user.displayName;
-        email=user.email;
-        photoURL=user.photoURL;
-        uid=user.uid;
-        actSsn=true;
-        modAuth(uid).then(res=>{
-            mod=res.data.mod;
-            author=res.data.name;
-            if(url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"||url.pathname.substring(0,13)=="/vista-previa"||url.pathname.substring(0,12)=="/vista-email"){
-                if(!mod)window.location.href='https://sciencecookies.net';
+var displayName, email, photoURL, uid;
+firebase.auth().onAuthStateChanged(function (user) {
+    let modAuth = firebase.app().functions('us-east1').httpsCallable('publish-modAuth');
+    if (user) {
+        displayName = user.displayName;
+        email = user.email;
+        photoURL = user.photoURL;
+        uid = user.uid;
+        actSsn = true;
+        modAuth(uid).then(res => {
+            mod = res.data.mod;
+            author = res.data.name;
+            if (url.pathname.substring(0, 7) == "/drafts" || url.pathname.substring(0, 7) == "/editar" || url.pathname.substring(0, 13) == "/vista-previa" || url.pathname.substring(0, 12) == "/vista-email") {
+                if (!mod) window.location.href = 'https://sciencecookies.net';
             }
             shwSsnBtns(true);
-        }).catch(err=>console.log(err));
-    }else{
-        if(url.pathname.substring(0,7)=="/perfil"||url.pathname.substring(0,9)=="/contacto"||url.pathname.substring(0,7)=="/drafts"||url.pathname.substring(0,7)=="/editar"||url.pathname.substring(0,13)=="/vista-previa"||url.pathname.substring(0,12)=="/vista-email"){
-            window.location.href='https://sciencecookies.net';
+        }).catch(err => console.log(err));
+    } else {
+        if (url.pathname.substring(0, 7) == "/perfil" || url.pathname.substring(0, 9) == "/contacto" || url.pathname.substring(0, 7) == "/drafts" || url.pathname.substring(0, 7) == "/editar" || url.pathname.substring(0, 13) == "/vista-previa" || url.pathname.substring(0, 12) == "/vista-email") {
+            window.location.href = 'https://sciencecookies.net';
         }
-        actSsn=false;
-        mod=false;
+        actSsn = false;
+        mod = false;
         shwSsnBtns(false);
     }
 });
 //Botones de sesion
-function shwSsnBtns(ac){
-    if(ac){
+function shwSsnBtns(ac) {
+    if (ac) {
         document.getElementById('icnUsr').classList.remove('fa-user-slash');
         document.getElementById('icnUsr').classList.add('fa-user');
-        document.getElementById('picUsr').setAttribute('onerror',"this.src='https://sciencecookies.net/img/nopp.png'");
-        document.getElementById('picUsr').src=photoURL;
-        if(document.getElementById('ppCom')){
-            document.getElementById('ppCom').setAttribute('onerror',"this.src='https://sciencecookies.net/img/nopp.png'");
-            document.getElementById('ppCom').src=photoURL;
+        document.getElementById('picUsr').setAttribute('onerror', "this.src='https://sciencecookies.net/img/nopp.png'");
+        document.getElementById('picUsr').src = photoURL;
+        if (document.getElementById('ppCom')) {
+            document.getElementById('ppCom').setAttribute('onerror', "this.src='https://sciencecookies.net/img/nopp.png'");
+            document.getElementById('ppCom').src = photoURL;
         }
         document.getElementById('btnPrfl').classList.remove('d-none');
         document.getElementById('btnPref').classList.remove('d-none');
-        if(mod){
+        if (mod) {
             document.getElementById('btnDraft').classList.remove('d-none');
         }
         document.getElementById('btnLgO').classList.remove('d-none');
-        if(document.getElementById('btnLgI'))document.getElementById('btnLgI').classList.add('d-none');
-        if(url.pathname.substring(0,10)=="/galletas/"){
-            db.collection('users').doc(uid).get().then(function(doc){
-                let fav=doc.data().fav;
-                let liked=doc.data().liked;
-                pubID=doc.data().publicID;
-                if(fav.indexOf(id)!=-1){
-                    document.getElementById('btnFav').innerHTML=('En mis favoritos <i class="fas fa-heart"></i>').concat(' ',document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+        if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.add('d-none');
+        if (url.pathname.substring(0, 10) == "/galletas/") {
+            db.collection('users').doc(uid).get().then(function (doc) {
+                let fav = doc.data().fav;
+                let liked = doc.data().liked;
+                pubID = doc.data().publicID;
+                if (fav.indexOf(id) != -1) {
+                    document.getElementById('btnFav').innerHTML = ('En mis favoritos <i class="fas fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
                     document.getElementById('btnFav').classList.remove('btn-outline-light');
                     document.getElementById('btnFav').classList.add('btn-light');
                 }
-                else{
-                    document.getElementById('btnFav').innerHTML=('Añadir a favoritos <i class="far fa-heart"></i>').concat(' ',document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                else {
+                    document.getElementById('btnFav').innerHTML = ('Añadir a favoritos <i class="far fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
                     document.getElementById('btnFav').classList.remove('btn-light');
                     document.getElementById('btnFav').classList.add('btn-outline-light');
                 }
-                if(liked.indexOf(id)!=-1){
-                    document.getElementById('btnLike').innerHTML=('Me gusta <i class="fas fa-thumbs-up"></i>').concat(' ',document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                if (liked.indexOf(id) != -1) {
+                    document.getElementById('btnLike').innerHTML = ('Me gusta <i class="fas fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
                     document.getElementById('btnLike').classList.remove('btn-outline-light');
                     document.getElementById('btnLike').classList.add('btn-light');
                 }
-                else{
-                    document.getElementById('btnLike').innerHTML=('Dar me gusta <i class="far fa-thumbs-up"></i>').concat(' ',document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                else {
+                    document.getElementById('btnLike').innerHTML = ('Dar me gusta <i class="far fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
                     document.getElementById('btnLike').classList.remove('btn-light');
                     document.getElementById('btnLike').classList.add('btn-outline-light');
                 }
-            }).catch(function(err){console.log('err')});
+            }).catch(function (err) { console.log('err') });
         }
-    }else{
+    } else {
         document.getElementById('icnUsr').classList.remove('fa-user');
         document.getElementById('icnUsr').classList.add('fa-user-slash');
-        document.getElementById('picUsr').setAttribute('onerror',"");
-        document.getElementById('picUsr').src='';
+        document.getElementById('picUsr').setAttribute('onerror', "");
+        document.getElementById('picUsr').src = '';
         document.getElementById('btnPrfl').classList.add('d-none');
         document.getElementById('btnPref').classList.add('d-none');
         document.getElementById('btnDraft').classList.add('d-none');
         document.getElementById('btnLgO').classList.add('d-none');
-        if(document.getElementById('btnLgI'))document.getElementById('btnLgI').classList.remove('d-none');
+        if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.remove('d-none');
     }
-    if(url.pathname.substring(0,10)=="/galletas/"){
+    if (url.pathname.substring(0, 10) == "/galletas/") {
         document.getElementById('btnFav').classList.remove('disabled');
         document.getElementById('btnLike').classList.remove('disabled');
         document.getElementById('btnLdComs').classList.remove('disabled');
@@ -113,22 +113,22 @@ function shwSsnBtns(ac){
     }
 }
 //Log Out
-document.getElementById("btnLgO").onclick=function(){
-    firebase.auth().signOut().then(function() {
-        document.getElementById("alrtClsSsn").innerHTML='<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert">Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-    }).catch(function(error) {
-        document.getElementById("alrtClsSsn").innerHTML='<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>'+error.code+'<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+document.getElementById("btnLgO").onclick = function () {
+    firebase.auth().signOut().then(function () {
+        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert">Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+    }).catch(function (error) {
+        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
     });
-    setTimeout(function(){
+    setTimeout(function () {
         document.getElementById("btnAlrtClsSsn").click();
-    },3000);
+    }, 3000);
     $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-        document.getElementById("alrtClsSsn").innerHTML='';
+        document.getElementById("alrtClsSsn").innerHTML = '';
     });
 };
 //Autenticaciones
-var uiConfig={
-    signInSuccessUrl:window.location,
+var uiConfig = {
+    signInSuccessUrl: window.location,
     signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
@@ -137,55 +137,83 @@ var uiConfig={
             signInMethod: firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD,
             forceSameDevice: false,
             requireDisplayName: true,
-            signInMethod:'emailLink',
+            signInMethod: 'emailLink',
         },
         //firebase.auth.TwitterAuthProvider.PROVIDER_ID,
     ],
     tosUrl: 'https://sciencecookies.net/docs/tos',
     privacyPolicyUrl: 'https://sciencecookies.net/docs/privacidad'
 };
-var ui=new firebaseui.auth.AuthUI(firebase.auth());
+var ui = new firebaseui.auth.AuthUI(firebase.auth());
 ui.start('#firebaseui-auth-container', uiConfig);
 
-window.addEventListener("load",function(){
+window.addEventListener("load", function () {
     url = new URL(document.location.href);
-    urlSrch=new URLSearchParams(location.search);
-    if(ui.isPendingRedirect())ui.start('#firebaseui-auth-container', uiConfig);
-    if(urlSrch.get('mode')=='select')$('#mdlRgstr').modal('show');
+    urlSrch = new URLSearchParams(location.search);
+    if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
+    if (urlSrch.get('mode') == 'select') $('#mdlRgstr').modal('show');
     shwRecom();
     loaded();
 });
 
-function shwRecom(){
-    db.collection('galletas').where('public','==',true).orderBy('date','desc').limit(1).get().then(snap=>{
-        let docs=snap.docs;
-        docs.forEach(function(doc){
-            document.getElementById('crd0').href=doc.data().url;
-            document.getElementById('crd0i').src=doc.data().picUrl;
-            let d=doc.data().date.toDate();
-            document.getElementById('crd0t').innerHTML='                                      <h5 class="card-title">'+doc.data().title+'</h5>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
-            document.getElementById('rmed0').href=doc.data().url;
-            document.getElementById('rmed0i').src=doc.data().picUrl;
-            d=doc.data().date.toDate();
-            document.getElementById('rmed0t').innerHTML='                                    <h6 class="card-title"><strong>'+doc.data().title+'</strong></h6>                <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
+function shwRecom() {
+    db.collection('galletas').where('public', '==', true).orderBy('date', 'desc').limit(1).get().then(snap => {
+        let docs = snap.docs;
+        docs.forEach(function (doc) {
+            document.getElementById('crd0').href = doc.data().url;
+            document.getElementById('crd0i').src = doc.data().picUrl;
+            let d = doc.data().date.toDate();
+            document.getElementById('crd0t').innerHTML = '                                      <h5 class="card-title">' + doc.data().title + '</h5>                                 <p class="card-text">' + doc.data().descrip + '</p>                                   <p class="card-text">' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' Autor(es):' + doc.data().authrs + '</p>';
+            document.getElementById('rmed0').href = doc.data().url;
+            document.getElementById('rmed0i').src = doc.data().picUrl;
+            d = doc.data().date.toDate();
+            document.getElementById('rmed0t').innerHTML = '                                    <h6 class="card-title"><strong>' + doc.data().title + '</strong></h6>                <p class="card-text">' + doc.data().descrip + '</p>                                   <p class="card-text">' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' Autor(es):' + doc.data().authrs + '</p>';
         })
-    }).catch(err=>console.log(err));
-    db.collection('galletas').where('public','==',true).orderBy('pop','desc').limit(3).get().then(snap=>{
-        let docs=snap.docs;
-        let idx=1;
-        docs.forEach(function(doc){
-            document.getElementById('crd'+idx).href=doc.data().url;
-            document.getElementById('crd'+idx+'i').src=doc.data().picUrl;
-            let d=doc.data().date.toDate();
-            document.getElementById('crd'+idx+'t').innerHTML='                                <h5 class="card-title">'+doc.data().title+'</h5>                                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
-            document.getElementById('rmed'+idx).href=doc.data().url;
-            document.getElementById('rmed'+idx+'i').src=doc.data().picUrl;
-            d=doc.data().date.toDate();
-            document.getElementById('rmed'+idx+'t').innerHTML='                              <h6 class="card-title"><strong>'+doc.data().title+'</strong></h6>                 <p class="card-text">'+doc.data().descrip+'</p>                                   <p class="card-text">'+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+' Autor(es):'+doc.data().authrs+'</p>';
+    }).catch(err => console.log(err));
+    db.collection('galletas').where('public', '==', true).orderBy('pop', 'desc').limit(3).get().then(snap => {
+        let docs = snap.docs;
+        let idx = 1;
+        docs.forEach(function (doc) {
+            document.getElementById('crd' + idx).href = doc.data().url;
+            document.getElementById('crd' + idx + 'i').src = doc.data().picUrl;
+            let d = doc.data().date.toDate();
+            document.getElementById('crd' + idx + 't').innerHTML = '                                <h5 class="card-title">' + doc.data().title + '</h5>                                 <p class="card-text">' + doc.data().descrip + '</p>                                   <p class="card-text">' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' Autor(es):' + doc.data().authrs + '</p>';
+            document.getElementById('rmed' + idx).href = doc.data().url;
+            document.getElementById('rmed' + idx + 'i').src = doc.data().picUrl;
+            d = doc.data().date.toDate();
+            document.getElementById('rmed' + idx + 't').innerHTML = '                              <h6 class="card-title"><strong>' + doc.data().title + '</strong></h6>                 <p class="card-text">' + doc.data().descrip + '</p>                                   <p class="card-text">' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' Autor(es):' + doc.data().authrs + '</p>';
             idx++;
         })
-    }).catch(err=>console.log(err));
+    }).catch(err => console.log(err));
 }
+
+//Show Adds
+document.getElementById('adsV').innerHTML = `<h5 class="text-center mx-auto">Publicidad</h5>
+    <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65" rel="sponsored"><img class="w-100 mb-2" src="https://sciencecookies.net/publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
+    <a href="https://www.instagram.com/_pedacitode_cielo/" rel="sponsored"><img class="w-100 mb-2" src="https://sciencecookies.net/publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
+    <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37" rel="sponsored">
+        <img class="w-100" src="https://sciencecookies.net/publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
+        <img class="w-100" src="https://sciencecookies.net/publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
+        <img class="w-100 mb-2" src="https://sciencecookies.net/publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
+    </a>
+    <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd" rel="sponsored"><img class="w-100 mb-2" src="https://sciencecookies.net/publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
+    <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/" rel="sponsored"><img class="w-100 mb-2" src="https://sciencecookies.net/publicidad/Mondler.jpeg" alt="Mondler"></a>`;
+document.getElementById('adsH').innerHTML = `<div class="col-12 pt-2">
+        <h5 class="text-center mx-auto">Publicidad</h5>
+    </div>
+    <div class="col-6 px-1">
+        <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65" rel="sponsored"><img class="w-100 mb-2" src="https://sciencecookies.net/publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
+        <a href="https://www.instagram.com/_pedacitode_cielo/" rel="sponsored"><img class="w-100 mb-2" src="https://sciencecookies.net/publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
+        <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37" rel="sponsored">
+            <img class="w-100" src="https://sciencecookies.net/publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
+            <img class="w-100" src="https://sciencecookies.net/publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
+            <img class="w-100 mb-2" src="https://sciencecookies.net/publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
+        </a>
+    </div>
+    <div class="col-6 px-1">
+        <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd" rel="sponsored"><img class="w-100 mb-2" src="https://sciencecookies.net/publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
+        <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/" rel="sponsored"><img class="w-100 mb-2" src="https://sciencecookies.net/publicidad/Mondler.jpeg" alt="Mondler"></a>
+    </div>`;
 
 var defDiacs = [
     { 'corr': 'A', 'lt': '\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F' },
@@ -288,11 +316,11 @@ function rmDiacs(s) {
     });
 }
 
-function ultraClean(str,rep){
-    str=rmDiacs(str.trim().toLowerCase());
-    let banChars=",.^*!¡'?¿#@[]-:;ªº$%&()=/+{} ";
-    banChars.split('').forEach(c=>{
-        str=str.replaceAll(c,rep);
+function ultraClean(str, rep) {
+    str = rmDiacs(str.trim().toLowerCase());
+    let banChars = ",.^*!¡'?¿#@[]-:;ªº$%&()=/+{} ";
+    banChars.split('').forEach(c => {
+        str = str.replaceAll(c, rep);
     });
     return str;
 }

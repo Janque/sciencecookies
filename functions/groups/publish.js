@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const axios = require('axios');
 
-//Auth for publicar.html
+//Auth for moderators
 exports.modAuth = functions.region('us-east1').https.onCall((uid) => {
     console.log(uid);
     let data = {
