@@ -473,6 +473,8 @@ exports.newsletter = functions.region('us-east1').firestore.document('galletas/{
         };
         return axios.get('https://www.google.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
     }).then(() => {
+        return axios.get('https://www.bing.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
+    }).then(() => {
         return transporter.sendMail(mailOptions, (error, data) => {
             if (error) {
                 console.log(error);
@@ -942,6 +944,8 @@ exports.updatesNewsletter = functions.region('us-east1').firestore.document('gal
             html: htmlStr,
         };
         return axios.get('https://www.google.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
+    }).then(() => {
+        return axios.get('https://www.bing.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
     }).then(() => {
         return transporter.sendMail(mailOptions, (error, data) => {
             if (error) {
