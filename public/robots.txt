@@ -1,12 +1,12 @@
 user-agent: *
 disallow: /js
-disallow: /img/fondo1.jpg
+disallow: /img/fondo1*
 disallow: /img/scmed
-disallow: /img/nopp.png
-disallow: /img/noimg.png
+disallow: /img/nopp*
+disallow: /img/noimg*
 disallow: /publicidad
-disallow: /ver-perfil.html
-disallow: /editar.html
-disallow: /drafts.html
+disallow: /ver-perfil*
+disallow: /editar*
+disallow: /drafts*
 
 Sitemap: http://sciencecookies.net/sitemap.xml
