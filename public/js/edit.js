@@ -813,7 +813,7 @@ function render() {
             fr1.appendChild(f1c0);
             subf.appendChild(fr1);
 
-            if (item.text == "" || (Number(item.title) > 0 && item.titleTxt == "")) {
+            if (Number(item.title) > 0 && item.titleTxt == "") {
                 btnEdit.click();
             }
         } else if (item.type == 'html') {
