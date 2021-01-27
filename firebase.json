@@ -25,6 +25,14 @@
         "function": "dynCookies-showCookie"
       },
       {
+        "source": "/archivo",
+        "function": "dynArchive-showArchive"
+      },
+      {
+        "source": "/archivo/**/**",
+        "function": "dynArchive-showArchive"
+      },
+      {
         "source": "/sitemap.xml",
         "function": "sitemap-serveSitemap"
       }

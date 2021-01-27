@@ -138,6 +138,7 @@ function shwSrch(){
             descr.innerHTML=doc.data().descrip;
             bod.appendChild(descr);
             let dates=document.createElement('p');
+            classes(dates,"my-0");
             if(doc.data().dledit){
                 let dl=doc.data().ledit.toDate();
                 dates.innerText='Actualizado: '+dl.getDate()+'/'+(dl.getMonth()+1)+'/'+dl.getFullYear();
@@ -147,7 +148,7 @@ function shwSrch(){
             }
             bod.appendChild(dates);
             let auhtTxt=document.createElement('p');
-            classes(auhtTxt,"mb-0");
+            classes(auhtTxt,"mt-0");
             auhtTxt.innerText=' Autor(es):'+doc.data().authrs;
             bod.appendChild(auhtTxt);
             a.appendChild(med);

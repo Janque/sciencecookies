@@ -32,8 +32,8 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('galleta
             });
             let lyear = dat.date.toDate().getFullYear(), ltri = getTri(dat.date.toDate().getMonth());
             if (lyear != year || ltri != tri) {
-                tri = ltri
-                year = lyear
+                tri = ltri;
+                year = lyear;
                 archUrls.push({
                     loc: 'https://sciencecookies.net/archivo/' + year + '/' + tri,
                     priority: '0.6'

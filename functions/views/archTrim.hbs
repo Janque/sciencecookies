@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Aquí puedes encontrar todas las galletas de octubre a diciembre del 2020."/>
+    <meta name="description" content="Aquí puedes encontrar todas las galletas de agosto septiembre del 2020."/>
     <link rel="shortcut icon" href="../../img/logoT.svg">
-    <title>Science Cookies - Archivo 2020 octubre-diciembre</title>
+    <title>Science Cookies - Archivo 2020 agosto-septiembre</title>
 
     <!--Firebase app-->
     <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
@@ -46,7 +46,7 @@
     <!--Google fonts-->
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="../css/main.css">
 
   </head>
   <body>
@@ -157,87 +157,21 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-4">
               <li class="breadcrumb-item" aria-current="page"><a href="../../archivo">Archivo</a></li>
-              <li class="breadcrumb-item" aria-current="page"><a href="../../archivo">2020</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Octubre - Diciembre</li>
+              <li class="breadcrumb-item" aria-current="page"><a href="../../archivo">{{year}}</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{tri}}</li>
             </ol>
           </nav>
           <br>
-          <h2>Octubre</h2>
-          <br>
-          <a href="../../galletas/202010/como-funcionan-los-discos-de-vinilo" class="text-decoration-none text-light"><div class="media mb-3">
-            <img src="../../galletas/202010/20100401pic.jpg" class="align-self-center mr-3" alt="¿Cómo funcionan los discos de vinilo?" width="64px" height="64px">
-            <div class="media-body">
-              <h5 class="mt-0">¿Cómo funcionan los discos de vinilo?</h5>
-              <p>Después de más de un siglo después de su creación, los discos de vinilo siguen siendo un invento digno de apreciación, averigua cómo funciona el reproductor de música de antaño.</p>
-              <p class="mb-0">5/10/2020 Autor(es): Paulina Vargas</p></div>
-          </div></a>
-          <div class="dropdown-divider d-md-none"></div>
-          <a href="../../galletas/202010/plasmodial-slime-mold" class="text-decoration-none text-light"><div class="media mb-3">
-            <img src="../../galletas/202010/20101501pic.jpg" class="align-self-center mr-3" alt="Plasmodial slime mold (Moho de fango plasmodial)" width="64px" height="64px">
-            <div class="media-body">
-              <h5 class="mt-0">Plasmodial slime mold (Moho de fango plasmodial)</h5>
-              <p>El moho de fango o plasmodial slime mold en inglés, parece una sustancia gelatinosa, se desplaza absorbiendo hongos, materia organica en descomposición y otros mohos de fango.</p>
-              <p class="mb-0">15/10/2020 Autor(es): Javier Pantoja</p></div>
-          </div></a>
-          <div class="dropdown-divider d-md-none"></div>
-          <a href="../../galletas/202012/hohmann" class="text-decoration-none text-light"><div class="media mb-3">
-            <img src="../../galletas/202012/20122401pic.png" class="align-self-center mr-3" alt="Órbita de transferencia de Hohmann: DIY Viaje económico de la Tierra a Marte" width="64px" height="64px">
-            <div class="media-body">
-              <h5 class="mt-0">Órbita de transferencia de Hohmann: DIY Viaje económico de la Tierra a Marte</h5>
-              <p>La tarayectoria a seguir de muhcísimos viajes espaciales comienza gracias Hohmann.</p>
-              <p class="mb-0">29/12/2020 Autor(es): Andrea Garma</p></div>
-          </div></a>
-          <div class="dropdown-divider d-md-none"></div>
-          <a href="../../galletas/202012/que-tan-grandes-son-los-extraterrestres" class="text-decoration-none text-light"><div class="media mb-3">
-            <img src="../../galletas/202012/20122901pic.jpg" class="align-self-center mr-3" alt="¿Qué tan grandes pueden ser los extraterrestres?" width="64px" height="64px">
-            <div class="media-body">
-              <h5 class="mt-0">¿Qué tan grandes pueden ser los extraterrestres?</h5>
-              <p>Nadie sabe cómo serían los extraterrestres, pero podemos aproximar su tamaño. ¿Serían como nosotros, como hormigas o como edificios?</p>
-              <p class="mb-0">29/12/2020 Autor(es): Javier Pantoja</p></div>
-          </div></a>
-          <div class="dropdown-divider d-md-none"></div>
-          <a href="../../galletas/202012/agua-en-la-luna" class="text-decoration-none text-light"><div class="media mb-3">
-            <img src="../../galletas/202012/20122902pic.jpg" class="align-self-center mr-3" alt="Science Cookies - Agua en la Luna" width="64px" height="64px">
-            <div class="media-body">
-              <h5 class="mt-0">Science Cookies - Agua en la Luna</h5>
-              <p>Hallar una fuente de vida, como el agua, en la Luna sin atmósfera, no es para nada usual. Averigua cómo fue posible uno de los mayores descubrimientos del 2020.</p>
-              <p class="mb-0">29/12/2020 Autor(es): Paulina Vargas</p></div>
-          </div></a>
+          {{#each months}}
+            {{{this}}}
+          {{/each}}
           <!--Aquí termina el contenido-->
         </div>
         <!--Anuncios V-->
-        <div class="col-2 py-md-3 d-none d-sm-block bg-info sidebar text-dark text-center justify-content-center px-1 px-lg-2">
-          <h5 class="text-center mx-auto">Publicidad</h5>
-          <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65" rel="sponsored"><img class="w-100 mb-2" src="../../publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
-          <a href="https://www.instagram.com/_pedacitode_cielo/" rel="sponsored"><img class="w-100 mb-2" src="../../publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
-          <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37" rel="sponsored">
-            <img class="w-100" src="../../publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
-            <img class="w-100" src="../../publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
-            <img class="w-100 mb-2" src="../../publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
-          </a>
-          <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd" rel="sponsored"><img class="w-100 mb-2" src="../../publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
-          <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/" rel="sponsored"><img class="w-100 mb-2" src="../../publicidad/Mondler.jpeg" alt="Mondler"></a>
-        </div>
+        <div class="col-2 py-md-3 d-none d-sm-block bg-info sidebar text-dark text-center justify-content-center px-1 px-lg-2" id="adsV"></div>
       </div>
       <!--Anuncios H-->
-      <div class="row bg-info px-2 text-dark d-sm-none justify-content-center">
-        <div class="col-12 pt-2">
-          <h5 class="text-center mx-auto">Publicidad</h5>
-        </div>
-        <div class="col-6 px-1">
-          <a href="https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65" rel="sponsored"><img class="w-100 mb-2" src="../../publicidad/CubreMid.jpg" alt="Cubre Mid"></a>
-          <a href="https://www.instagram.com/_pedacitode_cielo/" rel="sponsored"><img class="w-100 mb-2" src="../../publicidad/PedacitoDeCielo.jpeg" alt="Pedacito de Cielo"></a>
-          <a href="https://www.instagram.com/p/CC_2AELnaMi/?igshid=yp0v3i285a37" rel="sponsored">
-            <img class="w-100" src="../../publicidad/Lool-Ha1.jpeg" alt="Lool-Ha">
-            <img class="w-100" src="../../publicidad/Lool-Ha2.jpeg" alt="Lool-Ha">
-            <img class="w-100 mb-2" src="../../publicidad/Lool-Ha3.jpeg" alt="Lool-Ha">
-          </a>
-        </div>
-        <div class="col-6 px-1">
-          <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd" rel="sponsored"><img class="w-100 mb-2" src="../../publicidad/AwesomeFundas.jpg" alt="Awesome Fundas"></a>
-          <a href="https://m.facebook.com/pages/category/Beauty-Supply-Store/mondlermid-100749941724343/" rel="sponsored"><img class="w-100 mb-2" src="../../publicidad/Mondler.jpeg" alt="Mondler"></a>
-        </div>
-      </div>
+      <div class="row bg-info px-2 text-dark d-sm-none justify-content-center" id="adsH"></div>
     </div>
     
     <!--Bootstrap-->

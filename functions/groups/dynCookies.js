@@ -29,7 +29,6 @@ app.get('/galletas/:month/:file', (req, res) => {
                     res.redirect('http://sciencecookies.net/404');
                     return;
                 }
-                console.log('pass');
                 let content = [];
                 dat.cont.forEach(item => {
                     let sect = "";
