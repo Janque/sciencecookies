@@ -6,6 +6,7 @@ admin.initializeApp({
 
 exports.cookieFeatures = require('./groups/cookieFeatures');
 exports.dynCookies = require('./groups/dynCookies');
+exports.dynArchive = require('./groups/dynArchive');
 exports.maintenance = require('./groups/maintenance');
 exports.publish = require('./groups/publish');
 exports.users = require('./groups/users');
