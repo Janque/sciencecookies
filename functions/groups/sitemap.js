@@ -16,7 +16,7 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('galleta
         let archUrls = [{
             loc: 'https://sciencecookies.net/archivo',
             priority: '0.7',
-            lastmod: admin.firestore.Timestamp.now()
+            lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
         }];
         let year = 2020, tri = 'abr-jun';
         snap.forEach(doc => {
