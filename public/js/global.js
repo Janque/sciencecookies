@@ -64,6 +64,7 @@ function shwSsnBtns(ac) {
         document.getElementById('btnPref').classList.remove('d-none');
         if (mod) {
             document.getElementById('btnDraft').classList.remove('d-none');
+            document.getElementById('btnCals').classList.remove('d-none');
         }
         document.getElementById('btnLgO').classList.remove('d-none');
         if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.add('d-none');
