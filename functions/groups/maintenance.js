@@ -3,7 +3,7 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 
 //Update popularity from RTDB to FSDB
-exports.uptPop = functions.region('us-east1').pubsub.schedule('every 24 hours').onRun((context) => {
+exports.uptPop = functions.region('us-east1').pubsub.schedule('0 0 * * *').onRun((context) => {
     return admin.database().ref('uptCook').once('value', data => {
         if(!data)return null;
         Object.keys(data.val()).forEach(itm => {
@@ -24,7 +24,7 @@ exports.uptPop = functions.region('us-east1').pubsub.schedule('every 24 hours').
 });
 
 //Update today's CookieID's
-exports.uptIDs = functions.region('us-east1').pubsub.schedule('every 24 hours').onRun((context) => {
+exports.uptIDs = functions.region('us-east1').pubsub.schedule('0 0 * * *').onRun((context) => {
     let t = admin.firestore.Timestamp.now().toDate();
     today = (t.getFullYear() % 100).toString();
     if (t.getMonth() < 9) today += '0';
