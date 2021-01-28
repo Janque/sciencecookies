@@ -15,18 +15,19 @@ app.get('/galletas/:month/:file', (req, res) => {
     if (!/^[0-9]{6}$/.test(req.params.month)) {
         console.log('badUrl');
         res.redirect('http://sciencecookies.net/404');
+        return;
     } else {
         db.collection('galletasCont').where('file', '==', req.params.file).limit(1).get().then(snap => {
             if (snap.empty) {
                 console.log('snap.empty');
-                res.redirect('http://sciencecookies.net/404');
+                res.redirect('https://sciencecookies.net/404');
                 return;
             }
             snap.forEach(doc => {
                 let dat = doc.data();
                 if (!dat.public) {
                     console.log('private');
-                    res.redirect('http://sciencecookies.net/404');
+                    res.redirect('https://sciencecookies.net/404');
                     return;
                 }
                 let content = [];

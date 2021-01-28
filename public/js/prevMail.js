@@ -7,7 +7,6 @@ firebase.auth().onAuthStateChanged(user => {
             if (!res.data.mod)window.location.href='https://sciencecookies.net';
         }).catch(err => console.log(err));
     } else {
-        console.log('a');
         window.location.href='https://sciencecookies.net';
     }
 });
