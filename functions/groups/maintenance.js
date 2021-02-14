@@ -5,7 +5,7 @@ const db = admin.firestore();
 //Update popularity from RTDB to FSDB
 exports.uptPop = functions.region('us-east1').pubsub.schedule('0 0 * * *').onRun((context) => {
     return admin.database().ref('uptCook').once('value', data => {
-        if(!data)return null;
+        if(!data||!data.val())return null;
         Object.keys(data.val()).forEach(itm => {
             admin.database().ref('galletas/' + itm).once('value', cook => {
                 db.collection('galletas').doc(itm).update({
