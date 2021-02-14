@@ -7,9 +7,37 @@ let lastSave = Date.now(), saved = false;
 let newMedia = null;
 let newMedSrc = null;
 
-let eventToShow = "";
+let eventToShow = null;
 
-const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'], longDay = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'];
+function fullMonth(n) {
+    switch (n) {
+        case 1:
+            return "Enero";
+        case 2:
+            return "Febrero";
+        case 3:
+            return "Marzo";
+        case 4:
+            return "Abril";
+        case 5:
+            return "Mayo";
+        case 6:
+            return "Junio";
+        case 7:
+            return "Julio";
+        case 8:
+            return "Agosto";
+        case 9:
+            return "Septiembre";
+        case 10:
+            return "Octubre";
+        case 11:
+            return "Noviembre";
+        case 12:
+            return "Diciembre";
+    }
+}
 
 function loaded() {
     db.collection('calendarios').doc(urlSrch.get('file')).onSnapshot(doc => {
@@ -25,13 +53,11 @@ function loaded() {
         document.getElementById('inDescShort').value = docDat.descriptionShort;
         render();
         if (docDat.public) {
-            document.getElementById('btnPrevCal').classList.remove('d-none');
-            document.getElementById('btnAprove').classList.add('d-none');
-            document.getElementById('btnPub').classList.add('d-none');
+            hideEl(document.getElementById('btnAprove'));
+            hideEl(document.getElementById('btnPub'));
         } else {
-            document.getElementById('btnPrevCal').classList.add('d-none');
-            document.getElementById('btnAprove').classList.remove('d-none');
-            if (docDat.pastDue) document.getElementById('btnPub').classList.remove('d-none');
+            showEl(document.getElementById('btnAprove'));
+            if (docDat.pastDue) showEl(document.getElementById('btnPub'));
         }
         if (docDat.revised.includes(uid)) {
             document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
@@ -43,7 +69,7 @@ function loaded() {
     function descFrm() {
         docDat.description = document.getElementById('inDesc').value.trim();
         docDat.descriptionShort = document.getElementById('inDescShort').value.trim();
-        return normSave();
+        normSave();
     }
     document.getElementById("frmText").addEventListener("submit", function (event) {
         event.preventDefault();
@@ -99,6 +125,7 @@ function saveDoc() {
 }
 function normSave() {
     saveDoc().then(() => {
+        if(eventToShow)showEvent();//IMPORTANT
         if (saved) clearInterval(savedInterval);
         saved = true;
         savedInterval = setInterval(() => {
@@ -106,7 +133,7 @@ function normSave() {
             if (minutes < 60) document.getElementById('tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
             else document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
         }, 300010);
-        document.getElementById('tagLstSave').innerText = "Se han guardado todos los cambios";
+        document.getElementById('tagLstSave').innerText = "Se han guardado los cambios";
         lastSave = Date.now();
     }).catch(err => {
         document.getElementById('tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
@@ -121,12 +148,45 @@ function setprog(bar, n) {
 }
 
 function showEvent() {
+    for (const [key, event] of Object.entries(docDat.events)) {
+        hideEl(document.getElementById(key));
+    }
+    document.getElementById('mdlEventInfoL').innerHTML = docDat.events[eventToShow].date;
+    showEl(document.getElementById(eventToShow));
+    enable(document.getElementById('btnPriorEve'));
+    enable(document.getElementById('btnNextEve'));
+}
+document.getElementById('btnPriorEve').onclick = () => {
+    let n = Object.keys(docDat.events).indexOf(eventToShow) - 1;
+    if (n >= 0) {
+        eventToShow = Object.keys(docDat.events)[n];
+        showEvent();
+    } else {
+        disable(document.getElementById('btnPriorEve'));
+    }
+};
+document.getElementById('btnNextEve').onclick = () => {
+    let n = Object.keys(docDat.events).indexOf(eventToShow) + 1;
+    if (n < Object.keys(docDat.events).length) {
+        eventToShow = Object.keys(docDat.events)[n];
+        showEvent();
+    } else {
+        disable(document.getElementById('btnNextEve'));
+    }
+};
 
+function enable(btn) {
+    btn.classList.remove('disabled');
+    btn.removeAttribute('disabled');
+}
+function disable(btn) {
+    classes(btn, "disabled");
+    btn.setAttribute("disabled", "true");
 }
 
 function render() {
     document.getElementById('weeksCont').innerHTML = "";
-    docDat.weeks.forEach(week => {
+    docDat.weeks.forEach((week, wIdx) => {
         let weekRow = document.createElement('tr');
         weekRow.style.height = '10rem';
         document.getElementById('weeksCont').appendChild(weekRow);
@@ -154,7 +214,7 @@ function render() {
                     btnEvent.style.borderColor = "#8fd19e";
                     btnEvent.innerHTML = '<small>' + event.name + '</small>';
                     btnEvent.onclick = () => {
-                        eventToShow = "d" + day.date + "e" + idx;
+                        eventToShow = wIdx + daysOfWeek[i] + idx;
                         showEvent();
                     }
                     events.appendChild(btnEvent);
@@ -163,6 +223,13 @@ function render() {
                 classes(btnPlusEvent, "btn btn-scckie btn-block btn-sm");
                 btnPlusEvent.innerHTML = '<i class="fas fa-plus"></i>';
                 btnPlusEvent.onclick = () => {
+                    docDat.events[wIdx + daysOfWeek[i] + day.events.length] = {
+                        date: longDay[i] + " " + day.date + " de " + fullMonth(docId % 100),
+                        name: "Evento sin nombre",
+                        descripcion: "Sin descripción",
+                        visibilidad: "No observable",
+                        horario: []
+                    };
                     day.events.push({
                         name: "Evento sin nombre"
                     });
@@ -173,7 +240,180 @@ function render() {
             }
         }
     });
+    document.getElementById('eventInfoCont').innerHTML = "";
+    for (const [key, event] of Object.entries(docDat.events)) {
+        let changed = false;
+        let form = document.createElement('div');
+        form.id = key;
+        classes(form, "d-none overflow-auto");
+        let bod = document.createElement('div');
+        classes(bod, "modal-body");
+        form.appendChild(bod);
+
+        let fsec = document.createElement('div');
+        classes(fsec, "d-none");
+        bod.appendChild(fsec);
+        let fg0 = document.createElement('div');
+        classes(fg0, "form-group");
+        fsec.appendChild(fg0);
+        fg0.innerHTML = '<label>Nombre del evento</label>';
+        let in0 = document.createElement('input');
+        in0.id = "inEveTitle" + key;
+        in0.setAttribute("type", "text");
+        classes(in0, "form-control");
+        fg0.appendChild(in0);
+        let fg1 = document.createElement('div');
+        classes(fg1, "form-group");
+        fsec.appendChild(fg1);
+        fg1.innerHTML = '<label>Descripción</label>';
+        let in1 = document.createElement('textarea');
+        classes(in1, "form-control");
+        in1.id = "inEveDesc" + key;
+        in1.setAttribute("rows", "3");
+        fg1.appendChild(in1);
+        let fg2 = document.createElement('div');
+        classes(fg2, "form-group");
+        fsec.appendChild(fg2);
+        fg2.innerHTML = '<label>Visiblidad</label>';
+        let in2 = document.createElement('input');
+        in2.id = "inVis" + key;
+        in2.setAttribute("type", "text");
+        classes(in2, "form-control");
+        fg2.appendChild(in2);
+        let fg3 = document.createElement('div');
+        classes(fg3, "form-group");
+        fsec.appendChild(fg3);
+        fg3.innerHTML = '<label>Horario</label>';
+        let in3 = document.createElement('textarea');
+        classes(in3, "form-control");
+        in3.id = "inTime" + key;
+        in3.setAttribute("rows", "4");
+        fg3.appendChild(in3);
+        in0.oninput = () => {
+            enable(reverBtn);
+            changed = true;
+        };
+        in1.oninput = () => {
+            enable(reverBtn);
+            changed = true;
+        };
+        in2.oninput = () => {
+            enable(reverBtn);
+            changed = true;
+        };
+        in3.oninput = () => {
+            enable(reverBtn);
+            changed = true;
+        };
+
+        let tsec = document.createElement('div');
+        bod.appendChild(tsec);
+        let eveTit = document.createElement('h3');
+        eveTit.innerHTML = event.name;
+        tsec.appendChild(eveTit);
+        let eveDesc = document.createElement('p');
+        eveDesc.innerHTML = event.descripcion;
+        tsec.appendChild(eveDesc);
+        let eveVis = document.createElement('p');
+        eveVis.innerHTML = "Visibilidad: " + event.visibilidad;
+        tsec.appendChild(eveVis);
+        let eveTime = document.createElement('p');
+        classes(eveTime, "mb-0");
+        eveTime.innerHTML = "Horario: ";
+        tsec.appendChild(eveTime);
+        let eveTimeLst = document.createElement('ul');
+        tsec.appendChild(eveTimeLst);
+        event.horario.forEach(time => {
+            let li = document.createElement('li');
+            li.innerHTML = time;
+            eveTimeLst.appendChild(li);
+        });
+
+
+        let foot = document.createElement('div');
+        classes(foot, "modal-footer");
+        form.appendChild(foot);
+
+        let delBtn = document.createElement('button');
+        classes(delBtn, "btn btn-danger mr-auto")
+        delBtn.setAttribute("type", "button");
+        delBtn.innerText = "Borrar";
+        delBtn.onclick = () => {
+            delete docDat.events[key];
+            docDat.weeks[Number(key[0])][key.substr(1, 3)].events.splice(Number(key.substr(4)), 1);
+            $('#mdlEventInfo').modal('hide');
+            eventToShow=null;
+            normSave();
+        };
+        foot.appendChild(delBtn);
+        let editBtn = document.createElement('button');
+        classes(editBtn, "btn btn-info");
+        editBtn.setAttribute("type", "button");
+        editBtn.innerText = "Editar";
+        editBtn.onclick = () => {
+            in0.value = event.name;
+            in1.innerHTML = event.descripcion;
+            in2.value = event.visibilidad;
+            in3.innerHTML = "";
+            event.horario.forEach(time => {
+                in3.innerHTML += time + "\n";
+            });
+            hideEl(tsec);
+            showEl(fsec);
+            showEl(reverBtn);
+            showEl(saveBtn);
+            enable(saveBtn);
+            hideEl(editBtn);
+        };
+        foot.appendChild(editBtn);
+        let reverBtn = document.createElement('button');
+        classes(reverBtn, "btn btn-secondary mr-1 d-none");
+        reverBtn.setAttribute("type", "button");
+        disable(reverBtn);
+        reverBtn.innerText = "Revertir";
+        reverBtn.onclick = () => {
+            changed = false;
+            disable(reverBtn);
+            in0.value = event.name;
+            in1.innerHTML = event.descripcion;
+            in2.value = event.visibilidad;
+            in3.innerHTML = "";
+            event.horario.forEach(time => {
+                in3.innerHTML += time.trim() + "\n";
+            });
+        };
+        foot.appendChild(reverBtn);
+        let saveBtn = document.createElement('button');
+        classes(saveBtn, "btn btn-scckie d-none");
+        saveBtn.setAttribute("type", "button");
+        disable(saveBtn);
+        saveBtn.innerText = "Guardar";
+        saveBtn.onclick = () => {
+            disable(reverBtn);
+            disable(saveBtn);
+            if (changed) {
+                event.name = in0.value;
+                event.descripcion = in1.value.trim();
+                event.visibilidad = in2.value;
+                event.horario = [];
+                in3.value.trim().split('\n').forEach(time => {
+                    if (time != "" && time != " ") event.horario.push(time);
+                });
+                normSave();
+            }else{
+                hideEl(fsec);
+                showEl(tsec);
+                hideEl(reverBtn);
+                hideEl(saveBtn);
+                showEl(editBtn);
+            }
+        };
+        foot.appendChild(saveBtn);
+
+        document.getElementById('eventInfoCont').appendChild(form);
+    }
 }
+
 
 function resetChgImg(uncheck) {
     document.getElementById('prevMed').src = docDat.picUrl;
@@ -225,10 +465,16 @@ document.getElementById('inMedSrc1').onclick = function () {
 }
 
 document.getElementById('btnPrevCal').onclick = function () {
-    window.open(docDat.url, '_blank').focus();
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    saveDoc.then(() => {
+        window.open(docDat.url, '_blank').focus();
+    }).catch(err => console.log(err));
 };
 document.getElementById('btnPrevMail').onclick = function () {
-    window.open('../vista-email/' + docDat.file, '_blank').focus();
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    saveDoc.then(() => {
+        window.open('../vista-email-calendario/' + docDat.file, '_blank').focus();
+    }).catch(err => console.log(err));
 };
 
 document.getElementById('btnAprove').onclick = function () {
@@ -238,7 +484,10 @@ document.getElementById('btnAprove').onclick = function () {
     } else {
         docDat.revised.push(uid);
         document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
-        if (docDat.revised.length > 1) newCal();
+        if (docDat.revised.length > 1) {
+            docDat.finished = true;
+            newCal();
+        }
     }
     normSave();
 };
@@ -259,46 +508,8 @@ function newCal() {
         if (error) {
             console.log(error);
         } else {
-            let month = "";
-            switch (nextCalID % 100) {
-                case 1:
-                    month = "Enero";
-                    break;
-                case 2:
-                    month = "Febrero";
-                    break;
-                case 3:
-                    month = "Marzo";
-                    break;
-                case 4:
-                    month = "Abril";
-                    break;
-                case 5:
-                    month = "Mayo";
-                    break;
-                case 6:
-                    month = "Junio";
-                    break;
-                case 7:
-                    month = "Julio";
-                    break;
-                case 8:
-                    month = "Agosto";
-                    break;
-                case 9:
-                    month = "Septiembre";
-                    break;
-                case 10:
-                    month = "Octubre";
-                    break;
-                case 11:
-                    month = "Noviembre";
-                    break;
-                case 12:
-                    month = "Diciembre";
-                    break;
-            }
-            let date = new Date((nextCalID - nextCalID % 100)/100 + ' ' + nextCalID % 100 + ' ' + '00:00');
+            let month = fullMonth(nextCalID % 100);
+            let date = new Date((nextCalID - nextCalID % 100) / 100 + ' ' + nextCalID % 100 + ' ' + '00:00');
             let weeks = [];
             let days;
             if (date.getMonth() == 1) {
@@ -329,6 +540,7 @@ function newCal() {
                 bDay = 0;
             }
             db.collection('calendarios').doc(Math.abs(nextCalID).toString()).set({
+                events: {},
                 date: firebase.firestore.Timestamp.fromDate(date),
                 description: "Sin descripción",
                 descriptionShort: "Sin descripción",
@@ -336,9 +548,10 @@ function newCal() {
                 pastDue: false,
                 picUrl: "",
                 public: false,
+                sentMail: false,
                 revised: [],
-                title: "Calendario Astronómico de " + month + " " + (nextCalID - nextCalID % 100)/100,
-                url: "https://sciencecookies.net/calendario-astronomico/" + (nextCalID - nextCalID % 100)/100 + "/" + month.toLowerCase(),
+                title: "Calendario Astronómico de " + month + " " + (nextCalID - nextCalID % 100) / 100,
+                url: "https://sciencecookies.net/calendario-astronomico/" + (nextCalID - nextCalID % 100) / 100 + "/" + month.toLowerCase(),
                 weeks: weeks
             }).then(() => {
                 console.log('nuevo calendario');
@@ -351,154 +564,51 @@ $('#mdlPublish').on('show.bs.modal', e => {
     let rev = docDat.revised.length;
     if (!docDat.revised.includes(uid)) rev++;
     if (rev < 2) {
-        classes(document.getElementById('btnCnfPublish'), "d-none");
+        hideEl(document.getElementById('btnCnfPublish'));
         document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
-        document.getElementById('frmPublish').classList.add('d-none');
     } else {
-        document.getElementById('btnCnfPublish').classList.remove("d-none");
-        document.getElementById('mdlPublishTxt').innerText = "La galleta está lista para publicar";
-        document.getElementById('frmPublish').classList.remove('d-none');
-        if (docDat.beenPublic) document.getElementById('sendUptCont').classList.remove('d-none');
+        showEl(document.getElementById('btnCnfPublish'));
+        document.getElementById('mdlPublishTxt').innerText = "El calendario está listo para publicar";
     }
 });
-
-function finishPub() {
-    setprog(document.getElementById('barPublish'), '100');
-    classes(document.getElementById('barPublish'), 'bg-success');
-    document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-    let d = docDat.published.toDate();
-    let month = d.getFullYear().toString();
-    if (d.getMonth() < 9) {
-        month += '0';
-    }
-    month += (d.getMonth() + 1);
-    setTimeout(function () {
-        window.open('../galletas/' + month + '/' + docDat.file, '_blank').focus();
-    }, 2500);
-    console.log("Data saved successfully.");
-    setTimeout(function () {
-        document.getElementById("btnAlrtClsSsn").click();
-    }, 3000);
-    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-        document.getElementById("alrtClsSsn").innerHTML = '';
-    });
-    $('#mdlPublish').modal('hide');
-}
 
 document.getElementById('btnCnfPublish').onclick = function () {
     if (docDat.public) return;
     setprog(document.getElementById('barPublish'), '0');
-    document.getElementById('barPublishCont').classList.remove('d-none');
-    if (!docDat.beenPublic) {
-        setprog(document.getElementById('barPublish'), '30');
-        db.collection('galletasCont').doc(docId).update({
-            beenPublic: true,
-            public: true,
-            ledit: new firebase.firestore.Timestamp.now(),
-            published: new firebase.firestore.Timestamp.now(),
-            revised: []
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '49');
-            let d = docDat.published.toDate();
-            let month = d.getFullYear().toString();
-            if (d.getMonth() < 9) {
-                month += '0';
-            }
-            month += (d.getMonth() + 1);
-            return db.collection('galletas').doc(docId).set({
-                likes: 0,
-                favs: 0,
-                pop: 0,
-                ledit: new firebase.firestore.Timestamp.now(),
-                date: new firebase.firestore.Timestamp.now(),
-                dledit: false,
-                notify: false,
-                public: true,
-                title: docDat.title,
-                descrip: docDat.description,
-                url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
-                picUrl: docDat.picUrl,
-                authrs: docDat.authors,
-                cats: keywords
-            })
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '78');
-            rtDb.ref('galletas/' + docId).set({
-                pop: 0,
-                likes: 0,
-                favs: 0
-            }, err => {
-                if (err) {
-                    console.log("Data could not be saved." + err);
-                } else {
-                    setprog(document.getElementById('barPublish'), '84');
-                    finishPub();
-                }
-            });
-        }).catch(error => {
-            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-            console.log(error);
-            setTimeout(function () {
-                document.getElementById("btnAlrtClsSsn").click();
-            }, 3000);
-            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                document.getElementById("alrtClsSsn").innerHTML = '';
-            });
+    showEl(document.getElementById('barPublishCont'));
+    setprog(document.getElementById('barPublish'), '25');
+    db.collection('calendarios').doc(docId).update({
+        public: true
+    }).then(() => {
+        setprog(document.getElementById('barPublish'), '63');
+        setprog(document.getElementById('barPublish'), '100');
+        classes(document.getElementById('barPublish'), 'bg-success');
+        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+        let d = docDat.published.toDate();
+        let month = d.getFullYear().toString();
+        if (d.getMonth() < 9) {
+            month += '0';
+        }
+        month += (d.getMonth() + 1);
+        setTimeout(function () {
+            window.open(docDat.url, '_blank').focus();
+        }, 2500);
+        console.log("Published successfully.");
+        setTimeout(function () {
+            document.getElementById("btnAlrtClsSsn").click();
+        }, 3000);
+        $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+            document.getElementById("alrtClsSsn").innerHTML = '';
         });
-    } else {
-        setprog(document.getElementById('barPublish'), '30');
-        db.collection('galletasCont').doc(docId).update({
-            public: true,
-            ledit: new firebase.firestore.Timestamp.now(),
-            revised: []
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '42');
-            let d = docDat.published.toDate();
-            let month = d.getFullYear().toString();
-            if (d.getMonth() < 9) {
-                month += '0';
-            }
-            month += (d.getMonth() + 1);
-            let cook = {
-                title: docDat.title,
-                descrip: docDat.description,
-                url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
-                picUrl: docDat.picUrl,
-                authrs: docDat.authors,
-                cats: keywords,
-                public: true,
-            };
-            setprog(document.getElementById('barPublish'), '57');
-            if (document.getElementById('inSendUpt').checked) {
-                cook.ledit = new firebase.firestore.Timestamp.now();
-                cook.dledit = true;
-                cook.notify = true;
-            } else {
-                cook.dledit = false;
-                cook.notify = false;
-            }
-            setprog(document.getElementById('barPublish'), '61');
-            if (document.getElementById('inSendUpt').checked) {
-                cook.uptMsg = true;
-                cook.uptDescrip = document.getElementById('inDesc').value.trim();
-            } else {
-                cook.uptMsg = false;
-                cook.uptDescrip = '';
-            }
-            setprog(document.getElementById('barPublish'), '66');
-            return db.collection('galletas').doc(docId).update(cook);
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '78');
-            finishPub();
-        }).catch(error => {
-            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-            console.log(error);
-            setTimeout(function () {
-                document.getElementById("btnAlrtClsSsn").click();
-            }, 3000);
-            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                document.getElementById("alrtClsSsn").innerHTML = '';
-            });
+        $('#mdlPublish').modal('hide');
+    }).catch(error => {
+        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+        console.log(error);
+        setTimeout(function () {
+            document.getElementById("btnAlrtClsSsn").click();
+        }, 3000);
+        $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+            document.getElementById("alrtClsSsn").innerHTML = '';
         });
-    }
+    });
 };
