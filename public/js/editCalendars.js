@@ -36,6 +36,10 @@ function fullMonth(n) {
             return "Noviembre";
         case 12:
             return "Diciembre";
+        case 0:
+            return "Diciembre";
+        case 13:
+            return "Enero";
     }
 }
 
@@ -49,6 +53,8 @@ function loaded() {
         docId = doc.id;
         document.getElementById('title').innerHTML = docDat.title;
         document.getElementById('prevMed').src = docDat.picUrl;
+        document.getElementById('inPicCapt').value = docDat.picCapt;
+        document.getElementById('inPicAlt').value = docDat.picAlt;
         document.getElementById('inDesc').value = docDat.description;
         document.getElementById('inDescShort').value = docDat.descriptionShort;
         render();
@@ -118,6 +124,19 @@ function loaded() {
     });
 }
 
+document.getElementById('inPicCapt').oninput = () => {
+    docDat.picCapt = document.getElementById('inPicCapt').value.trim();
+}
+document.getElementById('inPicAlt').oninput = () => {
+    docDat.picAlt = document.getElementById('inPicAlt').value.trim();
+}
+document.getElementById('inDesc').oninput = () => {
+    docDat.picDesc = document.getElementById('inDesc').value.trim();
+}
+document.getElementById('inDescShort').oninput = () => {
+    docDat.picDescShort = document.getElementById('inDescShort').value.trim();
+}
+
 let savedInterval;
 function saveDoc() {
     console.log('Saving...');
@@ -125,7 +144,7 @@ function saveDoc() {
 }
 function normSave() {
     saveDoc().then(() => {
-        if(eventToShow)showEvent();//IMPORTANT
+        if (eventToShow) showEvent();//IMPORTANT
         if (saved) clearInterval(savedInterval);
         saved = true;
         savedInterval = setInterval(() => {
@@ -148,9 +167,9 @@ function setprog(bar, n) {
 }
 
 function showEvent() {
-    for (const [key, event] of Object.entries(docDat.events)) {
+    Object.keys(docDat.events).forEach(key => {
         hideEl(document.getElementById(key));
-    }
+    });
     document.getElementById('mdlEventInfoL').innerHTML = docDat.events[eventToShow].date;
     showEl(document.getElementById(eventToShow));
     enable(document.getElementById('btnPriorEve'));
@@ -175,15 +194,6 @@ document.getElementById('btnNextEve').onclick = () => {
     }
 };
 
-function enable(btn) {
-    btn.classList.remove('disabled');
-    btn.removeAttribute('disabled');
-}
-function disable(btn) {
-    classes(btn, "disabled");
-    btn.setAttribute("disabled", "true");
-}
-
 function render() {
     document.getElementById('weeksCont').innerHTML = "";
     docDat.weeks.forEach((week, wIdx) => {
@@ -193,7 +203,7 @@ function render() {
         for (let i = 0; i < 7; i++) {
             let day = week[daysOfWeek[i]]
             let dayCell = document.createElement('td');
-            classes(dayCell, "py-0 pr-0");
+            classes(dayCell, "p-0");
             weekRow.appendChild(dayCell);
             if (day) {
                 let num = document.createElement('p');
@@ -226,7 +236,7 @@ function render() {
                     docDat.events[wIdx + daysOfWeek[i] + day.events.length] = {
                         date: longDay[i] + " " + day.date + " de " + fullMonth(docId % 100),
                         name: "Evento sin nombre",
-                        descripcion: "Sin descripción",
+                        description: "Sin descripción",
                         visibilidad: "No observable",
                         horario: []
                     };
@@ -312,7 +322,7 @@ function render() {
         eveTit.innerHTML = event.name;
         tsec.appendChild(eveTit);
         let eveDesc = document.createElement('p');
-        eveDesc.innerHTML = event.descripcion;
+        eveDesc.innerHTML = event.description;
         tsec.appendChild(eveDesc);
         let eveVis = document.createElement('p');
         eveVis.innerHTML = "Visibilidad: " + event.visibilidad;
@@ -339,10 +349,13 @@ function render() {
         delBtn.setAttribute("type", "button");
         delBtn.innerText = "Borrar";
         delBtn.onclick = () => {
-            delete docDat.events[key];
+            for (let i = Number(key.substr(4)) + 1; i < docDat.weeks[Number(key[0])][key.substr(1, 3)].events.length; i++) {
+                docDat.events[key.substr(0, 4) + (i - 1)] = docDat.events[key.substr(0, 4) + i]
+            }
+            delete docDat.events[key.substr(0, 4) + (docDat.weeks[Number(key[0])][key.substr(1, 3)].events.length - 1)];
             docDat.weeks[Number(key[0])][key.substr(1, 3)].events.splice(Number(key.substr(4)), 1);
             $('#mdlEventInfo').modal('hide');
-            eventToShow=null;
+            eventToShow = null;
             normSave();
         };
         foot.appendChild(delBtn);
@@ -352,7 +365,7 @@ function render() {
         editBtn.innerText = "Editar";
         editBtn.onclick = () => {
             in0.value = event.name;
-            in1.innerHTML = event.descripcion;
+            in1.innerHTML = event.description;
             in2.value = event.visibilidad;
             in3.innerHTML = "";
             event.horario.forEach(time => {
@@ -375,7 +388,7 @@ function render() {
             changed = false;
             disable(reverBtn);
             in0.value = event.name;
-            in1.innerHTML = event.descripcion;
+            in1.innerHTML = event.description;
             in2.value = event.visibilidad;
             in3.innerHTML = "";
             event.horario.forEach(time => {
@@ -392,15 +405,15 @@ function render() {
             disable(reverBtn);
             disable(saveBtn);
             if (changed) {
-                event.name = in0.value;
-                event.descripcion = in1.value.trim();
+                docDat.weeks[Number(key[0])][key.substr(1, 3)].events[key[4]].name = event.name = in0.value;
+                event.description = in1.value.trim();
                 event.visibilidad = in2.value;
                 event.horario = [];
                 in3.value.trim().split('\n').forEach(time => {
                     if (time != "" && time != " ") event.horario.push(time);
                 });
                 normSave();
-            }else{
+            } else {
                 hideEl(fsec);
                 showEl(tsec);
                 hideEl(reverBtn);
@@ -466,14 +479,14 @@ document.getElementById('inMedSrc1').onclick = function () {
 
 document.getElementById('btnPrevCal').onclick = function () {
     docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
-    saveDoc.then(() => {
+    saveDoc().then(() => {
         window.open(docDat.url, '_blank').focus();
     }).catch(err => console.log(err));
 };
 document.getElementById('btnPrevMail').onclick = function () {
     docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
-    saveDoc.then(() => {
-        window.open('../vista-email-calendario/' + docDat.file, '_blank').focus();
+    saveDoc().then(() => {
+        window.open('vista-email-calendario/' + docId, '_blank').focus();
     }).catch(err => console.log(err));
 };
 
@@ -539,6 +552,12 @@ function newCal() {
                 weeks.push(week);
                 bDay = 0;
             }
+            let nYear = (nextCalID - nextCalID % 100) / 100;
+            let pYear = (nextCalID - nextCalID % 100) / 100;
+            if (nextCalID % 100 == 12) nYear++;
+            if (nextCalID % 100 == 1) pYear--;
+            let nMonth = fullMonth(nextCalID % 100 + 1).toLowerCase();
+            let pMonth = fullMonth(nextCalID % 100 - 1).toLowerCase();
             db.collection('calendarios').doc(Math.abs(nextCalID).toString()).set({
                 events: {},
                 date: firebase.firestore.Timestamp.fromDate(date),
@@ -547,11 +566,15 @@ function newCal() {
                 finished: false,
                 pastDue: false,
                 picUrl: "",
+                picAlt: "",
+                picCapt: "",
                 public: false,
                 sentMail: false,
                 revised: [],
                 title: "Calendario Astronómico de " + month + " " + (nextCalID - nextCalID % 100) / 100,
                 url: "https://sciencecookies.net/calendario-astronomico/" + (nextCalID - nextCalID % 100) / 100 + "/" + month.toLowerCase(),
+                nextCal: "https://sciencecookies.net/calendario-astronomico/" + nYear + "/" + nMonth,
+                priorCal: "https://sciencecookies.net/calendario-astronomico/" + pYear + "/" + pMonth,
                 weeks: weeks
             }).then(() => {
                 console.log('nuevo calendario');
