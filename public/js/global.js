@@ -21,6 +21,14 @@ function showEl(elm) {
 function toggleEl(elm) {
     elm.classList.toggle('d-none');
 }
+function enable(btn) {
+    btn.classList.remove('disabled');
+    btn.removeAttribute('disabled');
+}
+function disable(btn) {
+    classes(btn, "disabled");
+    btn.setAttribute("disabled", "true");
+}
 
 //Check auth
 var displayName, email, photoURL, uid;
