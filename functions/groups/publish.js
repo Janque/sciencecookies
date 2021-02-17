@@ -492,7 +492,7 @@ exports.newsletter = functions.region('us-east1').firestore.document('galletas/{
 
 //Newsletter for Cookie uptdate
 exports.updatesNewsletter = functions.region('us-east1').firestore.document('galletas/{galleta}').onUpdate((change, context) => {
-    let emils, mailOptions;
+    let emails, mailOptions;
     const dat = change.after.data();
     if (!dat.notify) return;
     return db.collection('newsletters').doc('base').get().then(doc => {
