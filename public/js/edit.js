@@ -1131,7 +1131,7 @@ document.getElementById('inSendUpt').onclick = function () {
 
 document.getElementById('btnPrevCook').onclick = function () {
     docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
-    saveDoc.then(() => {
+    saveDoc().then(() => {
         let d = docDat.published.toDate();
         let month = d.getFullYear().toString();
         if (d.getMonth() < 9) {
@@ -1143,7 +1143,7 @@ document.getElementById('btnPrevCook').onclick = function () {
 };
 document.getElementById('btnPrevMail').onclick = function () {
     docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
-    saveDoc.then(() => {
+    saveDoc().then(() => {
         window.open('../vista-email/' + docDat.file, '_blank').focus();
     }).catch(err => console.log(err));
 };
