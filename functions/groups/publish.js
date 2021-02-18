@@ -476,7 +476,7 @@ exports.newsletter = functions.region('us-east1').firestore.document('galletas/{
         return axios.get('https://www.bing.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
     }).then(() => {
         return transporter.sendMail(mailOptions);
-    }).then(()=>{
+    }).then(() => {
         console.log("Sent!");
         return;
     }).catch(err => {
@@ -943,7 +943,7 @@ exports.updatesNewsletter = functions.region('us-east1').firestore.document('gal
         return axios.get('https://www.bing.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
     }).then(() => {
         return transporter.sendMail(mailOptions);
-    }).then(()=>{
+    }).then(() => {
         console.log("Sent!");
         return;
     }).catch(err => {
@@ -955,8 +955,12 @@ exports.updatesNewsletter = functions.region('us-east1').firestore.document('gal
 exports.calNewsletter = functions.region('us-east1').firestore.document('calendarios/{calendario}').onUpdate((change, context) => {
     let emails, mailOptions;
     const dat = change.after.data();
-    if(dat.sentMail||!dat.public)return;
-    return db.collection('newsletters').doc('test').get().then(doc => {
+    if (dat.sentMail || !dat.public) return;
+    return db.collection('calendarios').doc(context.params.calendario).update({
+        sentMail: true
+    }).then(() => {
+        return db.collection('newsletters').doc('test').get();
+    }).then(doc => {
         emails = doc.data().emails;
         mailOptions = {
             from: `Science Cookies <blog.sciencecookies@gmail.com>`,
@@ -1279,10 +1283,10 @@ exports.calNewsletter = functions.region('us-east1').firestore.document('calenda
                                                                 <tbody>
                                                                     <tr>
                                                                         <td valign="top" align="center">
-                                                                            <a href="`+dat.url+`"
+                                                                            <a href="`+ dat.url + `"
                                                                                 style="text-decoration: none;"><img
-                                                                                    src="`+dat.picUrl+`" width="520" height="520"
-                                                                                    alt="`+dat.picAlt+`"
+                                                                                    src="`+ dat.picUrl + `" width="520" height="520"
+                                                                                    alt="`+ dat.picAlt + `"
                                                                                     style="border: 0; line-height: 100%; outline: 0; -ms-interpolation-mode: bicubic; display: block; color: #151515; max-width: 100%; height: auto; Margin: 0 auto;"></a>
                                                                         </td>
                                                                     </tr>
@@ -1318,7 +1322,7 @@ exports.calNewsletter = functions.region('us-east1').firestore.document('calenda
                                                                     <tr>
                                                                         <td class="pc-fb-font"
                                                                             style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 700; line-height: 34px; letter-spacing: -0.4px; color: #f8f9fa"
-                                                                            valign="top" align="center">`+dat.title+`</td>
+                                                                            valign="top" align="center">`+ dat.title + `</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td height="10"
@@ -1330,7 +1334,7 @@ exports.calNewsletter = functions.region('us-east1').firestore.document('calenda
                                                                     <tr>
                                                                         <td class="pc-fb-font"
                                                                             style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa"
-                                                                            valign="top" align="center">`+dat.descriptionShort+`</td>
+                                                                            valign="top" align="center">`+ dat.descriptionShort + `</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td height="20"
@@ -1349,7 +1353,7 @@ exports.calNewsletter = functions.region('us-east1').firestore.document('calenda
                                                                                         <td style="border-radius: 8px; padding: 13px 17px; background-color: #663399"
                                                                                             bgcolor="#663399" valign="top"
                                                                                             align="center">
-                                                                                            <a href="`+dat.url+`"
+                                                                                            <a href="`+ dat.url + `"
                                                                                                 style="line-height: 24px; text-decoration: none; word-break: break-word; font-weight: 500; display: block; font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 16px; color: #f8f9fa">Revisar el calendario</a>
                                                                                         </td>
                                                                                     </tr>
@@ -1528,7 +1532,7 @@ exports.calNewsletter = functions.region('us-east1').firestore.document('calenda
         return axios.get('https://www.bing.com/ping?sitemap=https://sciencecookies.net/sitemap.xml');
     }).then(() => {
         return transporter.sendMail(mailOptions);
-    }).then(()=>{
+    }).then(() => {
         console.log("Sent!");
         return;
     }).catch(err => {
