@@ -493,6 +493,7 @@ document.getElementById('btnPrevMail').onclick = function () {
 document.getElementById('btnAprove').onclick = function () {
     if (docDat.revised.includes(uid)) {
         docDat.revised.splice(docDat.revised.indexOf(uid), 1);
+        docDat.finished = false;
         document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
     } else {
         docDat.revised.push(uid);
@@ -607,12 +608,6 @@ document.getElementById('btnCnfPublish').onclick = function () {
         setprog(document.getElementById('barPublish'), '100');
         classes(document.getElementById('barPublish'), 'bg-success');
         document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-        let d = docDat.published.toDate();
-        let month = d.getFullYear().toString();
-        if (d.getMonth() < 9) {
-            month += '0';
-        }
-        month += (d.getMonth() + 1);
         setTimeout(function () {
             window.open(docDat.url, '_blank').focus();
         }, 2500);
