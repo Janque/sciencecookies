@@ -513,7 +513,7 @@ function newCal() {
             nextCalID = nCal;
             nCal++;
             if (nCal % 100 == 13) {
-                nCal -= 13;
+                nCal -= 12;
                 nCal += 100;
             }
         }
