@@ -120,6 +120,7 @@ app.get('/archivo/:year/:tri', (req, res) => {
             res.render('archTrim', {
                 year: year,
                 tri: longTri(tri),
+                triLC: longTri(tri).toLowerCase(),
                 months: months
             });
             return;
