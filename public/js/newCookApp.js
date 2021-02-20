@@ -25,7 +25,9 @@ function loaded() {
     });
     let update = {};
     update[id] = 'true';
-    firebase.database().ref('uptCook').update(update);
+    firebase.database().ref('uptCook').update(update).then(()=>{
+        
+    }).catch(err => console.error('error'));
     function sendRep() {
         db.collection('reports').add({
             from: email,
