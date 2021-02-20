@@ -1542,23 +1542,24 @@ exports.calNewsletter = functions.region('us-east1').firestore.document('calenda
 
 //Pending calendar notification
 exports.pendCalNoty = functions.region('us-east1').pubsub.schedule('0 8 22 * *').onRun((context) => {
-    let emails, mailOptions,nCal;
-    return admin.database().ref('nextCal').once('value', snap => {
-        nCal=snap.val()-1;
-        if(nCal%100==0){
-            nCal+=12;
-            nCal-=100;
-        }
-        return db.collection('calendarios').doc(Math.abs(nCal).toString()).get().then(doc=>{
-            const dat = doc.data();
-            if (dat.finished) return;
-            return db.collection('newsletters').doc('admin').get().then(doc => {
-                emails = doc.data().emails;
-                mailOptions = {
-                    from: `Science Cookies <blog.sciencecookies@gmail.com>`,
-                    bcc: emails,
-                    subject: 'Hay calendario astronómico pendiente',
-                    html: `<!DOCTYPE html
+    let emails, mailOptions;
+    let calID = "";
+    let date = admin.firestore.Timestamp.now().toDate();
+    calID += date.getFullYear();
+    let month = date.getMonth() + 2;
+    if (month == 13) month = 1;
+    if (month <= 9) calID += "0";
+    calID += month;
+    return db.collection('calendarios').doc(calID).get().then(doc => {
+        const dat = doc.data();
+        if (dat.finished) return;
+        return db.collection('newsletters').doc('admin').get().then(doc => {
+            emails = doc.data().emails;
+            mailOptions = {
+                from: `Science Cookies <blog.sciencecookies@gmail.com>`,
+                bcc: emails,
+                subject: 'Hay calendario astronómico pendiente',
+                html: `<!DOCTYPE html
                     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
                 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
                     xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -2117,15 +2118,14 @@ exports.pendCalNoty = functions.region('us-east1').pubsub.schedule('0 8 22 * *')
                 </body>
                 
                 </html>`,
-                };
-                return transporter.sendMail(mailOptions);
-            }).then(() => {
-                console.log("Sent!");
-                return;
-            }).catch(err => {
-                console.log(err);
-                return;
-            });
+            };
+            return transporter.sendMail(mailOptions);
+        }).then(() => {
+            console.log("Sent!");
+            return;
+        }).catch(err => {
+            console.log(err);
+            return;
         });
     });
 });
