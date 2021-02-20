@@ -3,6 +3,7 @@
     ".read": true,
     ".write": "auth != null && (auth.uid=='wjcSAh7VsCQp909D6x6LzyapDkl1'||auth.uid=='zle5Rq7VDtTkAp5Wm9WCWuEDGg33'||auth.uid=='r6jLy9UI6kS9ijF6thrXxDyTN242')",
     "galletas": {
+      ".write":true,
       "$cookID": {
         "likes": {".validate": "newData.isNumber()"},
         "favs": {".validate": "newData.isNumber()"},
@@ -10,9 +11,14 @@
       }
     },
     "searchQs": {
+      ".write":true,
       "$word": {
         "count": {".validate": "newData.isNumber()"}
       }
+    },
+    "uptCook": {
+      ".write":true,
+      "$cook": {".validate": "newData.isNumber()"}
     }
   }
 }
