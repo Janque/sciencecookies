@@ -1553,8 +1553,8 @@ exports.pendCalNoty = functions.region('us-east1').pubsub.schedule('0 8 22 * *')
     return db.collection('calendarios').doc(calID).get().then(doc => {
         const dat = doc.data();
         if (dat.finished) return;
-        return db.collection('newsletters').doc('admin').get().then(doc => {
-            emails = doc.data().emails;
+        return db.collection('newsletters').doc('admin').get().then(doc2 => {
+            emails = doc2.data().emails;
             mailOptions = {
                 from: `Science Cookies <blog.sciencecookies@gmail.com>`,
                 bcc: emails,
@@ -1876,7 +1876,7 @@ exports.pendCalNoty = functions.region('us-east1').pubsub.schedule('0 8 22 * *')
                                                                         <tbody>
                                                                             <tr>
                                                                                 <td valign="top" align="center">
-                                                                                    <a href="${dat.url}"
+                                                                                    <a href="https://sciencecookies.net/editar-calendario?file=${doc.id}"
                                                                                         style="text-decoration: none;"><img
                                                                                             src="${dat.picUrl}" width="520" height="520"
                                                                                             alt="${dat.picAlt}"
@@ -1946,7 +1946,7 @@ exports.pendCalNoty = functions.region('us-east1').pubsub.schedule('0 8 22 * *')
                                                                                                 <td style="border-radius: 8px; padding: 13px 17px; background-color: #663399"
                                                                                                     bgcolor="#663399" valign="top"
                                                                                                     align="center">
-                                                                                                    <a href="${dat.url}"
+                                                                                                    <a href="https://sciencecookies.net/editar-calendario?file=${doc.id}"
                                                                                                         style="line-height: 24px; text-decoration: none; word-break: break-word; font-weight: 500; display: block; font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 16px; color: #f8f9fa">Editar el calendario</a>
                                                                                                 </td>
                                                                                             </tr>
