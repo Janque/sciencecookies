@@ -57,10 +57,16 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('galleta
 exports.updateCalSitemap = functions.region('us-east1').firestore.document('calendarios/{calendario}').onUpdate((change, context) => {
     //exports.updateCalSitemap = functions.region('us-central1').https.onRequest((change, context) => {
     return db.collection('calendarios').where('public', '==', true).orderBy('date').get().then(snap => {
-        let urls = [];
+        let urls = [{
+            loc: 'https://sciencecookies.net/calendario-astronomico',
+            priority: '0.8',
+            lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
+        }];
+        let year, yUrl;
         snap.forEach(doc => {
             let dat = doc.data();
-            let url={
+            year = dat.date.toDate().getFullYear();
+            let url = {
                 loc: dat.url,
                 priority: '0.8',
                 image: {
@@ -68,10 +74,36 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
                     title: dat.title
                 }
             };
-            if(dat.date<admin.firestore.Timestamp.now())url.lastmod=dat.date.toDate().toISOString();
-            else url.lastmod=admin.firestore.Timestamp.now().toDate().toISOString();
+            if (dat.date < admin.firestore.Timestamp.now()) {
+                url.lastmod = dat.date.toDate().toISOString();
+                if (dat.date.toDate().getMonth() == 11) {
+                    yUrl = {
+                        loc: `https://sciencecookies.net/calendario-astronomico/${year}`,
+                        priority: '0.6',
+                        lastmod: dat.date.toDate().toISOString()
+                    };
+                }
+            } else {
+                url.lastmod = admin.firestore.Timestamp.now().toDate().toISOString();
+                if (dat.date.toDate().getMonth() == 11) {
+                    yUrl = {
+                        loc: `https://sciencecookies.net/calendario-astronomico/${year}`,
+                        priority: '0.6',
+                        lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
+                    };
+                }
+            }
             urls.push(url);
+            if (dat.date.toDate().getMonth() == 11) urls.push(yUrl);
         });
+        if (snap.docs.length && snap.docs[snap.docs.length - 1].data().date.toDate().getMonth() != 11) {
+            yUrl = {
+                loc: `https://sciencecookies.net/calendario-astronomico/${year}`,
+                priority: '0.6',
+                lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
+            };
+            urls.push(yUrl);
+        }
         return db.collection('sitemap').doc('1').update({
             calendars: urls
         });
