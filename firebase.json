@@ -25,6 +25,14 @@
         "function": "dynCookies-showCookie"
       },
       {
+        "source": "/calendario-astronomico",
+        "function": "dynAllCals-showAllCal"
+      },
+      {
+        "source": "/calendario-astronomico/**",
+        "function": "dynAllCals-showAllCal"
+      },
+      {
         "source": "/calendario-astronomico/**/**",
         "function": "dynCalendars-showCalendar"
       },
