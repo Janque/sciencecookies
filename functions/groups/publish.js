@@ -959,7 +959,7 @@ exports.calNewsletter = functions.region('us-east1').firestore.document('calenda
     return db.collection('calendarios').doc(context.params.calendario).update({
         sentMail: true
     }).then(() => {
-        return db.collection('newsletters').doc('test').get();
+        return db.collection('newsletters').doc('base').get();
     }).then(doc => {
         emails = doc.data().emails;
         mailOptions = {
