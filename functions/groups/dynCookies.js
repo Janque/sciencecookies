@@ -15,18 +15,19 @@ app.get('/galletas/:month/:file', (req, res) => {
     if (!/^[0-9]{6}$/.test(req.params.month)) {
         console.log('badUrl');
         res.redirect('http://sciencecookies.net/404');
+        return;
     } else {
         db.collection('galletasCont').where('file', '==', req.params.file).limit(1).get().then(snap => {
             if (snap.empty) {
                 console.log('snap.empty');
-                res.redirect('http://sciencecookies.net/404');
+                res.redirect('https://sciencecookies.net/404');
                 return;
             }
             snap.forEach(doc => {
                 let dat = doc.data();
-                if (!dat.public) {
+                if (!dat.public && (!dat.timePrev || dat.timePrev < admin.firestore.Timestamp.now())) {
                     console.log('private');
-                    res.redirect('http://sciencecookies.net/404');
+                    res.redirect('https://sciencecookies.net/404');
                     return;
                 }
                 let content = [];
@@ -46,16 +47,16 @@ app.get('/galletas/:month/:file', (req, res) => {
                         case 'ref':
                             sect = '<h3>Referencias</h3>\n';
                             item.ref.forEach(link => {
-                                if(link.type=="web"){
+                                if (link.type == "web") {
                                     sect += '<p><a href="' + link.link + '" target="_blank" class="text-warning text-break" rel="nofollow">' + link.link + ' <i class="fas fa-external-link-alt"></i></a></p>\n';
-                                }else{
-                                    sect+='<p>'+ link.link +'</p>\n';
+                                } else {
+                                    sect += '<p>' + link.link + '</p>\n';
                                 }
                             });
                             break;
                         case 'parra':
                             if (Number(item.title) > 0) {
-                                if(Number(item.title)==2)sect += '<br>\n';
+                                if (Number(item.title) == 2) sect += '<br>\n';
                                 sect = '<h' + item.title + '>' + item.titleTxt + '</h' + item.title + '>\n';
                             }
                             sect += '<p>' + item.text + '</p>\n';
@@ -64,17 +65,17 @@ app.get('/galletas/:month/:file', (req, res) => {
                             sect = item.html;
                             break;
                         case 'youtube':
-                            sect='<div class="embed-responsive embed-responsive-' + item.ratio+'">\n';
-                            sect+='<iframe src="'+item.vidUrl+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true">\n';
-                            sect+='</iframe></div>\n';
+                            sect = '<div class="embed-responsive embed-responsive-' + item.ratio + '">\n';
+                            sect += '<iframe src="' + item.vidUrl + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true">\n';
+                            sect += '</iframe></div>\n';
                             break;
                         case 'medSimple':
-                            sect='<figure class="mx-auto" style="position:relative; border-radius:.25rem; width:'+item.width+'">\n';
-                            sect+='<img alt="'+item.alt+'" src="'+item.medUrl+'" class="w-100">\n';
-                            if(item.hasCapt=="true"){
-                                sect+='<figcaption style="font-size:70%; font-weight:lighter;">'+item.caption+'</figcaption>\n';
+                            sect = '<figure class="mx-auto" style="position:relative; border-radius:.25rem; width:' + item.width + '">\n';
+                            sect += '<img alt="' + item.alt + '" src="' + item.medUrl + '" class="w-100">\n';
+                            if (item.hasCapt == "true") {
+                                sect += '<figcaption style="font-size:70%; font-weight:lighter;">' + item.caption + '</figcaption>\n';
                             }
-                            sect+='</figure>\n';
+                            sect += '</figure>\n';
                             break;
                         //Add more@#
                     }
@@ -112,6 +113,11 @@ app.get('/vista-email/:file', (req, res) => {
         }
         snap.forEach(doc => {
             let dat = doc.data();
+            if (dat.timePrev < admin.firestore.Timestamp.now() || !dat.timePrev) {
+                console.log('private');
+                res.redirect('https://sciencecookies.net/404');
+                return;
+            }
 
             let d = dat.published.toDate();
             let month = d.getFullYear().toString();
@@ -120,17 +126,17 @@ app.get('/vista-email/:file', (req, res) => {
             }
             month += (d.getMonth() + 1);
 
-            let toRender={
+            let toRender = {
                 "authors": dat.authors,
                 "description": dat.description,
                 "month": month,
                 "picUrl": dat.picUrl,
                 "file": dat.file,
                 "title": dat.title,
-                "estado":""
+                "estado": ""
             };
-            if(dat.beenPublic)toRender.estado="actualizado una";
-            else toRender.estado="cocinado una nueva";
+            if (dat.beenPublic) toRender.estado = "actualizado una";
+            else toRender.estado = "cocinado una nueva";
             res.render('mailPreview', toRender);
             return;
         });

@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Aquí puedes encontrar todas las galletas de {{triLC}} del {{year}}."/>
-    <link rel="shortcut icon" href="../../img/logoT.svg">
-    <title>Science Cookies - Archivo {{year}} {{triLC}}</title>
+    <meta name="description" content="Aquí puedes encontrar todos los calendarios astronómicos del {{year}}."/>
+    <link rel="shortcut icon" href="../img/logoT.svg">
+    <title>Science Cookies - Calendario astronómico {{year}}</title>
 
     <!--Firebase app-->
     <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
@@ -55,32 +55,32 @@
     <!--Google fonts-->
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../css/main.css">
 
   </head>
   <body>
 
     <!--Navbar-->
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark" style="background-color: #791acd;">
-      <img src="../../img/wlogoT.svg" height="30" class="d-inline-block align-center mr-2" alt="Science Cookies Logo" loading="lazy">
-      <a class="navbar-brand" href="../../index">Science Cookies</a>
+      <img src="../img/wlogoT.svg" height="30" class="d-inline-block align-center mr-2" alt="Science Cookies Logo" loading="lazy">
+      <a class="navbar-brand" href="../index">Science Cookies</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarM" aria-controls="navbarM" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
       <div class="collapse navbar-collapse" id="navbarM">
         <ul class="navbar-nav mr-auto py-0">
-          <a class="btn btn-dark mx-2 my-1" href="../../index">Inicio</a>
-          <a class="btn btn-dark mx-2 my-1" href="../../quienes-somos">¿Quienes somos?</a>
-          <a class="btn btn-dark mx-2 my-1" href="../../contacto">Contacto</a>
-          <a class="btn btn-dark mx-2 my-1" href="../../archivo">Archivo</a>
-          <a class="btn btn-dark mx-2 my-1" href="../../calendario-astronomico">Calendario Astronómico</a>
+          <a class="btn btn-dark mx-2 my-1" href="../index">Inicio</a>
+          <a class="btn btn-dark mx-2 my-1" href="../quienes-somos">¿Quienes somos?</a>
+          <a class="btn btn-dark mx-2 my-1" href="../contacto">Contacto</a>
+          <a class="btn btn-dark mx-2 my-1" href="../archivo">Archivo</a>
+          <a class="btn btn-dark mx-2 my-1" href="../calendario-astronomico">Calendario Astronómico</a>
         </ul>
         <div class="row justify-content-end">
           <div class="dropdown mr-4 dropleft">
             <button class="btn btn-dark dropdown-toggle p-2" type="button" id="usrDrpdwn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas" id="icnUsr"></i><img src="" height="30" class="d-inline-block align-center ml-2 rounded-circle" alt="" id="picUsr"></button>
             <div class="dropdown-menu dropdown-menu-right bg-dark pl-1" aria-labelledby="usrDrpdwn">
-              <a id="btnPrfl" class="btn btn-link text-decoration-none text-light d-none" href="../../perfil">Mi perfíl</a>
-              <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none" href="../../perfil?tab=pref">Preferencias</a>
-              <a id="btnDraft" class="btn btn-link text-decoration-none text-light d-none" href="../../drafts">Borradores</a>
-              <a id="btnCals" class="btn btn-link text-decoration-none text-light d-none" href="../../calendarios">Calendarios</a>
+              <a id="btnPrfl" class="btn btn-link text-decoration-none text-light d-none" href="../perfil">Mi perfíl</a>
+              <a id="btnPref" class="btn btn-link text-decoration-none text-light d-none" href="../perfil?tab=pref">Preferencias</a>
+              <a id="btnDraft" class="btn btn-link text-decoration-none text-light d-none" href="../drafts">Borradores</a>
+              <a id="btnCals" class="btn btn-link text-decoration-none text-light d-none" href="../calendarios">Calendarios</a>
               <div class="dropdown-divider ml-1 mr-2"></div>
               <button id="btnLgO" class="btn btn-link text-decoration-none text-light d-none">Cerrar sesión</button>
               <button id="btnLgI" class="btn btn-link text-decoration-none text-light d-none" data-toggle="modal" data-target="#mdlRgstr">Acceder</button>
@@ -116,7 +116,7 @@
     </div>
     
     <!--Página-->
-    <div class="container-fluid text-white" style="background-color: black;background-image: url('../../img/fondo1.jpg');background-position: center top;background-attachment: fixed;">
+    <div class="container-fluid text-white" style="background-color: black;background-image: url('../img/fondo1.jpg');background-position: center top;background-attachment: fixed;">
       <div class="row justify-content-around">
         <div class="col-md-3 col-xl-2 sidebar my-0 ml-lg-3 mr-0 ml-md-2 py-md-1 pl-md-3 text-dark" style="background-color: #FFF8E7;">
           <div class="row">
@@ -138,13 +138,12 @@
           </nav>
         </div>
         <div class="col-12 col-sm-9 col-md-6 col-xl-7 py-md-3 pl-md-3">
-          <p class="text-center"><img class="mt-3 mb-4 w-75" src="../../img/NLogoHalignT.svg" alt="Science Cookies Logo"></p>
+          <p class="text-center"><img class="mt-3 mb-4 w-75" src="../img/NLogoHalignT.svg" alt="Science Cookies Logo"></p>
           <!--Aquí va el contenido-->
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-4">
-              <li class="breadcrumb-item" aria-current="page"><a href="../../archivo">Archivo</a></li>
-              <li class="breadcrumb-item" aria-current="page"><a href="../../archivo">{{year}}</a></li>
-              <li class="breadcrumb-item active" aria-current="page">{{tri}}</li>
+              <li class="breadcrumb-item" aria-current="page"><a href="../calendario-astronomico">Calendario Astronómico</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{year}}</li>
             </ol>
           </nav>
           <br>
@@ -165,7 +164,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
-    <script src="../../js/global.js"></script>
+    <script src="../js/global.js"></script>
 
     <!--AddThis-->
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f13599e10bd5c2b"></script>

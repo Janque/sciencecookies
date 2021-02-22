@@ -5,7 +5,7 @@ const db = admin.firestore();
 //Update popularity from RTDB to FSDB
 exports.uptPop = functions.region('us-east1').pubsub.schedule('0 0 * * *').onRun((context) => {
     return admin.database().ref('uptCook').once('value', data => {
-        if(!data)return null;
+        if(!data||!data.val())return null;
         Object.keys(data.val()).forEach(itm => {
             admin.database().ref('galletas/' + itm).once('value', cook => {
                 db.collection('galletas').doc(itm).update({
@@ -41,5 +41,44 @@ exports.uptIDs = functions.region('us-east1').pubsub.schedule('0 0 * * *').onRun
             console.log("Data saved successfully.");
             return null;
         }
+    });
+});
+
+//Update today's CookieID's
+exports.publishCal = functions.region('us-east1').pubsub.schedule('0 17 28 * *').onRun((context) => {
+    let calID="";
+    let date=admin.firestore.Timestamp.now().toDate();
+    calID+=date.getFullYear();
+    let month=date.getMonth()+2;
+    if(month==13)month=1;
+    if(month<=9)calID+="0";
+    calID+=month;
+    return db.collection('calendarios').doc(calID).get().then(doc=>{
+        if(!doc.exists)return null;
+        let dat=doc.data();
+        if(dat.public){
+            console.log('Already public')
+            return null;
+        }
+        if(!dat.finished){
+            console.log('Not finished')
+            return null;
+        }
+        //@#
+        console.log('Passed');
+        return null;
+        //@#
+        return db.collection('calendarios').doc(calID).update({
+            public: true
+        }).then(()=>{
+            console.log('Published '+calID+' calendar');
+            return null;
+        }).catch(err=>{
+            console.log(err);
+            return null;
+        });
+    }).catch(err=>{
+        console.log(err);
+        return null;
     });
 });

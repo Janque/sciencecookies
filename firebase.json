@@ -25,6 +25,22 @@
         "function": "dynCookies-showCookie"
       },
       {
+        "source": "/calendario-astronomico",
+        "function": "dynAllCals-showAllCal"
+      },
+      {
+        "source": "/calendario-astronomico/**",
+        "function": "dynAllCals-showAllCal"
+      },
+      {
+        "source": "/calendario-astronomico/**/**",
+        "function": "dynCalendars-showCalendar"
+      },
+      {
+        "source": "/vista-email-calendario/**",
+        "function": "dynCalendars-showCalendar"
+      },
+      {
         "source": "/archivo",
         "function": "dynArchive-showArchive"
       },

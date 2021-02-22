@@ -4,7 +4,7 @@ const db = admin.firestore();
 
 //Update sitemap
 exports.updateSitemap = functions.region('us-east1').firestore.document('galletas/{galleta}').onWrite((change, context) => {
-//exports.updateSitemap = functions.region('us-central1').https.onRequest((change, context) => {
+    //exports.updateSitemap = functions.region('us-central1').https.onRequest((change, context) => {
     function getTri(m) {
         if (m <= 2) return 'ene-mar';
         if (m <= 5) return 'abr-jun';
@@ -43,6 +43,74 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('galleta
         return db.collection('sitemap').doc('1').update({
             archive: archUrls,
             cookies: urls
+        });
+    }).then(() => {
+        console.log('Sitemap updated');
+        return;
+    }).catch(err => {
+        console.log('Failed to update sitemap: ', err);
+        return;
+    });
+});
+
+//Update sitemap
+exports.updateCalSitemap = functions.region('us-east1').firestore.document('calendarios/{calendario}').onUpdate((change, context) => {
+    //exports.updateCalSitemap = functions.region('us-central1').https.onRequest((change, context) => {
+    if (!change.after.data().public) return;
+    //@#
+    console.log('Passed');
+    return;
+    //@#
+    return db.collection('calendarios').where('public', '==', true).orderBy('date').get().then(snap => {
+        let urls = [{
+            loc: 'https://sciencecookies.net/calendario-astronomico',
+            priority: '0.8',
+            lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
+        }];
+        let year, yUrl;
+        snap.forEach(doc => {
+            let dat = doc.data();
+            year = dat.date.toDate().getFullYear();
+            let url = {
+                loc: dat.url,
+                priority: '0.8',
+                image: {
+                    loc: dat.picUrl,
+                    title: dat.title
+                }
+            };
+            if (dat.date < admin.firestore.Timestamp.now()) {
+                url.lastmod = dat.date.toDate().toISOString();
+                if (dat.date.toDate().getMonth() == 11) {
+                    yUrl = {
+                        loc: `https://sciencecookies.net/calendario-astronomico/${year}`,
+                        priority: '0.6',
+                        lastmod: dat.date.toDate().toISOString()
+                    };
+                }
+            } else {
+                url.lastmod = admin.firestore.Timestamp.now().toDate().toISOString();
+                if (dat.date.toDate().getMonth() == 11) {
+                    yUrl = {
+                        loc: `https://sciencecookies.net/calendario-astronomico/${year}`,
+                        priority: '0.6',
+                        lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
+                    };
+                }
+            }
+            urls.push(url);
+            if (dat.date.toDate().getMonth() == 11) urls.push(yUrl);
+        });
+        if (snap.docs.length && snap.docs[snap.docs.length - 1].data().date.toDate().getMonth() != 11) {
+            yUrl = {
+                loc: `https://sciencecookies.net/calendario-astronomico/${year}`,
+                priority: '0.6',
+                lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
+            };
+            urls.push(yUrl);
+        }
+        return db.collection('sitemap').doc('1').update({
+            calendars: urls
         });
     }).then(() => {
         console.log('Sitemap updated');
@@ -103,6 +171,9 @@ exports.serveSitemap = functions.region('us-central1').https.onRequest(async (re
         sitemap += makeUrl(url);
     });
     doc.data().cookies.forEach(url => {
+        sitemap += makeUrl(url);
+    });
+    doc.data().calendars.forEach(url => {
         sitemap += makeUrl(url);
     });
     sitemap += "</urlset>"

@@ -26,12 +26,10 @@ function loaded() {
             render();
             fillMed();
             if (docDat.public) {
-                document.getElementById('btnPrevCook').classList.remove('d-none');
                 document.getElementById('btnPrivate').classList.remove('d-none');
                 document.getElementById('btnAprove').classList.add('d-none');
                 document.getElementById('btnPub').classList.add('d-none');
             } else {
-                document.getElementById('btnPrevCook').classList.add('d-none');
                 document.getElementById('btnPrivate').classList.add('d-none');
                 document.getElementById('btnAprove').classList.remove('d-none');
                 document.getElementById('btnPub').classList.remove('d-none');
@@ -1132,7 +1130,8 @@ document.getElementById('inSendUpt').onclick = function () {
 }
 
 document.getElementById('btnPrevCook').onclick = function () {
-    if (docDat.public) {
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    saveDoc().then(() => {
         let d = docDat.published.toDate();
         let month = d.getFullYear().toString();
         if (d.getMonth() < 9) {
@@ -1140,10 +1139,13 @@ document.getElementById('btnPrevCook').onclick = function () {
         }
         month += (d.getMonth() + 1);
         window.open('../galletas/' + month + '/' + docDat.file, '_blank').focus();
-    }
+    }).catch(err => console.log(err));
 };
 document.getElementById('btnPrevMail').onclick = function () {
-    window.open('../vista-email/' + docDat.file, '_blank').focus();
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    saveDoc().then(() => {
+        window.open('../vista-email/' + docDat.file, '_blank').focus();
+    }).catch(err => console.log(err));
 };
 
 document.getElementById('btnPrivate').onclick = function () {
@@ -1428,7 +1430,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
             setprog(document.getElementById('barPublish'), '61');
             if (document.getElementById('inSendUpt').checked) {
                 cook.uptMsg = true;
-                cook.uptDescrip = document.getElementById('inDesc').value.trim();
+                cook.uptDescrip = document.getElementById('inUptDesc').value.trim();
             } else {
                 cook.uptMsg = false;
                 cook.uptDescrip = '';
