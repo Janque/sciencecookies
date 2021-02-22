@@ -64,6 +64,10 @@ exports.publishCal = functions.region('us-east1').pubsub.schedule('0 17 28 * *')
             console.log('Not finished')
             return null;
         }
+        //@#
+        console.log('Passed');
+        return null;
+        //@#
         return db.collection('calendarios').doc(calID).update({
             public: true
         }).then(()=>{
