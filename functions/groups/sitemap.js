@@ -57,10 +57,6 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('galleta
 exports.updateCalSitemap = functions.region('us-east1').firestore.document('calendarios/{calendario}').onUpdate((change, context) => {
     //exports.updateCalSitemap = functions.region('us-central1').https.onRequest((change, context) => {
     if (!change.after.data().public) return;
-    //@#
-    console.log('Passed');
-    return;
-    //@#
     return db.collection('calendarios').where('public', '==', true).orderBy('date').get().then(snap => {
         let urls = [{
             loc: 'https://sciencecookies.net/calendario-astronomico',
@@ -114,10 +110,10 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
         });
     }).then(() => {
         console.log('Sitemap updated');
-        return;
+        return null;
     }).catch(err => {
         console.log('Failed to update sitemap: ', err);
-        return;
+        return null;
     });
 });
 

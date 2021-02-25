@@ -285,10 +285,17 @@ function render() {
         classes(fg2, "form-group");
         fsec.appendChild(fg2);
         fg2.innerHTML = '<label>Visiblidad</label>';
-        let in2 = document.createElement('input');
+        let in2 = document.createElement('select');
         in2.id = "inVis" + key;
-        in2.setAttribute("type", "text");
         classes(in2, "form-control");
+        let visOpts = ["Visible a simple vista", "Visible con binoculares", "Visible con un telescopio pequeño", "Visible con un telescopio de 4 pulgadas", "Visible con un telescopio grande", "No observable"]
+        visOpts.forEach((itm, idx) => {
+            let opt = document.createElement('option');
+            opt.value = idx;
+            opt.innerHTML = itm;
+            if (itm == event.visibilidad) opt.setAttribute('selected', "true");
+            in2.appendChild(opt);
+        });
         fg2.appendChild(in2);
         let fg3 = document.createElement('div');
         classes(fg3, "form-group");
@@ -299,6 +306,8 @@ function render() {
         in3.id = "inTime" + key;
         in3.setAttribute("rows", "4");
         fg3.appendChild(in3);
+        if(in2.value==5)hideEl(fg3);
+        else showEl(fg3);
         in0.oninput = () => {
             enable(reverBtn);
             changed = true;
@@ -310,6 +319,8 @@ function render() {
         in2.oninput = () => {
             enable(reverBtn);
             changed = true;
+            if(in2.value==5)hideEl(fg3);
+            else showEl(fg3);
         };
         in3.oninput = () => {
             enable(reverBtn);
@@ -338,6 +349,8 @@ function render() {
             li.innerHTML = time;
             eveTimeLst.appendChild(li);
         });
+        if(event.visibilidad=="No observable")hideEl(eveTime);
+        else showEl(eveTime);
 
 
         let foot = document.createElement('div');
@@ -366,7 +379,9 @@ function render() {
         editBtn.onclick = () => {
             in0.value = event.name;
             in1.innerHTML = event.description;
-            in2.value = event.visibilidad;
+            in2.value = visOpts.indexOf(event.visibilidad);
+            if(in2.value==5)hideEl(fg3);
+            else showEl(fg3);
             in3.innerHTML = "";
             event.horario.forEach(time => {
                 in3.innerHTML += time + "\n";
@@ -389,7 +404,9 @@ function render() {
             disable(reverBtn);
             in0.value = event.name;
             in1.innerHTML = event.description;
-            in2.value = event.visibilidad;
+            in2.value = visOpts.indexOf(event.visibilidad);
+            if(in2.value==5)hideEl(fg3);
+            else showEl(fg3);
             in3.innerHTML = "";
             event.horario.forEach(time => {
                 in3.innerHTML += time.trim() + "\n";
@@ -407,7 +424,7 @@ function render() {
             if (changed) {
                 docDat.weeks[Number(key[0])][key.substr(1, 3)].events[key[4]].name = event.name = in0.value;
                 event.description = in1.value.trim();
-                event.visibilidad = in2.value;
+                event.visibilidad = visOpts[in2.value];
                 event.horario = [];
                 in3.value.trim().split('\n').forEach(time => {
                     if (time != "" && time != " ") event.horario.push(time);
