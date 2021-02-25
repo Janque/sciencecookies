@@ -237,8 +237,8 @@ function render() {
                         date: longDay[i] + " " + day.date + " de " + fullMonth(docId % 100),
                         name: "Evento sin nombre",
                         description: "Sin descripción",
-                        visibilidad: "No observable",
-                        horario: []
+                        visibilidad: "Visible a simple vista",
+                        horario: ["Ciudad de México:", "Bogotá:", "Madrid:"]
                     };
                     day.events.push({
                         name: "Evento sin nombre"
