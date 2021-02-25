@@ -99,11 +99,14 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
                 sect += '<h3>' + event.name + '</h3>\n';
                 sect += '<p>' + event.description + '</p>\n';
                 sect += '<p>Visibilidad: ' + event.visibilidad + '</p>\n';
-                sect += '<p class="mb-0">Horario: </p>\n<ul>\n';
-                event.horario.forEach(time => {
-                    sect += '<li>' + time + '</li>\n';
-                });
-                sect += '</ul>\n</div></div>\n';
+                if (event.visibilidad != "No observable") {
+                    sect += '<p class="mb-0">Horario: </p>\n<ul>\n';
+                    event.horario.forEach(time => {
+                        sect += '<li>' + time + '</li>\n';
+                    });
+                    sect += '</ul>\n';
+                }
+                sect += '</div></div>\n';
                 events.push(sect);
             }
 
@@ -136,6 +139,7 @@ app.get('/vista-email-calendario/:file', (req, res) => {
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
     db.collection('calendarios').doc(req.params.file).get().then(doc => {
         if (!doc.exists) {
+            console.log('!doc.exists');
             res.redirect('http://sciencecookies.net/404');
             return;
         }

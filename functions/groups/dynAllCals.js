@@ -11,9 +11,6 @@ app.set('views', './views');
 app.set('view engine', 'hbs');
 
 app.get('/calendario-astronomico/:year', (req, res) => {
-    res.redirect('http://sciencecookies.net/404');
-    return
-    //@#
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
     let year = req.params.year;
     if (!/^[0-9]{4}$/.test(year)) {
@@ -55,9 +52,6 @@ app.get('/calendario-astronomico/:year', (req, res) => {
 });
 
 app.get('/calendario-astronomico', (req, res) => {
-    res.redirect('http://sciencecookies.net/404');
-    return
-    //@#
     function getY(url) {
         return url.substring(50, 54);
     }

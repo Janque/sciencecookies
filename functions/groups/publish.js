@@ -956,10 +956,6 @@ exports.calNewsletter = functions.region('us-east1').firestore.document('calenda
     let emails, mailOptions;
     const dat = change.after.data();
     if (dat.sentMail || !dat.public) return;
-    //@#
-    console.log('Passed');
-    return;
-    //@#
     return db.collection('calendarios').doc(context.params.calendario).update({
         sentMail: true
     }).then(() => {
@@ -1537,15 +1533,15 @@ exports.calNewsletter = functions.region('us-east1').firestore.document('calenda
         return transporter.sendMail(mailOptions);
     }).then(() => {
         console.log("Sent!");
-        return;
+        return null;
     }).catch(err => {
         console.log(err);
-        return;
+        return null;
     });
 });
 
 //Pending calendar notification
-exports.pendCalNoty = functions.region('us-east1').pubsub.schedule('30 8 22 * *').onRun((context) => {
+exports.pendCalNoty = functions.region('us-east1').pubsub.schedule('0 8 22 * *').onRun((context) => {
     let emails, mailOptions;
     let calID = "";
     let date = admin.firestore.Timestamp.now().toDate();

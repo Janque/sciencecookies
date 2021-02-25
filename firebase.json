@@ -29,15 +29,15 @@
         "function": "dynAllCals-showAllCal"
       },
       {
-        "source": "/calendario-astronomico/**",
+        "source": "/calendario-astronomico/*",
         "function": "dynAllCals-showAllCal"
       },
       {
-        "source": "/calendario-astronomico/**/**",
+        "source": "/calendario-astronomico/*/*",
         "function": "dynCalendars-showCalendar"
       },
       {
-        "source": "/vista-email-calendario/**",
+        "source": "/vista-email-calendario/*",
         "function": "dynCalendars-showCalendar"
       },
       {
