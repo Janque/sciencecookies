@@ -219,7 +219,7 @@ function render() {
                     let btnEvent = document.createElement('button');
                     btnEvent.setAttribute("data-toggle", "modal");
                     btnEvent.setAttribute("data-target", "#mdlEventInfo");
-                    classes(btnEvent, "btn text-left p-1 mb-1");
+                    classes(btnEvent, "btn text-left p-1 mb-1 w-100");
                     btnEvent.style.backgroundColor = "#c3e6cb";
                     btnEvent.style.borderColor = "#8fd19e";
                     btnEvent.innerHTML = '<small>' + event.name + '</small>';
@@ -349,8 +349,14 @@ function render() {
             li.innerHTML = time;
             eveTimeLst.appendChild(li);
         });
-        if(event.visibilidad=="No observable")hideEl(eveTime);
-        else showEl(eveTime);
+        if(event.visibilidad=="No observable"){
+            hideEl(eveTime);
+            hideEl(eveTimeLst);
+        }
+        else{
+            showEl(eveTime);
+            showEl(eveTimeLst);
+        }
 
 
         let foot = document.createElement('div');

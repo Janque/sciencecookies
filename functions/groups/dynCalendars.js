@@ -82,7 +82,7 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
                         sect += '<p class="m-0 p-1" style="font-size:x-large;"><b>' + day.date + '</b></p>\n';
                         sect += '<div class="autoOverflow" style="max-height: 8rem;">\n';
                         day.events.forEach((event, idx) => {
-                            sect += '<button class="btn text-left p-1 mb-1" style="background-color: #c3e6cb; border-color:#8fd19e;" onclick="eventToShow=\'' + wIdx + daysOfWeek[i] + idx + '\';showEvent();" data-toggle="modal" data-target="#mdlEventInfo"><small>' + event.name + '</small></button>\n';
+                            sect += '<button class="btn text-left p-1 mb-1 w-100" style="background-color: #c3e6cb; border-color:#8fd19e;" onclick="eventToShow=\'' + wIdx + daysOfWeek[i] + idx + '\';showEvent();" data-toggle="modal" data-target="#mdlEventInfo"><small>' + event.name + '</small></button>\n';
                         });
                         sect += '</div>\n';
                     }

@@ -1,6 +1,6 @@
-var eventToShow=null;
+var eventToShow = null;
 function showEvent() {
-    eventKeys.forEach(key=>{
+    eventKeys.forEach(key => {
         hideEl(document.getElementById(key));
     });
     showEl(document.getElementById(eventToShow));
@@ -26,6 +26,14 @@ document.getElementById('btnNextEve').onclick = () => {
     }
 };
 
-function loaded(){
-
+function loaded() {
+    /*
+    year = document.getElementById('getYear').value;
+    month = document.getElementById('getMonth').value;
+    firebase.database().ref('calendarios/' + year + '/' + month).transaction(cal=> {
+        if (cal) {
+            cal.pop++;
+        }
+        return cal;
+    });*/
 }
