@@ -176,18 +176,76 @@ function showEvent() {
     enable(document.getElementById('btnNextEve'));
 }
 document.getElementById('btnPriorEve').onclick = () => {
-    let n = Object.keys(docDat.events).indexOf(eventToShow) - 1;
+    let orderedKeys = Object.keys(docDat.events).slice().sort((a, b) => {
+        if (Number(a[0]) == Number(b[0])) {
+            if (a.substring(1, 4) == b.substring(1, 4)) {
+                return Number(a[4]) - Number(b[4]);
+            }
+            switch (a.substring(1, 4)) {
+                case "sun":
+                    return -1;
+                case "mon":
+                    if (b.substring(1, 4) == "sun") return 1;
+                    return -1;
+                case "tue":
+                    if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon") return 1
+                    return -1;
+                case "wed":
+                    if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon" || b.substring(1, 4) == "tue") return 1
+                    return -1;
+                case "thu":
+                    if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon" || b.substring(1, 4) == "tue" || b.substring(1, 4) == "wed") return 1
+                    return -1;
+                case "fri":
+                    if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon" || b.substring(1, 4) == "tue" || b.substring(1, 4) == "wed" || b.substring(1, 4) == "thu") return 1
+                    return -1;
+                case "sat":
+                    return 1;
+            }
+        }
+        return Number(a[0]) - Number(b[0]);
+    });
+    let n = orderedKeys.indexOf(eventToShow) - 1;
     if (n >= 0) {
-        eventToShow = Object.keys(docDat.events)[n];
+        eventToShow = orderedKeys[n];
         showEvent();
     } else {
         disable(document.getElementById('btnPriorEve'));
     }
 };
 document.getElementById('btnNextEve').onclick = () => {
-    let n = Object.keys(docDat.events).indexOf(eventToShow) + 1;
-    if (n < Object.keys(docDat.events).length) {
-        eventToShow = Object.keys(docDat.events)[n];
+    let orderedKeys = Object.keys(docDat.events).slice().sort((a, b) => {
+        if (Number(a[0]) == Number(b[0])) {
+            if (a.substring(1, 4) == b.substring(1, 4)) {
+                return Number(a[4]) - Number(b[4]);
+            }
+            switch (a.substring(1, 4)) {
+                case "sun":
+                    return -1;
+                case "mon":
+                    if (b.substring(1, 4) == "sun") return 1;
+                    return -1;
+                case "tue":
+                    if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon") return 1
+                    return -1;
+                case "wed":
+                    if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon" || b.substring(1, 4) == "tue") return 1
+                    return -1;
+                case "thu":
+                    if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon" || b.substring(1, 4) == "tue" || b.substring(1, 4) == "wed") return 1
+                    return -1;
+                case "fri":
+                    if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon" || b.substring(1, 4) == "tue" || b.substring(1, 4) == "wed" || b.substring(1, 4) == "thu") return 1
+                    return -1;
+                case "sat":
+                    return 1;
+            }
+        }
+        return Number(a[0]) - Number(b[0]);
+    });
+    let n = orderedKeys.indexOf(eventToShow) + 1;
+    if (n < orderedKeys.length) {
+        eventToShow = orderedKeys[n];
         showEvent();
     } else {
         disable(document.getElementById('btnNextEve'));

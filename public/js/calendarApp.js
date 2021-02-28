@@ -3,6 +3,7 @@ function showEvent() {
     eventKeys.forEach(key => {
         hideEl(document.getElementById(key));
     });
+    document.getElementById('mdlEventInfoL').innerHTML=eventTitles[eventToShow];
     showEl(document.getElementById(eventToShow));
     enable(document.getElementById('btnPriorEve'));
     enable(document.getElementById('btnNextEve'));
