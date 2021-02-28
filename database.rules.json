@@ -10,6 +10,13 @@
         "pop": {".validate": "newData.isNumber()"}
       }
     },
+    "calendarios": {
+      ".write":true,
+      "$calID": {
+          "pop": {".validate": "newData.isNumber()"}
+        }
+      }
+    },
     "searchQs": {
       ".write":true,
       "$word": {

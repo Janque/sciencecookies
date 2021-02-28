@@ -686,20 +686,37 @@ document.getElementById('btnCnfPublish').onclick = function () {
         public: true
     }).then(() => {
         setprog(document.getElementById('barPublish'), '63');
-        setprog(document.getElementById('barPublish'), '100');
-        classes(document.getElementById('barPublish'), 'bg-success');
-        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-        setTimeout(function () {
-            window.open(docDat.url, '_blank').focus();
-        }, 2500);
-        console.log("Published successfully.");
-        setTimeout(function () {
-            document.getElementById("btnAlrtClsSsn").click();
-        }, 3000);
-        $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-            document.getElementById("alrtClsSsn").innerHTML = '';
+        admin.database().ref('calendarios/' + calID).set({
+            pop: 0
+        }, err => {
+            if (err) {
+                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + err + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                console.log(err);
+                setTimeout(function () {
+                    document.getElementById("btnAlrtClsSsn").click();
+                }, 3000);
+                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+                    document.getElementById("alrtClsSsn").innerHTML = '';
+                });
+            } else {
+                setprog(document.getElementById('barPublish'), '100');
+                classes(document.getElementById('barPublish'), 'bg-success');
+                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                setTimeout(function () {
+                    window.open(docDat.url, '_blank').focus();
+                }, 2500);
+                console.log("Published successfully.");
+                setTimeout(function () {
+                    document.getElementById("btnAlrtClsSsn").click();
+                }, 3000);
+                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+                    document.getElementById("alrtClsSsn").innerHTML = '';
+                });
+                $('#mdlPublish').modal('hide');
+                console.log('Published ' + calID + ' calendar');
+                return null;
+            }
         });
-        $('#mdlPublish').modal('hide');
     }).catch(error => {
         document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
         console.log(error);

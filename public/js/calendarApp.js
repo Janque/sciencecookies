@@ -28,13 +28,10 @@ document.getElementById('btnNextEve').onclick = () => {
 };
 
 function loaded() {
-    /*
-    year = document.getElementById('getYear').value;
-    month = document.getElementById('getMonth').value;
-    firebase.database().ref('calendarios/' + year + '/' + month).transaction(cal=> {
+    firebase.database().ref('calendarios/' + globID).transaction(cal=> {
         if (cal) {
             cal.pop++;
         }
         return cal;
-    });*/
+    });
 }

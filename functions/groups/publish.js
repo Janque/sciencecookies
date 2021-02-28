@@ -434,7 +434,7 @@ exports.newsletter = functions.region('us-east1').firestore.document('galletas/{
                                                         <tbody>
                                                         <tr>
                                                             <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 500; line-height: 24px; text-align: center;" valign="top">
-                                                            <a href="https://sciencecookies.net/perfil.html?p=0" style="text-decoration: none; color: #6c757d;">Cancelar suscripción</a>
+                                                            <a href="https://sciencecookies.net/perfil?p=0" style="text-decoration: none; color: #6c757d;">Cancelar suscripción</a>
                                                             </td>
                                                         </tr>
                                                         </tbody>
@@ -895,7 +895,7 @@ exports.updatesNewsletter = functions.region('us-east1').firestore.document('gal
                                 <tbody>
                                 <tr>
                                     <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 500; line-height: 24px; text-align: center;" valign="top">
-                                    <a href="https://sciencecookies.net/perfil.html?p=0" style="text-decoration: none; color: #6c757d;">Cancelar suscripción</a>
+                                    <a href="https://sciencecookies.net/perfil?p=0" style="text-decoration: none; color: #6c757d;">Cancelar suscripción</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -1484,7 +1484,7 @@ exports.calNewsletter = functions.region('us-east1').firestore.document('calenda
                                                                                                             <td class="pc-fb-font"
                                                                                                                 style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 500; line-height: 24px; text-align: center;"
                                                                                                                 valign="top">
-                                                                                                                <a href="https://sciencecookies.net/perfil.html?p=0"
+                                                                                                                <a href="https://sciencecookies.net/perfil?p=0"
                                                                                                                     style="text-decoration: none; color: #6c757d;">Cancelar
                                                                                                                     suscripción</a>
                                                                                                             </td>
@@ -2077,7 +2077,7 @@ exports.pendCalNoty = functions.region('us-east1').pubsub.schedule('0 8 22 * *')
                                                                                                                     <td class="pc-fb-font"
                                                                                                                         style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 500; line-height: 24px; text-align: center;"
                                                                                                                         valign="top">
-                                                                                                                        <a href="https://sciencecookies.net/perfil.html?p=0"
+                                                                                                                        <a href="https://sciencecookies.net/perfil?p=0"
                                                                                                                             style="text-decoration: none; color: #6c757d;">Cancelar
                                                                                                                             suscripción</a>
                                                                                                                     </td>
