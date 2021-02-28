@@ -148,6 +148,7 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
                 java += ',' + '"' + Object.keys(dat.events)[i] + '":"' + Object.values(dat.events)[i].date + '"';
             }
             java += '};\n';
+            java+=`var globID="${doc.id}"\n`;
             res.render('calendario', {
                 "descriptionShort": dat.descriptionShort,
                 "description": dat.description,
