@@ -109,12 +109,45 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
                 sect += '</div></div>\n';
                 events.push(sect);
             }
-
-            let java = 'var eventKeys=["' + Object.keys(dat.events)[0];
-            for (i = 1; i < Object.keys(dat.events).length; i++) {
-                java += '","' + Object.keys(dat.events)[i];
+            let orderedKeys = Object.keys(dat.events).slice().sort((a, b) => {
+                if (Number(a[0]) == Number(b[0])) {
+                    if (a.substring(1, 4) == b.substring(1, 4)) {
+                        return Number(a[4]) - Number(b[4]);
+                    }
+                    switch (a.substring(1, 4)) {
+                        case "sun":
+                            return -1;
+                        case "mon":
+                            if (b.substring(1, 4) == "sun") return 1;
+                            return -1;
+                        case "tue":
+                            if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon") return 1
+                            return -1;
+                        case "wed":
+                            if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon" || b.substring(1, 4) == "tue") return 1
+                            return -1;
+                        case "thu":
+                            if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon" || b.substring(1, 4) == "tue" || b.substring(1, 4) == "wed") return 1
+                            return -1;
+                        case "fri":
+                            if (b.substring(1, 4) == "sun" || b.substring(1, 4) == "mon" || b.substring(1, 4) == "tue" || b.substring(1, 4) == "wed" || b.substring(1, 4) == "thu") return 1
+                            return -1;
+                        case "sat":
+                            return 1;
+                    }
+                }
+                return Number(a[0]) - Number(b[0]);
+            });
+            let java = 'var eventKeys=["' + orderedKeys[0];
+            for (i = 1; i < orderedKeys.length; i++) {
+                java += '","' + orderedKeys[i];
             }
-            java += '"];';
+            java += '"];\n';
+            java += 'var eventTitles={"' + Object.keys(dat.events)[0] + '":"' + Object.values(dat.events)[0].date + '"';
+            for (i = 1; i < Object.keys(dat.events).length; i++) {
+                java += ',' + '"' + Object.keys(dat.events)[i] + '":"' + Object.values(dat.events)[i].date + '"';
+            }
+            java += '};\n';
             res.render('calendario', {
                 "descriptionShort": dat.descriptionShort,
                 "description": dat.description,
