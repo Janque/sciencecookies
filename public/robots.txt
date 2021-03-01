@@ -7,6 +7,7 @@ disallow: /img/noimg*
 disallow: /publicidad
 disallow: /ver-perfil*
 disallow: /editar*
+disallow: /editar-calendario*
 disallow: /drafts*
 disallow: /calendarios*
 
