@@ -45,16 +45,20 @@ exports.uptIDs = functions.region('us-east1').pubsub.schedule('0 0 * * *').onRun
 });
 
 //Update today's CookieID's
-exports.publishCal = functions.region('us-east1').pubsub.schedule('0 17 28 * *').onRun((context) => {
+exports.publishCal = functions.region('us-east1').pubsub.schedule('30 17 28 * *').onRun((context) => {
     let calID = "";
-    let date = admin.firestore.Timestamp.now().toDate();
+    let date = new Date(admin.firestore.Timestamp.now().toMillis()-6*60*60*1000)
     calID += date.getFullYear();
     let month = date.getMonth() + 2;
     if (month == 13) month = 1;
     if (month <= 9) calID += "0";
     calID += month;
+    let makePop=true;
     return db.collection('calendarios').doc(calID).get().then(doc => {
-        if (!doc.exists) return null;
+        if (!doc.exists) {
+            console.log(calID,' !doc.exists')
+            return null;
+        }
         let dat = doc.data();
         if (dat.public) {
             console.log('Already public')
@@ -62,11 +66,16 @@ exports.publishCal = functions.region('us-east1').pubsub.schedule('0 17 28 * *')
         }
         if (!dat.finished) {
             console.log('Not finished')
-            return null;
+            makePop=false;
+            return db.collection('calendarios').doc(calID).update({
+                pastDue: true
+            });
         }
         return db.collection('calendarios').doc(calID).update({
             public: true
-        }).then(() => {
+        });
+    }).then(() => {
+        if(makePop){
             admin.database().ref('calendarios/' + calID).set({
                 pop: 0
             }, err => {
@@ -78,10 +87,7 @@ exports.publishCal = functions.region('us-east1').pubsub.schedule('0 17 28 * *')
                     return null;
                 }
             });
-        }).catch(err => {
-            console.log(err);
-            return null;
-        });
+        }
     }).catch(err => {
         console.log(err);
         return null;
