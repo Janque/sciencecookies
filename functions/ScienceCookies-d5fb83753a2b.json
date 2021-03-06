@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "science-cookies",
+  "private_key_id": "d5fb83753a2b6289df7de022103e6f6915b70678",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDTJi52CX/yZBEr\ns9h5NR2ZeUqyix7KFXgSr68qnHu1WNnTcbRsm1B0hdAVCQM4yQMd6lZWsH90T/9x\n8cpwjZN6SsAnKbOYMLJ4Hl25ALAeluL2dqIWYpFZmpCLoAECDNnx9s+decSuqLMb\nRYsbARF2uJkcNH62ZzYkX6mtXFROdBi68aU12/ZAUiUfRYLq36lxJWRlIi1c0JxB\nyq2VlFeRwBd0sZ/8Mq0nmPfGI6DRVAn8aHK1+Ge2JIm1Z0chGI2Lz0+XyWUIOGDs\nuBUNnbVwPF38jGSiMiemnDb+pI/q8I7tpIlFzBWpiu2HFTsBiu3nWcPPeE3wR/Ff\nSEFpy2qvAgMBAAECggEAGxTDEb2PLPH7p8zFv2n6FWSSmYqxVL7jKxZgU4lFbpFq\nQq3LM8DJ1WASO5hv0tkpLq2PDEhP2IWoIB+gVMY7u4wZ0AwPrj3UrgZLA/7cF9hH\nXNADYvaaaNEjp9zKNE6cp2V95FcpTDNz4VQOjtSYvk7XyF/NPqzHK2wfkY4NfBA5\nM44MdWHqZE7b7O6n0U2yec0YZaWfrR+B4qUTV6vUyZRIP2RnW+ECKJq4p59ZCFGF\nMTOLjiGALv5L0l//rAxkGbwOQBc1hrsOupV9C8PegmFruMhxZK9OBVBdDJtwo6Xv\noIpWfRzxmFiohbZwnRcn04JYsAdf52RrqiptNbwYKQKBgQDs6ZI2EA7/ijki9F1X\n4esEtuJaY2IJ/UsugfnLwno3PY4nXE3JSgnjfC8exjWlJ+2PFiAvDd+uKserSkuH\nWvJ/G6jTLamJGcOK/b5cgAp6byUWgeg9pYRPNggAHod4INQXL80ovXHe8Jb534Ju\nuqWPsXs3dXJpysW3xUEYsW6NaQKBgQDkKTtAcfHxySu/Rtz/j1foN/usj0e0TpET\n9ant0R368lJhCXY6AVG0YJImCycVc/5hWvAOH9lOJ+Styi7b5iA0SpfQbHShaWAQ\n1OIRU0TrSutETi9wRq6GQ+NQOy2bocUE+68NV8bYSLbE6H34nsy7P87bdy7Xd/WH\n11Vnqxb8VwKBgQDsAjcEonS+fu0ydCs07Dta4/GUR+MXvnwR5at6H8/ujeS6M0rO\nVnKJa2Hpj11LnP4cB9eh6HlHIRjt+8JIIgLnOx+w2JFGoiLZqLPlpCxMEcLprBo2\np1eqLVJFBCTCODnwq07+4dK5XAWbAN0H/+oEvrLX6alD2Juk2d1igwd12QKBgQC1\nRuUi0OVwO2ucr8rK6bLoeAJoGfbYlUvDVf5LS0jMp1c4bfIXKBEohUnZHCdTbjOA\nWmY8cqWO6TdRtUAByxdvNIzmNiV8UWLYPKvZJBWv9Hh0bsJWLHJhjvK+PiaAbslA\nqk9tBH6iPTOpwybDMDht1caerFT1MQRNh5L9qPu8RQKBgQDO+gvhxU5A7nprAWwt\ngtkcuyysGBv9ACms3boIc0BGFQFDvShjmzJYQJQ9/EbxiqZm5h0dd8cy/JiyQMF6\nEYHxSfPF78pUkEPhIVTZa9vZAtXmMkBf4xBQWm++e74lDT1gWk9VCOC9PI/V5jxZ\nl41TVqr4t/WCOWr3NT5B6GVdUw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-61dih@science-cookies.iam.gserviceaccount.com",
+  "client_id": "105550143160474006684",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-61dih%40science-cookies.iam.gserviceaccount.com"
+}

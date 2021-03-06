@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 const admin = require('firebase-admin');
 const db = admin.firestore();
 const axios = require('axios');
+const config = functions.config();
 
 //Auth for moderators
 exports.modAuth = functions.region('us-east1').https.onCall((uid) => {
@@ -12,15 +13,15 @@ exports.modAuth = functions.region('us-east1').https.onCall((uid) => {
         name: ''
     };
     switch (uid) {
-        case 'wjcSAh7VsCQp909D6x6LzyapDkl1':
+        case config.admins.jav:
             data.mod = true;
             data.name = ' Javier Pantoja';
             break;
-        case 'zle5Rq7VDtTkAp5Wm9WCWuEDGg33':
+        case config.admins.pav:
             data.mod = true;
             data.name = ' Paulina Vargas';
             break;
-        case 'r6jLy9UI6kS9ijF6thrXxDyTN242':
+        case config.admins.and:
             data.mod = true;
             data.name = ' Andrea Garma';
             break;
@@ -30,10 +31,10 @@ exports.modAuth = functions.region('us-east1').https.onCall((uid) => {
 
 //Newsletter for new Cookie
 var transporter = nodemailer.createTransport({
-    service: '***REMOVED***',
+    service: config.smtp.service,
     auth: {
-        user: '***REMOVED***',
-        pass: '***REMOVED***',
+        user: config.smtp.user,
+        pass: config.smtp.pass,
     }
 });
 exports.newsletter = functions.region('us-east1').firestore.document('galletas/{galleta}').onCreate((snap, context) => {
