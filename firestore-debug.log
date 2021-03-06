@@ -5,15 +5,17 @@ If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment
 
 Dev App Server is now running.
 
-Jan 19, 2021 4:36:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Mar 06, 2021 4:39:32 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
-Jan 19, 2021 4:36:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Mar 06, 2021 4:39:32 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Jan 19, 2021 4:36:28 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Mar 06, 2021 4:39:32 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
-Jan 19, 2021 4:36:28 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Mar 06, 2021 4:39:32 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
-Jan 19, 2021 4:36:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Mar 06, 2021 4:39:32 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+Mar 06, 2021 4:39:32 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
 *** shutting down gRPC server since JVM is shutting down
 *** server shut down

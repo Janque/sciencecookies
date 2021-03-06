@@ -3,10 +3,10 @@ WARNING: Illegal reflective access by io.netty.util.internal.ReflectionUtil (fil
 WARNING: Please consider reporting this to the maintainers of io.netty.util.internal.ReflectionUtil
 WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
 WARNING: All illegal access operations will be denied in a future release
-16:36:24.377 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
-16:36:24.491 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
-16:37:31.562 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
-16:37:31.566 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: science-cookies
-16:37:31.570 [NamespaceSystem-akka.actor.default-dispatcher-7] INFO com.firebase.core.namespace.NamespaceActor - Stopping namespace actor for science-cookies
-16:37:31.571 [NamespaceSystem-akka.actor.default-dispatcher-7] INFO com.firebase.core.namespace.NamespaceActor - Gauges removed for science-cookies
-16:37:31.573 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.
+16:39:29.360 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+16:39:29.467 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
+16:39:32.912 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
+16:39:32.916 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: science-cookies
+16:39:32.921 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.NamespaceActor - Stopping namespace actor for science-cookies
+16:39:32.922 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.NamespaceActor - Gauges removed for science-cookies
+16:39:32.925 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.
