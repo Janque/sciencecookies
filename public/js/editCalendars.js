@@ -70,6 +70,7 @@ function loaded() {
         } else {
             document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
         }
+        document.getElementById('btnSrcCal').href=`https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5,6)}&year=${urlSrch.get('file').substr(0,4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`
     }, err => console.log(err))
 
     function descFrm() {
