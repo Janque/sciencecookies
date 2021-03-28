@@ -8,9 +8,9 @@ var nxtp = false, paglast = [null], page = 1;
 var allChk = false;
 function initSrch(stAf) {
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
-        srchRef = db.collection('calendarios').orderBy('date').startAfter(paglast[page - 1]).limit(previewLim);
+        srchRef = db.collection('calendarios').orderBy('date', 'desc').startAfter(paglast[page - 1]).limit(previewLim);
     } else {
-        srchRef = db.collection('calendarios').orderBy('date').limit(previewLim);
+        srchRef = db.collection('calendarios').orderBy('date', 'desc').limit(previewLim);
     }
     shwSrch();
 }
