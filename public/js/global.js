@@ -262,7 +262,7 @@ function shwRecom() {
             document.getElementById("popCook").appendChild(divider);
         });
     }).catch(err => console.log(err));
-    db.collection('calendarios').where("public", "==", true).orderBy('date').limit(1).get().then(snap => {
+    db.collection('calendarios').where("public", "==", true).orderBy('date','desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat=doc.data();

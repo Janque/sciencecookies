@@ -233,7 +233,7 @@ for (let i = 0; i < catnmb; i++) {
 }
 
 function shwCalMain() {
-    db.collection('calendarios').where("public", "==", true).orderBy('date').limit(1).get().then(snap => {
+    db.collection('calendarios').where("public", "==", true).orderBy('date','desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let a = document.createElement('a');
