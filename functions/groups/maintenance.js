@@ -45,7 +45,7 @@ exports.uptIDs = functions.region('us-east1').pubsub.schedule('0 0 * * *').onRun
 });
 
 //Update today's CookieID's
-exports.publishCal = functions.region('us-east1').pubsub.schedule('30 17 28 * *').onRun((context) => {
+exports.publishCal = functions.region('us-east1').pubsub.schedule('30 18 28 * *').onRun((context) => {
     let calID = "";
     let date = new Date(admin.firestore.Timestamp.now().toMillis()-6*60*60*1000)
     calID += date.getFullYear();
