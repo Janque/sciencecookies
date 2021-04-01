@@ -1,0 +1,1 @@
+<div class="row bg-info px-2 text-dark d-sm-none justify-content-center" id="adsH"></div>

@@ -1,0 +1,1 @@
+<div class="col-2 py-md-3 d-none d-sm-block bg-info sidebar text-dark text-center justify-content-center px-1 px-lg-2" id="adsV"></div>
