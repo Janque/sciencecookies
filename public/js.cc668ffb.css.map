@@ -1,0 +1,1 @@
+{"version":3,"sources":["styles/index.scss"],"names":[],"mappings":"AAAA,SACI,sBAEJ,gBACI,YAAA,CACA,gBAAA,CACA,aAAA,CACA","file":"js.cc668ffb.css","sourceRoot":"../src","sourcesContent":["#calMain {\n    background-color: rebeccapurple;\n}\n.cats-container {\n    border: solid;\n    border-width: 1px;\n    color: #f8f9fa;\n    border-color: #f8f9fa;\n}\n"]}

@@ -1,3 +1,12 @@
 {
-  "name": "sciencecookies"
+  "name": "sciencecookies",
+  "devDependencies": {
+    "cssnano": "^4.1.10",
+    "pug": "^3.0.2",
+    "sass": "^1.32.8"
+  },
+  "dependencies": {
+    "global.js": "^1.0.0",
+    "index.js": "^0.0.3"
+  }
 }

@@ -1,31 +1,31 @@
 //Init database
-var db = firebase.firestore();
+window.db = db = firebase.firestore();
 
-var urlSrch = '';
+window.urlSrch = urlSrch = '';
 var url = new URL(window.location.href);
 var actSsn = false;
 var mod = false, author = "";
 
-function classes(elm, cls) {
+window.classes = function classes(elm, cls) {
     cls = cls.split(' ');
     cls.forEach(itm => {
         elm.classList.add(itm);
     });
 }
-function hideEl(elm) {
+window.hideEl = function hideEl(elm) {
     elm.classList.add('d-none');
 }
-function showEl(elm) {
+window.showEl = function showEl(elm) {
     elm.classList.remove('d-none');
 }
-function toggleEl(elm) {
+window.toggleEl = function toggleEl(elm) {
     elm.classList.toggle('d-none');
 }
-function enable(btn) {
+window.enable = function enable(btn) {
     btn.classList.remove('disabled');
     btn.removeAttribute('disabled');
 }
-function disable(btn) {
+window.disable = function disable(btn) {
     classes(btn, "disabled");
     btn.setAttribute("disabled", "true");
 }
@@ -169,20 +169,20 @@ function shwRecom() {
     db.collection('galletas').where('public', '==', true).orderBy('date', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
-            let dat=doc.data();
-            let a0=document.createElement('a');
-            classes(a0,"text-decoration-none text-dark d-none d-md-inline");
-            a0.href=dat.url;
-            let card=document.createElement('div');
-            classes(card,"card mb-2");
+            let dat = doc.data();
+            let a0 = document.createElement('a');
+            classes(a0, "text-decoration-none text-dark d-none d-md-inline");
+            a0.href = dat.url;
+            let card = document.createElement('div');
+            classes(card, "card mb-2");
             a0.appendChild(card);
-            let img0=document.createElement('img');
-            classes(img0,"card-img-top");
-            img0.src=dat.picUrl;
-            img0.alt=dat.title;
+            let img0 = document.createElement('img');
+            classes(img0, "card-img-top");
+            img0.src = dat.picUrl;
+            img0.alt = dat.title;
             card.appendChild(img0);
-            let bod0=document.createElement('div');
-            classes(bod0,"card-body");
+            let bod0 = document.createElement('div');
+            classes(bod0, "card-body");
             let d = dat.date.toDate();
             bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
                 <p class="card-text">` + dat.descrip + `</p>
@@ -190,21 +190,21 @@ function shwRecom() {
             card.appendChild(bod0);
             document.getElementById("newCook").appendChild(a0);
 
-            let a1=document.createElement('a');
-            classes(a1,"text-decoration-none text-dark d-md-none");
-            a1.href=dat.url;
-            let med=document.createElement('div');
-            classes(med,"media mb-3");
+            let a1 = document.createElement('a');
+            classes(a1, "text-decoration-none text-dark d-md-none");
+            a1.href = dat.url;
+            let med = document.createElement('div');
+            classes(med, "media mb-3");
             a1.appendChild(med);
-            let img1=document.createElement('img');
-            classes(img1,"align-self-center mr-3");
-            img1.style.width="64px"
-            img1.style.height="64px";
-            img1.src=dat.picUrl;
-            img1.alt=dat.title;
+            let img1 = document.createElement('img');
+            classes(img1, "align-self-center mr-3");
+            img1.style.width = "64px"
+            img1.style.height = "64px";
+            img1.src = dat.picUrl;
+            img1.alt = dat.title;
             med.appendChild(img1);
-            let bod1=document.createElement('div');
-            classes(bod1,"media-body");
+            let bod1 = document.createElement('div');
+            classes(bod1, "media-body");
             bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
                 <p class="card-text">` + dat.descrip + `</p>
                 <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authrs + `</p>`;
@@ -215,20 +215,20 @@ function shwRecom() {
     db.collection('galletas').where('public', '==', true).orderBy('pop', 'desc').limit(3).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
-            let dat=doc.data();
-            let a0=document.createElement('a');
-            classes(a0,"text-decoration-none text-dark d-none d-md-inline");
-            a0.href=dat.url;
-            let card=document.createElement('div');
-            classes(card,"card mb-2");
+            let dat = doc.data();
+            let a0 = document.createElement('a');
+            classes(a0, "text-decoration-none text-dark d-none d-md-inline");
+            a0.href = dat.url;
+            let card = document.createElement('div');
+            classes(card, "card mb-2");
             a0.appendChild(card);
-            let img0=document.createElement('img');
-            classes(img0,"card-img-top");
-            img0.src=dat.picUrl;
-            img0.alt=dat.title;
+            let img0 = document.createElement('img');
+            classes(img0, "card-img-top");
+            img0.src = dat.picUrl;
+            img0.alt = dat.title;
             card.appendChild(img0);
-            let bod0=document.createElement('div');
-            classes(bod0,"card-body");
+            let bod0 = document.createElement('div');
+            classes(bod0, "card-body");
             let d = dat.date.toDate();
             bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
                 <p class="card-text">` + dat.descrip + `</p>
@@ -236,80 +236,80 @@ function shwRecom() {
             card.appendChild(bod0);
             document.getElementById("popCook").appendChild(a0);
 
-            let a1=document.createElement('a');
-            classes(a1,"text-decoration-none text-dark d-md-none");
-            a1.href=dat.url;
-            let med=document.createElement('div');
-            classes(med,"media mb-3");
+            let a1 = document.createElement('a');
+            classes(a1, "text-decoration-none text-dark d-md-none");
+            a1.href = dat.url;
+            let med = document.createElement('div');
+            classes(med, "media mb-3");
             a1.appendChild(med);
-            let img1=document.createElement('img');
-            classes(img1,"align-self-center mr-3");
-            img1.style.width="64px"
-            img1.style.height="64px";
-            img1.src=dat.picUrl;
-            img1.alt=dat.title;
+            let img1 = document.createElement('img');
+            classes(img1, "align-self-center mr-3");
+            img1.style.width = "64px"
+            img1.style.height = "64px";
+            img1.src = dat.picUrl;
+            img1.alt = dat.title;
             med.appendChild(img1);
-            let bod1=document.createElement('div');
-            classes(bod1,"media-body");
+            let bod1 = document.createElement('div');
+            classes(bod1, "media-body");
             bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
                 <p class="card-text">` + dat.descrip + `</p>
                 <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authrs + `</p>`;
             med.appendChild(bod1);
             document.getElementById("popCook").appendChild(a1);
 
-            let divider=document.createElement('div');
-            classes(divider,"dropdown-divider d-md-none");
+            let divider = document.createElement('div');
+            classes(divider, "dropdown-divider d-md-none");
             document.getElementById("popCook").appendChild(divider);
         });
     }).catch(err => console.log(err));
-    db.collection('calendarios').where("public", "==", true).orderBy('date','desc').limit(1).get().then(snap => {
+    db.collection('calendarios').where("public", "==", true).orderBy('date', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
-            let dat=doc.data();
-            let a0=document.createElement('a');
-            classes(a0,"text-decoration-none text-dark d-none d-md-inline");
-            a0.href=dat.url;
-            let card=document.createElement('div');
-            classes(card,"card mb-2");
+            let dat = doc.data();
+            let a0 = document.createElement('a');
+            classes(a0, "text-decoration-none text-dark d-none d-md-inline");
+            a0.href = dat.url;
+            let card = document.createElement('div');
+            classes(card, "card mb-2");
             a0.appendChild(card);
-            let img0=document.createElement('img');
-            classes(img0,"card-img-top");
-            img0.src=dat.picUrl;
-            img0.alt=dat.title;
+            let img0 = document.createElement('img');
+            classes(img0, "card-img-top");
+            img0.src = dat.picUrl;
+            img0.alt = dat.title;
             card.appendChild(img0);
-            let bod0=document.createElement('div');
-            classes(bod0,"card-body");
+            let bod0 = document.createElement('div');
+            classes(bod0, "card-body");
             bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
                 <p class="card-text">` + dat.descriptionShort + `</p>`;
             card.appendChild(bod0);
             document.getElementById("calCnt").appendChild(a0);
 
-            let a1=document.createElement('a');
-            classes(a1,"text-decoration-none text-dark d-md-none");
-            a1.href=dat.url;
-            let med=document.createElement('div');
-            classes(med,"media mb-3");
+            let a1 = document.createElement('a');
+            classes(a1, "text-decoration-none text-dark d-md-none");
+            a1.href = dat.url;
+            let med = document.createElement('div');
+            classes(med, "media mb-3");
             a1.appendChild(med);
-            let img1=document.createElement('img');
-            classes(img1,"align-self-center mr-3");
-            img1.style.width="64px"
-            img1.style.height="64px";
-            img1.src=dat.picUrl;
-            img1.alt=dat.title;
+            let img1 = document.createElement('img');
+            classes(img1, "align-self-center mr-3");
+            img1.style.width = "64px"
+            img1.style.height = "64px";
+            img1.src = dat.picUrl;
+            img1.alt = dat.title;
             med.appendChild(img1);
-            let bod1=document.createElement('div');
-            classes(bod1,"media-body");
+            let bod1 = document.createElement('div');
+            classes(bod1, "media-body");
             bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
                 <p class="card-text">` + dat.descriptionShort + `</p>`;
             med.appendChild(bod1);
             document.getElementById("calCnt").appendChild(a1);
 
-            let divider=document.createElement('div');
-            classes(divider,"dropdown-divider d-md-none");
+            let divider = document.createElement('div');
+            classes(divider, "dropdown-divider d-md-none");
             document.getElementById("calCnt").appendChild(divider);
             showEl(document.getElementById("calRecom"));
         });
-    }).catch(err => {console.log(err)});
+    }).catch(err => { console.log(err) });
 }
 
 //Show Adds
@@ -435,13 +435,13 @@ for (var i = 0; i < defDiacs.length; i++) {
         diacs[lt[j]] = defDiacs[i].corr;
     }
 }
-function rmDiacs(s) {
+window.rmDiacs = function rmDiacs(s) {
     return s.replace(/[^\u0000-\u007E]/g, function (a) {
         return diacs[a] || a;
     });
 }
 
-function ultraClean(str, rep) {
+window.ultraClean = function ultraClean(str, rep) {
     str = rmDiacs(str.trim().toLowerCase());
     let banChars = ",.^*!¡'?¿#@[]-:;ªº$%&()=/+{} ";
     banChars.split('').forEach(c => {

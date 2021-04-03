@@ -1,0 +1,29 @@
+doctype html
+html(lang='es')
+  head
+    include ../includes/head
+
+    block missHead
+
+    style
+      include ../styles/main.scss
+  body
+    include ../includes/nav
+    
+    include ../includes/register
+    
+    .container-fluid.text-white.page-container
+      .row.justify-content-around
+        
+        include ../includes/sidebarL
+
+        block content
+
+        include ../includes/adsV
+
+      include ../includes/adsH
+
+    include ../includes/bottom
+
+    script(type="text/javascript" src='/js/global.js')
+    block ownjs
