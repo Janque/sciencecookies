@@ -1,3 +1,5 @@
+import '../styles/edit.scss';
+
 var store = firebase.storage();
 var rtDb = firebase.database();
 
@@ -12,7 +14,7 @@ let newMedSrc = null;
 
 let keywords = [];
 
-function loaded() {
+window.loaded = function loaded() {
     db.collection('galletasCont').where('file', '==', urlSrch.get('file')).limit(1).onSnapshot(snap => {
         if (snap.empty) {
             window.location.href = '../404';
