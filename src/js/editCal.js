@@ -1,3 +1,5 @@
+import '../styles/editCal.scss';
+
 var store = firebase.storage();
 var rtDb = firebase.database();
 
@@ -43,7 +45,7 @@ function fullMonth(n) {
     }
 }
 
-function loaded() {
+window.loaded = function loaded() {
     db.collection('calendarios').doc(urlSrch.get('file')).onSnapshot(doc => {
         if (!doc.exists) {
             window.location.href = '../404';
@@ -70,7 +72,7 @@ function loaded() {
         } else {
             document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
         }
-        document.getElementById('btnSrcCal').href=`https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5,6)}&year=${urlSrch.get('file').substr(0,4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`
+        document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`
     }, err => console.log(err))
 
     function descFrm() {
@@ -365,7 +367,7 @@ function render() {
         in3.id = "inTime" + key;
         in3.setAttribute("rows", "4");
         fg3.appendChild(in3);
-        if(in2.value==5)hideEl(fg3);
+        if (in2.value == 5) hideEl(fg3);
         else showEl(fg3);
         in0.oninput = () => {
             enable(reverBtn);
@@ -378,7 +380,7 @@ function render() {
         in2.oninput = () => {
             enable(reverBtn);
             changed = true;
-            if(in2.value==5)hideEl(fg3);
+            if (in2.value == 5) hideEl(fg3);
             else showEl(fg3);
         };
         in3.oninput = () => {
@@ -408,11 +410,11 @@ function render() {
             li.innerHTML = time;
             eveTimeLst.appendChild(li);
         });
-        if(event.visibilidad=="No observable"){
+        if (event.visibilidad == "No observable") {
             hideEl(eveTime);
             hideEl(eveTimeLst);
         }
-        else{
+        else {
             showEl(eveTime);
             showEl(eveTimeLst);
         }
@@ -445,7 +447,7 @@ function render() {
             in0.value = event.name;
             in1.innerHTML = event.description;
             in2.value = visOpts.indexOf(event.visibilidad);
-            if(in2.value==5)hideEl(fg3);
+            if (in2.value == 5) hideEl(fg3);
             else showEl(fg3);
             in3.innerHTML = "";
             event.horario.forEach(time => {
@@ -470,7 +472,7 @@ function render() {
             in0.value = event.name;
             in1.innerHTML = event.description;
             in2.value = visOpts.indexOf(event.visibilidad);
-            if(in2.value==5)hideEl(fg3);
+            if (in2.value == 5) hideEl(fg3);
             else showEl(fg3);
             in3.innerHTML = "";
             event.horario.forEach(time => {
@@ -590,7 +592,7 @@ document.getElementById('btnAprove').onclick = function () {
 
 function newCal() {
     let nextCalID;
-    firebase.database().ref('nextCal').transaction(nCal => {
+    rtDb.ref('nextCal').transaction(nCal => {
         if (nCal) {
             nextCalID = nCal;
             nCal++;
