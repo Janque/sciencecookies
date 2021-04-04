@@ -1,0 +1,14 @@
+user-agent: *
+disallow: /js
+disallow: /img/fondo1*
+disallow: /img/scmed
+disallow: /img/nopp*
+disallow: /img/noimg*
+disallow: /publicidad
+disallow: /ver-perfil*
+disallow: /editar*
+disallow: /editar-calendario*
+disallow: /drafts*
+disallow: /calendarios*
+
+Sitemap: http://sciencecookies.net/sitemap.xml

@@ -1,0 +1,79 @@
+.sdbarCnt{
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+@media (min-width: 768px){
+  .sidebar{
+    order: 0;
+    position: sticky;
+    z-index: 1000;
+    border-right: 1px solid rgba(0,0,0,.1);
+  }
+  .sdbarCnt{
+    display: block!important;
+  }
+}
+body{
+  font-family: 'Raleway', sans-serif;
+  font-weight: 600;
+}
+strong{
+  font-weight: 900;
+  color: #f8f9fa;
+}
+.btn-scckie{
+  color: #f8f9fa;
+  background-color: rebeccapurple;
+  border-color: rebeccapurple;
+}
+.btn-link-scckie{
+  font-weight: 400;
+  color: rebeccapurple;
+  text-decoration: none;
+}
+h1{
+  font-size: 2.5rem;
+  font-weight:700;
+}
+h2{
+  font-size: 1.5rem;
+  font-weight:700;
+}
+h3{
+  font-size: 1.3rem;
+  font-weight:700;
+}
+h4{
+  font-size: 1.2rem;
+  font-weight:700;
+}
+h5{
+  font-size: 1.15rem;
+  font-weight:700;
+}
+h6{
+  font-size: 1.1rem;
+  font-weight:700;
+}
+.tbar {
+  position: fixed;
+  top: 20%;
+  width: 3pc;
+  z-index: 100020;
+  background: none;
+  animation-name: slideInRight;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+  animation-duration: .4s;
+}
+.tbar-right {
+  right: 0;
+  float: right;
+  left: auto;
+}
+.cardBorder{
+  border-width: 3px;
+  border-radius: 10px;
+}
