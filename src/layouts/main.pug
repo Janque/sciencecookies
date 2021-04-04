@@ -9,21 +9,27 @@ html(lang='es')
       include ../styles/main.scss
   body
     include ../includes/nav
-    
+
     include ../includes/register
-    
+
+    block precontent
+
     .container-fluid.text-white.page-container
       .row.justify-content-around
-        
+
         include ../includes/sidebarL
 
-        block content
+        #cookCnt.col-12.col-sm-9.col-md-6.col-xl-7.py-md-3.pl-md-3
+          include ../includes/banner
+          block content
 
         include ../includes/adsV
 
       include ../includes/adsH
 
+    include ../includes/foot
+
     include ../includes/bottom
 
-    script(type="text/javascript" src='/js/global.js')
+    script(src='/js/global.js')
     block ownjs

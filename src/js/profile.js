@@ -6,7 +6,7 @@ var visible, vmail, vfl, rNews;
 var lvisible, lvemail, lvfl, lrNews, prefChanges = false;
 var fileForUp = null;
 
-function loaded() {
+window.loaded = function loaded() {
     //Check auth
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {

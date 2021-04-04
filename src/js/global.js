@@ -1,7 +1,7 @@
 //Init database
-window.db = db = firebase.firestore();
+window.db = firebase.firestore();
 
-window.urlSrch = urlSrch = '';
+window.urlSrch = '';
 var url = new URL(window.location.href);
 var actSsn = false;
 var mod = false, author = "";
@@ -31,7 +31,10 @@ window.disable = function disable(btn) {
 }
 
 //Check auth
-var displayName, email, photoURL, uid;
+window.displayName;
+window.email;
+window.photoURL;
+window.uid;
 firebase.auth().onAuthStateChanged(function (user) {
     let modAuth = firebase.app().functions('us-east1').httpsCallable('publish-modAuth');
     if (user) {
