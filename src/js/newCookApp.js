@@ -378,7 +378,7 @@ function createCom(comDat) {
     let a = document.createElement('a');
     a.classList.add('text-decoration-none');
     a.classList.add('text-dark');
-    a.href = '../../ver-perfil.hmtl?user=' + comDat.authKey;
+    a.href = '../../ver-perfil?user=' + comDat.authKey;
     a.innerHTML = '<img src="' + comDat.pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`../../img/nopp.png`">' + comDat.from;
     usr.appendChild(a);
     head.appendChild(usr);
@@ -462,7 +462,7 @@ function createCom(comDat) {
         let ra = document.createElement('a');
         ra.classList.add('text-decoration-none');
         ra.classList.add('text-dark');
-        ra.href = '../../ver-perfil.hmtl?user=' + comDat.reps[i].authKey;
+        ra.href = '../../ver-perfil?user=' + comDat.reps[i].authKey;
         ra.innerHTML = '<img src="' + comDat.reps[i].pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`../../img/nopp.png`">' + comDat.reps[i].from;
         rusr.appendChild(ra);
         rHd.appendChild(rusr);
