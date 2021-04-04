@@ -1,6 +1,6 @@
 var rtDB = firebase.database();
 
-function loaded() {
+window.loaded = function loaded() {
     initSrch(false);
     function newSrch() {
         let srchStr = '?k=';
@@ -108,13 +108,13 @@ function loaded() {
 
 const previewLim = 21;
 //Get search params
-var urlSrch, kywords, srtOrd, desc, srchRef;
+var kywords, srtOrd, desc, srchRef;
 var nxtp = false, paglast = [null], page = 1;
 var allChk = false;
 function initSrch(stAf) {
-    kywrds = "";
+    kywords = "";
     if (urlSrch.get('k') != null) {
-        kywrds = urlSrch.get('k').replace('+', ' ');
+        kywords = urlSrch.get('k').replace('+', ' ');
         document.getElementById('srcBox').value = kywords;
     };
     document.getElementById("inSrchOrd0").selected = false;
