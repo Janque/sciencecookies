@@ -1,23 +1,25 @@
+import '../styles/index.scss';
+
 //Categorías@#
 const catnmb = 5, allCats = ['astronomia', 'biologia', 'curiosidades', 'fisica', 'tecnologia'];
 const previewLim = 20;
 
 //Get search params
-var urlSrch, cats = [], kywords, srtOrd, desc, srchRef;
+var cats = [], kywords, srtOrd, desc, srchRef;
 var nxtp = false, paglast = [null], page = 1;
 var allChk = false;
 function initSrch(stAf) {
     cats = allCats.slice();
-    kywrds = [''];
+    kywords = [''];
     if (urlSrch.get('c') != null) {
         cats = urlSrch.get('c').split('+');
         cats = cats[0].split(' ');
     }
     if (urlSrch.get('k') != null) {
-        kywrds = urlSrch.get('k').split('+');
+        kywords = urlSrch.get('k').split('+');
         document.getElementById('srcBox').value = urlSrch.get('k').replace('+', ' ');
     };
-    kywords = cats.concat(kywrds);
+    kywords = cats.concat(kywords);
     kywords.forEach(function (itm, idx) {
         let str = itm.toLowerCase();
         str = rmDiacs(str);
@@ -73,7 +75,7 @@ function initSrch(stAf) {
     const promises = [];
     let notSrchd = [], allP = null;
     for (let i = 0; i < kywords.length; i++) {
-        itm = kywords[i];
+        let itm = kywords[i];
         if (itm == '' || itm == ' ') continue;
         const p = firebase.database().ref('searchQs/' + itm).transaction(search => {
             if (search) {
@@ -233,7 +235,7 @@ for (let i = 0; i < catnmb; i++) {
 }
 
 function shwCalMain() {
-    db.collection('calendarios').where("public", "==", true).orderBy('date','desc').limit(1).get().then(snap => {
+    db.collection('calendarios').where("public", "==", true).orderBy('date', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let a = document.createElement('a');
@@ -263,10 +265,10 @@ function shwCalMain() {
             document.getElementById('calMain').appendChild(a);
             showEl(document.getElementById('calMain'));
         });
-    }).catch(err => {console.log(err)});
+    }).catch(err => { console.log(err) });
 }
 
-function loaded() {
+window.loaded = function loaded() {
     initSrch(false);
     shwCalMain();
     function send() {
