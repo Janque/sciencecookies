@@ -1,8 +1,8 @@
 {
   "name": "sciencecookies",
   "scripts": {
-    "dev": "rm -r public && parcel src/*.pug src/docs/*.pug --out-dir public",
-    "build": "rm -r public && parcel build src/*.pug src/docs/*.pug --out-dir public"
+    "dev": "rm -r public && parcel src/*.pug src/docs/*.pug src/js/cookie.js src/js/prevMail.js src/js/calendar.js --out-dir public",
+    "build": "rm -r public && parcel build src/*.pug src/docs/*.pug src/js/cookie.js src/js/prevMail.js src/js/calendar.js --out-dir public"
   },
   "devDependencies": {
     "cssnano": "^4.1.10",
