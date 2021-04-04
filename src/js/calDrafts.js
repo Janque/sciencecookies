@@ -1,4 +1,4 @@
-function loaded() {
+window.loaded = function loaded() {
     initSrch(false);
 }
 
@@ -19,46 +19,46 @@ function shwSrch() {
     srchRef.get().then(snap => {
         let docs = snap.docs;
         nxtp = false;
-        docs.forEach((doc,idx)=>{
-            let dat=doc.data();
+        docs.forEach((doc, idx) => {
+            let dat = doc.data();
 
             let col = document.createElement('col');
-            classes(col,'col');
-            classes(col,'mb-4');
+            classes(col, 'col');
+            classes(col, 'mb-4');
 
             let card = document.createElement('div');
-            classes(card,"card text-dark bg-light h-100 cardBorder");
+            classes(card, "card text-dark bg-light h-100 cardBorder");
             if (dat.public) {
-                classes(card,'border-success');
+                classes(card, 'border-success');
             } else {
-                classes(card,'border-secondary');
+                classes(card, 'border-secondary');
             }
 
             let h = document.createElement('div');
-            classes(h,"card-header bg-light m-0 py-0 text-right")
+            classes(h, "card-header bg-light m-0 py-0 text-right")
             let row = document.createElement('div');
-            classes(row,'row');
-            classes(row,'justify-content-between');
+            classes(row, 'row');
+            classes(row, 'justify-content-between');
             if (!dat.public) {
                 let col0 = document.createElement('div');
-                classes(col0,'col-auto');
-                classes(col0,'p-0');
+                classes(col0, 'col-auto');
+                classes(col0, 'p-0');
                 let badge = document.createElement('span');
-                classes(badge,'badge');
-                classes(badge,'badge-warning');
+                classes(badge, 'badge');
+                classes(badge, 'badge-warning');
                 badge.innerText = 'Pendiente';
                 col0.appendChild(badge);
                 row.appendChild(col0);
             }
             let col1 = document.createElement('div');
-            classes(col1,'col-auto');
-            classes(col1,'p-0');
-            classes(col1,'ml-auto');
+            classes(col1, 'col-auto');
+            classes(col1, 'p-0');
+            classes(col1, 'ml-auto');
             let drp = document.createElement('div');
-            classes(drp,'dropdown');
+            classes(drp, 'dropdown');
             let btndrp = document.createElement('button');
-            classes(btndrp,'btn');
-            classes(btndrp,'btn-light');
+            classes(btndrp, 'btn');
+            classes(btndrp, 'btn-light');
             btndrp.setAttribute('type', 'button');
             btndrp.setAttribute('data-toogle', 'dropdown');
             btndrp.setAttribute('aria-haspopup', "true");
@@ -76,18 +76,18 @@ function shwSrch() {
             };
             drp.appendChild(btndrp);
             let drpmenu = document.createElement('div');
-            classes(drpmenu,'dropdown-menu');
-            classes(drpmenu,'dropdown-menu-right');
+            classes(drpmenu, 'dropdown-menu');
+            classes(drpmenu, 'dropdown-menu-right');
             drpmenu.setAttribute('id', "drpMenu" + doc.id);
             let drpitm0 = document.createElement('button');
-            classes(drpitm0,'dropdown-item');
+            classes(drpitm0, 'dropdown-item');
             drpitm0.onclick = function () {
                 window.location.href = '../editar-calendario?file=' + doc.id;
             };
             drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
             drpmenu.appendChild(drpitm0);
             let drpitm1 = document.createElement('button');
-            classes(drpitm1,'dropdown-item');
+            classes(drpitm1, 'dropdown-item');
             drpitm1.onclick = function () {
                 window.open('../vista-email-calendario/' + doc.id, '_blank').focus();
             };
@@ -96,9 +96,9 @@ function shwSrch() {
             let drpitm2 = document.createElement('button');
             let d = dat.date.toDate();
             if (dat.public) {
-                classes(drpitm2,'dropdown-item');
+                classes(drpitm2, 'dropdown-item');
                 drpitm2.onclick = function () {
-                    window.open('../calendario-astronomico/' + d.getFullYear()+'/'+monthStr(d.getMonth()), '_blank').focus();
+                    window.open('../calendario-astronomico/' + d.getFullYear() + '/' + monthStr(d.getMonth()), '_blank').focus();
                 };
                 drpitm2.innerHTML = 'Ver calendario <i class="fas fa-eye"></i>';
                 drpmenu.appendChild(drpitm2);
@@ -111,15 +111,15 @@ function shwSrch() {
 
             let a = document.createElement('a');
             a.href = '../editar-calendario?file=' + doc.id;
-            classes(a,'text-decoration-none');
-            classes(a,'text-dark');
+            classes(a, 'text-decoration-none');
+            classes(a, 'text-dark');
             let img = document.createElement('img');
             img.src = dat.picUrl;
-            classes(img,'card-img-top');
+            classes(img, 'card-img-top');
             img.alt = 'No hay imagen'
             a.appendChild(img);
             let cbody = document.createElement('div');
-            classes(cbody,'card-body');
+            classes(cbody, 'card-body');
             cbody.innerHTML = '<h3 class="card-title">' + dat.title + '</h3>\n<p class="card-text">' + dat.description + '</p>\n'
             a.appendChild(cbody);
             card.appendChild(a);
