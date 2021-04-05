@@ -1,0 +1,12 @@
+// Register modal
+#mdlRgstr.modal.fade(data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='mdlRgsL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+        .modal-content
+            .modal-header
+                h5#mdlRgsL.modal-title Inicia sesión o regístrate
+                button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') ×
+            .modal-body
+                #firebaseui-auth-container
+            .modal-footer
+                button.btn.btn-secondary(type='button' data-dismiss='modal') Cancelar

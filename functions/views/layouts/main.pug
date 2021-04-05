@@ -1,0 +1,35 @@
+doctype html
+html(lang='es')
+  head
+    include ../includes/head
+
+    block missHead
+
+    link(rel="stylesheet" href=HOST+"/main.d8669397.css")
+    
+  body
+    include ../includes/nav
+
+    include ../includes/register
+
+    block precontent
+
+    .container-fluid.text-white.page-container
+      .row.justify-content-around
+
+        include ../includes/sidebarL
+
+        #cookCnt.col-12.col-sm-9.col-md-6.col-xl-7.py-md-3.pl-md-3
+          include ../includes/banner
+          block content
+
+        include ../includes/adsV
+
+      include ../includes/adsH
+
+    include ../includes/foot
+
+    include ../includes/bottom
+
+    script(src=HOST+'/global.c249c66a.js')
+    block ownjs

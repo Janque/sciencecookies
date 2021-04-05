@@ -1,0 +1,139 @@
+extends layouts/main
+
+block missHead
+  meta(name='description' content= description)
+  link(rel='canonical' href=HOST+'/galletas/'+month+'/'+file)
+  title #{title} - Science Cookies
+
+  - const site="cookie";
+
+block precontent
+  // Report modal
+  #mdlRprt.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlRprtL' aria-hidden='true' data-backdrop='static')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h5#mdlRprtL.modal-title Reportar contenido
+          button.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          form#frmRprt
+            .form-group.row
+              label.col-sm-2.col-form-label(for='inReas') Razón
+              .col-sm-10
+                select#inReas.form-control(required='')
+                  option(value='') Escoge...
+                  option(value='Spam o contenido comercial no deseado') Spam o contenido comercial no deseado
+                  option(value='Abuso o acoso') Abuso o acoso
+                  option(value='Fomenta el odio o la violencia') Fomenta el odio o la violencia
+                  option(value='Lenguaje ofensivo') Lenguaje ofensivo
+                  option(value='Material sexualmente explícito') Material sexualmente explícito
+                  option(value='Otro') Otro
+            .form-group.row
+              label.col-sm-2.col-form-label(for='inText') Detalles
+              .col-sm-10
+                textarea#inText.form-control(type='text' placeholder='Opcional' rows='3' maxlength='300')
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-dismiss='modal') Cancelar
+          button.btn.btn-primary(type='submit' form='frmRprt') Reportar
+
+block content
+  div.container-fluid.mb-2.rounded-lg.p-3(style="background-color:rebeccapurple;")
+    each item in content
+      case item.type
+        when 'head'
+          h1.text-center= item.title
+          - let d = published
+          p= 'Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
+          if dledit
+            - let ld = ledit
+            p= 'Ultima actualización: ' + ld.getDate() + '/' + (ld.getMonth() + 1) + '/' + ld.getFullYear()
+          p= 'Autor(es):' + item.author
+        when 'ref'
+          h3 Referencias
+          each link in item.ref
+            case link.type
+              when 'web'
+                p 
+                  a.text-warning.text-break(href=link.link target="_blank" rel="nofollow")=link.link
+                    i.fas.fa-external-link-alt.ml-1
+              default
+                p !{link.link}
+        when 'parra'
+          case item.title
+            when "1"
+              h1 !{item.titleTxt}
+            when "2"
+              br
+              h2 !{item.titleTxt}
+            when "3"
+              h3 !{item.titleTxt}
+            when "4"
+              h4 !{item.titleTxt}
+            when "5"
+              h5 !{item.titleTxt}
+            when "6"
+              h6 !{item.titleTxt}
+
+          p !{item.text}
+        when 'html'
+          div !{item.html}
+        when 'youtube'
+          div(class="embed-responsive embed-responsive-" + item.ratio)
+            iframe(src=item.vidUrl frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true")
+        when 'medSimple'
+          figure.mx-auto(style="position:relative; border-radius:.25rem; width:" + item.width)
+            img.w-100(alt=item.alt src=item.medUrl)
+            if item.hasCapt == "true"
+              figcaption(style="font-size:70%; font-weight:lighter;") !{item.caption}
+      //- Add more@#
+
+  // Like&Fav
+  #btnsFL.row.justify-content-start.mb-2
+    .col-auto
+      button#btnFav.btn.btn-outline-light.p-1.disabled.mt-2.mx-2
+        | Añadir a favoritos 
+        i#btnFavTxt.far.fa-heart
+        span#favCount.badge.badge-dark.ml-w
+    .col-auto
+      button#btnLike.btn.btn-outline-light.p-1.disabled.m-2
+        | Dar me gusta 
+        i#btnLikeTxt.far.fa-thumbs-up
+        span#likeCount.badge.badge-dark.m-2
+  // Comentarios
+  .row
+    button#btnLdComs.btn.btn-block.btn-scckie.mb-2.disabled Cargar comentarios
+    #spnCom.container-fluid.d-none
+      .text-center
+        .spinner-border.text-primary(role='status')
+          span.sr-only
+    #cntComs.container-fluid.text-dark.d-none
+      .container-fluid.bg-light.p-2.rounded-lg.mb-1
+        .row
+          #comCount.col Aún no hay comentarios
+        .dropdown-divider
+        form#frmNwCom
+          .form-group.row
+            .col-auto.pr-0
+              label(for='inNwCom')
+                img#ppCom.rounded-circle(src='' alt='' height='35' width='35')
+            .col
+              textarea#inNwCom.form-control-plaintext.border-bottom(type='text' maxlength='200' placeholder='Nuevo comentario' required='' rows='3')
+              small.text-muted Máximo 200 caracteres
+        #frmNwComBtns.row.justify-content-end.d-none
+          .col-auto
+            button#btnCanCom.btn.btn-secondary(onclick="document.getElementById('inNwCom').value='';document.getElementById('frmNwComBtns').classList.add('d-none');replying=-1;document.getElementById('inNwCom').setAttribute('placeholder','Nuevo comentario');") Cancelar
+            button#btnAddCom.btn.btn-scckie(type='submit' form='frmNwCom') Comentar
+      #cntComs2.container-fluid.text-dark.d-none.p-0
+    button#btnLdMrComs.btn.btn-block.btn-scckie.mb-2.disabled.d-none Más comentarios
+    #spnCom2.container-fluid.d-none
+      .text-center
+        .spinner-border.text-primary(role='status')
+          span.sr-only
+  // Id@#IMPORTANTE
+  input#getId.form-check-input.d-none(type='checkbox' readonly='' value=cookieID)
+  input#getTitle.form-check-input.d-none(type='checkbox' readonly='' value=titleInf)
+
+block ownjs
+  script(src=HOST+'/js/cookie.js')
+  script= java
