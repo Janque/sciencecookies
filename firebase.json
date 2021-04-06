@@ -58,6 +58,11 @@
         "source": "/archivo/2020/ago-sep",
         "destination": "/archivo/2020/jul-sep",
         "type": 301
+      },
+      {
+        "source": "/galletas/202007/:post*",
+        "destination": "/galletas/202008/:post",
+        "type": 301
       }
     ]
   },
