@@ -4,12 +4,12 @@ admin.initializeApp({
     storageBucket: "science-cookies.appspot.com"
 });
 
-// exports.cookieFeatures = require('./groups/cookieFeatures');
+exports.cookieFeatures = require('./groups/cookieFeatures');
 exports.dynCookies = require('./groups/dynCookies');
 // exports.dynCalendars = require('./groups/dynCalendars');
 // exports.dynAllCals = require('./groups/dynAllCals');
 // exports.dynArchive = require('./groups/dynArchive');
-// exports.maintenance = require('./groups/maintenance');
-// exports.publish = require('./groups/publish');
-// exports.users = require('./groups/users');
-// exports.sitemap = require('./groups/sitemap');
+exports.maintenance = require('./groups/maintenance');
+exports.publish = require('./groups/publish');
+exports.users = require('./groups/users');
+exports.sitemap = require('./groups/sitemap');

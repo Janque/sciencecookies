@@ -86,7 +86,7 @@ app.get('/vista-email/:file', (req, res) => {
             };
             if (dat.beenPublic) toRender.estado = "actualizado una";
             else toRender.estado = "cocinado una nueva";
-            res.render('mailPreview', toRender);
+            res.render('mailPrev', toRender);
             return;
         });
     }).catch(err => console.log(err));
