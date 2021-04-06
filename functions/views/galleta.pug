@@ -85,7 +85,7 @@ block content
           figure.mx-auto(style="position:relative; border-radius:.25rem; width:" + item.width)
             img.w-100(alt=item.alt src=item.medUrl)
             if item.hasCapt == "true"
-              figcaption(style="font-size:70%; font-weight:lighter;") !{item.caption}
+              figcaption.figcaption !{item.caption}
       //- Add more@#
 
   // Like&Fav
@@ -130,10 +130,7 @@ block content
       .text-center
         .spinner-border.text-primary(role='status')
           span.sr-only
-  // Id@#IMPORTANTE
-  input#getId.form-check-input.d-none(type='checkbox' readonly='' value=cookieID)
-  input#getTitle.form-check-input.d-none(type='checkbox' readonly='' value=titleInf)
 
 block ownjs
   script(src=HOST+'/js/cookie.js')
-  script= java
+  script !{java}

@@ -1,12 +1,9 @@
 var cookRef = null;
-var id = '', cTitle = '', cRef = '';
-var pubID;
+var cRef = '', pubID;
 var replying = -1;
 
-function loaded() {
-    id = document.getElementById('getId').value;
+window.loaded = function loaded() {
     cookRef = firebase.database().ref('galletas/' + id);
-    cTitle = document.getElementById('getTitle').value;
     cRef = window.location.href;
     let i = 0;
     while (!(cRef[i] == 'a' && cRef[i + 1] == 's')) i++;
@@ -23,11 +20,8 @@ function loaded() {
         }
         return cook;
     });
-    let update = {};
-    update[id] = 'true';
-    firebase.database().ref('uptCook').update(update).then(()=>{
-        
-    }).catch(err => console.error('error'));
+    firebase.database().ref('uptCook/' + id).set("true").then(() => { }).catch(err => console.error('err'));
+
     function sendRep() {
         db.collection('reports').add({
             from: email,

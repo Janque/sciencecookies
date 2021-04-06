@@ -14,7 +14,6 @@
       ".write":true,
       "$calID": {
           "pop": {".validate": "newData.isNumber()"}
-        }
       }
     },
     "searchQs": {
@@ -25,7 +24,7 @@
     },
     "uptCook": {
       ".write":true,
-      "$cook": {".validate": "newData.isNumber()"}
+      "$cook": {".validate": "newData.isString()"}
     }
   }
 }

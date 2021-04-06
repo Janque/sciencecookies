@@ -27,7 +27,7 @@ document.getElementById('btnNextEve').onclick = () => {
     }
 };
 
-function loaded() {
+window.loaded = function loaded() {
     firebase.database().ref('calendarios/' + globID).transaction(cal=> {
         if (cal) {
             cal.pop++;

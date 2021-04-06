@@ -34,6 +34,11 @@ app.get('/galletas/:month/:file', (req, res) => {
                     month += '0';
                 }
                 month += (d.getMonth() + 1);
+                
+                let java=dat.java;
+                java+=`window.id = '${doc.id}';\n`;
+                java+=`window.cTitle = '${dat.title}';\n`;
+                
                 res.render('galleta', {
                     "published": dat.published.toDate(),
                     "dledit": dat.dledit,
@@ -42,10 +47,8 @@ app.get('/galletas/:month/:file', (req, res) => {
                     "month": month,
                     "file": dat.file,
                     "title": dat.title,
-                    "titleInf": dat.title,
-                    "cookieID": doc.id,
                     "content": dat.cont,
-                    "java": dat.java
+                    "java": java
                 });
                 return;
             });

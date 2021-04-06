@@ -57,6 +57,10 @@ firebase.auth().onAuthStateChanged(function (user) {
         }
         actSsn = false;
         mod = false;
+        displayName=null;
+        email=null;
+        photoURL=null;
+        uid=null;
         shwSsnBtns(false);
     }
 });
@@ -104,7 +108,7 @@ function shwSsnBtns(ac) {
                     document.getElementById('btnLike').classList.remove('btn-light');
                     document.getElementById('btnLike').classList.add('btn-outline-light');
                 }
-            }).catch(function (err) { console.log('err') });
+            }).catch(function (err) { console.log(err) });
         }
     } else {
         document.getElementById('icnUsr').classList.remove('fa-user');

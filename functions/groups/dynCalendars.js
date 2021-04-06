@@ -3,12 +3,10 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 
 const express = require('express');
-const engines = require('consolidate');
 const app = express();
 
-app.engine('hbs', engines.handlebars);
 app.set('views', './views');
-app.set('view engine', 'hbs');
+app.set('view engine', 'pug');
 
 app.get('/calendario-astronomico/:year/:month', (req, res) => {
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
@@ -70,45 +68,7 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
                 res.redirect('https://sciencecookies.net/404');
                 return;
             }
-            let weeks = [];
-            const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-            dat.weeks.forEach((week, wIdx) => {
-                let sect = '<tr style="height:10rem;">\n';
-                for (let i = 0; i < 7; i++) {
-                    let day = week[daysOfWeek[i]]
-                    sect += '<td class="p-0">\n';
 
-                    if (day) {
-                        sect += '<p class="m-0 p-1" style="font-size:x-large;"><b>' + day.date + '</b></p>\n';
-                        sect += '<div class="autoOverflow" style="max-height: 8rem;">\n';
-                        day.events.forEach((event, idx) => {
-                            sect += '<button class="btn text-left p-1 mb-1 w-100" style="background-color: #c3e6cb; border-color:#8fd19e;" onclick="eventToShow=\'' + wIdx + daysOfWeek[i] + idx + '\';showEvent();" data-toggle="modal" data-target="#mdlEventInfo"><small>' + event.name + '</small></button>\n';
-                        });
-                        sect += '</div>\n';
-                    }
-                    sect += '</td>\n';
-                }
-                sect += '</tr>\n';
-                weeks.push(sect);
-            });
-
-            let events = [];
-            for (const [key, event] of Object.entries(dat.events)) {
-                let sect = '<div id="' + key + '" class="d-none overflow-auto">\n';
-                sect += '<div class="modal-body">\n';
-                sect += '<h3>' + event.name + '</h3>\n';
-                sect += '<p>' + event.description + '</p>\n';
-                sect += '<p>Visibilidad: ' + event.visibilidad + '</p>\n';
-                if (event.visibilidad != "No observable") {
-                    sect += '<p class="mb-0">Horario: </p>\n<ul>\n';
-                    event.horario.forEach(time => {
-                        sect += '<li>' + time + '</li>\n';
-                    });
-                    sect += '</ul>\n';
-                }
-                sect += '</div></div>\n';
-                events.push(sect);
-            }
             let orderedKeys = Object.keys(dat.events).slice().sort((a, b) => {
                 if (Number(a[0]) == Number(b[0])) {
                     if (a.substring(1, 4) == b.substring(1, 4)) {
@@ -148,7 +108,8 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
                 java += ',' + '"' + Object.keys(dat.events)[i] + '":"' + Object.values(dat.events)[i].date + '"';
             }
             java += '};\n';
-            java+=`var globID="${doc.id}"\n`;
+            java+=`window.globID="${doc.id}"\n`;
+
             res.render('calendario', {
                 "descriptionShort": dat.descriptionShort,
                 "description": dat.description,
@@ -159,8 +120,8 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
                 "picUrl": dat.picUrl,
                 "picAlt": dat.picAlt,
                 "picCapt": dat.picCapt,
-                "weeks": weeks,
-                "events": events,
+                "weeks": dat.weeks,
+                "events": Object.entries(dat.events),
                 "nextCal": dat.nextCal,
                 "priorCal": dat.priorCal,
                 "java": java
@@ -184,7 +145,7 @@ app.get('/vista-email-calendario/:file', (req, res) => {
             return;
         }
 
-        res.render('calMailPrev', {
+        res.render('mailPrevCal', {
             "url": dat.url,
             "description": dat.descriptionShort,
             "picUrl": dat.picUrl,
