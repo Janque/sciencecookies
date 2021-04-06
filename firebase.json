@@ -52,6 +52,13 @@
         "source": "/sitemap.xml",
         "function": "sitemap-serveSitemap"
       }
+    ],
+    "redirects": [
+      {
+        "source": "/archivo/2020/ago-sep",
+        "destination": "/archivo/2020/jul-sep",
+        "type": 301
+      }
     ]
   },
   "storage": {
