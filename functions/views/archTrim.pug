@@ -1,0 +1,36 @@
+extends layouts/main
+
+block missHead
+  meta(name='description' content="Aquí puedes encontrar todas las galletas de " + triLC + "del" + year + ".")
+  link(rel='canonical' href=HOST+'/archivo/')
+  title Archivo #{year} #{triLC} - Science Cookies
+
+  - const site="archTri";
+
+block content
+  nav(aria-label='breadcrumb')
+    ol.breadcrumb.mb-4
+      li.breadcrumb-item(aria-current='page')
+        a(href='/archivo') Archivo
+      li.breadcrumb-item(aria-current='page')
+        a(href='/archivo') #{year}
+      li.breadcrumb-item.active(aria-current='page') #{tri}
+  br
+  each cooks, month in months
+    h3 !{month}
+    br
+    each cook in cooks 
+      a.text-decoration-none.text-light(href=cook.url)
+        .media.mb-3
+          img.align-self-center.mr-3(src=cook.picUrl alt=cook.title width="64px" height="64px")
+          .media-body
+            h5.mt-0 !{cook.title}
+            p !{cook.descrip}
+            if(cook.dledit)
+              p.my-0 Actualizado: !{cook.ledit}
+            else
+              p.my-0 Publicado:  !{cook.pub}
+            p.mt-0 Autor(es): !{cook.authrs}
+      .dropdown-divider.d-md-none
+
+
