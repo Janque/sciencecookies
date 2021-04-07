@@ -63,6 +63,11 @@
         "source": "/galletas/202007/:post*",
         "destination": "/galletas/202008/:post",
         "type": 301
+      },
+      {
+        "regex": "/(.*/?)*(\\.html)",
+        "destination": "/:1",
+        "type": 301
       }
     ]
   },
