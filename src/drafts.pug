@@ -1,0 +1,82 @@
+extends layouts/main
+
+block missHead
+  meta(name='description' content='Revisa y administra tus borradores')
+  link(rel='canonical' href=HOST+'/drafts')
+  title Science Cookies - Borradores
+
+  - const site="drafts";
+
+block precontent
+  // Plus modal
+  #mdlPlus.modal.fade(tabindex='-1' aria-labelledby='mdlPlusL' aria-hidden='true')
+    #alrtPlusContainer
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h5#mdlPlusL.modal-title Crear una nueva galleta
+          button#btnCanPlus1.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          form#frmPlus
+            .form-group
+              label(for='inTitle') Título de la galleta
+              input#inTitle.form-control(type='text' placeholder='Nueva galleta' required='')
+            .form-group
+              label(for='inFile') Nombre del archivo
+              input#inFile.form-control(type='text' placeholder='nueva-galleta' required='')
+            .dropdown-divider
+            button#btnPlusConf.btn.btn-primary.btn-block(type='submit') Crear
+            #barCont.progress.d-none
+              #bar.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
+        .modal-footer
+          button#btnCanPlus0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') Cancelar
+
+  // Side toolbar
+  .tbar.tbar-right.btn-toolbar.mb-3(role='toolbar')
+    .btn-group-vertical.mr-2.btn-group-lg(role='group')
+      button#btnPlus.btn.btn-scckie(type='button')
+        i.fas.fa-plus
+
+block content
+  form#frmSrch.mb-4
+    .input-group
+      input#srcBox.form-control(type='text' placeholder='Buscar galletas...' aria-describedby='frmBtns' maxlength='100')
+      #frmBtns.input-group-append
+        select#inOrd.custom-select.rounded-0
+          option#inSrchOrd0(value='created') Creación
+          option#inSrchOrd1(value='published') Publicación
+          option#inSrchOrd2(value='ledit') Edición
+          option#inSrchOrd3(value='pop') Popularidad
+        select#inDir.custom-select.rounded-0
+          option#inSrchDir0(value='desc') Decendente
+          option#inSrchDir1(value='asc') Acendente
+        button.btn.btn-outline-light(type='submit')
+          i.fas.fa-search
+  nav#pgNavT.d-none(aria-label='pageNavT')
+    ul.pagination.justify-content-end
+      li.page-item
+        button#pgTPrv.page-link.text-light.bg-transparent(aria-label='pgTPrv')
+          span(aria-hidden='true') «
+      li.page-item
+        span#disPgT.page-link.text-light.bg-transparent 1
+      li.page-item
+        button#pgTNxt.page-link.text-light.bg-transparent(aria-label='pgTNxt')
+          span(aria-hidden='true') »
+
+  // Cards
+  #crdContainer.row.row-cols-1.row-cols-sm-2.row-cols-md-1.row-cols-lg-2.row-cols-xl-3
+
+  nav#pgNavB.d-none(aria-label='pageNavB')
+    ul.pagination.justify-content-end
+      li.page-item
+        button#pgBPrv.page-link.text-light.bg-transparent(aria-label='pgBPrv')
+          span(aria-hidden='true') «
+      li.page-item
+        span#disPgB.page-link.text-light.bg-transparent 1
+      li.page-item
+        button#pgBNxt.page-link.text-light.bg-transparent(aria-label='pgBNxt')
+          span(aria-hidden='true') »
+
+block ownjs
+  script(src='/js/drafts.js')

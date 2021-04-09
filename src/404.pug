@@ -1,0 +1,16 @@
+extends layouts/main
+
+block missHead
+  link(rel='canonical' href=HOST+'/404')
+  title Science Cookies - Página no encontrada
+
+  - const site="404";
+
+block content
+  h1.text-center 404
+  br
+  h1.text-center Página no encontrada
+  p El sitio que buscas no está disponible
+  p Es posible que sea porque el sitio está en construcción o porque escribiste mal el URL, por favor revisa el URL o intenta de nuevo más tarde.
+  p.text-center
+    a.btn.btn-dark.mx-2.my-1(href=HOST) Volver al inicio

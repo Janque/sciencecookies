@@ -1,0 +1,48 @@
+extends layouts/main
+
+block missHead
+  meta(name='description' content='¿Tienes alguna sugerencia o duda? ¿Quieres reportar un fallo? Aquí puedes hacerlo.')
+  link(rel='canonical' href=HOST+'/contacto')
+  title Science Cookies - Contacto
+
+  - const site="contact";
+
+block content
+  .container-fluid.justify-content-center
+    h3.text-center Envíanos un mensaje
+    br
+    p Si tienes alguna sugerencia, comentario o quieres reportar un fallo, puedes hacerlo aquí.
+    br
+    form#frmCont
+      .form-group.row
+        label.col-sm-2.col-form-label(for='inEmail') Email
+        .col-sm-10
+          input#inEmail.form-control-plaintext.text-light(type='text' readonly='' value='')
+      .form-group.row
+        label.col-sm-2.col-form-label(for='inSubj') Asunto
+        .col-sm-10
+          select#inSubj.form-control(required='')
+            option(value='') Escoge...
+            option#inOsuger(value='Sugerir una galleta') Sugerir una galleta
+            option#inOfallo(value='Reportar un fallo') Reportar un fallo
+            option#inOtos(value='Sobre los Términos de Servicio') Sobre los Términos de Servicio
+            option#inOpriv(value='Sobre la Política de Privacidad') Sobre la Política de Privacidad
+            option#inOotro(value='Otro') Otro
+      .form-group.row
+        label.col-sm-2.col-form-label(for='inText') Mensaje
+        .col-sm-10
+          textarea#inText.form-control(type='text' required='')
+      .form-group.d-flex
+        .flex-grow-1
+          .form-check
+            input#inAcpt.form-check-input(type='checkbox' value='' required='')
+            label.form-check-label(for='inAcpt')
+              | Estoy de acuerdo con los 
+              a.text-warning(href='docs/tos') Términos de servicio
+              |  y la 
+              a.text-warning(href='docs/privacidad') Política de privacidad
+        div
+          button.btn.btn-outline-success.px-4.px-sm-5.px-md-3.px-lg-5(type='submit') Enviar
+
+block ownjs
+  script(src='/js/contact.js')

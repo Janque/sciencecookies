@@ -1,0 +1,115 @@
+extends layouts/main
+
+block missHead
+  meta(name='description' content= descriptionShort)
+  link(rel='canonical' href=HOST+'/calendario-astronomico/'+year+'/'+month)
+  title #{title} - Science Cookies
+
+  - const site="cal";
+
+  style.
+    .table-bordered thead,
+    .table-bordered tbody,
+    .table-bordered th,
+    .table-bordered td {
+    border: .5rem solid #57238b !important;
+    }
+    .autoOverflow {
+    overflow: hidden;
+    margin-right: .5rem;
+    margin-left: .5rem;
+    }
+    .autoOverflow:hover {
+    overflow: auto;
+    }
+    .portImg{
+      position: relative;
+      border-radius: .25rem;
+      width: 75%;
+    }
+    .dayHead{
+      min-width: 7rem;
+      width: 13%;
+    }
+    .eventCont{
+      background-color: #c3e6cb;
+      border-color: #8fd19e;
+    }
+
+block precontent
+  // Event Info modal
+  #mdlEventInfo.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlEventInfoL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h5#mdlEventInfoL.modal-title
+          button.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .row.px-4.py-2
+          button#btnPriorEve.btn.btn-scckie.mr-auto
+            i.fas.fa-arrow-left
+          button#btnNextEve.btn.btn-scckie
+            i.fas.fa-arrow-right
+        .overflow-auto
+          each eve in events 
+            - const key=eve[0];
+            - const event=eve[1];
+            .d-none.overflow-auto(id=key)
+              .modal-body
+                h3 !{event.name}
+                p !{event.description}
+                p Visibilidad: !{event.visibilidad}
+                if (event.visibilidad != "No observable")
+                  p.mb-0 Horario:
+                  ul 
+                    each time in event.horario
+                      li !{time}
+
+block content
+  div.container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
+    .row.px-4.py-2.mb-4
+      a#btnPriorEve.btn.btn-lg.btn-light.btn-link-scckie.mr-auto(href=priorCal)
+        i.fas.fa-arrow-left
+      a#btnNextEve.btn.btn-lg.btn-light.btn-link-scckie(href=nextCal)
+        i.fas.fa-arrow-right
+    h1.text-center !{title}
+    figure.mx-auto.portImg
+      img.w-100(alt=picAlt src=picUrl)
+      figcaption.figcaption !{picCapt}
+    br
+    p !{description}
+    .table-responsive
+      table.table.table-bordered.table-light.rounded
+        thead.thead-dark
+          tr
+            th.dayHead Domingo
+            th.dayHead Lunes
+            th.dayHead Martes
+            th.dayHead Miercoles
+            th.dayHead Jueves
+            th.dayHead Viernes
+            th.dayHead Sabado
+        tbody
+          - const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+          each week, wIdx in weeks
+            tr(style="height: 10rem;")
+              each dayOfWeek in daysOfWeek
+                - let day = week[dayOfWeek];
+                td.p-0
+                  if(day)
+                    p.m-0.p-1(style="font-size: x-large;")
+                      b !{day.date}
+                    .autoOverflow(style="max-height: 8rem;")
+                      each event, idx in day.events
+                        button.btn.text-left.p-1.mb-1.w-100.eventCont( onclick="eventToShow='"+wIdx+daysOfWeek+idx+"'; showEvent();" data-toggle="modal" data-target="#mdlEventInfo")
+                          small !{event.name}
+    br
+    br
+    p
+      a.text-warning.text-break(href='https://in-the-sky.org/newscal.php?month='+monthNum+'&year='+year+'&maxdiff=6' target='_blank' rel='nofollow')
+        | Saber más
+        i.fas.fa-external-link-alt.ml-1(aria-hidden='true')
+
+block ownjs
+  script(src=HOST+'/js/calendar.js')
+  script !{java}

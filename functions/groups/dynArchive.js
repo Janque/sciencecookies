@@ -3,12 +3,10 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 
 const express = require('express');
-const engines = require('consolidate');
 const app = express();
 
-app.engine('hbs', engines.handlebars);
 app.set('views', './views');
-app.set('view engine', 'hbs');
+app.set('view engine', 'pug');
 
 app.get('/archivo/:year/:tri', (req, res) => {
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
@@ -48,75 +46,71 @@ app.get('/archivo/:year/:tri', (req, res) => {
                 res.redirect('http://sciencecookies.net/404');
                 return;
             }
-            let months = [], mString = "";
-            let month = -1;
+            let months = {}, month, monthn;
             snap.forEach(doc => {
                 let dat = doc.data();
                 let date = dat.date.toDate();
-                if (month != date.getMonth()) {
-                    if (month != -1) {
-                        mString += '<div class="dropdown-divider d-md-none"></div><br>\n';
-                        months.push(mString);
-                    }
-                    month = date.getMonth();
-                    switch (month) {
+                if (monthn != date.getMonth()) {
+                    monthn = date.getMonth();
+                    switch (monthn) {
                         case 0:
-                            mString = '<h2>Enero</h2><br>\n';
+                            month = "Enero";
                             break;
                         case 1:
-                            mString = '<h2>Febrero</h2><br>\n';
+                            month = "Febrero";
                             break;
                         case 2:
-                            mString = '<h2>Marzo</h2><br>\n';
+                            month = "Marzo";
                             break;
                         case 3:
-                            mString = '<h2>Abril</h2><br>\n';
+                            month = "Abril";
                             break;
                         case 4:
-                            mString = '<h2>Mayo</h2><br>\n';
+                            month = "Mayo";
                             break;
                         case 5:
-                            mString = '<h2>Junio</h2><br>\n';
+                            month = "Junio";
                             break;
                         case 6:
-                            mString = '<h2>Julio</h2><br>\n';
+                            month = "Julio";
                             break;
                         case 7:
-                            mString = '<h2>Agosto</h2><br>\n';
+                            month = "Agosto";
                             break;
                         case 8:
-                            mString = '<h2>Septiembre</h2><br>\n';
+                            month = "Septiembre";
                             break;
                         case 9:
-                            mString = '<h2>Octubre</h2><br>\n';
+                            month = "Octubre";
                             break;
                         case 10:
-                            mString = '<h2>Noviembre</h2><br>\n';
+                            month = "Noviembre";
                             break;
                         case 11:
-                            mString = '<h2>Diciembre</h2><br>\n';
+                            month = "Diciembre";
                             break;
                     }
+                    months[month] = [];
                 }
-                mString += '<a href="' + dat.url + '" class="text-decoration-none text-light"><div class="media mb-3">\n';
-                mString += '<img src="' + dat.picUrl + '" class="align-self-center mr-3" alt="' + dat.title + '" width="64px" height="64px">\n';
-                mString += '<div class="media-body">\n';
-                mString += '<h5 class="mt-0">' + dat.title + '</h5>\n';
-                mString += '<p>' + dat.descrip + '</p>\n';
-                if (doc.data().dledit) {
-                    let dl = doc.data().ledit.toDate();
-                    mString += '<p class="my-0">Actualizado: ' + dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear() + '</p>';
+                let newMonth = {
+                    url: dat.url,
+                    picUrl: dat.picUrl,
+                    title: dat.title,
+                    descrip: dat.descrip,
+                    dledit: dat.dledit,
+                    ledit: "",
+                    pub: "",
+                    authrs: dat.authrs
+                }
+                if (dat.dledit) {
+                    let dl = dat.ledit.toDate();
+                    newMonth.ledit = dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear();
                 } else {
-                    let d = doc.data().date.toDate();
-                    mString += '<p class="my-0">Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>';
+                    let d = dat.date.toDate();
+                    newMonth.pub = d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
                 }
-                mString += '<p class="mt-0">Autor(es): ' + doc.data().authrs + '</p></div>';
-                mString += '</div></a><div class="dropdown-divider d-md-none"></div>';
+                months[month].push(newMonth);
             });
-            if (month != -1) {
-                mString += '<div class="dropdown-divider d-md-none"></div><br>\n';
-                months.push(mString);
-            }
             res.render('archTrim', {
                 year: year,
                 tri: longTri(tri),
@@ -142,28 +136,19 @@ app.get('/archivo', (req, res) => {
         urls.forEach(url => {
             nUrls.push(getYT(url.loc));
         });
-        let years = [], sect = "";
-        let year = '2019', tri = 'abr-jun';
+        let years = {
+            "2020": {}
+        }
+        let year = '2020', tri = 'abr-jun';
         nUrls.forEach(url => {
             let lyear = url.year, ltri = url.tri;
-            if (lyear != year) {
-                if (sect != "") {
-                    sect += "</ul>\n";
-                    years.push(sect);
-                }
-                sect = "<h2>" + lyear + "</h2>\n";
-                sect += "<ul>\n";
-                sect += '<li><a href="archivo/' + lyear + '/' + ltri + '" class="btn-link-scckie text-light"><h6>' + longTri(ltri) + '</h6></a></li>\n';
-            } else if (ltri != tri) {
-                sect += '<li><a href="archivo/' + lyear + '/' + ltri + '" class="btn-link-scckie text-light"><h6>' + longTri(ltri) + '</h6></a></li>\n';
+            if (lyear != year || ltri != tri) {
+                if (!years[lyear]) years[lyear] = {};
+                years[lyear][ltri] = longTri(ltri);
             }
             tri = ltri;
             year = lyear;
         });
-        if (sect != "") {
-            sect += "</ul>\n";
-            years.push(sect);
-        }
         res.render('archivo', { years: years });
         return;
     }).catch(err => console.log(err));
