@@ -1,0 +1,20 @@
+extends layouts/main
+
+block missHead
+  meta(name='description' content="Aquí puedes encontrar todos los calendarios astronómicos.")
+  link(rel='canonical' href=HOST+'/calendario-astronomico/')
+  title Calendario astronómico - Science Cookies
+
+  - const site="allCalsY";
+
+block content
+  h1.text-center Calendario astronómico
+  nav(aria-label='breadcrumb')
+    ol.breadcrumb.mb-3
+      li.breadcrumb-item.active(aria-current='page') Calendario astronómico
+  .container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
+    p Aquí puedes encontrar todos los calendarios astronómicos.
+    ul
+      each year in years
+        li
+          a.btn-link-scckie.text-light(href='/calendario-astronomico/'+year style='font-size:larger') #{year}
