@@ -182,7 +182,7 @@ function shwSrch() {
             document.getElementById("pgTPrv").removeAttribute('disabled');
             document.getElementById("pgBPrv").removeAttribute('disabled');
         }
-    }).catch(err => { console.log(err) });//@#
+    }).catch(err => { console.log('err') });
 }
 
 document.getElementById("pgTPrv").onclick = function () { reSrch(-1); };

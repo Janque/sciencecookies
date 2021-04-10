@@ -72,11 +72,11 @@ window.loaded = function loaded() {
         } else {
             document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
         }
-        document.getElementById('btnPrevCal').href = docDat.url.replace("https://sciencecookies.net","localhost:5000");
+        document.getElementById('btnPrevCal').href = docDat.url;
         document.getElementById('btnPrevMail').href = '/vista-email-calendario/' + docId;
         document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
-        document.getElementById('btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
-        document.getElementById('btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
+        document.getElementById('btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1170&reg1=3688685&reg2=9609540&town=3688689`;
+        document.getElementById('btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1724&reg1=3117732&reg2=6355233&town=3117735`;
     }, err => console.log(err))
 
     function descFrm() {
