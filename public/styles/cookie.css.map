@@ -1,0 +1,1 @@
+{"version":3,"sources":["styles/cookie.scss"],"names":[],"mappings":"AAAA,WACI,iBAAA,CACA,qBAEJ,yBACC,WACC","file":"cookie.css","sourceRoot":"../src","sourcesContent":[".medSimple{\n    position:relative;\n    border-radius:.25rem;\n}\n@media (max-width: 768px){\n\t.medSimple{\n\t\twidth: 100% !important;\n\t}\n}"]}

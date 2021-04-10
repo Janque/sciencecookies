@@ -4,6 +4,7 @@ block missHead
   meta(name='description' content= description)
   link(rel='canonical' href=HOST+'/galletas/'+month+'/'+file)
   title #{title} - Science Cookies
+  link(rel="stylesheet" href=HOST+"/styles/cookie.css")
 
   - const site="cookie";
 
@@ -82,7 +83,7 @@ block content
           div(class="embed-responsive embed-responsive-" + item.ratio)
             iframe(src=item.vidUrl frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true")
         when 'medSimple'
-          figure.mx-auto(style="position:relative; border-radius:.25rem; width:" + item.width)
+          figure.mx-auto.medSimple(style="width:" + item.width)
             img.w-100(alt=item.alt src=item.medUrl)
             if item.hasCapt == "true"
               figcaption.figcaption !{item.caption}
