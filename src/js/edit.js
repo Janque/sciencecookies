@@ -41,6 +41,14 @@ window.loaded = function loaded() {
             } else {
                 document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
             }
+            let d = docDat.published.toDate();
+            let month = d.getFullYear().toString();
+            if (d.getMonth() < 9) {
+                month += '0';
+            }
+            month += (d.getMonth() + 1);
+            document.getElementById('btnPrevCook').href = '../galletas/' + month + '/' + docDat.file;
+            document.getElementById('btnPrevMail').href = '../vista-email/' + docDat.file;
             fillKW();
         });
     }, err => console.log(err))
@@ -1133,21 +1141,11 @@ document.getElementById('inSendUpt').onclick = function () {
 
 document.getElementById('btnPrevCook').onclick = function () {
     docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
-    saveDoc().then(() => {
-        let d = docDat.published.toDate();
-        let month = d.getFullYear().toString();
-        if (d.getMonth() < 9) {
-            month += '0';
-        }
-        month += (d.getMonth() + 1);
-        window.open('../galletas/' + month + '/' + docDat.file, '_blank').focus();
-    }).catch(err => console.log(err));
+    normSave();
 };
 document.getElementById('btnPrevMail').onclick = function () {
     docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
-    saveDoc().then(() => {
-        window.open('../vista-email/' + docDat.file, '_blank').focus();
-    }).catch(err => console.log(err));
+    normSave();
 };
 
 document.getElementById('btnPrivate').onclick = function () {
