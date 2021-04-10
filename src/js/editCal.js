@@ -72,7 +72,11 @@ window.loaded = function loaded() {
         } else {
             document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
         }
-        document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`
+        document.getElementById('btnPrevCal').href = docDat.url.replace("https://sciencecookies.net","localhost:5000");
+        document.getElementById('btnPrevMail').href = '/vista-email-calendario/' + docId;
+        document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
+        document.getElementById('btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
+        document.getElementById('btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
     }, err => console.log(err))
 
     function descFrm() {
@@ -563,15 +567,11 @@ document.getElementById('inMedSrc1').onclick = function () {
 
 document.getElementById('btnPrevCal').onclick = function () {
     docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
-    saveDoc().then(() => {
-        window.open(docDat.url, '_blank').focus();
-    }).catch(err => console.log(err));
+    normSave();
 };
 document.getElementById('btnPrevMail').onclick = function () {
     docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
-    saveDoc().then(() => {
-        window.open('vista-email-calendario/' + docId, '_blank').focus();
-    }).catch(err => console.log(err));
+    normSave();
 };
 
 document.getElementById('btnAprove').onclick = function () {

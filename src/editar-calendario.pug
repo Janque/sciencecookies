@@ -41,15 +41,19 @@ block precontent
   // Side toolbar
   .tbar.tbar-right.btn-toolbar.mb-3(role='toolbar')
     .btn-group-vertical.mr-2.btn-group-lg(role='group')
-      button#btnPrevCal.btn.btn-scckie
+      a#btnPrevCal.btn.btn-scckie(target="_blank")
         i.fas.fa-eye
-      button#btnPrevMail.btn.btn-scckie
+      a#btnPrevMail.btn.btn-scckie(target="_blank")
         i.fas.fa-envelope
       button#btnAprove.btn.btn-scckie.d-none
         i.far.fa-check-square
       button#btnPub.btn.btn-scckie.d-none(data-toggle='modal' data-target='#mdlPublish')
         i.fas.fa-paper-plane
-      a#btnSrcCal.btn.btn-scckie.text-decoration-none
+      a#btnSrcCal.btn.btn-scckie.text-decoration-none(target="_blank")
+        i.fas.fa-calendar-day
+      a#btnSrcCal2.btn.btn-scckie.text-decoration-none(target="_blank")
+        i.fas.fa-calendar-day
+      a#btnSrcCal3.btn.btn-scckie.text-decoration-none(target="_blank")
         i.fas.fa-calendar-day
 
 block content
