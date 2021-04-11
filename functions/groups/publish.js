@@ -40,6 +40,7 @@ var transporter = nodemailer.createTransport({
 exports.newsletter = functions.region('us-east1').firestore.document('galletas/{galleta}').onCreate((snap, context) => {
     let emails, mailOptions;
     const dat = snap.data();
+    if (!dat.notify || !dat.public) return;
     return db.collection('newsletters').doc('base').get().then(doc => {
         emails = doc.data().emails;
         mailOptions = {
@@ -490,7 +491,7 @@ exports.newsletter = functions.region('us-east1').firestore.document('galletas/{
 exports.updatesNewsletter = functions.region('us-east1').firestore.document('galletas/{galleta}').onUpdate((change, context) => {
     let emails, mailOptions;
     const dat = change.after.data();
-    if (!dat.notify) return;
+    if (!dat.notify || !dat.public) return;
     return db.collection('newsletters').doc('base').get().then(doc => {
         emails = doc.data().emails;
         let htmlStr;
