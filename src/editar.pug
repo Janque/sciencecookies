@@ -6,7 +6,7 @@ block missHead
   - const site="edit";
 
 block precontent
-  // Add section modal
+  //- Add section modal
   #mdlPlusSect.modal.fade(tabindex='-1' aria-labelledby='mdlPlusSectL' aria-hidden='true')
     .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
       .modal-content
@@ -20,11 +20,11 @@ block precontent
             button.btn.btn-scckie.m-2(onclick="plusSect('html');" data-dismiss='modal') HTML
             button.btn.btn-scckie.m-2(onclick="plusSect('youtube');" data-dismiss='modal') Youtube
             button.btn.btn-scckie.m-2(onclick="plusSect('medSimple');" data-dismiss='modal') Multimedia
-          // Add more@#
+          //- Add more@#
         .modal-footer
           button.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') Cancelar
 
-  // Manage media modal
+  //- Manage media modal
   #mdlMedMan.modal.fade(tabindex='-1' aria-labelledby='mdlMedManL' aria-hidden='true')
     .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
       .modal-content
@@ -42,7 +42,7 @@ block precontent
         .modal-footer
           button.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') Cerrar
 
-  // Choose media modal
+  //- Choose media modal
   #mdlMedCho.modal.fade(tabindex='-1' aria-labelledby='mdlMedChoL' aria-hidden='true')
     .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
       .modal-content
@@ -60,7 +60,7 @@ block precontent
         .modal-footer
           button.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') Cerrar
 
-  // Add media modal
+  //- Add media modal
   #mdlAddMed.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlAddMedL' aria-hidden='true' data-backdrop='static' data-keyboard='false')
     .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
       .modal-content
@@ -92,7 +92,7 @@ block precontent
         .modal-footer
           button#btnCanNewMed0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') Cancelar
 
-  // Publish modal
+  //- Publish modal
   #mdlPublish.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlPublishL' aria-hidden='true')
     .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
       .modal-content
@@ -103,7 +103,7 @@ block precontent
         .modal-body
           p#mdlPublishTxt
           form#frmPublish.d-none
-            // Categorías@#
+            //- Categorías@#
             .form-row.justify-content-around
               .form-group.col-auto
                 .form-check
@@ -140,7 +140,7 @@ block precontent
           button#btnCnfPublish.btn.btn-scckie.btn-block(type='button') Publicar
           button#btnCanPublish0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') Cancelar
 
-  // Side toolbar
+  //- Side toolbar
   .tbar.tbar-right.btn-toolbar.mb-3(role='toolbar')
     .btn-group-vertical.mr-2.btn-group-lg(role='group')
       button.btn.btn-scckie(data-toggle='modal' data-target='#mdlPlusSect' onclick='toAdd=docDat.cont.length-1;')
