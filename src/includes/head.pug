@@ -3,38 +3,7 @@ include ../config/config
 meta(charset='utf-8')
 meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
 meta(name='google-site-verification' content='pffq0MGMyrYBsgL7f9drofhXb0nfHmqE8-h1YZf83xA')
-link(rel='shortcut icon' href='/img/logoT.svg')
-
-
-// Firebase app
-script(src='https://www.gstatic.com/firebasejs/'+FBVERSION+'/firebase-app.js')
-// Firebase features
-script(src='https://www.gstatic.com/firebasejs/'+FBVERSION+'/firebase-auth.js')
-script(src='https://www.gstatic.com/firebasejs/'+FBVERSION+'/firebase-analytics.js')
-script(src='https://www.gstatic.com/firebasejs/'+FBVERSION+'/firebase-database.js')
-script(src='https://www.gstatic.com/firebasejs/'+FBVERSION+'/firebase-firestore.js')
-script(src='https://www.gstatic.com/firebasejs/'+FBVERSION+'/firebase-functions.js')
-script(src='https://www.gstatic.com/firebasejs/'+FBVERSION+'/firebase-storage.js')
-// Initialize Firebase
-script.
-    // Your web app's Firebase configuration
-    var firebaseConfig={
-    apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
-    authDomain: "sciencecookies.net",
-    databaseURL: "https://science-cookies.firebaseio.com",
-    projectId: "science-cookies",
-    storageBucket: "science-cookies.appspot.com",
-    messagingSenderId: "906770471712",
-    appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
-    measurementId: "G-1MYVREMBFV"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
-
-// FirebaseUI
-script(src='https://www.gstatic.com/firebasejs/ui/'+FBUIVERSION+'/firebase-ui-auth__es.js')
-link(type='text/css' rel='stylesheet' href='https://www.gstatic.com/firebasejs/ui/'+FBUIVERSION+'/firebase-ui-auth.css')
+link(rel='shortcut icon' href=HOST+'/img/logoT.svg')
 
 
 // Clarity tracking code for https://sciencecookies.net/
