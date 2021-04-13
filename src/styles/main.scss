@@ -3,8 +3,14 @@ body {
   font-weight: 600;
 }
 
-.bg-rebecca{
+.bg-rebecca {
   background-color: rebeccapurple;
+}
+.bg-sc {
+  background-color: #791acd;
+}
+.bg-scinfo {
+  background-color: #6c91c2;
 }
 
 strong {
@@ -101,4 +107,25 @@ h6 {
 .figcaption {
   font-size: 70%;
   font-weight: lighter;
+}
+
+footer {
+  padding: 2rem 0 2rem 0;
+  .text-black {
+    color: black;
+  }
+  img{
+    margin: 0 0 1.5rem 40px;
+  }
+}
+@media (max-width: 768px) {
+  footer {
+    padding: 1rem 0 2rem 0;
+  }
+}
+
+ul.no-list {
+  li {
+    list-style: none;
+  }
 }
