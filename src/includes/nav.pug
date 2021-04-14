@@ -10,14 +10,6 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
                 a.btn.btn-dark.mx-2.my-1.active(href='/') Inicio
             else
                 a.btn.btn-dark.mx-2.my-1(href='/') Inicio
-            if site=="who"
-                a.btn.btn-dark.mx-2.my-1.active(href='/quienes-somos/') ¿Quienes somos?
-            else
-                a.btn.btn-dark.mx-2.my-1(href='/quienes-somos/') ¿Quienes somos?
-            if site=="contact"
-                a.btn.btn-dark.mx-2.my-1.active(href='/contacto/') Contacto
-            else
-                a.btn.btn-dark.mx-2.my-1(href='/contacto/') Contacto
             if site=="arch"
                 a.btn.btn-dark.mx-2.my-1.active(href='/archivo/') Archivo
             else
@@ -26,6 +18,19 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
                 a.btn.btn-dark.mx-2.my-1.active(href='/calendario-astronomico/') Calendario Astronómico
             else
                 a.btn.btn-dark.mx-2.my-1(href='/calendario-astronomico/') Calendario Astronómico
+            .dropdown.d-flex.flex-column
+                button.btn.btn-dark.mx-2.my-1.flex-fill#usBtnsDrpdwn(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Nosotros
+                .dropdown-menu.bg-sc.px-0.mb-2.py-1(aria-labelledby="usBtnsDrpdwn" style="min-width:max-content;")
+                    .col-12.px-0.d-flex
+                        if site=="who"
+                            a.btn.btn-dark.mx-2.my-1.flex-fill.active(href='/quienes-somos/') ¿Quienes somos?
+                        else
+                            a.btn.btn-dark.mx-2.my-1.flex-fill(href='/quienes-somos/') ¿Quienes somos?
+                    .col-12.px-0.d-flex
+                        if site=="contact"
+                            a.btn.btn-dark.mx-2.my-1.flex-fill.active(href='/contacto/') Contacto
+                        else
+                            a.btn.btn-dark.mx-2.my-1.flex-fill(href='/contacto/') Contacto
         .row.justify-content-end
             .dropdown.mr-4.dropleft
                 button#usrDrpdwn.btn.btn-dark.dropdown-toggle.p-2(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')

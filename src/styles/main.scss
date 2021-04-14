@@ -110,7 +110,8 @@ h6 {
 }
 
 footer {
-  padding: 2rem 15px 2rem 0;
+  border-top: 10px solid lightgray;
+  padding: 1.5rem 15px 2rem 0;
   .text-black {
     color: black;
   }
@@ -120,7 +121,7 @@ footer {
 }
 @media (max-width: 768px) {
   footer {
-    padding: 1rem 0 2rem 0;
+    padding: 1rem 0 2.5rem 0;
     div.row {
       margin-right: 15px;
     }
@@ -156,7 +157,7 @@ div.share {
     position: relative;
   }
   a:before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -166,11 +167,11 @@ div.share {
     transition: all 0.3s;
   }
   a:hover::before {
-    opacity: 0 ;
-    transform: scale(0.5,0.5);
+    opacity: 0;
+    transform: scale(0.5, 0.5);
   }
   a::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -180,11 +181,11 @@ div.share {
     opacity: 0;
     transition: all 0.3s;
     border: 1px solid #ffffff80;
-    transform: scale(1.2,1.2);
+    transform: scale(1.2, 1.2);
   }
   a:hover::after {
     opacity: 1;
-    transform: scale(1,1);
+    transform: scale(1, 1);
   }
 }
 @media (min-width: 768px) {
