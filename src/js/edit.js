@@ -179,7 +179,7 @@ function plusSect(type) {
     } else if (type == 'medSimple') {
         newSect = {
             type: type,
-            medUrl: "/noimg.d0bf9177.png",
+            medUrl: "https://via.placeholder.com/150",
             alt: "",
             caption: "",
             hasCapt: "true",

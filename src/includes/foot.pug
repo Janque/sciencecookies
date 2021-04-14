@@ -1,5 +1,24 @@
+.share.bg-sc
+    a(data-toggle="collapse" href="#shareBtns" role="button" aria-expanded="false" aria-controls="shareBtns")
+        i.fas.fa-share
+    #shareBtns.collapse
+        a#ttShare(target="_blank" rel="external")
+            i.fab.fa-twitter
+        a#fbShare(target="_blank" rel="external")
+            i.fab.fa-facebook
+        a#waShare(target="_blank" rel="external")
+            i.fab.fa-whatsapp
 
-footer.bg-scinfo 
+.follow-us.bg-scinfo
+    .row 
+        a(href="//twitter.com/intent/follow?screen_name=_sciencecookies" target="_blank" rel="external") 
+            i.fab.fa-twitter(style="color: #1da1f2;")
+        a(href="http://instagram.com/sciencecookies" target="_blank" rel="external")
+            i.fab.fa-instagram(style="color: #e03566;")
+        a(href="http://www.facebook.com/Science-Cookies-106549557818780/" target="_blank" rel="external")
+            i.fab.fa-facebook(style="color: #3b5998;")
+
+footer.bg-scinfo
     .row.align-items-end
         .col-md-auto
             img(src='/img/wlogoT.svg' width='70' height='70' alt='Science Cookies Logo')

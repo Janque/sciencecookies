@@ -1,7 +1,7 @@
 //- Navbar
-nav.navbar.sticky-top.navbar-expand-lg.navbar-dark(style='background-color: #791acd;')
-    img.d-inline-block.align-center.mr-2(src=HOST+'/img/logoT.svg' height='30' alt='Science Cookies Logo' loading='lazy')
-    a.navbar-brand(href=HOST) Science Cookies
+nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
+    img.d-inline-block.align-center.mr-2(src='/img/wlogoT.svg' width='30' height='30' alt='Science Cookies Logo')
+    a.navbar-brand(href='/') Science Cookies
     button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarM' aria-controls='navbarM' aria-expanded='false' aria-label='Toggle navigation')
         span.navbar-toggler-icon
     #navbarM.collapse.navbar-collapse
@@ -11,31 +11,31 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark(style='background-color: #791
             else
                 a.btn.btn-dark.mx-2.my-1(href='/') Inicio
             if site=="who"
-                a.btn.btn-dark.mx-2.my-1.active(href='/quienes-somos') ¿Quienes somos?
+                a.btn.btn-dark.mx-2.my-1.active(href='/quienes-somos/') ¿Quienes somos?
             else
-                a.btn.btn-dark.mx-2.my-1(href='/quienes-somos') ¿Quienes somos?
+                a.btn.btn-dark.mx-2.my-1(href='/quienes-somos/') ¿Quienes somos?
             if site=="contact"
-                a.btn.btn-dark.mx-2.my-1.active(href='/contacto') Contacto
+                a.btn.btn-dark.mx-2.my-1.active(href='/contacto/') Contacto
             else
-                a.btn.btn-dark.mx-2.my-1(href='/contacto') Contacto
+                a.btn.btn-dark.mx-2.my-1(href='/contacto/') Contacto
             if site=="arch"
-                a.btn.btn-dark.mx-2.my-1.active(href='/archivo') Archivo
+                a.btn.btn-dark.mx-2.my-1.active(href='/archivo/') Archivo
             else
-                a.btn.btn-dark.mx-2.my-1(href='/archivo') Archivo
+                a.btn.btn-dark.mx-2.my-1(href='/archivo/') Archivo
             if site=="cal"
-                a.btn.btn-dark.mx-2.my-1.active(href='/calendario-astronomico') Calendario Astronómico
+                a.btn.btn-dark.mx-2.my-1.active(href='/calendario-astronomico/') Calendario Astronómico
             else
-                a.btn.btn-dark.mx-2.my-1(href='/calendario-astronomico') Calendario Astronómico
+                a.btn.btn-dark.mx-2.my-1(href='/calendario-astronomico/') Calendario Astronómico
         .row.justify-content-end
             .dropdown.mr-4.dropleft
                 button#usrDrpdwn.btn.btn-dark.dropdown-toggle.p-2(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                     i#icnUsr.fas
                     img#picUsr.d-inline-block.align-center.ml-2.rounded-circle(src='' height='30' alt='')
                 .dropdown-menu.dropdown-menu-right.bg-dark.pl-1(aria-labelledby='usrDrpdwn')
-                    a#btnPrfl.btn.btn-link.text-decoration-none.text-light.d-none(href='/perfil') Mi perfíl
-                    a#btnPref.btn.btn-link.text-decoration-none.text-light.d-none(href='/perfil?tab=pref') Preferencias
-                    a#btnDraft.btn.btn-link.text-decoration-none.text-light.d-none(href='/drafts') Borradores
-                    a#btnCals.btn.btn-link.text-decoration-none.text-light.d-none(href='/calendarios') Calendarios
+                    a#btnPrfl.btn.btn-link.text-decoration-none.text-light.d-none(href='/perfil/') Mi perfíl
+                    a#btnPref.btn.btn-link.text-decoration-none.text-light.d-none(href='/perfil/?tab=pref') Preferencias
+                    a#btnDraft.btn.btn-link.text-decoration-none.text-light.d-none(href='/drafts/') Borradores
+                    a#btnCals.btn.btn-link.text-decoration-none.text-light.d-none(href='/calendarios/') Calendarios
                     .dropdown-divider.ml-1.mr-2
                     button#btnLgO.btn.btn-link.text-decoration-none.text-light.d-none Cerrar sesión
                     button#btnLgI.btn.btn-link.text-decoration-none.text-light.d-none(data-toggle='modal' data-target='#mdlRgstr') Acceder
