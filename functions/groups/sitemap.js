@@ -14,7 +14,7 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('galleta
     return db.collection('galletas').where('public', '==', true).orderBy('date').get().then(snap => {
         let urls = [];
         let archUrls = [{
-            loc: 'https://sciencecookies.net/archivo',
+            loc: 'https://sciencecookies.net/archivo/',
             priority: '0.7',
             lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
         }];
@@ -35,7 +35,7 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('galleta
                 tri = ltri;
                 year = lyear;
                 archUrls.push({
-                    loc: 'https://sciencecookies.net/archivo/' + year + '/' + tri,
+                    loc: 'https://sciencecookies.net/archivo/' + year + '/' + tri+'/',
                     priority: '0.6'
                 });
             }
@@ -59,7 +59,7 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
     if (!change.after.data().public) return;
     return db.collection('calendarios').where('public', '==', true).orderBy('date').get().then(snap => {
         let urls = [{
-            loc: 'https://sciencecookies.net/calendario-astronomico',
+            loc: 'https://sciencecookies.net/calendario-astronomico/',
             priority: '0.8',
             lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
         }];
@@ -79,7 +79,7 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
                 url.lastmod = dat.date.toDate().toISOString();
                 if (dat.date.toDate().getMonth() == 11) {
                     yUrl = {
-                        loc: `https://sciencecookies.net/calendario-astronomico/${year}`,
+                        loc: `https://sciencecookies.net/calendario-astronomico/${year}/`,
                         priority: '0.6',
                         lastmod: dat.date.toDate().toISOString()
                     };
@@ -88,7 +88,7 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
                 url.lastmod = admin.firestore.Timestamp.now().toDate().toISOString();
                 if (dat.date.toDate().getMonth() == 11) {
                     yUrl = {
-                        loc: `https://sciencecookies.net/calendario-astronomico/${year}`,
+                        loc: `https://sciencecookies.net/calendario-astronomico/${year}/`,
                         priority: '0.6',
                         lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
                     };
@@ -99,7 +99,7 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
         });
         if (snap.docs.length && snap.docs[snap.docs.length - 1].data().date.toDate().getMonth() != 11) {
             yUrl = {
-                loc: `https://sciencecookies.net/calendario-astronomico/${year}`,
+                loc: `https://sciencecookies.net/calendario-astronomico/${year}/`,
                 priority: '0.6',
                 lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
             };
