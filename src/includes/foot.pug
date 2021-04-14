@@ -1,0 +1,65 @@
+.share.bg-sc
+    a(data-toggle="collapse" href="#shareBtns" role="button" aria-expanded="false" aria-controls="shareBtns")
+        i.fas.fa-share
+    #shareBtns.collapse
+        a#ttShare(target="_blank" rel="external")
+            i.fab.fa-twitter
+        a#fbShare(target="_blank" rel="external")
+            i.fab.fa-facebook
+        a#waShare(target="_blank" rel="external")
+            i.fab.fa-whatsapp
+
+.follow-us.bg-scinfo
+    .row 
+        a(href="//twitter.com/intent/follow?screen_name=_sciencecookies" target="_blank" rel="external") 
+            i.fab.fa-twitter(style="color: #1da1f2;")
+        a(href="http://instagram.com/sciencecookies" target="_blank" rel="external")
+            i.fab.fa-instagram(style="color: #e03566;")
+        a(href="http://www.facebook.com/Science-Cookies-106549557818780/" target="_blank" rel="external")
+            i.fab.fa-facebook(style="color: #3b5998;")
+
+footer.bg-scinfo
+    .row.align-items-end
+        .col-md-auto
+            img(src='/img/wlogoT.svg' width='70' height='70' alt='Science Cookies Logo')
+            ul.no-list
+                li
+                    if site=="index"
+                        a.text-decoration-none.text-black.mx-2.my-1(href='/') Inicio
+                    else
+                        a.text-decoration-none.text-dark.mx-2.my-1(href='/') Inicio
+                li
+                    if site=="arch"
+                        a.text-decoration-none.text-black.mx-2.my-1(href='/archivo/') Archivo
+                    else
+                        a.text-decoration-none.text-dark.mx-2.my-1(href='/archivo/') Archivo
+                li
+                    if site=="cal"
+                        a.text-decoration-none.text-black.mx-2.my-1(href='/calendario-astronomico/') Calendario Astronómico
+                    else
+                        a.text-decoration-none.text-dark.mx-2.my-1(href='/calendario-astronomico/') Calendario Astronómico
+        .col-md-auto
+            ul.no-list
+                li
+                    if site=="who"
+                        a.text-decoration-none.text-black.mx-2.my-1(href='/quienes-somos/') ¿Quienes somos?
+                    else
+                        a.text-decoration-none.text-dark.mx-2.my-1(href='/quienes-somos/') ¿Quienes somos?
+                li
+                    if site=="contact"
+                        a.text-decoration-none.text-black.mx-2.my-1(href='/contacto/') Contacto
+                    else
+                        a.text-decoration-none.text-dark.mx-2.my-1(href='/contacto/') Contacto
+        .col-md-auto
+            ul.no-list
+                li
+                    if site=="priv"
+                        a.text-decoration-none.text-black.mx-2.my-1(href='/docs/privacidad/') Aviso de privacidad
+                    else
+                        a.text-decoration-none.text-dark.mx-2.my-1(href='/docs/privacidad/') Aviso de privacidad
+                li
+                    if site=="tos"
+                        a.text-decoration-none.text-black.mx-2.my-1(href='/docs/tos/') Términos de servicio
+                    else
+                        a.text-decoration-none.text-dark.mx-2.my-1(href='/docs/tos/') Términos de servicio
+                li
