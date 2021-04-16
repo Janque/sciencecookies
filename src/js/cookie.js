@@ -328,7 +328,7 @@ function reply(r) {
 document.getElementById('btnLdComs').onclick = function () {
     document.getElementById('btnLdComs').classList.add('d-none');
     document.getElementById('spnCom').classList.remove('d-none');
-    db.collection('galletas').doc(id).collection('coms').doc('1').get().then(doc => {
+    cookiesFSRef.doc(id).collection('coms').doc('1').get().then(doc => {
         if (doc.exists) {
             comList = doc.data().coms;
             comCount = doc.data().comCount;

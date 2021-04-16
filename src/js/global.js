@@ -1,6 +1,11 @@
 //Init database
 window.db = firebase.firestore();
 
+window.lang = "es"; //@#Default
+
+window.cookiesFSRef = db.collection('cookies/langs/'+lang);
+window.calendarsFSRef = db.collection('calendars/langs/'+lang);
+
 window.urlSrch = '';
 var actSsn = false;
 var mod = false, author = "";
@@ -182,7 +187,7 @@ window.addEventListener("load", function () {
 });
 
 function shwRecom() {
-    db.collection('galletas').where('public', '==', true).orderBy('date', 'desc').limit(1).get().then(snap => {
+    cookiesFSRef.where('public', '==', true).orderBy('date', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();
@@ -228,7 +233,7 @@ function shwRecom() {
             document.getElementById("newCook").appendChild(a1);
         })
     }).catch(err => console.log(err));
-    db.collection('galletas').where('public', '==', true).orderBy('pop', 'desc').limit(3).get().then(snap => {
+    cookiesFSRef.where('public', '==', true).orderBy('pop', 'desc').limit(3).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();
@@ -278,7 +283,7 @@ function shwRecom() {
             document.getElementById("popCook").appendChild(divider);
         });
     }).catch(err => console.log(err));
-    db.collection('calendarios').where("public", "==", true).orderBy('date', 'desc').limit(1).get().then(snap => {
+    calendarsFSRef.where("public", "==", true).orderBy('date', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();

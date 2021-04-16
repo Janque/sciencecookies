@@ -60,15 +60,15 @@ function initSrch(stAf) {
     }
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         if (!desc) {
-            srchRef = db.collection('galletas').where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
         } else {
-            srchRef = db.collection('galletas').where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
         }
     } else {
         if (!desc) {
-            srchRef = db.collection('galletas').where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).limit(previewLim);
+            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).limit(previewLim);
         } else {
-            srchRef = db.collection('galletas').where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
+            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
         }
     }
     shwSrch();
@@ -235,7 +235,7 @@ for (let i = 0; i < catnmb; i++) {
 }
 
 function shwCalMain() {
-    db.collection('calendarios').where("public", "==", true).orderBy('date', 'desc').limit(1).get().then(snap => {
+    calendarsFSRef.where("public", "==", true).orderBy('date', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let a = document.createElement('a');
