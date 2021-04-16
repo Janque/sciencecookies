@@ -2,7 +2,6 @@
 window.db = firebase.firestore();
 
 window.urlSrch = '';
-var url = new URL(window.location.href);
 var actSsn = false;
 var mod = false, author = "";
 var mobile = false;
@@ -47,13 +46,13 @@ firebase.auth().onAuthStateChanged(function (user) {
         modAuth(uid).then(res => {
             mod = res.data.mod;
             author = res.data.name;
-            if (url.pathname.substring(0, 7) == "/drafts" || url.pathname.substring(0, 7) == "/editar" || url.pathname.substring(0, 13) == "/vista-previa" || url.pathname.substring(0, 12) == "/vista-email") {
+            if (site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal" || site == "mailPrev") {
                 if (!mod) window.location.href = 'https://sciencecookies.net';
             }
             shwSsnBtns(true);
         }).catch(err => console.log(err));
     } else {
-        if (url.pathname.substring(0, 7) == "/perfil" || url.pathname.substring(0, 9) == "/contacto" || url.pathname.substring(0, 7) == "/drafts" || url.pathname.substring(0, 7) == "/editar" || url.pathname.substring(0, 13) == "/vista-previa" || url.pathname.substring(0, 12) == "/vista-email") {
+        if (site == "profile" || site == "contact" || site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal" || site == "mailPrev") {
             window.location.href = 'https://sciencecookies.net';
         }
         actSsn = false;
@@ -70,10 +69,10 @@ function shwSsnBtns(ac) {
     if (ac) {
         document.getElementById('icnUsr').classList.remove('fa-user-slash');
         document.getElementById('icnUsr').classList.add('fa-user');
-        document.getElementById('picUsr').setAttribute('onerror', "this.src='https://sciencecookies.net/img/nopp.png'");
+        document.getElementById('picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
         document.getElementById('picUsr').src = photoURL;
         if (document.getElementById('ppCom')) {
-            document.getElementById('ppCom').setAttribute('onerror', "this.src='https://sciencecookies.net/img/nopp.png'");
+            document.getElementById('ppCom').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
             document.getElementById('ppCom').src = photoURL;
         }
         document.getElementById('btnPrfl').classList.remove('d-none');
@@ -84,7 +83,7 @@ function shwSsnBtns(ac) {
         }
         document.getElementById('btnLgO').classList.remove('d-none');
         if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.add('d-none');
-        if (url.pathname.substring(0, 10) == "/galletas/") {
+        if (site == "cookie") {
             db.collection('users').doc(uid).get().then(function (doc) {
                 let fav = doc.data().fav;
                 let liked = doc.data().liked;
@@ -123,7 +122,7 @@ function shwSsnBtns(ac) {
         document.getElementById('btnLgO').classList.add('d-none');
         if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.remove('d-none');
     }
-    if (url.pathname.substring(0, 10) == "/galletas/") {
+    if (site == "cookie") {
         document.getElementById('btnFav').classList.remove('disabled');
         document.getElementById('btnLike').classList.remove('disabled');
         document.getElementById('btnLdComs').classList.remove('disabled');
@@ -172,7 +171,6 @@ function checkMobile() {
     return check;
 };
 window.addEventListener("load", function () {
-    console.log(checkMobile());
     mobile = checkMobile();
     url = new URL(document.location.href);
     urlSrch = new URLSearchParams(location.search);

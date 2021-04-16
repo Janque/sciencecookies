@@ -1,6 +1,8 @@
 //- Config
-- const HOST = "https://sciencecookies.net";
-//-    https://sciencecookies.net
+- const HOST = "https://sciencecookies--pr35-translations-mofurpft.web.app";
+//-   https://sciencecookies.net
+//-   http://localhost:5000
+//-   https://sciencecookies--pr35-translations-mofurpft.web.app
 - const FBVERSION = "8.3.2";
 - const FBUIVERSION = "4.8.0";
 
@@ -12,6 +14,7 @@ html(lang='es')
 
     block missHead
 
+    script window.site = "#{site}";
     link(rel="stylesheet" href=HOST+"/styles/main.css")
 
   body

@@ -179,7 +179,7 @@ function plusSect(type) {
     } else if (type == 'medSimple') {
         newSect = {
             type: type,
-            medUrl: "https://via.placeholder.com/150",
+            medUrl: "https://via.placeholder.com/150.webp",
             alt: "",
             caption: "",
             hasCapt: "true",

@@ -10,7 +10,7 @@ window.loaded = function loaded() {
     //Check auth
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
-            document.getElementById('picUsr').setAttribute('onerror', "this.src='img/nopp.png'");
+            document.getElementById('picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
             document.getElementById('picUsr').src = photoURL;
             shwCrds(urlSrch.get('tab'));
         } else {
@@ -217,7 +217,7 @@ document.getElementById('inNews').onclick = function () {
 
 function shwPrfl() {
     document.getElementById('navBtnPrfl').classList.add('active');
-    document.getElementById('disPP').setAttribute('onerror', "this.src='img/nopp.png'");
+    document.getElementById('disPP').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
     document.getElementById('disPP').src = photoURL;
     document.getElementById('disMail').innerHTML = email;
     document.getElementById('disName').innerHTML = displayName;

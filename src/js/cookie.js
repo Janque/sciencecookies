@@ -373,7 +373,7 @@ function createCom(comDat) {
     a.classList.add('text-decoration-none');
     a.classList.add('text-dark');
     a.href = '../../ver-perfil?user=' + comDat.authKey;
-    a.innerHTML = '<img src="' + comDat.pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`../../img/nopp.png`">' + comDat.from;
+    a.innerHTML = '<img src="' + comDat.pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`https://via.placeholder.com/20.webp`">' + comDat.from;
     usr.appendChild(a);
     head.appendChild(usr);
     let rprt = document.createElement('div');
@@ -457,7 +457,7 @@ function createCom(comDat) {
         ra.classList.add('text-decoration-none');
         ra.classList.add('text-dark');
         ra.href = '../../ver-perfil?user=' + comDat.reps[i].authKey;
-        ra.innerHTML = '<img src="' + comDat.reps[i].pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`../../img/nopp.png`">' + comDat.reps[i].from;
+        ra.innerHTML = '<img src="' + comDat.reps[i].pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`https://via.placeholder.com/20.webp`">' + comDat.reps[i].from;
         rusr.appendChild(ra);
         rHd.appendChild(rusr);
         let rrprt = document.createElement('div');
