@@ -19,7 +19,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                     java: doc2.data().java,
                     revised: [],
                     notify: false,
-                    public: false,
+                    public: doc2.data().public,
                     beenPublic: doc2.data().beenPublic,
                     dledit: false,
                     created: doc2.data().created,
@@ -55,7 +55,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                         java: doc2.data().java,
                         revised: [],
                         notify: false,
-                        public: false,
+                        public: doc2.data().public,
                         beenPublic: doc2.data().beenPublic,
                         dledit: false,
                         created: doc2.data().created,
@@ -84,7 +84,7 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
         snap.forEach(doc => {
             promises.push(db.collection('calendars/langs/es').doc(doc.id).set({
                 events: doc.data().events,
-                date: doc.data().date,
+                published: doc.data().date,
                 description: doc.data().description,
                 descriptionShort: doc.data().descriptionShort,
                 finished: doc.data().finished,
@@ -103,7 +103,7 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
             }).then(() => {
                 return db.collection('calendars/langs/en').doc(doc.id).set({
                     events: doc.data().events,
-                    date: doc.data().date,
+                    published: doc.data().date,
                     description: doc.data().description,
                     descriptionShort: doc.data().descriptionShort,
                     finished: doc.data().finished,

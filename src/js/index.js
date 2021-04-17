@@ -41,7 +41,7 @@ function initSrch(stAf) {
     srtOrd = urlSrch.get('o');
     if (srtOrd != null) {
         if (srtOrd == 'new') {
-            srtOrd = 'date';
+            srtOrd = 'ledit';
             desc = true;
             document.getElementById("inSrchOrd1").selected = true;
         }
@@ -137,7 +137,7 @@ function shwSrch() {
             tit.innerHTML = doc.data().title;
             bod.appendChild(tit);
             let descr = document.createElement('p');
-            descr.innerHTML = doc.data().descrip;
+            descr.innerHTML = doc.data().description;
             bod.appendChild(descr);
             let dates = document.createElement('p');
             classes(dates, "my-0");
@@ -145,13 +145,13 @@ function shwSrch() {
                 let dl = doc.data().ledit.toDate();
                 dates.innerText = 'Actualizado: ' + dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear();
             } else {
-                let d = doc.data().date.toDate();
+                let d = doc.data().published.toDate();
                 dates.innerText = 'Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
             }
             bod.appendChild(dates);
             let auhtTxt = document.createElement('p');
             classes(auhtTxt, "mt-0");
-            auhtTxt.innerText = ' Autor(es):' + doc.data().authrs;
+            auhtTxt.innerText = ' Autor(es):' + doc.data().authors;
             bod.appendChild(auhtTxt);
             a.appendChild(med);
             med.appendChild(img);
@@ -182,7 +182,7 @@ function shwSrch() {
             document.getElementById("pgTPrv").removeAttribute('disabled');
             document.getElementById("pgBPrv").removeAttribute('disabled');
         }
-    }).catch(err => { console.log('err') });
+    }).catch(err => { console.log(err) });
 }
 
 document.getElementById("pgTPrv").onclick = function () { reSrch(-1); };
@@ -235,7 +235,7 @@ for (let i = 0; i < catnmb; i++) {
 }
 
 function shwCalMain() {
-    calendarsFSRef.where("public", "==", true).orderBy('date', 'desc').limit(1).get().then(snap => {
+    calendarsFSRef.where("public", "==", true).orderBy('published', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let a = document.createElement('a');

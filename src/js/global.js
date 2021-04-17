@@ -3,8 +3,8 @@ window.db = firebase.firestore();
 
 window.lang = "es"; //@#Default
 
-window.cookiesFSRef = db.collection('cookies/langs/'+lang);
-window.calendarsFSRef = db.collection('calendars/langs/'+lang);
+window.cookiesFSRef = db.collection('cookies/langs/' + lang);
+window.calendarsFSRef = db.collection('calendars/langs/' + lang);
 
 window.urlSrch = '';
 var actSsn = false;
@@ -187,7 +187,7 @@ window.addEventListener("load", function () {
 });
 
 function shwRecom() {
-    cookiesFSRef.where('public', '==', true).orderBy('date', 'desc').limit(1).get().then(snap => {
+    cookiesFSRef.where('public', '==', true).orderBy('published', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();
@@ -204,10 +204,10 @@ function shwRecom() {
             card.appendChild(img0);
             let bod0 = document.createElement('div');
             classes(bod0, "card-body");
-            let d = dat.date.toDate();
+            let d = dat.published.toDate();
             bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
-                <p class="card-text">` + dat.descrip + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authrs + `</p>`;
+                <p class="card-text">` + dat.description + `</p>
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             card.appendChild(bod0);
             document.getElementById("newCook").appendChild(a0);
 
@@ -227,8 +227,8 @@ function shwRecom() {
             let bod1 = document.createElement('div');
             classes(bod1, "media-body");
             bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
-                <p class="card-text">` + dat.descrip + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authrs + `</p>`;
+                <p class="card-text">` + dat.description + `</p>
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             med.appendChild(bod1);
             document.getElementById("newCook").appendChild(a1);
         })
@@ -250,10 +250,10 @@ function shwRecom() {
             card.appendChild(img0);
             let bod0 = document.createElement('div');
             classes(bod0, "card-body");
-            let d = dat.date.toDate();
+            let d = dat.published.toDate();
             bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
-                <p class="card-text">` + dat.descrip + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authrs + `</p>`;
+                <p class="card-text">` + dat.description + `</p>
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             card.appendChild(bod0);
             document.getElementById("popCook").appendChild(a0);
 
@@ -273,8 +273,8 @@ function shwRecom() {
             let bod1 = document.createElement('div');
             classes(bod1, "media-body");
             bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
-                <p class="card-text">` + dat.descrip + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authrs + `</p>`;
+                <p class="card-text">` + dat.description + `</p>
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             med.appendChild(bod1);
             document.getElementById("popCook").appendChild(a1);
 
@@ -283,7 +283,7 @@ function shwRecom() {
             document.getElementById("popCook").appendChild(divider);
         });
     }).catch(err => console.log(err));
-    calendarsFSRef.where("public", "==", true).orderBy('date', 'desc').limit(1).get().then(snap => {
+    calendarsFSRef.where("public", "==", true).orderBy('published', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();

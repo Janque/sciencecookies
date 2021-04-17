@@ -94,7 +94,6 @@ function shwSrch() {
             drpitm1.innerHTML = 'Vista correo <i class="fas fa-envelope"></i>';
             drpmenu.appendChild(drpitm1);
             let drpitm2 = document.createElement('button');
-            let d = dat.date.toDate();
             if (dat.public) {
                 classes(drpitm2, 'dropdown-item');
                 drpitm2.onclick = function () {
