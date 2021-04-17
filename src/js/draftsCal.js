@@ -8,9 +8,9 @@ var nxtp = false, paglast = [null], page = 1;
 var allChk = false;
 function initSrch(stAf) {
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
-        srchRef = db.collection('calendarios').orderBy('date', 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+        srchRef = calendarsFSRef.orderBy('date', 'desc').startAfter(paglast[page - 1]).limit(previewLim);
     } else {
-        srchRef = db.collection('calendarios').orderBy('date', 'desc').limit(previewLim);
+        srchRef = calendarsFSRef.orderBy('date', 'desc').limit(previewLim);
     }
     shwSrch();
 }
@@ -82,7 +82,7 @@ function shwSrch() {
             let drpitm0 = document.createElement('button');
             classes(drpitm0, 'dropdown-item');
             drpitm0.onclick = function () {
-                window.location.href = '../editar-calendario?file=' + doc.id;
+                window.location.href = '../editar-calendario?id=' + doc.id;
             };
             drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
             drpmenu.appendChild(drpitm0);
@@ -98,7 +98,7 @@ function shwSrch() {
             if (dat.public) {
                 classes(drpitm2, 'dropdown-item');
                 drpitm2.onclick = function () {
-                    window.open('../calendario-astronomico/' + d.getFullYear() + '/' + monthStr(d.getMonth()), '_blank').focus();
+                    window.open(dat.url, '_blank').focus();
                 };
                 drpitm2.innerHTML = 'Ver calendario <i class="fas fa-eye"></i>';
                 drpmenu.appendChild(drpitm2);
@@ -110,7 +110,7 @@ function shwSrch() {
             card.appendChild(h);
 
             let a = document.createElement('a');
-            a.href = '../editar-calendario?file=' + doc.id;
+            a.href = '../editar-calendario?id=' + doc.id;
             classes(a, 'text-decoration-none');
             classes(a, 'text-dark');
             let img = document.createElement('img');

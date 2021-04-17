@@ -21,7 +21,7 @@ window.loaded = function loaded() {
     function plusCookie() {
         let title = document.getElementById('inTitle').value.trim();
         let file = document.getElementById('inFile').value;
-        db.collection('galletasCont').where('file', '==', file).limit(1).get().then(snap => {
+        cookiesFSRef.where('file', '==', file).limit(1).get().then(snap => {
             if (!snap.empty) {
                 document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
                     Ese nombre de archivo ya esta en uso.
@@ -46,18 +46,18 @@ window.loaded = function loaded() {
                     if (err) {
                         setprog('0');
                         document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                            <strong>Ocurrió un error: `+ err + `.</strong><br>LLamar a Javier.
+                            <strong>Ocurrió un error: ${err}.</strong><br>LLamar a Javier.
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         </div>`;
                         console.log(err);
                     } else {
                         setprog('52');
-                        db.collection('galletasCont').doc(id).set({
+                        db.collection('cookies/langs/es').doc(id).set({
                             authors: [author],
                             cont: [
                                 {
                                     type: "head",
-                                    title: title,
+                                    title: "Sin título",
                                     author: [author]
                                 },
                                 {
@@ -66,20 +66,63 @@ window.loaded = function loaded() {
                                 }
                             ],
                             media: [],
-                            description: "Sin descripción",
                             picUrl: "",
-                            title: title,
-                            file: file,
+                            title: "Sin título",
+                            description: "Sin descripción",
+                            file: "",
                             owner: uid,
                             java: "",
                             revised: [],
+                            notify: false,
                             public: false,
                             beenPublic: false,
                             dledit: false,
                             created: new firebase.firestore.Timestamp.now(),
                             ledit: new firebase.firestore.Timestamp.now(),
                             published: new firebase.firestore.Timestamp.now(),
-                            pop: 0
+                            pop: 0,
+                            likes: 0,
+                            favs: 0,
+                            url:"",
+                            cats: [],
+                            translations: {}
+                        }).then(() => {
+                            setprog('63');
+                            return db.collection('cookies/langs/en').doc(id).set({
+                                authors: [author],
+                                cont: [
+                                    {
+                                        type: "head",
+                                        title: "No title",
+                                        author: [author]
+                                    },
+                                    {
+                                        type: "ref",
+                                        ref: []
+                                    }
+                                ],
+                                media: [],
+                                picUrl: "",
+                                title: "No title",
+                                description: "No description",
+                                file: "",
+                                owner: uid,
+                                java: "",
+                                revised: [],
+                                notify: false,
+                                public: false,
+                                beenPublic: false,
+                                dledit: false,
+                                created: new firebase.firestore.Timestamp.now(),
+                                ledit: new firebase.firestore.Timestamp.now(),
+                                published: new firebase.firestore.Timestamp.now(),
+                                pop: 0,
+                                likes: 0,
+                                favs: 0,
+                                url:"",
+                                cats: [],
+                                translations: {}
+                            });
                         }).then(() => {
                             setprog('80');
                             setTimeout(function () {
@@ -87,12 +130,12 @@ window.loaded = function loaded() {
                                 document.getElementById('bar').classList.add('bg-success');
                                 document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-success alert-dismissible fade show fixed-top" role="alert">
                                     Creado con exito. Redirigiendo...<br>
-                                    Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?file=`+ file + `">click aqui</a>.
+                                    Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 </div>`;
                             }, 1000);
                             setTimeout(function () {
-                                window.location.href = '../editar?file=' + file;
+                                window.location.href = '../editar?id=' + id;
                             }, 3000);
                         }).catch(err => console.log(err));
                     }
@@ -152,29 +195,29 @@ function initSrch(stAf) {
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         if (kywords == undefined || kywords == null || kywords == "") {
             if (!desc) {
-                srchRef = db.collection('galletasCont').orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = cookiesFSRef.orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
             } else {
-                srchRef = db.collection('galletasCont').orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = cookiesFSRef.orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
             }
         } else {
             if (!desc) {
-                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
             } else {
-                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = dcookiesFSRef.where('title', '==', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
             }
         }
     } else {
         if (kywords == undefined || kywords == null || kywords == "") {
             if (!desc) {
-                srchRef = db.collection('galletasCont').orderBy(srtOrd).limit(previewLim);
+                srchRef = cookiesFSRef.orderBy(srtOrd).limit(previewLim);
             } else {
-                srchRef = db.collection('galletasCont').orderBy(srtOrd, 'desc').limit(previewLim);
+                srchRef = cookiesFSRef.orderBy(srtOrd, 'desc').limit(previewLim);
             }
         } else {
             if (!desc) {
-                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd).limit(previewLim);
+                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd).limit(previewLim);
             } else {
-                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
+                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
             }
         }
     }
@@ -274,7 +317,7 @@ function shwSrch() {
             let drpitm0 = document.createElement('button');
             drpitm0.classList.add('dropdown-item');
             drpitm0.onclick = function () {
-                window.location.href = '../editar?file=' + doc.data().file;
+                window.location.href = '../editar?id=' + doc.id;
             };
             drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
             drpmenu.appendChild(drpitm0);
@@ -296,13 +339,13 @@ function shwSrch() {
                         month += '0';
                     }
                     month += (d.getMonth() + 1);
-                    window.open('../galletas/' + month + '/' + doc.data().file, '_blank').focus();
+                    window.open(doc.data().url, '_blank').focus();
                 };
                 drpitm2.innerHTML = 'Ver artículo <i class="fas fa-eye"></i>';
                 drpmenu.appendChild(drpitm2);
                 drpitm3.classList.add('dropdown-item');
                 drpitm3.onclick = function () {
-                    db.collection('galletasCont').doc(doc.id).update({
+                    cookiesFSRef.doc(doc.id).update({
                         public: false
                     });
                 };
@@ -316,7 +359,7 @@ function shwSrch() {
             card.appendChild(h);
 
             let a = document.createElement('a');
-            a.href = '../editar?file=' + doc.data().file;
+            a.href = '../editar?id=' + doc.id;
             a.classList.add('text-decoration-none');
             a.classList.add('text-dark');
             let img = document.createElement('img');
