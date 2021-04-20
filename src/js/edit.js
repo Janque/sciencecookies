@@ -3,7 +3,7 @@ import '../styles/edit.scss';
 var store = firebase.storage();
 var rtDb = firebase.database();
 
-let docDat, docId;
+let docDat, docId, docRef;
 let toDel = -1, toAdd = -1;
 let lastSave = Date.now(), saved = false;
 
@@ -15,48 +15,36 @@ let newMedSrc = null;
 let keywords = [];
 
 window.loaded = function loaded() {
-    db.collection('galletasCont').where('file', '==', urlSrch.get('file')).limit(1).onSnapshot(snap => {
-        if (snap.empty) {
-            window.location.href = '../404';
-            return;
+    docRef = cookiesFSRef.doc(urlSrch.get('id'));
+    docRef.onSnapshot(doc => {
+        docDat = doc.data();
+        docId = doc.id;
+        document.getElementById('inFile').value = docDat.file;
+        document.getElementById('inDesc').value = docDat.description;
+        render();
+        fillMed();
+        if (docDat.public) {
+            document.getElementById('btnPrivate').classList.remove('d-none');
+            document.getElementById('btnAprove').classList.add('d-none');
+            document.getElementById('btnPub').classList.add('d-none');
+        } else {
+            document.getElementById('btnPrivate').classList.add('d-none');
+            document.getElementById('btnAprove').classList.remove('d-none');
+            document.getElementById('btnPub').classList.remove('d-none');
         }
-        snap.forEach(doc => {
-            docDat = doc.data();
-            docId = doc.id;
-            document.getElementById('inFile').value = docDat.file;
-            document.getElementById('inDesc').value = docDat.description;
-            render();
-            fillMed();
-            if (docDat.public) {
-                document.getElementById('btnPrivate').classList.remove('d-none');
-                document.getElementById('btnAprove').classList.add('d-none');
-                document.getElementById('btnPub').classList.add('d-none');
-            } else {
-                document.getElementById('btnPrivate').classList.add('d-none');
-                document.getElementById('btnAprove').classList.remove('d-none');
-                document.getElementById('btnPub').classList.remove('d-none');
-            }
-            if (docDat.revised.includes(uid)) {
-                document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
-            } else {
-                document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
-            }
-            let d = docDat.published.toDate();
-            let month = d.getFullYear().toString();
-            if (d.getMonth() < 9) {
-                month += '0';
-            }
-            month += (d.getMonth() + 1);
-            document.getElementById('btnPrevCook').href = '../galletas/' + month + '/' + docDat.file;
-            document.getElementById('btnPrevMail').href = '../vista-email/' + docDat.file;
-            fillKW();
-        });
-    }, err => console.log(err))
+        if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
+            document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
+        } else {
+            document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
+        }
+        document.getElementById('btnPrevCook').href = docDat.url;
+        document.getElementById('btnPrevMail').href = '../vista-email/' + docDat.file;
+    }, err => { console.log(err) });
 
     function fileFrm() {
         let file = document.getElementById('inFile').value;
-        db.collection('galletasCont').where('file', '==', file).limit(1).get().then(snap => {
-            if (!snap.empty && file != urlSrch.get('file')) {
+        docRef.get().then(snap => {
+            if (!snap.empty && file != docDat.file) {
                 document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
                     Ese nombre de archivo ya esta en uso.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -64,11 +52,9 @@ window.loaded = function loaded() {
             } else {
                 docDat.description = document.getElementById('inDesc').value.trim();
                 docDat.file = file;
-                return saveDoc();
+                normSave();
             }
-        }).then(() => {
-            window.location.href = '?file=' + file;
-        }).catch(err => console.log(err));
+        }).then(() => { console.log('exito') }).catch(err => console.log(err));
     }
     document.getElementById("frmFile").addEventListener("submit", function (event) {
         event.preventDefault();
@@ -83,7 +69,7 @@ window.loaded = function loaded() {
             if (err.code == 'storage/object-not-found') {
                 ref.put(newMedia).on('state_changed',
                     function progress(snap) {
-                        setprog(document.getElementById('barNewMed'), Math.floor((snap.bytesTransferred / snap.totalBytes) * 100));
+                        setprog(document.getElementById('barNewMed'), (snap.bytesTransferred / snap.totalBytes) * 100);
                     },
                     function error(err) {
                         document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert"><strong>¡Ocurrió un error!</strong> ' + err.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
@@ -124,7 +110,7 @@ window.loaded = function loaded() {
     }
     document.getElementById("frmAddMed").addEventListener("submit", function (event) {
         event.preventDefault();
-        setprog(document.getElementById('barNewMed'), "0");
+        setprog(document.getElementById('barNewMed'), 0);
         showEl(document.getElementById("barNewMedCont"));
         hideEl(document.getElementById("frmAddMed"));
         document.getElementById("btnCnfNewMed").setAttribute('disabled', 'true');
@@ -138,7 +124,40 @@ window.loaded = function loaded() {
 let savedInterval;
 function saveDoc() {
     console.log('Saving...');
-    return db.collection('galletasCont').doc(docId).update(docDat);
+    let d = docDat.published.toDate();
+    let month = d.getFullYear().toString();
+    if (d.getMonth() < 9) {
+        month += '0';
+    }
+    month += (d.getMonth() + 1);
+    docDat.url = 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file + '/';
+    fillKW();
+    const promises = [];
+    langs.forEach(l => {
+        if (l != lang) {
+            let syncUpt = {
+                authors: docDat.authors,
+                media: docDat.media,
+                java: docDat.java,
+                notify: docDat.notify,
+                public: docDat.public,
+                beenPublic: docDat.beenPublic,
+                dledit: docDat.dledit,
+                created: docDat.created,
+                ledit: docDat.ledit,
+                published: docDat.published,
+                pop: docDat.pop,
+                likes: docDat.likes,
+                favs: docDat.favs,
+                translations: docDat.translations
+            }
+            syncUpt.translations[lang] = docDat.file;
+            promises.push(db.collection('cookies/langs/' + l).doc(docId).update(syncUpt));
+        }
+    })
+    return Promise.all(promises).then(() => {
+        return docRef.update(docDat);
+    });
 }
 function normSave() {
     saveDoc().then(() => {
@@ -192,6 +211,7 @@ function plusSect(type) {
 }
 
 function setprog(bar, n) {
+    n = Math.floor(n);
     bar.setAttribute('aria-valuenow', n);
     bar.style.width = n + '%';
     bar.innerText = n + '%';
@@ -350,7 +370,7 @@ function render() {
     if (docDat.beenPublic) {
         publishDate = docDat.published;
     } else {
-        publishDate = new firebase.firestore.Timestamp.now();
+        docDat.published = publishDate = new firebase.firestore.Timestamp.now();
     }
     docDat.cont.forEach((item, idx) => {
         let sect = document.createElement('div');
@@ -1149,17 +1169,17 @@ document.getElementById('btnPrevMail').onclick = function () {
 };
 
 document.getElementById('btnPrivate').onclick = function () {
-    db.collection('galletasCont').doc(docId).update({
-        public: false
-    });
+    docDat.public = false;
+    normSave();
 };
 
 document.getElementById('btnAprove').onclick = function () {
-    if (docDat.revised.includes(uid)) {
-        docDat.revised.splice(docDat.revised.indexOf(uid), 1);
+    if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
+        docDat.revised[lang].splice(docDat.revised[lang].indexOf(uid), 1);
         document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
     } else {
-        docDat.revised.push(uid);
+        if (!docDat.revised[lang]) docDat.revised[lang] = [];
+        docDat.revised[lang].push(uid);
         document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
     }
     normSave();
@@ -1175,9 +1195,13 @@ $('#mdlAddMed').on('hiden.bs.modal', e => {
 });
 
 $('#mdlPublish').on('show.bs.modal', e => {
-    let rev = docDat.revised.length;
-    if (!docDat.revised.includes(uid)) rev++;
-    if (rev < 2) {
+    let revLangs = 0;
+    langs.forEach(l => {
+        let rev = docDat.revised[l] ? docDat.revised[l].length : 0;
+        if (docDat.revised[l] && !docDat.revised[l].includes(uid)) rev++;
+        if (rev >= 2) revLangs++;
+    });
+    if (revLangs == langs.length) {
         classes(document.getElementById('btnCnfPublish'), "d-none");
         document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
         document.getElementById('frmPublish').classList.add('d-none');
@@ -1190,17 +1214,11 @@ $('#mdlPublish').on('show.bs.modal', e => {
 });
 
 function finishPub() {
-    setprog(document.getElementById('barPublish'), '100');
+    setprog(document.getElementById('barPublish'), 100);
     classes(document.getElementById('barPublish'), 'bg-success');
     document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-    let d = docDat.published.toDate();
-    let month = d.getFullYear().toString();
-    if (d.getMonth() < 9) {
-        month += '0';
-    }
-    month += (d.getMonth() + 1);
     setTimeout(function () {
-        window.open('../galletas/' + month + '/' + docDat.file, '_blank').focus();
+        window.open(docDat.url, '_blank').focus();
     }, 2500);
     console.log("Data saved successfully.");
     setTimeout(function () {
@@ -1214,19 +1232,16 @@ function finishPub() {
 function fillKW() {
     let n = 0
     function prog() {
-        setprog(document.getElementById('barPublish'), Math.floor(n).toString());
+        setprog(document.getElementById('barPublish'), n);
     }
     keywords = [];
     keywords.push(docDat.published.toDate().getFullYear().toString());
     keywords.push(docDat.ledit.toDate().getFullYear().toString());
     n++;
     prog();
-    //Categorías@#
-    if (document.getElementById('cat0').checked) keywords.push('astronomia');
-    if (document.getElementById('cat1').checked) keywords.push('biologia');
-    if (document.getElementById('cat2').checked) keywords.push('curiosidades');
-    if (document.getElementById('cat3').checked) keywords.push('fisica');
-    if (document.getElementById('cat4').checked) keywords.push('tecnologia');
+    allCats.forEach((cat, idx) => {
+        if (document.getElementById('cat' + idx).checked) keywords.push(cat);
+    });
     n++;
     prog();
     docDat.authors.forEach(itm => {
@@ -1331,124 +1346,65 @@ function fillKW() {
         n += (3 / Object.entries(kWObj).length);
         prog();
     }
-
+    docDat.cats = keywords;
     console.log(keywords);
 }
+
 document.getElementById('btnCnfPublish').onclick = function () {
     if (docDat.public) return;
-    setprog(document.getElementById('barPublish'), '0');
-    document.getElementById('barPublishCont').classList.remove('d-none');
-    fillKW();
+    setprog(document.getElementById('barPublish'), 0);
+    showEl(document.getElementById("barPublishCont"));
+
+    docDat.public = true;
+    docDat.ledit = new firebase.firestore.Timestamp.now();
+    docDat.beenPublic = true;
+    docDat.revised = {};
+    setprog(document.getElementById('barPublish'), 31);
+
     if (!docDat.beenPublic) {
-        setprog(document.getElementById('barPublish'), '30');
-        db.collection('galletasCont').doc(docId).update({
-            beenPublic: true,
-            public: true,
-            ledit: new firebase.firestore.Timestamp.now(),
-            published: new firebase.firestore.Timestamp.now(),
-            revised: []
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '49');
-            let d = docDat.published.toDate();
-            let month = d.getFullYear().toString();
-            if (d.getMonth() < 9) {
-                month += '0';
-            }
-            month += (d.getMonth() + 1);
-            return db.collection('galletas').doc(docId).set({
-                likes: 0,
-                favs: 0,
-                pop: 0,
-                ledit: new firebase.firestore.Timestamp.now(),
-                date: new firebase.firestore.Timestamp.now(),
-                dledit: false,
-                notify: false,
-                public: true,
-                title: docDat.title,
-                descrip: docDat.description,
-                url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
-                picUrl: docDat.picUrl,
-                authrs: docDat.authors,
-                cats: keywords
-            })
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '78');
-            rtDb.ref('galletas/' + docId).set({
-                pop: 0,
-                likes: 0,
-                favs: 0
-            }, err => {
-                if (err) {
-                    console.log("Data could not be saved." + err);
-                } else {
-                    setprog(document.getElementById('barPublish'), '84');
-                    finishPub();
-                }
-            });
-        }).catch(error => {
-            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-            console.log(error);
-            setTimeout(function () {
-                document.getElementById("btnAlrtClsSsn").click();
-            }, 3000);
-            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                document.getElementById("alrtClsSsn").innerHTML = '';
-            });
-        });
+        docDat.notify = true;
+        docDat.published = new firebase.firestore.Timestamp.now();
+        setprog(document.getElementById('barPublish'), 62);
     } else {
-        setprog(document.getElementById('barPublish'), '30');
-        db.collection('galletasCont').doc(docId).update({
-            public: true,
-            ledit: new firebase.firestore.Timestamp.now(),
-            revised: []
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '42');
-            let d = docDat.published.toDate();
-            let month = d.getFullYear().toString();
-            if (d.getMonth() < 9) {
-                month += '0';
-            }
-            month += (d.getMonth() + 1);
-            let cook = {
-                title: docDat.title,
-                descrip: docDat.description,
-                url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
-                picUrl: docDat.picUrl,
-                authrs: docDat.authors,
-                cats: keywords,
-                public: true,
-            };
-            setprog(document.getElementById('barPublish'), '57');
-            if (document.getElementById('inSendUpt').checked) {
-                cook.ledit = new firebase.firestore.Timestamp.now();
-                cook.dledit = true;
-                cook.notify = true;
-            } else {
-                cook.dledit = false;
-                cook.notify = false;
-            }
-            setprog(document.getElementById('barPublish'), '61');
-            if (document.getElementById('inSendUpt').checked) {
-                cook.uptMsg = true;
-                cook.uptDescrip = document.getElementById('inUptDesc').value.trim();
-            } else {
-                cook.uptMsg = false;
-                cook.uptDescrip = '';
-            }
-            setprog(document.getElementById('barPublish'), '66');
-            return db.collection('galletas').doc(docId).update(cook);
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '78');
-            finishPub();
-        }).catch(error => {
-            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-            console.log(error);
-            setTimeout(function () {
-                document.getElementById("btnAlrtClsSsn").click();
-            }, 3000);
-            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                document.getElementById("alrtClsSsn").innerHTML = '';
-            });
-        });
+        if (document.getElementById('inSendUpt').checked) {
+            docDat.dledit = true;
+            docDat.notify = true;
+        } else {
+            docDat.dledit = false;
+            docDat.notify = false;
+        }
+        setprog(document.getElementById('barPublish'), 45);
+        if (document.getElementById('inSendUpt').checked) {
+            docDat.uptMsg = true;
+            docDat.uptDescrip = document.getElementById('inUptDesc').value.trim();
+        } else {
+            docDat.uptMsg = false;
+            docDat.uptDescrip = "";
+        }
+        setprog(document.getElementById('barPublish'), 62);
     }
+
+    saveDoc().then(() => {
+        rtDb.ref('galletas/' + docId).set({
+            pop: docDat.pop,
+            likes: docDat.likes,
+            favs: docDat.favs
+        }, err => {
+            if (err) {
+                console.log("Data could not be saved." + err);
+            } else {
+                setprog(document.getElementById('barPublish'), 84);
+                finishPub();
+            }
+        });
+    }).catch(error => {
+        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+        console.log(error);
+        setTimeout(function () {
+            document.getElementById("btnAlrtClsSsn").click();
+        }, 3000);
+        $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+            document.getElementById("alrtClsSsn").innerHTML = "";
+        });
+    });
 };

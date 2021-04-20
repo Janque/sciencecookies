@@ -9,7 +9,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
             promises.push(db.collection('galletasCont').doc(doc.id).get().then(doc2 => {
                 return db.collection('cookies/langs/es').doc(doc.id).set({
                     authors: doc2.data().authors,
-                    cont: doc2.data().authors,
+                    cont: doc2.data().cont,
                     media: doc2.data().media,
                     picUrl: doc2.data().picUrl,
                     title: doc.data().title,
@@ -17,7 +17,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                     file: doc2.data().file,
                     owner: doc2.data().owner,
                     java: doc2.data().java,
-                    revised: [],
+                    revised: {},
                     notify: false,
                     public: doc2.data().public,
                     beenPublic: doc2.data().beenPublic,
@@ -30,7 +30,9 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                     favs: doc.data().favs,
                     url: doc.data().url + '/',
                     cats: doc.data().cats,
-                    translations: {},
+                    translations: {
+                        es: doc2.data().file
+                    },
                     old: true
                 }).then(() => {
                     return db.collection('cookies/langs/en').doc(doc.id).set({
@@ -53,7 +55,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                         file: doc2.data().file,
                         owner: doc2.data().owner,
                         java: doc2.data().java,
-                        revised: [],
+                        revised: {},
                         notify: false,
                         public: doc2.data().public,
                         beenPublic: doc2.data().beenPublic,
@@ -66,7 +68,9 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                         favs: doc.data().favs,
                         url: doc.data().url + '/',
                         cats: doc.data().cats,
-                        translations: {},
+                        translations: {
+                            es: doc2.data().file
+                        },
                         old: true
                     });
                 });
@@ -75,8 +79,13 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
         return Promise.all(promises);
     }).then(() => {
         console.log("exito");
-        return null;
-    }).catch(err => console.log(err));
+        res.send(exito);
+        return;
+    }).catch(err => {
+        console.log(err);
+        res.send(err);
+        return;
+    });
 });
 exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) => {
     return db.collection('calendarios').get().then(snap => {
@@ -125,8 +134,13 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
         return Promise.all(promises);
     }).then(() => {
         console.log("exito");
-        return null;
-    }).catch(err => console.log(err));
+        res.send(exito);
+        return;
+    }).catch(err => {
+        console.log(err);
+        res.send(err);
+        return;
+    });
 });
 
 //Comment in a Cookie

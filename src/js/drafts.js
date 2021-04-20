@@ -52,48 +52,15 @@ window.loaded = function loaded() {
                         console.log(err);
                     } else {
                         setprog('52');
-                        db.collection('cookies/langs/es').doc(id).set({
-                            authors: [author],
-                            cont: [
-                                {
-                                    type: "head",
-                                    title: "Sin título",
-                                    author: [author]
-                                },
-                                {
-                                    type: "ref",
-                                    ref: []
-                                }
-                            ],
-                            media: [],
-                            picUrl: "",
-                            title: "Sin título",
-                            description: "Sin descripción",
-                            file: "",
-                            owner: uid,
-                            java: "",
-                            revised: [],
-                            notify: false,
-                            public: false,
-                            beenPublic: false,
-                            dledit: false,
-                            created: new firebase.firestore.Timestamp.now(),
-                            ledit: new firebase.firestore.Timestamp.now(),
-                            published: new firebase.firestore.Timestamp.now(),
-                            pop: 0,
-                            likes: 0,
-                            favs: 0,
-                            url:"",
-                            cats: [],
-                            translations: {}
-                        }).then(() => {
-                            setprog('63');
-                            return db.collection('cookies/langs/en').doc(id).set({
+                        const promises = [];
+                        langs.forEach((l, i) => {
+                            setprog(30 / langs.length * i);
+                            promises.push(db.collection('cookies/langs/' + l).doc(doc.id).set({
                                 authors: [author],
                                 cont: [
                                     {
                                         type: "head",
-                                        title: "No title",
+                                        title: title,
                                         author: [author]
                                     },
                                     {
@@ -103,12 +70,12 @@ window.loaded = function loaded() {
                                 ],
                                 media: [],
                                 picUrl: "",
-                                title: "No title",
-                                description: "No description",
-                                file: "",
+                                title: title,
+                                description: "",
+                                file: file,
                                 owner: uid,
                                 java: "",
-                                revised: [],
+                                revised: {},
                                 notify: false,
                                 public: false,
                                 beenPublic: false,
@@ -119,12 +86,15 @@ window.loaded = function loaded() {
                                 pop: 0,
                                 likes: 0,
                                 favs: 0,
-                                url:"",
+                                url: "",
                                 cats: [],
-                                translations: {}
-                            });
-                        }).then(() => {
-                            setprog('80');
+                                translations: {
+                                    es: file
+                                }
+                            }));
+                        });
+                        Promise.all(promises).then(() => {
+                            setprog('90');
                             setTimeout(function () {
                                 setprog('100');
                                 document.getElementById('bar').classList.add('bg-success');
@@ -343,13 +313,13 @@ function shwSrch() {
                 };
                 drpitm2.innerHTML = 'Ver artículo <i class="fas fa-eye"></i>';
                 drpmenu.appendChild(drpitm2);
-                drpitm3.classList.add('dropdown-item');
+                /*drpitm3.classList.add('dropdown-item');@# sync langs
                 drpitm3.onclick = function () {
                     cookiesFSRef.doc(doc.id).update({
                         public: false
                     });
                 };
-                drpitm3.innerHTML = 'Volver privado <i class="fas fa-lock"></i>';
+                drpitm3.innerHTML = 'Volver privado <i class="fas fa-lock"></i>';*/
                 drpmenu.appendChild(drpitm3);
             }
             drp.appendChild(drpmenu);

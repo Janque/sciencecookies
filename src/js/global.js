@@ -8,7 +8,8 @@ window.calendarsFSRef = db.collection('calendars/langs/' + lang);
 
 window.urlSrch = '';
 var actSsn = false;
-var mod = false, author = "";
+window.mod = false
+window.author = "";
 var mobile = false;
 
 window.classes = function classes(elm, cls) {
@@ -183,7 +184,16 @@ window.addEventListener("load", function () {
     if (urlSrch.get('mode') == 'select') $('#mdlRgstr').modal('show');
     shwRecom();
     shareBtns();
-    loaded();
+
+    db.collection('config').doc('langs').get().then(doc => {
+        window.langs = doc.data().langs;
+        return db.collection('config').doc('cats').get();
+    }).then(doc => {
+        window.allCats = doc.data().allCats;
+        window.textCats = doc.data().textCats;
+
+        loaded();
+    }).catch(err => { console.log(err) });
 });
 
 function shwRecom() {

@@ -1,7 +1,7 @@
 import '../styles/index.scss';
 
 //Categorías@#
-const catnmb = 5, allCats = ['astronomia', 'biologia', 'curiosidades', 'fisica', 'tecnologia'];
+var catnmb;
 const previewLim = 20;
 
 //Get search params
@@ -199,41 +199,42 @@ function reSrch(np) {
     document.getElementById("cookCnt").scrollIntoView();
 }
 
-//Submit search
-document.getElementById('catA').onclick = function () {
-    if (!allChk) {
-        for (let i = 0; i < catnmb; i++) {
-            document.getElementById('cat' + i).checked = true;
-        }
-    } else {
-        for (let i = 0; i < catnmb; i++) {
-            document.getElementById('cat' + i).checked = false;
-        }
-    }
-    allChk = !allChk;
-};
-for (let i = 0; i < catnmb; i++) {
-    document.getElementById('cat' + i).onclick = function () {
-        if (allChk) {
-            document.getElementById('catA').checked = false;
-            allChk = false;
-        }
-        else {
-            let all = true;
+function prepCatBtns() {
+    //Submit search
+    document.getElementById('catA').onclick = function () {
+        if (!allChk) {
             for (let i = 0; i < catnmb; i++) {
-                if (document.getElementById('cat' + i).checked == false) {
-                    all = false;
-                    break;
+                document.getElementById('cat' + i).checked = true;
+            }
+        } else {
+            for (let i = 0; i < catnmb; i++) {
+                document.getElementById('cat' + i).checked = false;
+            }
+        }
+        allChk = !allChk;
+    };
+    for (let i = 0; i < catnmb; i++) {
+        document.getElementById('cat' + i).onclick = function () {
+            if (allChk) {
+                document.getElementById('catA').checked = false;
+                allChk = false;
+            }
+            else {
+                let all = true;
+                for (let i = 0; i < catnmb; i++) {
+                    if (document.getElementById('cat' + i).checked == false) {
+                        all = false;
+                        break;
+                    }
+                }
+                if (all) {
+                    allChk = true;
+                    document.getElementById('catA').checked = true;
                 }
             }
-            if (all) {
-                allChk = true;
-                document.getElementById('catA').checked = true;
-            }
-        }
-    };
+        };
+    }
 }
-
 function shwCalMain() {
     calendarsFSRef.where("public", "==", true).orderBy('published', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
@@ -269,6 +270,8 @@ function shwCalMain() {
 }
 
 window.loaded = function loaded() {
+    catnmb = allCats.length;
+    prepCatBtns();
     initSrch(false);
     shwCalMain();
     function send() {
