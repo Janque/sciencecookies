@@ -108,6 +108,10 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
                 url: doc.data().url + '/',
                 nextCal: doc.data().nextCal + '/',
                 priorCal: doc.data().priorCal + '/',
+                weeks: doc.data().weeks,
+                translations: {
+                    es: doc.id
+                },
                 old: true
             }).then(() => {
                 return db.collection('calendars/langs/en').doc(doc.id).set({
@@ -127,6 +131,10 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
                     url: doc.data().url + '/',
                     nextCal: doc.data().nextCal + '/',
                     priorCal: doc.data().priorCal + '/',
+                    weeks: doc.data().weeks,
+                    translations: {
+                        es: doc.id
+                    },
                     old: true
                 });
             }));

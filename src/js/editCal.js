@@ -12,41 +12,74 @@ let newMedSrc = null;
 let eventToShow = null;
 
 const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'], longDay = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'];
-function fullMonth(n) {
-    switch (n) {
-        case 1:
-            return "Enero";
-        case 2:
-            return "Febrero";
-        case 3:
-            return "Marzo";
-        case 4:
-            return "Abril";
-        case 5:
-            return "Mayo";
-        case 6:
-            return "Junio";
-        case 7:
-            return "Julio";
-        case 8:
-            return "Agosto";
-        case 9:
-            return "Septiembre";
-        case 10:
-            return "Octubre";
-        case 11:
-            return "Noviembre";
-        case 12:
-            return "Diciembre";
-        case 0:
-            return "Diciembre";
-        case 13:
-            return "Enero";
+function fullMonth(n, l) {
+    if (l == "es") {
+        switch (n) {
+            case 1:
+                return "Enero";
+            case 2:
+                return "Febrero";
+            case 3:
+                return "Marzo";
+            case 4:
+                return "Abril";
+            case 5:
+                return "Mayo";
+            case 6:
+                return "Junio";
+            case 7:
+                return "Julio";
+            case 8:
+                return "Agosto";
+            case 9:
+                return "Septiembre";
+            case 10:
+                return "Octubre";
+            case 11:
+                return "Noviembre";
+            case 12:
+                return "Diciembre";
+            case 0:
+                return "Diciembre";
+            case 13:
+                return "Enero";
+        }
+    } else if (l == "en") {
+        switch (n) {
+            case 1:
+                return "January";
+            case 2:
+                return "February";
+            case 3:
+                return "March";
+            case 4:
+                return "April";
+            case 5:
+                return "May";
+            case 6:
+                return "June";
+            case 7:
+                return "July";
+            case 8:
+                return "August";
+            case 9:
+                return "September";
+            case 10:
+                return "October";
+            case 11:
+                return "November";
+            case 12:
+                return "December";
+            case 0:
+                return "December";
+            case 13:
+                return "January";
+        }
     }
 }
 
 window.loaded = function loaded() {
-    db.collection('calendarios').doc(urlSrch.get('file')).onSnapshot(doc => {
+    calendarsFSRef.doc(urlSrch.get('id')).onSnapshot(doc => {
         if (!doc.exists) {
             window.location.href = '../404';
             return;
@@ -74,9 +107,9 @@ window.loaded = function loaded() {
         }
         document.getElementById('btnPrevCal').href = docDat.url;
         document.getElementById('btnPrevMail').href = '/vista-email-calendario/' + docId;
-        document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
-        document.getElementById('btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1170&reg1=3688685&reg2=9609540&town=3688689`;
-        document.getElementById('btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1724&reg1=3117732&reg2=6355233&town=3117735`;
+        document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
+        document.getElementById('btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1170&reg1=3688685&reg2=9609540&town=3688689`;
+        document.getElementById('btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1724&reg1=3117732&reg2=6355233&town=3117735`;
     }, err => console.log(err))
 
     function descFrm() {
@@ -93,7 +126,7 @@ window.loaded = function loaded() {
         let ref = store.ref('calendarMedia/' + docId + '/pic');
         ref.put(newMedia).on('state_changed',
             function progress(snap) {
-                setprog(document.getElementById('barChgImg'), Math.floor((snap.bytesTransferred / snap.totalBytes) * 100));
+                setprog(document.getElementById('barChgImg'), (snap.bytesTransferred / snap.totalBytes) * 100);
             },
             function error(err) {
                 document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert"><strong>¡Ocurrió un error!</strong> ' + err.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
@@ -121,7 +154,7 @@ window.loaded = function loaded() {
     }
     document.getElementById("frmChgImg").addEventListener("submit", function (event) {
         event.preventDefault();
-        setprog(document.getElementById('barChgImg'), "0");
+        setprog(document.getElementById('barChgImg'), 0);
         showEl(document.getElementById("barChgImgCont"));
         hideEl(document.getElementById("frmChgImg"));
         document.getElementById("btnCnfChgImg").setAttribute('disabled', 'true');
@@ -147,7 +180,26 @@ document.getElementById('inDescShort').oninput = () => {
 let savedInterval;
 function saveDoc() {
     console.log('Saving...');
-    return db.collection('calendarios').doc(docId).update(docDat);
+
+    const promises = [];
+    langs.forEach(l => {
+        if (l != lang) {
+            let syncUpt = {
+                published: docDat.published,
+                finished: docDat.finished,
+                pastDue: docDat.pastDue,
+                public: docDat.public,
+                sentMail: docDat.sentMail,
+                revised: docDat.revised,
+                translations: docDat.translations,
+            }
+            syncUpt.translations[lang] = docDat.url;
+            promises.push(db.collection('cookies/langs/' + l).doc(docId).update(syncUpt));
+        }
+    })
+    return Promise.all(promises).then(() => {
+        return docRef.update(docDat);
+    });
 }
 function normSave() {
     saveDoc().then(() => {
@@ -168,6 +220,7 @@ function normSave() {
 }
 
 function setprog(bar, n) {
+    n = Math.floor(n);
     bar.setAttribute('aria-valuenow', n);
     bar.style.width = n + '%';
     bar.innerText = n + '%';
@@ -574,18 +627,30 @@ document.getElementById('btnPrevMail').onclick = function () {
     normSave();
 };
 
+function validateRevision() {
+    let revLangs = 0;
+    langs.forEach(l => {
+        let rev = docDat.revised[l] ? docDat.revised[l].length : 0;
+        if (docDat.revised[l] && !docDat.revised[l].includes(uid)) rev++;
+        if (rev >= 2) revLangs++;
+    });
+    return revLangs == langs.length;
+}
+
 document.getElementById('btnAprove').onclick = function () {
-    if (docDat.revised.includes(uid)) {
-        docDat.revised.splice(docDat.revised.indexOf(uid), 1);
-        docDat.finished = false;
+    if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
+        docDat.revised[lang].splice(docDat.revised[lang].indexOf(uid), 1);
         document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
     } else {
-        docDat.revised.push(uid);
+        if (!docDat.revised[lang]) docDat.revised[lang] = [];
+        docDat.revised[lang].push(uid);
         document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
-        if (docDat.revised.length > 1) {
-            docDat.finished = true;
-            newCal();
-        }
+    }
+    if (validateRevision()) {
+        docDat.finished = true;
+        newCal();
+    } else {
+        docDat.finished = false;
     }
     normSave();
 };
@@ -606,7 +671,6 @@ function newCal() {
         if (error) {
             console.log(error);
         } else {
-            let month = fullMonth(nextCalID % 100);
             let date = new Date((nextCalID - nextCalID % 100) / 100 + ' ' + nextCalID % 100 + ' ' + '00:00');
             let weeks = [];
             let days;
@@ -637,59 +701,85 @@ function newCal() {
                 weeks.push(week);
                 bDay = 0;
             }
-            let nYear = (nextCalID - nextCalID % 100) / 100;
-            let pYear = (nextCalID - nextCalID % 100) / 100;
-            if (nextCalID % 100 == 12) nYear++;
-            if (nextCalID % 100 == 1) pYear--;
-            let nMonth = fullMonth(nextCalID % 100 + 1).toLowerCase();
-            let pMonth = fullMonth(nextCalID % 100 - 1).toLowerCase();
-            db.collection('calendarios').doc(Math.abs(nextCalID).toString()).set({
-                events: {},
-                date: firebase.firestore.Timestamp.fromDate(date),
-                description: "Sin descripción",
-                descriptionShort: "Sin descripción",
-                finished: false,
-                pastDue: false,
-                picUrl: "",
-                picAlt: "",
-                picCapt: "",
-                public: false,
-                sentMail: false,
-                revised: [],
-                title: "Calendario Astronómico de " + month + " " + (nextCalID - nextCalID % 100) / 100,
-                url: "https://sciencecookies.net/calendario-astronomico/" + (nextCalID - nextCalID % 100) / 100 + "/" + month.toLowerCase(),
-                nextCal: "https://sciencecookies.net/calendario-astronomico/" + nYear + "/" + nMonth,
-                priorCal: "https://sciencecookies.net/calendario-astronomico/" + pYear + "/" + pMonth,
-                weeks: weeks
-            }).then(() => {
-                console.log('nuevo calendario');
+            const promises = [];
+            langs.forEach(l => {
+                if (l != lang) {
+                    let newC = {
+                        events: {},
+                        published: firebase.firestore.Timestamp.fromDate(date),
+                        description: "",
+                        descriptionShort: "",
+                        finished: false,
+                        pastDue: false,
+                        picUrl: "",
+                        picAlt: "",
+                        picCapt: "",
+                        public: false,
+                        sentMail: false,
+                        revised: {},
+                        title: "",
+                        url: "",
+                        nextCal: "",
+                        priorCal: "",
+                        weeks: weeks,
+                        translations: {}
+                    }
+
+                    let intId = parseInt(nextCalID);
+                    let year = (intId - intId % 100) / 100;
+                    let nYear = (intId - intId % 100) / 100;
+                    let pYear = (intId - intId % 100) / 100;
+                    if (intId % 100 == 12) nYear++;
+                    if (intId % 100 == 1) pYear--;
+                    let month = fullMonth(intId % 100);
+                    let nMonth = fullMonth(intId % 100 + 1).toLowerCase();
+                    let pMonth = fullMonth(intId % 100 - 1).toLowerCase();
+                    let calsText = "";
+                    switch (l) {
+                        case "es":
+                            calsText = "calendario-astronomico";
+                            newC.title = "Calendario Astronómico de " + month + " " + year;
+                            break;
+                        case "en":
+                            calsText = "astronomic-calendar";
+                            newC.title = "Astronomic Calendar of " + month + " " + year;
+                            break;
+                    }
+                    newC.url = "https://sciencecookies.net/" + calsText + "/" + year + "/" + month.toLowerCase() + "/";
+                    newC.nextCal = "https://sciencecookies.net/" + calsText + "/" + nYear + "/" + nMonth + "/";
+                    newC.priorCal = "https://sciencecookies.net/" + calsText + "/" + pYear + "/" + pMonth + "/";
+
+                    promises.push(db.collection('calendars/langs/' + l).doc(Math.abs(nextCalID).toString()).set(newC));
+                }
+            })
+            return Promise.all(promises).then(() => {
+                console.log('exito');
             }).catch(err => console.log(err));
         }
     });
 }
 
 $('#mdlPublish').on('show.bs.modal', e => {
-    let rev = docDat.revised.length;
-    if (!docDat.revised.includes(uid)) rev++;
-    if (rev < 2) {
-        hideEl(document.getElementById('btnCnfPublish'));
-        document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
-    } else {
+    if (validateRevision()) {
         showEl(document.getElementById('btnCnfPublish'));
         document.getElementById('mdlPublishTxt').innerText = "El calendario está listo para publicar";
+    } else {
+        hideEl(document.getElementById('btnCnfPublish'));
+        document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
     }
 });
 
 document.getElementById('btnCnfPublish').onclick = function () {
     if (docDat.public) return;
-    setprog(document.getElementById('barPublish'), '0');
+    setprog(document.getElementById('barPublish'), 0);
     showEl(document.getElementById('barPublishCont'));
-    setprog(document.getElementById('barPublish'), '25');
-    db.collection('calendarios').doc(docId).update({
-        public: true
-    }).then(() => {
-        setprog(document.getElementById('barPublish'), '63');
-        admin.database().ref('calendarios/' + calID).set({
+
+    docDat.public = true;
+    setprog(document.getElementById('barPublish'), 25);
+
+    saveDoc().then(() => {
+        setprog(document.getElementById('barPublish'), 58);
+        admin.database().ref('calendarios/' + docId).set({
             pop: 0
         }, err => {
             if (err) {
@@ -702,9 +792,9 @@ document.getElementById('btnCnfPublish').onclick = function () {
                     document.getElementById("alrtClsSsn").innerHTML = '';
                 });
             } else {
-                setprog(document.getElementById('barPublish'), '100');
+                setprog(document.getElementById('barPublish'), 100);
                 classes(document.getElementById('barPublish'), 'bg-success');
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
                 setTimeout(function () {
                     window.open(docDat.url, '_blank').focus();
                 }, 2500);
@@ -716,7 +806,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
                     document.getElementById("alrtClsSsn").innerHTML = '';
                 });
                 $('#mdlPublish').modal('hide');
-                console.log('Published ' + calID + ' calendar');
+                console.log('Published ' + docId + ' calendar');
                 return null;
             }
         });

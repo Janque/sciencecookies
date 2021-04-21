@@ -130,7 +130,16 @@ function saveDoc() {
         month += '0';
     }
     month += (d.getMonth() + 1);
-    docDat.url = 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file + '/';
+    let galletasText = "";
+    switch (lang) {
+        case "es":
+            galletasText = "galletas";
+            break;
+        case "en":
+            galletasText = "cookies";
+            break;
+    }
+    docDat.url = 'https://sciencecookies.net/' + galletasText + '/' + month + '/' + docDat.file + '/';
     fillKW();
     const promises = [];
     langs.forEach(l => {
@@ -149,9 +158,10 @@ function saveDoc() {
                 pop: docDat.pop,
                 likes: docDat.likes,
                 favs: docDat.favs,
+                revised: docDat.revised,
                 translations: docDat.translations
             }
-            syncUpt.translations[lang] = docDat.file;
+            syncUpt.translations[lang] = docDat.url;
             promises.push(db.collection('cookies/langs/' + l).doc(docId).update(syncUpt));
         }
     })

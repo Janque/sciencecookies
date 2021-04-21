@@ -103,20 +103,20 @@ block content
             label.form-check-label(for='inMedSrc1') Externo
           else if LANG=="en"
             label.form-check-label(for='inMedSrc1') External
-      #inNewMedFileCont.custom-file.mb-5.d-none
-        input#inNewMed.custom-file-input(type='file')
+      #inChgImgFileCont.custom-file.mb-5.d-none
+        input#inChgImg.custom-file-input(type='file')
         if LANG=="es"
-          label#inNewMedL.custom-file-label(for='inNewMed' data-browse='Elegir') Subir archivo
+          label#inChgImgL.custom-file-label(for='inChgImg' data-browse='Elegir') Subir archivo
         else if LANG=="en"
-          label#inNewMedL.custom-file-label(for='inNewMed' data-browse='Choose') Upload
+          label#inChgImgL.custom-file-label(for='inChgImg' data-browse='Choose') Upload
       #inChgImgUrlCont.row.mb-2.d-none
         .col
           if LANG=="es"
-            label(for='inNewMedUrl') URL del archivo
-            input#inNewMedUrl.form-control(type='text' placeholder='https://imagen.com')
+            label(for='inChgImgUrl') URL del archivo
+            input#inChgImgUrl.form-control(type='text' placeholder='https://imagen.com')
           else if LANG=="en"
-            label(for='inNewMedUrl') Media URL
-            input#inNewMedUrl.form-control(type='text' placeholder='https://image.com')
+            label(for='inChgImgUrl') Media URL
+            input#inChgImgUrl.form-control(type='text' placeholder='https://image.com')
       .row.mb-2.justify-content-center
         button#btnCanChgImg.btn.btn-secondary.mx-2(type='submit') #{Buttons[LANG]["cancel"]}
         if LANG=="es"

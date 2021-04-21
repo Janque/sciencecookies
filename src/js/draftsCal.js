@@ -8,9 +8,9 @@ var nxtp = false, paglast = [null], page = 1;
 var allChk = false;
 function initSrch(stAf) {
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
-        srchRef = calendarsFSRef.orderBy('date', 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+        srchRef = calendarsFSRef.orderBy('published', 'desc').startAfter(paglast[page - 1]).limit(previewLim);
     } else {
-        srchRef = calendarsFSRef.orderBy('date', 'desc').limit(previewLim);
+        srchRef = calendarsFSRef.orderBy('published', 'desc').limit(previewLim);
     }
     shwSrch();
 }
