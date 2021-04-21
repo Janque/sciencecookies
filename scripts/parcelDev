@@ -1,0 +1,9 @@
+rm functions/views/includes/*
+cp -r src/includes/* functions/views/includes
+
+rm functions/views/layouts/*
+cp -r src/layouts/* functions/views/layouts
+
+rm -r public
+
+parcel src/*.pug src/localized/en_ALL/*.pug src/docs/*.pug src/styles/main.scss src/styles/cookie.scss src/js/cookie.js src/js/prevMail.js src/js/calendar.js src/js/global.js src/img/scmed/* src/img/NLogoHalignT.svg src/img/logoT.svg src/img/wlogoT.svg src/publicidad/* --out-dir public

@@ -1,6 +1,10 @@
 .row.bg-info.px-2.text-dark.d-sm-none.justify-content-center
     .col-12.pt-2
-        h5.text-center.mx-auto Publicidad
+        if LANG=="es" 
+            h5.text-center.mx-auto Publicidad
+        else if LANG=="en" 
+            h5.text-center.mx-auto Advertising
+
     .col-6.px-1
         a(href='https://www.instagram.com/p/CDLE_t6nsdU/?igshid=ttb1h94rs65' rel='sponsored')
             img.w-100.mb-2(src=HOST+'/publicidad/CubreMid.webp' alt='Cubre Mid')

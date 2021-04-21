@@ -1,0 +1,17 @@
+block missHead
+  if LANG=="es"
+    meta(name='description' content='En este blog escribimos artículos de difusión científica y sobre curiosidades y esperamos lograr alimentar la curiosidad.')
+  else if LANG=="en"
+    meta(name='description' content='In this blog we write articles for scientific diffusion and curiosities in the hope to feed the curiosity.')
+
+  - const site="who";
+
+block content
+  if LANG=="es"
+    h1.text-center ¿Quiénes somos?
+    br
+    p Somos un grupo de estudiantes apasionados por la ciencia y motivados por la curiosidad. Cualquier persona que formule las preguntas correctas es un científico en potencia, y creemos que fue ese mismo principio el cual unió nuestros caminos en 2017. En este blog escribimos artículos de difusión científica y sobre curiosidades y esperamos lograr alimentar la curiosidad de muchas más personas y ofrezcer una respuesta a interrogantes del día a día.
+  else if LANG=="en"
+    h1.text-center Who are we?
+    br
+    p We are a group of students passionate about science and motivated by curiosity. Anyone who asks the right questions is a potential scientist, and we believe that it was that same principle that united our paths in 2017. In this blog we write science and curiosity articles in the hope to feed the curiosity of many more people and offer an answer to day-to-day questions.

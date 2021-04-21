@@ -1,0 +1,195 @@
+block missHead
+  if LANG=="es"
+    meta(name='description' content='Tu perfíl de Science Cookies. Aquí puedes ver las galletas que te gustan y tus favoritas y cambiar algunas preferencias.')
+  else if LANG=="en"
+    meta(name='description' content='Your Science Cookies profile. Here you can see the cookies you like and your favorites and change some preferences.')
+
+  - const site="profile";
+
+block precontent
+  //- Change nick mdl
+  #mdlCngNck.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlCngNckL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        if LANG=="es"
+          .modal-header
+            h5#mdlCngNckL.modal-title Cambia tu nombre de usuario
+            button.close(type='button' data-dismiss='modal' aria-label='Close')
+              span(aria-hidden='true') ×
+          .modal-body
+            form#frmChngNk
+              .form-group
+                label(for='inNewNck') Nuevo nombre de usuario
+                input#inNewNck.form-control(type='text' placeholder='Nuevo nombre de usuario' maxlength='20' required='')
+              button.btn.btn-primary.btn-block(type='submit') Confirmar
+        else if LANG=="en"
+          .modal-header
+            h5#mdlCngNckL.modal-title Change username
+            button.close(type='button' data-dismiss='modal' aria-label='Close')
+              span(aria-hidden='true') ×
+          .modal-body
+            form#frmChngNk
+              .form-group
+                label(for='inNewNck') New username
+                input#inNewNck.form-control(type='text' placeholder='New username' maxlength='20' required='')
+              button.btn.btn-primary.btn-block(type='submit') Confirm
+        .modal-footer
+          button.btn.btn-secondary.btn-block(type='button' data-dismiss='modal' onclick='resetFrm();') #{Buttons[LANG]["cancel"]}
+  //- Change prflPic mdl
+  #mdlCngPP.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlCngPPL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        if LANG=="es"
+          .modal-header
+            h5#mdlCngPPL.modal-title Sube una nueva foto de perfíl
+            button.close(type='button' data-dismiss='modal' aria-label='Close')
+              span(aria-hidden='true') ×
+          .modal-body
+            #prBar.progress.d-none
+              #prBarDis.progress-bar.progress-bar-striped.bg-info.progress-bar-animated(role='progressbar' aria-valuemin='0' aria-valuemax='100') Subiendo...
+            .row.mb-3.w-100.py-0.justify-content-center.mx-auto
+              img#preVIn.w-50.m-0(src='' alt='')
+            form#frmChngPP
+              .custom-file.mb-5
+                input#inNwPP.custom-file-input(type='file' required='')
+                label#inNwPPL.custom-file-label(for='inNwPP' data-browse='Elegir') Elige una imagen
+                small Tamaño máximo: 5Mb.
+                br
+                small Tamaño máximo del nombre: 32 caractéres.
+                br
+                small Tipos de archivo aceptados: png, jpg, tiff, webp.
+              button#btnCnfNwPP.btn.btn-primary.btn-block(type='submit') Subir
+        else if LANG=="en"
+          .modal-header
+            h5#mdlCngPPL.modal-title Upload a new profile picture
+            button.close(type='button' data-dismiss='modal' aria-label='Close')
+              span(aria-hidden='true') ×
+          .modal-body
+            #prBar.progress.d-none
+              #prBarDis.progress-bar.progress-bar-striped.bg-info.progress-bar-animated(role='progressbar' aria-valuemin='0' aria-valuemax='100') Uploading...
+            .row.mb-3.w-100.py-0.justify-content-center.mx-auto
+              img#preVIn.w-50.m-0(src='' alt='')
+            form#frmChngPP
+              .custom-file.mb-5
+                input#inNwPP.custom-file-input(type='file' required='')
+                label#inNwPPL.custom-file-label(for='inNwPP' data-browse='Browse') Choose an image
+                small Max size: 5Mb.
+                br
+                small Max name length: 32 caractéres.
+                br
+                small Supported formats: png, jpg, tiff, webp.
+              button#btnCnfNwPP.btn.btn-primary.btn-block(type='submit') Upload
+        .modal-footer
+          button#btnCanNwPP.btn.btn-secondary.btn-block(type='button' data-dismiss='modal' onclick='resetFrm();') #{Buttons[LANG]["cancel"]}
+
+block content
+  ul.nav.nav-tabs
+    if LANG=="es"
+      li.nav-item.mx-lg-1.mx-0
+        a#navBtnPrfl.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(1);') Mi perfíl
+      li.nav-item.mx-lg-1.mx-0
+        a#navBtnFav.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(2);') Mis favoritos
+      li.nav-item.ml-lg-1.mr-lg-auto.mx-0
+        a#navBtnLike.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(3);') Mis me gusta
+      li.nav-item.mx-lg-1.mx-0
+        a#navBtnPref.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(0);')
+          i.fas.fa-user-cog
+    else if LANG=="en"
+      li.nav-item.mx-lg-1.mx-0
+        a#navBtnPrfl.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(1);') My profile
+      li.nav-item.mx-lg-1.mx-0
+        a#navBtnFav.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(2);') My favorites
+      li.nav-item.ml-lg-1.mr-lg-auto.mx-0
+        a#navBtnLike.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(3);') My likes
+      li.nav-item.mx-lg-1.mx-0
+        a#navBtnPref.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(0);')
+          i.fas.fa-user-cog
+  .container-fluid.px-2
+    #crdPrfl.card.text-light.border-light.bg-transparent.mt-2.d-none
+      ul.list-group.list-group-flush
+        if LANG=="es"
+          li.list-group-item.text-light.border-light.bg-transparent.d-flex
+            img#disPP.rounded(src='' alt='Foto de perfil' height='150')
+            button.btn.btn-link.align-self-end(type='button' data-toggle='modal' data-target='#mdlCngPP') (Cambiar)
+          li.list-group-item.text-light.border-light.bg-transparent
+            .container
+              .row
+                .col.col-4
+                  strong Email
+                #disMail.col.col-8
+          li.list-group-item.text-light.border-light.bg-transparent
+            .container
+              .row
+                .col.col-4
+                  strong Nombre
+                  button.btn.btn-link(type='button' data-toggle='modal' data-target='#mdlCngNck') (Cambiar)
+                #disName.col.col-8
+        else if LANG=="en"
+          li.list-group-item.text-light.border-light.bg-transparent.d-flex
+            img#disPP.rounded(src='' alt='Foto de perfil' height='150')
+            button.btn.btn-link.align-self-end(type='button' data-toggle='modal' data-target='#mdlCngPP') (Change)
+          li.list-group-item.text-light.border-light.bg-transparent
+            .container
+              .row
+                .col.col-4
+                  strong Email
+                #disMail.col.col-8
+          li.list-group-item.text-light.border-light.bg-transparent
+            .container
+              .row
+                .col.col-4
+                  strong Name
+                  button.btn.btn-link(type='button' data-toggle='modal' data-target='#mdlCngNck') (Change)
+                #disName.col.col-8
+    #crdFav.card.text-light.border-light.bg-transparent.mt-2.d-none
+      ul#cntFav.list-group.list-group-flush
+    #crdLike.card.text-light.border-light.bg-transparent.mt-2.d-none
+      ul#cntLike.list-group.list-group-flush
+    #crdPref.card.text-light.border-light.bg-transparent.mt-2.d-none
+      form#frmPref
+        ul.list-group.list-group-flush
+          if LANG=="es"
+            li.list-group-item.text-light.border-light.bg-transparent
+              .custom-control.custom-switch
+                input#inPubPrfl.custom-control-input(type='checkbox')
+                label.custom-control-label(for='inPubPrfl') Otras personas pueden ver mi perfíl
+              .custom-control.custom-switch
+                input#inPubEmail.custom-control-input.text-success(type='checkbox')
+                label.custom-control-label(for='inPubEmail') Otras personas pueden ver mi correo electrónico
+              .custom-control.custom-switch
+                input#inPubFL.custom-control-input.text-success(type='checkbox')
+                label.custom-control-label(for='inPubFL') Otras personas pueden ver mis likes y favoritos
+            li.list-group-item.text-light.border-light.bg-transparent
+              .custom-control.custom-switch
+                input#inNews.custom-control-input.text-success(type='checkbox')
+                label.custom-control-label(for='inNews') Recibir notificaciones por correo electrónico
+            li.list-group-item.text-light.border-light.bg-transparent
+              .row.justify-content-end
+                .col-auto.mr-2.p-0
+                  button#btnCanPref.btn.btn-secondary(type='button' onclick='shwPref();') Descartar
+                .col-auto.mr-2.p-0
+                  button#btnCnfPref.btn.btn-success Guardar cambios
+          else if LANG=="en"
+            li.list-group-item.text-light.border-light.bg-transparent
+              .custom-control.custom-switch
+                input#inPubPrfl.custom-control-input(type='checkbox')
+                label.custom-control-label(for='inPubPrfl') Other people can see my profile
+              .custom-control.custom-switch
+                input#inPubEmail.custom-control-input.text-success(type='checkbox')
+                label.custom-control-label(for='inPubEmail') Other people can see my email
+              .custom-control.custom-switch
+                input#inPubFL.custom-control-input.text-success(type='checkbox')
+                label.custom-control-label(for='inPubFL') Other people can see my likes and favorites
+            li.list-group-item.text-light.border-light.bg-transparent
+              .custom-control.custom-switch
+                input#inNews.custom-control-input.text-success(type='checkbox')
+                label.custom-control-label(for='inNews') Recieve email notifications
+            li.list-group-item.text-light.border-light.bg-transparent
+              .row.justify-content-end
+                .col-auto.mr-2.p-0
+                  button#btnCanPref.btn.btn-secondary(type='button' onclick='shwPref();') Discard
+                .col-auto.mr-2.p-0
+                  button#btnCnfPref.btn.btn-success Save changes
+
+block ownjs
+  script(src='/js/profile.js')

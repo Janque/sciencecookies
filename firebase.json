@@ -16,6 +16,9 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "i18n": {
+      "root": "/localized"
+    },
     "rewrites": [
       {
         "source": "/galletas/**/**",

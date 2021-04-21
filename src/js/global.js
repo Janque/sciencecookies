@@ -1,7 +1,11 @@
 //Init database
 window.db = firebase.firestore();
 
-window.lang = "es"; //@#Default
+if (!lang) window.lang = "es";
+var ddd = new Date();
+ddd.setTime(ddd.getTime() + (5 * 60 * 1000));
+//document.cookie = "firebase-language-override=en; expires=" + ddd.toUTCString();
+console.log(lang);
 
 window.cookiesFSRef = db.collection('cookies/langs/' + lang);
 window.calendarsFSRef = db.collection('calendars/langs/' + lang);

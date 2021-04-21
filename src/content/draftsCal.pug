@@ -1,0 +1,36 @@
+block missHead
+  if LANG=="es"
+    meta(name='description' content='Revisa y edita los calendarios')
+  else if LANG=="en"
+    meta(name='description' content='Review and edit the calendars')
+
+  - const site="draftsCal";
+
+block content
+  nav#pgNavT.d-none(aria-label='pageNavT')
+    ul.pagination.justify-content-end
+      li.page-item
+        button#pgTPrv.page-link.text-light.bg-transparent(aria-label='pgTPrv')
+          span(aria-hidden='true') «
+      li.page-item
+        span#disPgT.page-link.text-light.bg-transparent 1
+      li.page-item
+        button#pgTNxt.page-link.text-light.bg-transparent(aria-label='pgTNxt')
+          span(aria-hidden='true') »
+
+  //- Cards
+  #crdContainer.row.row-cols-1.row-cols-sm-2.row-cols-md-1.row-cols-lg-2.row-cols-xl-3
+
+  nav#pgNavB.d-none(aria-label='pageNavB')
+    ul.pagination.justify-content-end
+      li.page-item
+        button#pgBPrv.page-link.text-light.bg-transparent(aria-label='pgBPrv')
+          span(aria-hidden='true') «
+      li.page-item
+        span#disPgB.page-link.text-light.bg-transparent 1
+      li.page-item
+        button#pgBNxt.page-link.text-light.bg-transparent(aria-label='pgBNxt')
+          span(aria-hidden='true') »
+
+block ownjs
+  script(src='/js/draftsCal.js')

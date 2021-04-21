@@ -1,20 +1,27 @@
-//- Config
-- const HOST = "https://sciencecookies--pr35-translations-mofurpft.web.app";
-//-   https://sciencecookies.net
-//-   http://localhost:5000
-//-   https://sciencecookies--pr35-translations-mofurpft.web.app
-- const FBVERSION = "8.3.2";
-- const FBUIVERSION = "4.8.0";
-
+include config
+block lang
 
 doctype html
-html(lang='es')
+html(lang=LANG)
   head
     include ../includes/head
 
     block missHead
 
-    script window.site = "#{site}";
+    link(rel='canonical' href=HOST+'/'+NavLinks[LANG][site])
+    
+    if site=="index"
+      if LANG=="es" 
+        title Artículos de ciencia con chispas de chocolate - Science Cookies
+      else if LANG=="en" 
+        title Science articles with chocolate chips - Science Cookies
+    else 
+      title #{Buttons[LANG][site]} - Science Cookies
+
+    script.
+      window.site = "#{site}";
+      window.lang = "#{LANG}";
+
     link(rel="stylesheet" href=HOST+"/styles/main.css")
 
   body

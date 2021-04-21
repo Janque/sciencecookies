@@ -1,0 +1,252 @@
+block missHead
+  if LANG=="es"
+    meta(name='description' content='Edita las Galletas')
+  else if LANG=="en"
+    meta(name='description' content='Edit the Cookies')
+
+  - const site="edit";
+
+block precontent
+  //- Add section modal
+  #mdlPlusSect.modal.fade(tabindex='-1' aria-labelledby='mdlPlusSectL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          if LANG=="es"
+            h5#mdlPlusSectL.modal-title Añadir una sección
+          else if LANG=="en"
+            h5#mdlPlusSectL.modal-title Add section
+          button.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          .d-flex.flex-wrap
+            if LANG=="es"
+              button.btn.btn-scckie.m-2(onclick="plusSect('parra');" data-dismiss='modal') Párrafo
+            else if LANG=="en"
+              button.btn.btn-scckie.m-2(onclick="plusSect('parra');" data-dismiss='modal') Paragraph
+            button.btn.btn-scckie.m-2(onclick="plusSect('html');" data-dismiss='modal') HTML
+            button.btn.btn-scckie.m-2(onclick="plusSect('youtube');" data-dismiss='modal') Youtube
+            button.btn.btn-scckie.m-2(onclick="plusSect('medSimple');" data-dismiss='modal') Multimedia
+          //- Add more@#
+        .modal-footer
+          button.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
+
+  //- Manage media modal
+  #mdlMedMan.modal.fade(tabindex='-1' aria-labelledby='mdlMedManL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          if LANG=="es"
+            h5#mdlMedManL.modal-title Administra las imágenes
+          else if LANG=="en"
+            h5#mdlMedManL.modal-title Manage media
+          button.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          #contMedMan.row.row-cols-1.row-cols-md-3
+            .col.mb-4
+              .card.text-dark.bg-light.h-100.cardBorder(style='border-color: #343a40;')
+                a.text-decoration-none.text-dark.h-100.d-flex.align-items-center.justify-content-center(type='button' data-toggle='modal' data-target='#mdlAddMed' data-dismiss='modal' aria-label='Close' onclick='addFrom=0;')
+                  h1.mb-0(style='font-size: 6rem;')
+                    i.far.fa-plus-square
+        .modal-footer
+          button.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["close"]}
+
+  //- Choose media modal
+  #mdlMedCho.modal.fade(tabindex='-1' aria-labelledby='mdlMedChoL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          if LANG=="es"
+            h5#mdlMedChoL.modal-title Escoge una imagen
+          else if LANG=="en"
+            h5#mdlMedChoL.modal-title Choose an image
+          button.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          #contMedCho.row.row-cols-1.row-cols-md-3
+            .col.mb-4
+              .card.text-dark.bg-light.h-100.cardBorder(style='border-color: #343a40;')
+                a.text-decoration-none.text-dark.h-100.d-flex.align-items-center.justify-content-center(type='button' data-toggle='modal' data-target='#mdlAddMed' data-dismiss='modal' aria-label='Close' onclick='addFrom=0;')
+                  h1.mb-0(style='font-size: 6rem;')
+                    i.far.fa-plus-square
+        .modal-footer
+          button.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["close"]}
+
+  //- Add media modal
+  #mdlAddMed.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlAddMedL' aria-hidden='true' data-backdrop='static' data-keyboard='false')
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          if LANG=="es"
+            h5#mdlAddMedL.modal-title Añadir multimedia a la Galleta
+          else if LANG=="en"
+            h5#mdlAddMedL.modal-title Add media to the Cookie
+          button#btnCanNewMed1.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          .row.mb-3.w-100.py-0.justify-content-center.mx-auto
+            img#prevNewMed.w-75.m-0(src='')
+          form#frmAddMed
+            .row.mb-3
+              .form-check.form-check-inline.ml-3
+                input#inMedSrc0.form-check-input(type='radio' name='radsMedSrc' value='home' required='')
+                if LANG=="es"
+                  label.form-check-label(for='inMedSrc0') Propio
+                else if LANG=="en"
+                  label.form-check-label(for='inMedSrc0') Own
+              .form-check.form-check-inline.ml-3
+                input#inMedSrc1.form-check-input(type='radio' name='radsMedSrc' value='out')
+                if LANG=="es"
+                  label.form-check-label(for='inMedSrc1') Externo
+                else if LANG=="en"
+                  label.form-check-label(for='inMedSrc1') External
+            #inNewMedFileCont.custom-file.mb-5.d-none
+              input#inNewMed.custom-file-input(type='file')
+              if LANG=="es"
+                label#inNewMedL.custom-file-label(for='inNewMed' data-browse='Elegir') Subir archivo
+              else if LANG=="en"
+                label#inNewMedL.custom-file-label(for='inNewMed' data-browse='Choose') Upload
+            #inNewMedUrlCont.row.mb-2.d-none
+              .col
+                if LANG=="es"
+                  label(for='inNewMedUrl') URL del archivo
+                  input#inNewMedUrl.form-control(type='text' placeholder='https://imagen.com')
+                else if LANG=="en"
+                  label(for='inNewMedUrl') Media URL
+                  input#inNewMedUrl.form-control(type='text' placeholder='https://image.com')
+            if LANG=="es"
+              button#btnCnfNewMed.btn.btn-primary.btn-block(type='submit') Añadir
+            else if LANG=="en"
+              button#btnCnfNewMed.btn.btn-primary.btn-block(type='submit') Add
+          #barNewMedCont.progress.mb-2.d-none
+            #barNewMed.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
+        .modal-footer
+          button#btnCanNewMed0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
+
+  //- Publish modal
+  #mdlPublish.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlPublishL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          if LANG=="es"
+            h5#mdlPublishL.modal-title Hacer pública la Galleta
+          else if LANG=="en"
+            h5#mdlPublishL.modal-title Publish Cookie
+          button#btnCanPublish1.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          p#mdlPublishTxt
+          form#frmPublish.d-none
+            //- Categorías@#
+            .form-row.justify-content-around
+              .form-group.col-auto
+                .form-check
+                  input#cat0.form-check-input(type='checkbox' value='astronomia')
+                  label.form-check-label(for='cat0') Astronomía
+              .form-group.col-auto
+                .form-check
+                  input#cat1.form-check-input(type='checkbox' value='biologia')
+                  label.form-check-label(for='cat1') Biología
+              .form-group.col-auto
+                .form-check
+                  input#cat2.form-check-input(type='checkbox' value='curiosidades')
+                  label.form-check-label(for='cat2') Curiosidades
+              .form-group.col-auto
+                .form-check
+                  input#cat3.form-check-input(type='checkbox' value='fisica')
+                  label.form-check-label(for='cat3') Física
+              .form-group.col-auto
+                .form-check
+                  input#cat4.form-check-input(type='checkbox' value='tecnologia')
+                  label.form-check-label(for='cat4') Tecnología
+            #sendUptCont.from-row.d-none
+              if LANG=="es"
+                .form-check
+                  input#inSendUpt.form-check-input(type='checkbox')
+                  label.form-check-label(for='inSendUpt') Notificar actualización
+                #uptDescCont.row.my-2.d-none
+                  .col
+                    label Descripción de la actualización
+                    textarea#inUptDesc.form-control(rows='3')
+              else if LANG=="en"
+                .form-check
+                  input#inSendUpt.form-check-input(type='checkbox')
+                  label.form-check-label(for='inSendUpt') Notify actualization
+                #uptDescCont.row.my-2.d-none
+                  .col
+                    label Actualization description
+                    textarea#inUptDesc.form-control(rows='3')
+          img.d-none(src='' alt='' class='@#')
+          #barPublishCont.progress.my-2.d-none
+            #barPublish.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
+        .modal-footer
+          if LANG=="es"
+            button#btnCnfPublish.btn.btn-scckie.btn-block(type='button') Publicar
+          else if LANG=="en"
+            button#btnCnfPublish.btn.btn-scckie.btn-block(type='button') Publish
+          button#btnCanPublish0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
+
+  //- Side toolbar
+  .tbar.tbar-right.btn-toolbar.mb-3(role='toolbar')
+    .btn-group-vertical.mr-2.btn-group-lg(role='group')
+      button.btn.btn-scckie(data-toggle='modal' data-target='#mdlPlusSect' onclick='toAdd=docDat.cont.length-1;')
+        i.fas.fa-plus
+      button.btn.btn-scckie(data-toggle='modal' data-target='#mdlMedMan')
+        i.fas.fa-image
+      a#btnPrevCook.btn.btn-scckie(target="_blank")
+        i.fas.fa-eye
+      a#btnPrevMail.btn.btn-scckie(target="_blank")
+        i.fas.fa-envelope
+      button#btnPrivate.btn.btn-scckie.d-none
+        i.fas.fa-lock
+      button#btnAprove.btn.btn-scckie.d-none
+        i.far.fa-check-square
+      button#btnPub.btn.btn-scckie.d-none(data-toggle='modal' data-target='#mdlPublish')
+        i.fas.fa-paper-plane
+
+
+block content
+  .container-fluid.mb-2.rounded-lg.p-3(style='background-color:#57238b;')
+    form#frmFile
+      if LANG=="es"
+        .row.mb-2
+          label.col-sm-2.col-lg-4.col-form-label Nombre del archivo
+          .col
+            input#inFile.form-control(type='text' value='titulo-galleta' placeholder='titulo-galleta')
+        .row.mb-2
+          label.col-sm-2.col-form-label Descripción
+          .col
+            textarea#inDesc.form-control(rows='3')
+        .row.mb-2.justify-content-end
+          button#btnCanFile.btn.btn-secondary Revertir
+          button.btn.btn-light.btn-link-scckie.mx-3(type='submit')
+            i.fas.fa-check
+      else if LANG=="en"
+        .row.mb-2
+          label.col-sm-2.col-lg-4.col-form-label File name
+          .col
+            input#inFile.form-control(type='text' value='titulo-galleta' placeholder='titulo-galleta')
+        .row.mb-2
+          label.col-sm-2.col-form-label Description
+          .col
+            textarea#inDesc.form-control(rows='3')
+        .row.mb-2.justify-content-end
+          button#btnCanFile.btn.btn-secondary Revert
+          button.btn.btn-light.btn-link-scckie.mx-3(type='submit')
+            i.fas.fa-check
+  #cont.container-fluid.mb-2.rounded-lg.p-3(style='background-color:#57238b;')
+  .container-fluid.mb-2.rounded-lg.p-3(style='background-color:#57238b;')
+    .row.mb-2.px-2
+      button#btnEditJs.btn.btn-light.btn-link-scckie.ml-auto.mr-2
+        i.fas.fa-edit(aria-hidden='true')
+      button#btnCheckJs.btn.btn-light.btn-link-scckie.ml-auto.mr-2.d-none
+        i.fas.fa-check(aria-hidden='true')
+    .row.mb-2
+      .col
+        label(for='inJava') JavaScript
+        textarea#inJava.form-control(rows='8' readonly='')
+
+block ownjs
+  script(src='/js/edit.js')
+  script#javaIns
