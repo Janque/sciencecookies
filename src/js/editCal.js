@@ -129,7 +129,11 @@ window.loaded = function loaded() {
                 setprog(document.getElementById('barChgImg'), (snap.bytesTransferred / snap.totalBytes) * 100);
             },
             function error(err) {
-                alertTop("<strong>!Ha ocurrido un error! </strong>" + err, 0);
+                if (lang = "es") {
+                    alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+                } else if (lang = "en") {
+                    alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+                }
                 console.log(err);
                 $('#mdlAddMed').modal('hide');
             },
@@ -780,12 +784,20 @@ document.getElementById('btnCnfPublish').onclick = function () {
             pop: 0
         }, err => {
             if (err) {
-                alertTop("<strong>!Ha ocurrido un error! </strong>" + err, 0);
+                if (lang = "es") {
+                    alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+                } else if (lang = "en") {
+                    alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+                }
                 console.log(err);
             } else {
                 setprog(document.getElementById('barPublish'), 100);
                 classes(document.getElementById('barPublish'), 'bg-success');
-                alertTop("Publicado correctamente ", 1);
+                if (lang = "es") {
+                    alertTop("Publicado correctamente", 1);
+                } else if (lang = "en") {
+                    alertTop("Published successfully", 1);
+                }
                 setTimeout(function () {
                     window.open(docDat.url, '_blank').focus();
                 }, 2500);
@@ -795,7 +807,11 @@ document.getElementById('btnCnfPublish').onclick = function () {
             }
         });
     }).catch(err => {
-        alertTop("<strong>!Ha ocurrido un error! </strong>" + err, 0);
+        if (lang = "es") {
+            alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+        } else if (lang = "en") {
+            alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+        }
         console.log(err);
     });
 };

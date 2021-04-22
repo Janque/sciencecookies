@@ -162,15 +162,17 @@ function shwSsnBtns(ac) {
 //Log Out
 document.getElementById("btnLgO").onclick = function () {
     firebase.auth().signOut().then(function () {
-        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert">Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-    }).catch(function (error) {
-        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-    });
-    setTimeout(function () {
-        document.getElementById("btnAlrtClsSsn").click();
-    }, 3000);
-    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-        document.getElementById("alrtClsSsn").innerHTML = '';
+        if (lang = "es") {
+            alertTop("Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>", 2);
+        } else if (lang = "en") {
+            alertTop("You have successfully closed your session. <strong>! Come back soon! </strong>", 2);
+        }
+    }).catch(function (err) {
+        if (lang = "es") {
+            alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+        } else if (lang = "en") {
+            alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+        }
     });
 };
 //Autenticaciones

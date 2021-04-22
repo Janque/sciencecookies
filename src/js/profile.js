@@ -90,7 +90,11 @@ window.loaded = function loaded() {
         document.getElementById('btnCanPref').setAttribute('disabled', 'true');
         document.getElementById('btnCnfPref').setAttribute('disabled', 'true');
         uptPref();
-        alertTop("Se han guardado los cambios", 1);
+        if (lang = "es") {
+            alertTop("Se han guardado los cambios", 1);
+        } else if (lang = "en") {
+            alertTop("Changes have been saved", 1);
+        }
     });
     function uptPP(file) {
         let ref = storage.ref('ppics/' + publicID + '/pp');
@@ -103,7 +107,11 @@ window.loaded = function loaded() {
             function error(err) {
                 resetFrm();
                 $('#mdlCngPP').modal('hide');
-                alertTop("<strong>!Ha ocurrido un error! </strong>Revisa que tu archivo cumpla los límites y sea una imagen e intenta de nuevo.", 2);
+                if (lang = "es") {
+                    alertTop("<strong>¡Ha ocurrido un error!</strong> Revisa que tu archivo cumpla los límites y sea una imagen e intenta de nuevo.", 2);
+                } else if (lang = "en") {
+                    alertTop("<strong>¡There has been an error!</strong> Check that your file meets the limits and is an image and try again.", 2);
+                }
             },
             function complete() {
                 document.getElementById('picUsr').src = document.getElementById("preVIn").src;
