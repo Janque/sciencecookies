@@ -23,10 +23,7 @@ window.loaded = function loaded() {
         let file = document.getElementById('inFile').value;
         cookiesFSRef.where('file', '==', file).limit(1).get().then(snap => {
             if (!snap.empty) {
-                document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                    Ese nombre de archivo ya esta en uso.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>`;
+                alertTop("Ese nombre de archivo ya esta en uso.", 0, 'alrtPlusContainer');
             } else {
                 document.getElementById('btnPlusConf').classList.add('d-none');
                 document.getElementById('btnCanPlus0').setAttribute('disabled', 'true');
@@ -45,10 +42,7 @@ window.loaded = function loaded() {
                 }, err => {
                     if (err) {
                         setprog('0');
-                        document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                            <strong>Ocurrió un error: ${err}.</strong><br>LLamar a Javier.
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        </div>`;
+                        alertTop("<strong>Ocurrió un error: " + err + ".</strong><br>LLamar a Javier.", 0, 'alrtPlusContainer');
                         console.log(err);
                     } else {
                         setprog('52');
@@ -98,11 +92,7 @@ window.loaded = function loaded() {
                             setTimeout(function () {
                                 setprog('100');
                                 document.getElementById('bar').classList.add('bg-success');
-                                document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-success alert-dismissible fade show fixed-top" role="alert">
-                                    Creado con exito. Redirigiendo...<br>
-                                    Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                </div>`;
+                                alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
                             }, 1000);
                             setTimeout(function () {
                                 window.location.href = '../editar?id=' + id;

@@ -29,24 +29,12 @@ window.loaded = function loaded() {
             comm: reporting,
             mess: document.getElementById('inText').value,
         }).then(function () {
-            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert">Gracias por tu reporte, lo revisaremos lo antes posible.            <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+            alertTop("Gracias por tu reporte, lo revisaremos lo antes posible.", 2);
             $('#mdlRprt').modal('hide');
-            setTimeout(function () {
-                document.getElementById("btnAlrtClsSsn").click();
-            }, 3000);
-            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                document.getElementById("alrtClsSsn").innerHTML = '';
-            });
         }).catch(function (err) {
             console.log('err');
-            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert">Ha ocurrido un error, por favor intenta nuevamente.            <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+            alertTop("Ha ocurrido un error, por favor intenta nuevamente.", 0);
             $('#mdlRprt').modal('hide');
-            setTimeout(function () {
-                document.getElementById("btnAlrtClsSsn").click();
-            }, 3000);
-            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                document.getElementById("alrtClsSsn").innerHTML = '';
-            });
         })
     }
     document.getElementById("frmRprt").addEventListener("submit", function (event) {
@@ -65,27 +53,15 @@ window.loaded = function loaded() {
         };
         addComment(comFrm).then(comres => {
             if (comres.data.res == -1) {
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert">Ha ocurrido un error, por favor intenta nuevamente.            <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                alertTop("Ha ocurrido un error, por favor intenta nuevamente.", 0);
                 $('#mdlRprt').modal('hide');
-                setTimeout(function () {
-                    document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
-                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                    document.getElementById("alrtClsSsn").innerHTML = '';
-                });
             } else {
                 if (comres.data.res == -2) {
                     drwComs(comNum);
                     let bdate = new Date(comres.data.blc._seconds * 1000);
                     let dstr = ' ' + bdate.getDate() + '/' + (bdate.getMonth() + 1) + '/' + bdate.getFullYear();
-                    document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert">No puedes comentar. Un moderador te ha bloqueado hasta' + dstr + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                    alertTop("No puedes comentar. Un moderador te ha bloqueado hasta" + dstr, 0);
                     $('#mdlRprt').modal('hide');
-                    setTimeout(function () {
-                        document.getElementById("btnAlrtClsSsn").click();
-                    }, 3000);
-                    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                        document.getElementById("alrtClsSsn").innerHTML = '';
-                    });
                 } else {
                     if (comres.data.res == 0) {
                         comList[comres.data.pos] = comres.data.com;
@@ -95,14 +71,8 @@ window.loaded = function loaded() {
                     }
                     comCount++;
                     drwComs(comNum);
-                    document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Se ha publicado tu comentario                         <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                    alertTop("Se ha publicado tu comentario", 1);
                     $('#mdlRprt').modal('hide');
-                    setTimeout(function () {
-                        document.getElementById("btnAlrtClsSsn").click();
-                    }, 3000);
-                    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                        document.getElementById("alrtClsSsn").innerHTML = '';
-                    });
                 }
             }
             replying = -1;

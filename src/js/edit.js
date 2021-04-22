@@ -45,10 +45,7 @@ window.loaded = function loaded() {
         let file = document.getElementById('inFile').value;
         docRef.get().then(snap => {
             if (!snap.empty && file != docDat.file) {
-                document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                    Ese nombre de archivo ya esta en uso.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>`;
+                alertTop("Ese nombre de archivo ya esta en uso.", 0, 'alrtPlusContainer');
             } else {
                 docDat.description = document.getElementById('inDesc').value.trim();
                 docDat.file = file;
@@ -72,10 +69,7 @@ window.loaded = function loaded() {
                         setprog(document.getElementById('barNewMed'), (snap.bytesTransferred / snap.totalBytes) * 100);
                     },
                     function error(err) {
-                        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert"><strong>¡Ocurrió un error!</strong> ' + err.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                        setTimeout(function () {
-                            if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
-                        }, 3000);
+                        alertTop("<strong>¡Ocurrió un error!</strong> " + err.code, 0);
                         console.log(err);
                         $('#mdlAddMed').modal('hide');
                     },
@@ -288,16 +282,10 @@ function fillMed() {
                     normSave();
                 }
             } else {
-                document.getElementById("alrtClsSsn").innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                    <strong>¿Quieres eliminar esta imagen?</strong> Presiona de nuevo el botón para confirmar.
-                    <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>`;
+                alertTop("<strong>¿Quieres eliminar esta imagen?</strong> Presiona de nuevo el botón para confirmar.", 2);
                 toDelMed = idx;
                 setTimeout(() => {
                     toDelMed = -1;
-                    if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
                 }, 3000);
             }
         };
@@ -411,16 +399,10 @@ function render() {
                     render();//Important
                     normSave();
                 } else {
-                    document.getElementById("alrtClsSsn").innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                        <strong>¿Quieres eliminar esta sección?</strong> Presiona de nuevo el botón para confirmar.
-                        <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>`;
+                    alertTop("<strong>¿Quieres eliminar esta sección?</strong> Presiona de nuevo el botón para confirmar.", 2);
                     toDel = idx;
                     setTimeout(() => {
                         toDel = -1;
-                        if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
                     }, 3000);
                 }
             }
@@ -1226,17 +1208,11 @@ $('#mdlPublish').on('show.bs.modal', e => {
 function finishPub() {
     setprog(document.getElementById('barPublish'), 100);
     classes(document.getElementById('barPublish'), 'bg-success');
-    document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+    alertTop("Publicado correctamente<strong></strong>", 1);
     setTimeout(function () {
         window.open(docDat.url, '_blank').focus();
     }, 2500);
     console.log("Data saved successfully.");
-    setTimeout(function () {
-        document.getElementById("btnAlrtClsSsn").click();
-    }, 3000);
-    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-        document.getElementById("alrtClsSsn").innerHTML = '';
-    });
     $('#mdlPublish').modal('hide');
 }
 function fillKW() {
@@ -1408,13 +1384,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
             }
         });
     }).catch(error => {
-        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+        alertTop("<strong>!Ha ocurrido un error! </strong>" + error, 0);
         console.log(error);
-        setTimeout(function () {
-            document.getElementById("btnAlrtClsSsn").click();
-        }, 3000);
-        $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-            document.getElementById("alrtClsSsn").innerHTML = "";
-        });
     });
 };

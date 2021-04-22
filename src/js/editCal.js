@@ -129,10 +129,7 @@ window.loaded = function loaded() {
                 setprog(document.getElementById('barChgImg'), (snap.bytesTransferred / snap.totalBytes) * 100);
             },
             function error(err) {
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert"><strong>¡Ocurrió un error!</strong> ' + err.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                setTimeout(function () {
-                    if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
+                alertTop("<strong>!Ha ocurrido un error! </strong>" + err, 0);
                 console.log(err);
                 $('#mdlAddMed').modal('hide');
             },
@@ -783,41 +780,22 @@ document.getElementById('btnCnfPublish').onclick = function () {
             pop: 0
         }, err => {
             if (err) {
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + err + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                alertTop("<strong>!Ha ocurrido un error! </strong>" + err, 0);
                 console.log(err);
-                setTimeout(function () {
-                    document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
-                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                    document.getElementById("alrtClsSsn").innerHTML = '';
-                });
             } else {
                 setprog(document.getElementById('barPublish'), 100);
                 classes(document.getElementById('barPublish'), 'bg-success');
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                alertTop("Publicado correctamente ", 1);
                 setTimeout(function () {
                     window.open(docDat.url, '_blank').focus();
                 }, 2500);
-                console.log("Published successfully.");
-                setTimeout(function () {
-                    document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
-                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                    document.getElementById("alrtClsSsn").innerHTML = '';
-                });
                 $('#mdlPublish').modal('hide');
                 console.log('Published ' + docId + ' calendar');
                 return null;
             }
         });
-    }).catch(error => {
-        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-        console.log(error);
-        setTimeout(function () {
-            document.getElementById("btnAlrtClsSsn").click();
-        }, 3000);
-        $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-            document.getElementById("alrtClsSsn").innerHTML = '';
-        });
+    }).catch(err => {
+        alertTop("<strong>!Ha ocurrido un error! </strong>" + err, 0);
+        console.log(err);
     });
 };

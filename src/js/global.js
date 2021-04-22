@@ -39,6 +39,26 @@ window.disable = function disable(btn) {
     classes(btn, "disabled");
     btn.setAttribute("disabled", "true");
 }
+window.alertTop = function alertTop(msg, alert, alrtId = "alrtClsSsn") {
+    switch (alert) {
+        case 0:
+            alert = "danger";
+            break;
+        case 1:
+            alert = "success";
+            break;
+        case 2:
+            alert = "warning";
+            break;
+    }
+    document.getElementById(alrtId).innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-${alert} alert-dismissible fade show fixed-bottom" role="alert">${msg}<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
+    setTimeout(function () {
+        document.getElementById("btnAlrtClsSsn").click();
+    }, 3000);
+    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+        document.getElementById(alrtId).innerHTML = '';
+    });
+}
 
 //Check auth
 window.displayName;
