@@ -25,6 +25,10 @@
         "function": "dynCookies-showCookie"
       },
       {
+        "source": "/cookies/**/**",
+        "function": "dynCookies-showCookie"
+      },
+      {
         "source": "/vista-email/**",
         "function": "dynCookies-showCookie"
       },
@@ -45,11 +49,31 @@
         "function": "dynCalendars-showCalendar"
       },
       {
+        "source": "/astronomic-calendar",
+        "function": "dynAllCals-showAllCal"
+      },
+      {
+        "source": "/astronomic-calendar/*",
+        "function": "dynAllCals-showAllCal"
+      },
+      {
+        "source": "/astronomic-calendar/*/*",
+        "function": "dynCalendars-showCalendar"
+      },
+      {
         "source": "/archivo",
         "function": "dynArchive-showArchive"
       },
       {
         "source": "/archivo/**/**",
+        "function": "dynArchive-showArchive"
+      },
+      {
+        "source": "/archive",
+        "function": "dynArchive-showArchive"
+      },
+      {
+        "source": "/archive/**/**",
         "function": "dynArchive-showArchive"
       },
       {

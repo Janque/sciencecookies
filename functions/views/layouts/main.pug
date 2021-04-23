@@ -8,15 +8,16 @@ html(lang=LANG)
 
     block missHead
 
-    link(rel='canonical' href=HOST+'/'+NavLinks[LANG][site])
-    
-    if site=="index"
-      if LANG=="es" 
-        title Artículos de ciencia con chispas de chocolate - Science Cookies
-      else if LANG=="en" 
-        title Science articles with chocolate chips - Science Cookies
-    else 
-      title #{Buttons[LANG][site]} - Science Cookies
+    if site!="cookie" && site!="cal" && site!="allCalsM" && site!="allCalsY" && site!="arch" && site!="archTri" && site!="mailPrev"
+      link(rel='canonical' href=HOST+'/'+NavLinks[LANG][site])
+
+      if site=="index"
+        if LANG=="es" 
+          title Artículos de ciencia con chispas de chocolate - Science Cookies
+        else if LANG=="en" 
+          title Science articles with chocolate chips - Science Cookies
+      else 
+        title #{Buttons[LANG][site]} - Science Cookies
 
     script.
       window.site = "#{site}";

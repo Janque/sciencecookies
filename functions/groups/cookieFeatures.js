@@ -66,7 +66,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                         pop: doc.data().pop,
                         likes: doc.data().likes,
                         favs: doc.data().favs,
-                        url: doc.data().url + '/',
+                        url: doc.data().url.replace('galletas','cookies') + '/',
                         cats: doc.data().cats,
                         translations: {
                             es: doc2.data().file
@@ -79,7 +79,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
         return Promise.all(promises);
     }).then(() => {
         console.log("exito");
-        res.send(exito);
+        res.send('exito');
         return;
     }).catch(err => {
         console.log(err);
@@ -128,9 +128,9 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
                     sentMail: doc.data().sentMail,
                     revised: doc.data().revised,
                     title: doc.data().title,
-                    url: doc.data().url + '/',
-                    nextCal: doc.data().nextCal + '/',
-                    priorCal: doc.data().priorCal + '/',
+                    url: doc.data().url.replace('calendario-astronomico','astronomic-calendar') + '/',
+                    nextCal: doc.data().nextCal.replace('calendario-astronomico','astronomic-calendar') + '/',
+                    priorCal: doc.data().priorCal.replace('calendario-astronomico','astronomic-calendar') + '/',
                     weeks: doc.data().weeks,
                     translations: {
                         es: doc.id
@@ -142,7 +142,7 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
         return Promise.all(promises);
     }).then(() => {
         console.log("exito");
-        res.send(exito);
+        res.send('exito');
         return;
     }).catch(err => {
         console.log(err);

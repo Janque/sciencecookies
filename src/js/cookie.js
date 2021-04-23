@@ -1,13 +1,10 @@
 var cookRef = null;
-var cRef = '', pubID;
+var pubID;
 var replying = -1;
 
 window.loaded = function loaded() {
     cookRef = firebase.database().ref('galletas/' + id);
-    cRef = window.location.href;
-    let i = 0;
-    while (!(cRef[i] == 'a' && cRef[i + 1] == 's')) i++;
-    cRef = cRef.substr(i + 3);
+    console.log(cRef)
     cookRef.on('value', snap => {
         if (snap.val()) {
             document.getElementById('favCount').innerText = snap.val().favs;
