@@ -101,7 +101,7 @@ block content
                       b !{day.date}
                     .autoOverflow(style="max-height: 8rem;")
                       each event, idx in day.events
-                        button.btn.text-left.p-1.mb-1.w-100.eventCont( onclick="eventToShow='"+wIdx+daysOfWeek+idx+"'; showEvent();" data-toggle="modal" data-target="#mdlEventInfo")
+                        button.btn.text-left.p-1.mb-1.w-100.eventCont( onclick="eventToShow='"+wIdx+dayOfWeek+idx+"'; showEvent();" data-toggle="modal" data-target="#mdlEventInfo")
                           small !{event.name}
     br
     br

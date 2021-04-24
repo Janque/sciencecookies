@@ -83,7 +83,7 @@ function shwSsnBtns(ac) {
             document.getElementById('btnCals').classList.remove('d-none');
         }
         document.getElementById('btnLgO').classList.remove('d-none');
-        if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.add('d-none');
+        if (document.getElementById('btnLgI')!=null) document.getElementById('btnLgI').classList.add('d-none');
         if (url.pathname.substring(0, 10) == "/galletas/") {
             db.collection('users').doc(uid).get().then(function (doc) {
                 let fav = doc.data().fav;
