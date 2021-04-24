@@ -1,9 +1,9 @@
-var eventToShow = null;
-function showEvent() {
+window.eventToShow = null;
+window.showEvent = function showEvent() {
     eventKeys.forEach(key => {
         hideEl(document.getElementById(key));
     });
-    document.getElementById('mdlEventInfoL').innerHTML=eventTitles[eventToShow];
+    document.getElementById('mdlEventInfoL').innerHTML = eventTitles[eventToShow];
     showEl(document.getElementById(eventToShow));
     enable(document.getElementById('btnPriorEve'));
     enable(document.getElementById('btnNextEve'));
@@ -28,7 +28,7 @@ document.getElementById('btnNextEve').onclick = () => {
 };
 
 window.loaded = function loaded() {
-    firebase.database().ref('calendarios/' + globID).transaction(cal=> {
+    firebase.database().ref('calendarios/' + globID).transaction(cal => {
         if (cal) {
             cal.pop++;
         }
