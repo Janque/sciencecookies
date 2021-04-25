@@ -150,6 +150,7 @@ function renderTri(req, res, lang) {
             console.log(lang);
             res.render('archTrim', {
                 year: year,
+                sTri: tri,
                 tri: longTri(tri, lang),
                 triLC: longTri(tri, lang).toLowerCase(),
                 months: months,
@@ -193,7 +194,7 @@ function renderArch(req, res, lang) {
             tri = ltri;
             year = lyear;
         });
-        res.render('archivo', { years: years });
+        res.render('archivo', { years: years, setLang: lang });
         return;
     }).catch(err => console.log(err));
 }

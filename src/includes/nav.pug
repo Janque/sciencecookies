@@ -14,10 +14,10 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
                 a.btn.btn-dark.mx-2.my-1.active(href='/'+NavLinks[LANG]["arch"]) #{Buttons[LANG]["arch"]}
             else
                 a.btn.btn-dark.mx-2.my-1(href='/'+NavLinks[LANG]["arch"]) #{Buttons[LANG]["arch"]}
-            if site=="draftsCal"
-                a.btn.btn-dark.mx-2.my-1.active(href='/'+NavLinks[LANG]["draftsCal"]) #{Buttons[LANG]["draftsCal"]}
+            if site=="allCalsY"
+                a.btn.btn-dark.mx-2.my-1.active(href='/'+NavLinks[LANG]["cal"]) #{Buttons[LANG]["cal"]}
             else
-                a.btn.btn-dark.mx-2.my-1(href='/'+NavLinks[LANG]["draftsCal"]) #{Buttons[LANG]["draftsCal"]}
+                a.btn.btn-dark.mx-2.my-1(href='/'+NavLinks[LANG]["cal"]) #{Buttons[LANG]["cal"]}
             .dropdown.d-flex.flex-column
                 if LANG=="es"
                     button.btn.btn-dark.mx-2.my-1.flex-fill#usBtnsDrpdwn(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Nosotros

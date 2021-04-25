@@ -1,9 +1,17 @@
 extends layouts/main
 
+block lang 
+  - const LANG=setLang
+
 block missHead
-  meta(name='description' content="Aquí puedes encontrar todos los calendarios astronómicos del "+year+".")
-  link(rel='canonical' href=HOST+'/calendario-astronomico/'+year+'/')
-  title Calendario astronómico #{year} - Science Cookies
+  if LANG=="es"
+    meta(name='description' content="Aquí puedes encontrar todos los calendarios astronómicos del "+year+".")
+  else if LANG=="en"
+    meta(name='description' content="Here you can find all the astronomic calendars from "+year+".")
+
+  link(rel='canonical' href=HOST+'/'+NavLinks[LANG]["cal"]+year+'/')
+
+  title #{Buttons[LANG]["cal"]} #{year} - Science Cookies
 
   - const site="allCalsM";
 
@@ -11,7 +19,7 @@ block content
   nav(aria-label='breadcrumb')
     ol.breadcrumb.mb-4
       li.breadcrumb-item(aria-current='page')
-        a(href='../calendario-astronomico') Calendario Astronómico
+        a(href='/'+NavLinks[LANG]["cal"]) #{Buttons[LANG]["cal"]}
       li.breadcrumb-item.active(aria-current='page') #{year}
   br
   each month in months

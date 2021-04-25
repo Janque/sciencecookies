@@ -1,5 +1,8 @@
 extends layouts/main
 
+block lang 
+  - const LANG=setLang
+  
 block missHead
   meta(name='description' content="Aquí puedes encontrar todos los calendarios astronómicos.")
   link(rel='canonical' href=HOST+'/calendario-astronomico/')
