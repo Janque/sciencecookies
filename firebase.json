@@ -79,6 +79,14 @@
       {
         "source": "/sitemap.xml",
         "function": "sitemap-serveSitemap"
+      },
+      {
+        "source": "/calendars",
+        "destination": "/localized/en_ALL/calendarios/"
+      },
+      {
+        "source": "/contact",
+        "destination": "/localized/en_ALL/contacto/"
       }
     ],
     "redirects": [
