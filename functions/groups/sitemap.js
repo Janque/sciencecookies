@@ -4,7 +4,7 @@ const db = admin.firestore();
 
 //Update sitemap
 exports.updateSitemap = functions.region('us-east1').firestore.document('cookies/lang/es/{cookie}').onUpdate((change, context) => {
-    //exports.updateSitemap = functions.region('us-central1').https.onRequest((req, res) => {
+//exports.updateSitemap = functions.region('us-central1').https.onRequest((req, res) => {
     if (!change.after.data().public || change.before.data().public) return;
     function getTri(m, l) {
         if (l == "es") {
@@ -19,8 +19,9 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
             return 'oct-dec';
         }
     }
-    let urls = [];
-    let archUrls = [{
+    let urlsEs = [];
+    let urlsEn = [];
+    let archUrlsEs = [{
         loc: 'https://sciencecookies.net/archivo/',
         alternate: {
             "es": "https://sciencecookies.net/archivo/",
@@ -28,7 +29,8 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
         },
         priority: '0.7',
         lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
-    }, {
+    }];
+    let archUrlsEn = [{
         loc: 'https://sciencecookies.net/archive/',
         alternate: {
             "es": "https://sciencecookies.net/archivo/",
@@ -41,7 +43,7 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
         let year = 2020, tri = 'abr-jun';
         snap.forEach(doc => {
             let dat = doc.data();
-            urls.push({
+            urlsEs.push({
                 loc: dat.url,
                 priority: '0.8',
                 alternate: dat.translations,
@@ -55,7 +57,7 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
             if (lyear != year || ltri != tri) {
                 tri = ltri;
                 year = lyear;
-                archUrls.push({
+                archUrlsEs.push({
                     loc: 'https://sciencecookies.net/archivo/' + year + '/' + tri + '/',
                     alternate: {
                         "es": "https://sciencecookies.net/archivo/" + year + "/" + tri + "/",
@@ -70,7 +72,7 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
         let year = 2020, tri = 'apr-jun';
         snap.forEach(doc => {
             let dat = doc.data();
-            urls.push({
+            urlsEn.push({
                 loc: dat.url,
                 priority: '0.8',
                 alternate: dat.translations,
@@ -84,7 +86,7 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
             if (lyear != year || ltri != tri) {
                 tri = ltri;
                 year = lyear;
-                archUrls.push({
+                archUrlsEn.push({
                     loc: 'https://sciencecookies.net/archive/' + year + '/' + tri + '/',
                     alternate: {
                         "es": "https://sciencecookies.net/archivo/" + year + "/" + tri + "/",
@@ -95,8 +97,14 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
             }
         });
         return db.collection('sitemap').doc('2').update({
-            archive: archUrls,
-            cookies: urls
+            archive: {
+                es: archUrlsEs,
+                en: archUrlsEn
+            },
+            cookies: {
+                es: urlsEs,
+                en: urlsEn
+            }
         });
     }).then(() => {
         console.log('Sitemap updated');
@@ -110,9 +118,9 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
 
 //Update sitemap
 exports.updateCalSitemap = functions.region('us-east1').firestore.document('calendars/langs/es').onUpdate((change, context) => {
-    //exports.updateCalSitemap = functions.region('us-central1').https.onRequest((req, res) => {
+//exports.updateCalSitemap = functions.region('us-central1').https.onRequest((req, res) => {
     if (!change.after.data().public || change.before.data().public) return;
-    let urls = [{
+    let urlsEs = [{
         loc: 'https://sciencecookies.net/calendario-astronomico/',
         alternate: {
             "es": "https://sciencecookies.net/calendario-astronomico/",
@@ -120,7 +128,8 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
         },
         priority: '0.8',
         lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
-    }, {
+    }];
+    let urlsEn = [{
         loc: 'https://sciencecookies.net/astronomic-calendar/',
         alternate: {
             "es": "https://sciencecookies.net/calendario-astronomico/",
@@ -170,8 +179,8 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
                     };
                 }
             }
-            urls.push(url);
-            if (dat.published.toDate().getMonth() == 11) urls.push(yUrl);
+            urlsEs.push(url);
+            if (dat.published.toDate().getMonth() == 11) urlsEs.push(yUrl);
         });
         if (snap.docs.length && snap.docs[snap.docs.length - 1].data().published.toDate().getMonth() != 11) {
             yUrl = {
@@ -183,7 +192,7 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
                 priority: '0.6',
                 lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
             };
-            urls.push(yUrl);
+            urlsEs.push(yUrl);
         }
         return db.collection('calendars/langs/en').where('public', '==', true).orderBy('published').get();
     }).then(snap => {
@@ -227,8 +236,8 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
                     };
                 }
             }
-            urls.push(url);
-            if (dat.published.toDate().getMonth() == 11) urls.push(yUrl);
+            urlsEn.push(url);
+            if (dat.published.toDate().getMonth() == 11) urlsEn.push(yUrl);
         });
         if (snap.docs.length && snap.docs[snap.docs.length - 1].data().published.toDate().getMonth() != 11) {
             yUrl = {
@@ -240,10 +249,13 @@ exports.updateCalSitemap = functions.region('us-east1').firestore.document('cale
                 priority: '0.6',
                 lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
             };
-            urls.push(yUrl);
+            urlsEn.push(yUrl);
         }
         return db.collection('sitemap').doc('2').update({
-            calendars: urls
+            calendars: {
+                es: urlsEs,
+                en: urlsEn
+            }
         });
     }).then(() => {
         console.log('Sitemap updated');
@@ -303,16 +315,28 @@ exports.serveSitemap = functions.region('us-central1').https.onRequest(async (re
     }
     const doc = await db.collection('sitemap').doc('2').get();
     let sitemap = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">';
-    doc.data().static.forEach(url => {
+    doc.data().static["es"].forEach(url => {
         sitemap += makeUrl(url);
     });
-    doc.data().archive.forEach(url => {
+    doc.data().static["en"].forEach(url => {
         sitemap += makeUrl(url);
     });
-    doc.data().cookies.forEach(url => {
+    doc.data().archive["es"].forEach(url => {
         sitemap += makeUrl(url);
     });
-    doc.data().calendars.forEach(url => {
+    doc.data().archive["en"].forEach(url => {
+        sitemap += makeUrl(url);
+    });
+    doc.data().cookies["es"].forEach(url => {
+        sitemap += makeUrl(url);
+    });
+    doc.data().cookies["en"].forEach(url => {
+        sitemap += makeUrl(url);
+    });
+    doc.data().calendars["es"].forEach(url => {
+        sitemap += makeUrl(url);
+    });
+    doc.data().calendars["en"].forEach(url => {
         sitemap += makeUrl(url);
     });
     sitemap += "</urlset>"
