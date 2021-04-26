@@ -31,7 +31,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                     url: doc.data().url + '/',
                     cats: doc.data().cats,
                     translations: {
-                        es: doc2.data().file
+                        es: doc.data().url + '/'
                     },
                     old: true
                 }).then(() => {
@@ -69,7 +69,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                         url: doc.data().url.replace('galletas','cookies') + '/',
                         cats: doc.data().cats,
                         translations: {
-                            es: doc2.data().file
+                            es: doc.data().url.replace('galletas','cookies') + '/'
                         },
                         old: true
                     });
@@ -78,8 +78,8 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
         });
         return Promise.all(promises);
     }).then(() => {
-        console.log("exito");
-        res.send('exito');
+        console.log("Successful");
+        res.send('Successful');
         return;
     }).catch(err => {
         console.log(err);
@@ -110,7 +110,7 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
                 priorCal: doc.data().priorCal + '/',
                 weeks: doc.data().weeks,
                 translations: {
-                    es: doc.id
+                    es: doc.data().url + '/'
                 },
                 old: true
             }).then(() => {
@@ -133,7 +133,7 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
                     priorCal: doc.data().priorCal.replace('calendario-astronomico','astronomic-calendar') + '/',
                     weeks: doc.data().weeks,
                     translations: {
-                        es: doc.id
+                        es: doc.data().url + '/'
                     },
                     old: true
                 });
@@ -141,8 +141,8 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
         });
         return Promise.all(promises);
     }).then(() => {
-        console.log("exito");
-        res.send('exito');
+        console.log("Successful");
+        res.send('Successful');
         return;
     }).catch(err => {
         console.log(err);
@@ -167,7 +167,6 @@ exports.addComment = functions.region('us-east1').https.onCall((data) => {
         }
     }).then(doc => {
         if (doc.res == -2) return doc;
-        console.log(doc);
         if (doc.exists) {
             comList = doc.data().coms;
             comCount = doc.data().comCount;
