@@ -175,9 +175,9 @@ function renderArch(req, res, lang) {
         };
     }
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
-    db.collection('sitemap').doc('1').get().then(snap => {
-        let urls = snap.data().archive, nUrls = [];
-        urls.splice(0, 1);
+    db.collection('sitemap').doc('2').get().then(snap => {
+        let urls = snap.data().archive[lang], nUrls = [];
+        urls.splice(0, 2);
         urls.forEach(url => {
             nUrls.push(getYT(url.loc));
         });

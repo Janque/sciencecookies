@@ -1,24 +1,46 @@
 extends layouts/main
 
+block lang 
+  - const LANG=setLang
+
 block missHead
-  meta(name='description' content="Aquí puedes encontrar todas las galletas que tenemos.")
-  link(rel='canonical' href=HOST+'/archivo/')
-  title Archivo - Science Cookies
+  if LANG=="es"
+    meta(name='description' content="Aquí puedes encontrar todas las Galletas que tenemos.")
+  else if LANG=="en"
+    meta(name='description' content="Here you can find all our Cookies.")
+
+  link(rel='canonical' href=HOST+'/'+NavLinks[LANG]["arch"])
+  title #{Buttons[LANG]["arch"]} - Science Cookies
 
   - const site="arch";
 
 block content
-  h1.text-center Archivo de Science Cookies
-  nav(aria-label='breadcrumb')
-    ol.breadcrumb.mb-3
-      li.breadcrumb-item.active(aria-current='page') Archivo
-  .container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
-    p Aquí puedes encontrar todas las galletas que tenemos.
-    each tris, year in years 
-      h2 !{year}
-      ul 
-        each ltri, tri in tris
-          li 
-            a.btn-link-scckie.text-light(href="/archivo/" + year + "/" + tri)
-              h6 !{ltri}
+  if LANG=="es"
+    h1.text-center Archivo de Science Cookies
+    nav(aria-label='breadcrumb')
+      ol.breadcrumb.mb-3
+        li.breadcrumb-item.active(aria-current='page') #{Buttons[LANG]["arch"]}
+    .container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
+      p Aquí puedes encontrar todas las galletas que tenemos.
+      each tris, year in years 
+        h2 !{year}
+        ul 
+          each ltri, tri in tris
+            li 
+              a.btn-link-scckie.text-light(href="/" + NavLinks[LANG]["arch"] + year + "/" + tri + "/")
+                h6 !{ltri}
+  else if LANG=="en"
+    h1.text-center Science Cookies Archive
+    nav(aria-label='breadcrumb')
+      ol.breadcrumb.mb-3
+        li.breadcrumb-item.active(aria-current='page') #{Buttons[LANG]["arch"]}
+    .container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
+      p Here you can find all our Cookies.
+      each tris, year in years 
+        h2 !{year}
+        ul 
+          each ltri, tri in tris
+            li 
+              a.btn-link-scckie.text-light(href="/" + NavLinks[LANG]["arch"] + year + "/" + tri + "/")
+                h6 !{ltri}
 
