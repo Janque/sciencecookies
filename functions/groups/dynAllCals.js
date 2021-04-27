@@ -51,11 +51,12 @@ app.get('/astronomic-calendar/:year', (req, res) => {
 
 function renderAllCalsY(req, res, lang) {
     function getY(url) {
-        return url.substring(50, 54);
+        if(lang=="es")return url.substring(50, 54);
+        else if(lang=="en")return url.substring(47, 51);
     }
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
-    db.collection('sitemap').doc('1').get().then(snap => {
-        let urls = snap.data().calendars, years = [];
+    db.collection('sitemap').doc('2').get().then(snap => {
+        let urls = snap.data().calendars[lang], years = [];
         urls.splice(0, 1);
         urls.forEach(url => {
             if (!url.image) years.push(getY(url.loc));

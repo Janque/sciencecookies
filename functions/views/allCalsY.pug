@@ -4,20 +4,26 @@ block lang
   - const LANG=setLang
   
 block missHead
-  meta(name='description' content="Aquí puedes encontrar todos los calendarios astronómicos.")
-  link(rel='canonical' href=HOST+'/calendario-astronomico/')
-  title Calendario astronómico - Science Cookies
+  if LANG=="es"
+    meta(name='description' content="Aquí puedes encontrar todos los calendarios astronómicos.")
+  else if LANG=="en"
+    meta(name='description' content="Here you can find all the astronomic calendars.")
+  link(rel='canonical' href=HOST+'/'+NavLinks[LANG]["cal"])
+  title #{Buttons[LANG]["cal"]} - Science Cookies
 
   - const site="allCalsY";
 
 block content
-  h1.text-center Calendario astronómico
+  h1.text-center #{Buttons[LANG]["cal"]}
   nav(aria-label='breadcrumb')
     ol.breadcrumb.mb-3
-      li.breadcrumb-item.active(aria-current='page') Calendario astronómico
+      li.breadcrumb-item.active(aria-current='page') #{Buttons[LANG]["cal"]}
   .container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
-    p Aquí puedes encontrar todos los calendarios astronómicos.
+    if LANG=="es"
+      p Aquí puedes encontrar todos los calendarios astronómicos.
+    else if LANG=="en"
+      p Here you can find all the astronomic calendars.
     ul
       each year in years
         li
-          a.btn-link-scckie.text-light(href='/calendario-astronomico/'+year style='font-size:larger') #{year}
+          a.btn-link-scckie.text-light(href='/'+NavLinks[LANG]["cal"]+year style='font-size:larger') #{year}
