@@ -21,11 +21,11 @@
     },
     "rewrites": [
       {
-        "source": "/galletas/**/**",
+        "regex": "/galletas/\\d{6}/.+$",
         "function": "dynCookies-showCookie"
       },
       {
-        "source": "/cookies/**/**",
+        "regex": "/cookies/\\d{6}/.+$",
         "function": "dynCookies-showCookie"
       },
       {
@@ -61,19 +61,19 @@
         "function": "dynCalendars-showCalendar"
       },
       {
-        "source": "/archivo",
+        "regex": "/galletas/?$",
         "function": "dynArchive-showArchive"
       },
       {
-        "source": "/archivo/**/**",
+        "regex": "/galletas/\\d{4}/.+$",
         "function": "dynArchive-showArchive"
       },
       {
-        "source": "/archive",
+        "regex": "/cookies/?$",
         "function": "dynArchive-showArchive"
       },
       {
-        "source": "/archive/**/**",
+        "regex": "/cookies/\\d{4}/.+$",
         "function": "dynArchive-showArchive"
       },
       {
@@ -111,8 +111,8 @@
     ],
     "redirects": [
       {
-        "source": "/archivo/2020/ago-sep",
-        "destination": "/archivo/2020/jul-sep/",
+        "source": "/galletas/2020/ago-sep",
+        "destination": "/galletas/2020/jul-sep/",
         "type": 301
       },
       {

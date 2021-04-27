@@ -160,10 +160,10 @@ function renderTri(req, res, lang) {
         }).catch(err => console.log(err));
     }
 }
-app.get('/archivo/:year/:tri', (req, res) => {
+app.get('/galletas/:year/:tri', (req, res) => {
     return renderTri(req, res, "es");
 });
-app.get('/archive/:year/:tri', (req, res) => {
+app.get('/cookies/:year/:tri', (req, res) => {
     return renderTri(req, res, "en");
 });
 
@@ -198,10 +198,10 @@ function renderArch(req, res, lang) {
         return;
     }).catch(err => console.log(err));
 }
-app.get('/archivo', (req, res) => {
+app.get('/galletas', (req, res) => {
     return renderArch(req, res, "es");
 });
-app.get('/archive', (req, res) => {
+app.get('/cookies', (req, res) => {
     return renderArch(req, res, "en");
 });
 
