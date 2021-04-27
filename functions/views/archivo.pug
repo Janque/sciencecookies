@@ -9,7 +9,8 @@ block missHead
   else if LANG=="en"
     meta(name='description' content="Here you can find all our Cookies.")
 
-  link(rel='canonical' href=HOST+'/'+NavLinks[LANG]["arch"])
+  link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["arch"])
+  link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["arch"])
   title #{Buttons[LANG]["arch"]} - Science Cookies
 
   - const site="arch";

@@ -5,12 +5,12 @@ block lang
 
 block missHead
   meta(name='description' content= description)
-  if LANG=="es"
-    link(rel='canonical' href=HOST+'/galletas/'+month+'/'+file+'/')
-  else if LANG=="en"
-    link(rel='canonical' href=HOST+'/cookies/'+month+'/'+file+'/')
-  title #{title} - Science Cookies
+  
+  link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cook"]+month+'/'+file+'/')
+  link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cook"]+month+'/'+file+'/')
   link(rel="stylesheet" href=HOST+"/styles/cookie.css")
+
+  title #{title} - Science Cookies
 
   - const site="cookie";
 

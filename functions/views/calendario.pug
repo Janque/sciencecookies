@@ -5,12 +5,12 @@ block lang
 
 block missHead
   meta(name='description' content= descriptionShort)
-  if LANG=="es"
-    link(rel='canonical' href=HOST+'/calendario-astronomico/'+year+'/'+month+'/')
-  else if LANG=="en"
-    link(rel='canonical' href=HOST+'/astronomic-calendar/'+year+'/'+month+'/')
-  title #{title} - Science Cookies
+
+  link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cal"]+year+'/'+month+'/')
+  link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cal"]+year+'/'+month+'/')
   link(rel="stylesheet" href=HOST+"/styles/cal.css")
+
+  title #{title} - Science Cookies
 
   - const site="cal";
 

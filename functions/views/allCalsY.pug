@@ -8,7 +8,9 @@ block missHead
     meta(name='description' content="Aquí puedes encontrar todos los calendarios astronómicos.")
   else if LANG=="en"
     meta(name='description' content="Here you can find all the astronomic calendars.")
-  link(rel='canonical' href=HOST+'/'+NavLinks[LANG]["cal"])
+
+  link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cal"])
+  link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cal"])
   title #{Buttons[LANG]["cal"]} - Science Cookies
 
   - const site="allCalsY";
