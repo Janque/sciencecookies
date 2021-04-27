@@ -19,9 +19,9 @@ block content
   nav(aria-label='breadcrumb')
     ol.breadcrumb.mb-4
       li.breadcrumb-item(aria-current='page')
-        a(href='/'+NavLinks[LANG]["cook"]) #{Buttons[LANG]["cook"]}
+        a(href=HOST+'/'+NavLinks[LANG]["cook"]) #{Buttons[LANG]["cook"]}
       li.breadcrumb-item(aria-current='page')
-        a(href='/'+NavLinks[LANG]["cook"]) #{year}
+        a(href=HOST+'/'+NavLinks[LANG]["cook"]) #{year}
       li.breadcrumb-item.active(aria-current='page') #{tri}
   br
   each cooks, month in months

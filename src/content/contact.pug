@@ -41,9 +41,9 @@ block content
               input#inAcpt.form-check-input(type='checkbox' value='' required='')
               label.form-check-label(for='inAcpt')
                 | Estoy de acuerdo con los 
-                a.text-warning(href='/'+NavLinks[LANG]["tos"]) #{Buttons[LANG]["tos"]}
+                a.text-warning(href=HOST+'/'+NavLinks[LANG]["tos"]) #{Buttons[LANG]["tos"]}
                 |  y la 
-                a.text-warning(href='/'+NavLinks[LANG]["priv"]) #{Buttons[LANG]["priv"]}
+                a.text-warning(href=HOST+'/'+NavLinks[LANG]["priv"]) #{Buttons[LANG]["priv"]}
           div
             button.btn.btn-outline-success.px-4.px-sm-5.px-md-3.px-lg-5(type='submit') Enviar
     else if LANG=="en"
@@ -76,11 +76,11 @@ block content
               input#inAcpt.form-check-input(type='checkbox' value='' required='')
               label.form-check-label(for='inAcpt')
                 | I agree with the 
-                a.text-warning(href='/'+NavLinks[LANG]["tos"]) #{Buttons[LANG]["tos"]}
+                a.text-warning(href=HOST+'/'+NavLinks[LANG]["tos"]) #{Buttons[LANG]["tos"]}
                 |  and the 
-                a.text-warning(href='/'+NavLinks[LANG]["priv"]) #{Buttons[LANG]["priv"]}
+                a.text-warning(href=HOST+'/'+NavLinks[LANG]["priv"]) #{Buttons[LANG]["priv"]}
           div
             button.btn.btn-outline-success.px-4.px-sm-5.px-md-3.px-lg-5(type='submit') Enviar
 
 block ownjs
-  script(src='/js/contact.js')
+  script(src=HOST+'/js/contact.js')
