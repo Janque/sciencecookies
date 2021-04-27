@@ -206,6 +206,9 @@ window.addEventListener("load", function () {
     mobile = checkMobile();
     url = new URL(document.location.href);
     urlSrch = new URLSearchParams(location.search);
+
+    document.getElementById('changeLang').href+=location.search
+
     if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
     if (urlSrch.get('mode') == 'select') $('#mdlRgstr').modal('show');
     shwRecom();

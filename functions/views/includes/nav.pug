@@ -36,8 +36,8 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
                             a.btn.btn-dark.mx-2.my-1.flex-fill(href=HOST+'/'+NavLinks[LANG]["contact"]) #{Buttons[LANG]["contact"]}
             if site=="edit"||site=="editCal"
                 i.text-light.mx-3.my-auto#tagLstSave
-        .row.justify-content-end
-            .dropdown.mr-4.dropleft
+        .row.justify-content-end.w-nsm-100
+            .dropdown.mr-2.dropleft
                 button#usrDrpdwn.btn.btn-dark.dropdown-toggle.p-2(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                     i#icnUsr.fas
                     img#picUsr.d-inline-block.align-center.ml-2.rounded-circle(src='' height='30' alt='')
@@ -49,6 +49,16 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
                     .dropdown-divider.ml-1.mr-2
                     button#btnLgO.btn.btn-link.text-decoration-none.text-light.d-none #{Buttons[LANG]["logOut"]}
                     button#btnLgI.btn.btn-link.text-decoration-none.text-light.d-none(data-toggle='modal' data-target='#mdlRgstr') #{Buttons[LANG]["logIn"]}
+            if site=="index"
+                if LANG=="es"
+                    a#changeLang(href=HOST+'/en/') es/en
+                else if LANG=="en"
+                    a#changeLang(href=HOST+'/es/') es/en
+            else
+                if LANG=="es"
+                    a#changeLang(href=HOST+'/'+NavLinks["en"][site]) es/en
+                else if LANG=="en"
+                    a#changeLang(href=HOST+'/'+NavLinks["es"][site]) es/en
 
 
 //- Alertas

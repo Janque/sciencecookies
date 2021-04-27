@@ -1,0 +1,1 @@
+{"version":3,"sources":["styles/index.scss"],"names":[],"mappings":"AAAA,gBACI,YAAA,CACA,gBAAA,CACA,aAAA,CACA","file":"js.39490038.css","sourceRoot":"../src","sourcesContent":[".cats-container {\n    border: solid;\n    border-width: 1px;\n    color: #f8f9fa;\n    border-color: #f8f9fa;\n}\n"]}

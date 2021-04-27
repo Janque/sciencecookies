@@ -81,6 +81,14 @@
         "function": "sitemap-serveSitemap"
       },
       {
+        "source": "/es",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/en",
+        "destination": "/localized/en_ALL/index.html"
+      },
+      {
         "source": "/calendars",
         "destination": "/localized/en_ALL/calendarios.html"
       },
