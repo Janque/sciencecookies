@@ -11,5 +11,6 @@ exports.dynAllCals = require('./groups/dynAllCals');
 exports.dynArchive = require('./groups/dynArchive');
 exports.maintenance = require('./groups/maintenance');
 exports.publish = require('./groups/publish');
-exports.users = require('./groups/users');
 exports.sitemap = require('./groups/sitemap');
+exports.translations = require('./groups/translations');
+exports.users = require('./groups/users');

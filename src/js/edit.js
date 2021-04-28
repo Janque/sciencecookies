@@ -41,6 +41,40 @@ window.loaded = function loaded() {
         document.getElementById('btnPrevMail').href = '../vista-email/' + docDat.file;
     }, err => { console.log(err) });
 
+    fillTrans();
+    function translateFrm() {
+        let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateFullCookie');
+        return translate({
+            docId: docId,
+            from: document.getElementById('inTransFrom').value,
+            target: lang
+        });
+    }
+    document.getElementById("frmTranslate").addEventListener("submit", function (event) {
+        event.preventDefault();
+        classes(document.getElementById('btnCnfTranslate'), "disabled")
+        classes(document.getElementById('btnCanTranslate0'), "disabled")
+        classes(document.getElementById('btnCanTranslate1'), "disabled")
+        setprog('barTranslate', 0);
+        showEl(document.getElementById('barTranslateCont'));
+        runprog('barTranslate', 0, 90);
+        translateFrm().then(data => {
+            setprog('barTranslate', 100);
+            $('#mdlTranslate').modal('hide');
+            document.getElementById('btnCnfTranslate').classList.remove("disabled");
+            document.getElementById('btnCanTranslate0').classList.remove("disabled");
+            document.getElementById('btnCanTranslate1').classList.remove("disabled");
+            hideEl(document.getElementById('barTranslateCont'))
+        }).catch(function (err) {
+            if (lang = "es") {
+                alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+            } else if (lang = "en") {
+                alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+            }
+            console.log(err);
+        });
+    });
+
     function fileFrm() {
         let file = document.getElementById('inFile').value;
         docRef.get().then(snap => {
@@ -227,6 +261,13 @@ function setprog(bar, n) {
     bar.setAttribute('aria-valuenow', n);
     bar.style.width = n + '%';
     bar.innerText = n + '%';
+}
+function runprog(bar, b, e) {
+    b = Math.floor(b);
+    e = Math.floor(e);
+    for (let i = b; i <= e; i++) {
+        setprog(bar, i);
+    }
 }
 
 function removeMedia(medFileName) {
@@ -1111,6 +1152,16 @@ document.getElementById('btnCheckJs').onclick = function () {
     document.getElementById('inJava').setAttribute('readonly', 'true');
     normSave();
 };
+
+function fillTrans() {
+    langs.forEach(l => {
+        if (l != lang) {
+            let opt = document.createElement('option');
+            opt.value = opt.innerText = l;
+            document.getElementById('inTransFrom').appendChild(opt);
+        }
+    })
+}
 
 $('#mdlAddMed').on('hidden.bs.modal', e => {
     document.getElementById("prevNewMed").src = '';
