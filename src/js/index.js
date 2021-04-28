@@ -1,6 +1,5 @@
 import '../styles/index.scss';
 
-//Categorías@#
 var catnmb;
 const previewLim = 20;
 

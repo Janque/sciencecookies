@@ -138,28 +138,6 @@ block precontent
         .modal-body
           p#mdlPublishTxt
           form#frmPublish.d-none
-            //- Categorías@#
-            .form-row.justify-content-around
-              .form-group.col-auto
-                .form-check
-                  input#cat0.form-check-input(type='checkbox' value='astronomia')
-                  label.form-check-label(for='cat0') Astronomía
-              .form-group.col-auto
-                .form-check
-                  input#cat1.form-check-input(type='checkbox' value='biologia')
-                  label.form-check-label(for='cat1') Biología
-              .form-group.col-auto
-                .form-check
-                  input#cat2.form-check-input(type='checkbox' value='curiosidades')
-                  label.form-check-label(for='cat2') Curiosidades
-              .form-group.col-auto
-                .form-check
-                  input#cat3.form-check-input(type='checkbox' value='fisica')
-                  label.form-check-label(for='cat3') Física
-              .form-group.col-auto
-                .form-check
-                  input#cat4.form-check-input(type='checkbox' value='tecnologia')
-                  label.form-check-label(for='cat4') Tecnología
             #sendUptCont.form-row.d-none
               if LANG=="es"
                 .form-check
@@ -262,6 +240,7 @@ block content
           label.col-sm-2.col-form-label Descripción
           .col
             textarea#inDesc.form-control(rows='3')
+        #catFrmCont.form-row.my-4.justify-content-around
         .row.mb-2.justify-content-end
           button#btnCanFile.btn.btn-secondary Revertir
           button.btn.btn-light.btn-link-scckie.mx-3(type='submit')
@@ -275,10 +254,12 @@ block content
           label.col-sm-2.col-form-label Description
           .col
             textarea#inDesc.form-control(rows='3')
+        #catFrmCont.form-row.my-4.justify-content-around
         .row.mb-2.justify-content-end
           button#btnCanFile.btn.btn-secondary Revert
           button.btn.btn-light.btn-link-scckie.mx-3(type='submit')
             i.fas.fa-check
+
   #cont.container-fluid.mb-2.rounded-lg.p-3(style='background-color:#57238b;')
   .container-fluid.mb-2.rounded-lg.p-3(style='background-color:#57238b;')
     .row.mb-2.px-2

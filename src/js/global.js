@@ -218,9 +218,10 @@ window.addEventListener("load", function () {
         window.langs = doc.data().langs;
         return db.collection('config').doc('cats').get();
     }).then(doc => {
-        window.allCats = doc.data().allCats;
-        window.textCats = doc.data().textCats;
-
+        window.allCats = doc.data()[lang].allCats;
+        window.textCats = doc.data()[lang].textCats;
+        window.catTranslations = doc.data().catTranslations;
+        
         loaded();
     }).catch(err => { console.log(err) });
 });

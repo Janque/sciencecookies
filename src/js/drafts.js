@@ -57,7 +57,7 @@ window.loaded = function loaded() {
                         const promises = [];
                         langs.forEach((l, i) => {
                             setprog(30 / langs.length * i);
-                            promises.push(db.collection('cookies/langs/' + l).doc(doc.id).set({
+                            promises.push(db.collection('cookies/langs/' + l).doc(id).set({
                                 authors: [author],
                                 cont: [
                                     {
@@ -89,6 +89,7 @@ window.loaded = function loaded() {
                                 likes: 0,
                                 favs: 0,
                                 url: "",
+                                fixedCats: [],
                                 cats: [],
                                 translations: {
                                     es: file

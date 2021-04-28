@@ -15,12 +15,34 @@ let newMedSrc = null;
 let keywords = [];
 
 window.loaded = function loaded() {
+    allCats.forEach((cat, i) => {
+        let fat = document.createElement('div');
+        classes(fat, "form-group col-auto");
+        let div = document.createElement('div');
+        classes(div, "form-check");
+        let inp = document.createElement('input');
+        inp.id = "cat" + i;
+        classes(inp, "form-check-input");
+        inp.value = cat;
+        inp.setAttribute('type', 'checkbox');
+        div.appendChild(inp);
+        let lab = document.createElement('label');
+        lab.setAttribute('for', 'cat' + i);
+        classes(lab, "form-check-label")
+        lab.innerText = textCats[i];
+        div.appendChild(lab);
+        fat.appendChild(div);
+        document.getElementById('catFrmCont').appendChild(fat);
+    });
     docRef = cookiesFSRef.doc(urlSrch.get('id'));
     docRef.onSnapshot(doc => {
         docDat = doc.data();
         docId = doc.id;
         document.getElementById('inFile').value = docDat.file;
         document.getElementById('inDesc').value = docDat.description;
+        allCats.forEach((cat, i) => {
+            document.getElementById('cat' + i).checked = docDat.fixedCats.includes(document.getElementById('cat' + i).value);
+        });
         render();
         fillMed();
         if (docDat.public) {
@@ -195,8 +217,12 @@ function saveDoc() {
                 likes: docDat.likes,
                 favs: docDat.favs,
                 revised: docDat.revised,
-                translations: docDat.translations
+                translations: docDat.translations,
+                fixedCats: docDat.fixedCats
             }
+            syncUpt.fixedCats.forEach((cat, idx) => {
+                syncUpt.fixedCats.splice(idx, 1, catTranslations[cat][l]);
+            });
             syncUpt.translations[lang] = docDat.url;
             promises.push(db.collection('cookies/langs/' + l).doc(docId).update(syncUpt));
         }
@@ -1293,12 +1319,7 @@ function fillKW() {
     }
     keywords = [];
     keywords.push(docDat.published.toDate().getFullYear().toString());
-    keywords.push(docDat.ledit.toDate().getFullYear().toString());
-    n++;
-    prog();
-    allCats.forEach((cat, idx) => {
-        if (document.getElementById('cat' + idx).checked) keywords.push(cat);
-    });
+    if (docDat.published.toDate().getFullYear().toString() != docDat.ledit.toDate().getFullYear().toString()) keywords.push(docDat.ledit.toDate().getFullYear().toString());
     n++;
     prog();
     docDat.authors.forEach(itm => {
@@ -1403,6 +1424,9 @@ function fillKW() {
         n += (3 / Object.entries(kWObj).length);
         prog();
     }
+    docDat.fixedCats.forEach(itm => {
+        keywords.push(itm);
+    });
     docDat.cats = keywords;
     console.log(keywords);
 }

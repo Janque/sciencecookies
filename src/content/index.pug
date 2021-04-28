@@ -13,33 +13,62 @@ block content
   #calMain.container-fluid.mb-4.rounded-lg.p-3.d-none.bg-rebecca
   form#frmSrch.mb-4
     .rounded.mb-1.pl-2.pt-1.cats-container
-      .from-row
-        label(for='cats') Categorías
-        .form-check
-          input#catA.form-check-input(type='checkbox')
-          label.form-check-label(for='catA') Todas
-      //- Categorías@#
-      .form-row.justify-content-around
-        .form-group.col-auto
+      if LANG=="es"
+        .from-row
+          label(for='cats') Categorías
           .form-check
-            input#cat0.form-check-input(type='checkbox' value='astronomia')
-            label.form-check-label(for='cat0') Astronomía
-        .form-group.col-auto
+            input#catA.form-check-input(type='checkbox')
+            label.form-check-label(for='catA') Todas
+        //- Categorías@#
+        .form-row.justify-content-around
+          .form-group.col-auto
+            .form-check
+              input#cat0.form-check-input(type='checkbox' value='astronomia')
+              label.form-check-label(for='cat0') Astronomía
+          .form-group.col-auto
+            .form-check
+              input#cat1.form-check-input(type='checkbox' value='biologia')
+              label.form-check-label(for='cat1') Biología
+          .form-group.col-auto
+            .form-check
+              input#cat2.form-check-input(type='checkbox' value='curiosidades')
+              label.form-check-label(for='cat2') Curiosidades
+          .form-group.col-auto
+            .form-check
+              input#cat3.form-check-input(type='checkbox' value='fisica')
+              label.form-check-label(for='cat3') Física
+          .form-group.col-auto
+            .form-check
+              input#cat4.form-check-input(type='checkbox' value='tecnologia')
+              label.form-check-label(for='cat4') Tecnología
+      else if LANG=="en"
+        .from-row
+          label(for='cats') Categories
           .form-check
-            input#cat1.form-check-input(type='checkbox' value='biologia')
-            label.form-check-label(for='cat1') Biología
-        .form-group.col-auto
-          .form-check
-            input#cat2.form-check-input(type='checkbox' value='curiosidades')
-            label.form-check-label(for='cat2') Curiosidades
-        .form-group.col-auto
-          .form-check
-            input#cat3.form-check-input(type='checkbox' value='fisica')
-            label.form-check-label(for='cat3') Física
-        .form-group.col-auto
-          .form-check
-            input#cat4.form-check-input(type='checkbox' value='tecnologia')
-            label.form-check-label(for='cat4') Tecnología
+            input#catA.form-check-input(type='checkbox')
+            label.form-check-label(for='catA') All
+        //- Categorías@#
+        .form-row.justify-content-around
+          .form-group.col-auto
+            .form-check
+              input#cat0.form-check-input(type='checkbox' value='astronomy')
+              label.form-check-label(for='cat0') Astronomy
+          .form-group.col-auto
+            .form-check
+              input#cat1.form-check-input(type='checkbox' value='biology')
+              label.form-check-label(for='cat1') Biology
+          .form-group.col-auto
+            .form-check
+              input#cat2.form-check-input(type='checkbox' value='curiosities')
+              label.form-check-label(for='cat2') Curiosities
+          .form-group.col-auto
+            .form-check
+              input#cat3.form-check-input(type='checkbox' value='physics')
+              label.form-check-label(for='cat3') Physics
+          .form-group.col-auto
+            .form-check
+              input#cat4.form-check-input(type='checkbox' value='technology')
+              label.form-check-label(for='cat4') Technology
     .input-group
       if LANG=="es"
         input#srcBox.form-control(type='text' placeholder='Search Cookies...' aria-describedby='frmBtns' maxlength='100')

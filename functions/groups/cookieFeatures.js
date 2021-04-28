@@ -7,6 +7,11 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
         const promises = [];
         snap.forEach(doc => {
             promises.push(db.collection('galletasCont').doc(doc.id).get().then(doc2 => {
+                let fixedCats = [];
+                let tCats=['astronomia','biologia','curiosidades','fisica','tecnologia']
+                tCats.forEach(cat=>{
+                    if(doc.data().cats.includes(cat))fixedCats.push(cat);
+                })
                 return db.collection('cookies/langs/es').doc(doc.id).set({
                     authors: doc2.data().authors,
                     cont: doc2.data().cont,
@@ -29,6 +34,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                     likes: doc.data().likes,
                     favs: doc.data().favs,
                     url: doc.data().url + '/',
+                    fixedCats: fixedCats,
                     cats: doc.data().cats,
                     translations: {
                         es: doc.data().url + '/'
@@ -66,10 +72,11 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                         pop: doc.data().pop,
                         likes: doc.data().likes,
                         favs: doc.data().favs,
-                        url: doc.data().url.replace('galletas','cookies') + '/',
+                        url: doc.data().url.replace('galletas', 'cookies') + '/',
+                        fixedCats: fixedCats,
                         cats: doc.data().cats,
                         translations: {
-                            es: doc.data().url.replace('galletas','cookies') + '/'
+                            es: doc.data().url.replace('galletas', 'cookies') + '/'
                         },
                         old: true
                     });
@@ -128,9 +135,9 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
                     sentMail: doc.data().sentMail,
                     revised: doc.data().revised,
                     title: doc.data().title,
-                    url: doc.data().url.replace('calendario-astronomico','astronomic-calendar') + '/',
-                    nextCal: doc.data().nextCal.replace('calendario-astronomico','astronomic-calendar') + '/',
-                    priorCal: doc.data().priorCal.replace('calendario-astronomico','astronomic-calendar') + '/',
+                    url: doc.data().url.replace('calendario-astronomico', 'astronomic-calendar') + '/',
+                    nextCal: doc.data().nextCal.replace('calendario-astronomico', 'astronomic-calendar') + '/',
+                    priorCal: doc.data().priorCal.replace('calendario-astronomico', 'astronomic-calendar') + '/',
                     weeks: doc.data().weeks,
                     translations: {
                         es: doc.data().url + '/'
