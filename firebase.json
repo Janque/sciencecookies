@@ -97,6 +97,14 @@
         "destination": "/localized/en_ALL/contacto.html"
       },
       {
+        "source": "/drafts",
+        "destination": "/localized/en_ALL/borradores.html"
+      },
+      {
+        "source": "/borradores",
+        "destination": "/localized/en_ALL/borradores.html"
+      },
+      {
         "source": "/edit",
         "destination": "/localized/en_ALL/editar.html"
       },
