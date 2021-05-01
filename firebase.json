@@ -89,20 +89,16 @@
         "destination": "/localized/en_ALL/index.html"
       },
       {
+        "source": "/drafts",
+        "destination": "/localized/en_ALL/borradores.html"
+      },
+      {
         "source": "/calendars",
         "destination": "/localized/en_ALL/calendarios.html"
       },
       {
         "source": "/contact",
         "destination": "/localized/en_ALL/contacto.html"
-      },
-      {
-        "source": "/drafts",
-        "destination": "/localized/en_ALL/borradores.html"
-      },
-      {
-        "source": "/borradores",
-        "destination": "/localized/en_ALL/borradores.html"
       },
       {
         "source": "/edit",
