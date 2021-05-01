@@ -80,21 +80,22 @@ window.loaded = function loaded() {
         setprog('barTranslate', 0);
         showEl(document.getElementById('barTranslateCont'));
         runprog('barTranslate', 0, 90);
-        translateFrm().then(data => {
+        let transRes = translateFrm();
+        if (transRes) {
             setprog('barTranslate', 100);
             $('#mdlTranslate').modal('hide');
             document.getElementById('btnCnfTranslate').classList.remove("disabled");
             document.getElementById('btnCanTranslate0').classList.remove("disabled");
             document.getElementById('btnCanTranslate1').classList.remove("disabled");
             hideEl(document.getElementById('barTranslateCont'))
-        }).catch(function (err) {
+        } else {
             if (lang = "es") {
-                alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+                alertTop("<strong>¡Ha ocurrido un error!</strong>", 0);
             } else if (lang = "en") {
-                alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+                alertTop("<strong>¡There has been an error!</strong>", 0);
             }
-            console.log(err);
-        });
+            console.log('err');
+        }
     });
 
     function fileFrm() {
@@ -126,7 +127,7 @@ window.loaded = function loaded() {
             if (err.code == 'storage/object-not-found') {
                 ref.put(newMedia).on('state_changed',
                     function progress(snap) {
-                        setprog(document.getElementById('barNewMed'), (snap.bytesTransferred / snap.totalBytes) * 100);
+                        setprog('barNewMed', (snap.bytesTransferred / snap.totalBytes) * 100);
                     },
                     function error(err) {
                         if (lang = "es") {
@@ -168,7 +169,7 @@ window.loaded = function loaded() {
     }
     document.getElementById("frmAddMed").addEventListener("submit", function (event) {
         event.preventDefault();
-        setprog(document.getElementById('barNewMed'), 0);
+        setprog('barNewMed', 0);
         showEl(document.getElementById("barNewMedCont"));
         hideEl(document.getElementById("frmAddMed"));
         document.getElementById("btnCnfNewMed").setAttribute('disabled', 'true');
@@ -283,6 +284,7 @@ function plusSect(type) {
 }
 
 function setprog(bar, n) {
+    bar = document.getElementById(bar);
     n = Math.floor(n);
     bar.setAttribute('aria-valuenow', n);
     bar.style.width = n + '%';
@@ -541,15 +543,25 @@ function render() {
             h.innerHTML = docDat.cont[0].title;
             subt.appendChild(h);
             let pPub = document.createElement('p');
-            pPub.innerText = "Publicado: " + d;
+            let publishTxt, lstUptTxt, authrsTxt;
+            if (lang == "es") {
+                publishTxt = "Publicado: ";
+                lstUptTxt = "Ultima actualización: ";
+                authrsTxt = "Autor(es): "
+            } else if (lang == "en") {
+                publishTxt = "Published: ";
+                lstUptTxt = "Last updated: ";
+                authrsTxt = "Author(s):"
+            }
+            pPub.innerText = publishTxt + d;
             subt.appendChild(pPub);
             if (docDat.dledit) {
                 let pLEdit = document.createElement('p');
-                pLEdit.innerText = "Ultima actualización: " + ld;
+                pLEdit.innerText = lstUptTxt + ld;
                 subt.appendChild(pLEdit);
             }
             let pAuth = document.createElement('p');
-            pAuth.innerText = "Autor(es):" + docDat.cont[0].author;
+            pAuth.innerText = authrsTxt + docDat.cont[0].author;
             subt.appendChild(pAuth);
 
             let fd0 = document.createElement('div');
@@ -573,7 +585,7 @@ function render() {
             classes(fd1, "row mb-2");
             let fl1 = document.createElement('label');
             classes(fl1, "col-sm-2 col-form-label");
-            fl1.innerText = "Publicado: ";
+            fl1.innerText = publishTxt;
             let fc1 = document.createElement('div');
             classes(fc1, "col");
             let in1 = document.createElement('input');
@@ -593,7 +605,7 @@ function render() {
             if (docDat.dledit) {
                 classes(fd2, "row mb-2");
                 classes(fl2, "col-sm-2 col-form-label");
-                fl2.innerText = "Ultima actualización: ";
+                fl2.innerText = lstUptTxt;
                 classes(fc2, "col");
                 classes(in2, "form-control");
                 in2.setAttribute('type', 'text');
@@ -609,7 +621,7 @@ function render() {
             classes(fd3, "row mb-2");
             let fl3 = document.createElement('label');
             classes(fl3, "col-sm-2 col-form-label");
-            fl3.innerText = "Autor(es): ";
+            fl3.innerText = authrsTxt;
             let fr3 = document.createElement('div');
             classes(fr3, "form-row justify-content-around pt-2");
             let f3c0 = document.createElement('div');
@@ -688,7 +700,11 @@ function render() {
             subf.appendChild(fd3);
         } else if (item.type == 'ref') {
             let h = document.createElement('h3');
-            h.innerHTML = '<br>Referencias';
+            if (lang == "es") {
+                h.innerHTML = '<br>Referencias';
+            } else if (lang == "en") {
+                h.innerHTML = '<br>References';
+            }
             subt.appendChild(h);
             item.ref.forEach((ref, refIdx) => {
                 let refR = document.createElement('div');
@@ -734,7 +750,7 @@ function render() {
                         in0.setAttribute('placeholder', 'https://google.com');
                     } else if (ref.type == 'cite') {
                         makeRefCite(ref.link);
-                        in0.setAttribute('placeholder', 'Referencia');
+                        in0.setAttribute('placeholder', 'Ref');
                     }
                 }
                 let fr0 = document.createElement('div');
@@ -749,7 +765,7 @@ function render() {
                 in0.setAttribute('type', 'text');
                 in0.value = ref.link;
                 if (ref.type == 'web') in0.setAttribute('placeholder', 'https://google.com');
-                if (ref.type == 'cite') in0.setAttribute('placeholder', 'Referencia');
+                if (ref.type == 'cite') in0.setAttribute('placeholder', 'Ref');
                 in0.onchange = function () { changeRef(); }
                 classes(in1, "form-control form-control-sm");
                 let inOpt0 = document.createElement('option');
@@ -1299,7 +1315,7 @@ $('#mdlPublish').on('show.bs.modal', e => {
 });
 
 function finishPub() {
-    setprog(document.getElementById('barPublish'), 100);
+    setprog('barPublish', 100);
     classes(document.getElementById('barPublish'), 'bg-success');
     if (lang = "es") {
         alertTop("Publicado correctamente", 1);
@@ -1315,7 +1331,7 @@ function finishPub() {
 function fillKW() {
     let n = 0
     function prog() {
-        setprog(document.getElementById('barPublish'), n);
+        setprog('barPublish', n);
     }
     keywords = [];
     keywords.push(docDat.published.toDate().getFullYear().toString());
@@ -1433,19 +1449,19 @@ function fillKW() {
 
 document.getElementById('btnCnfPublish').onclick = function () {
     if (docDat.public) return;
-    setprog(document.getElementById('barPublish'), 0);
+    setprog('barPublish', 0);
     showEl(document.getElementById("barPublishCont"));
 
     docDat.public = true;
     docDat.ledit = new firebase.firestore.Timestamp.now();
     docDat.beenPublic = true;
     docDat.revised = {};
-    setprog(document.getElementById('barPublish'), 31);
+    setprog('barPublish', 31);
 
     if (!docDat.beenPublic) {
         docDat.notify = true;
         docDat.published = new firebase.firestore.Timestamp.now();
-        setprog(document.getElementById('barPublish'), 62);
+        setprog('barPublish', 62);
     } else {
         if (document.getElementById('inSendUpt').checked) {
             docDat.dledit = true;
@@ -1454,7 +1470,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
             docDat.dledit = false;
             docDat.notify = false;
         }
-        setprog(document.getElementById('barPublish'), 45);
+        setprog('barPublish', 45);
         if (document.getElementById('inSendUpt').checked) {
             docDat.uptMsg = true;
             docDat.uptDescrip = document.getElementById('inUptDesc').value.trim();
@@ -1462,7 +1478,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
             docDat.uptMsg = false;
             docDat.uptDescrip = "";
         }
-        setprog(document.getElementById('barPublish'), 62);
+        setprog('barPublish', 62);
     }
 
     saveDoc().then(() => {
@@ -1474,7 +1490,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
             if (err) {
                 console.log("Data could not be saved." + err);
             } else {
-                setprog(document.getElementById('barPublish'), 84);
+                setprog('barPublish', 84);
                 finishPub();
             }
         });

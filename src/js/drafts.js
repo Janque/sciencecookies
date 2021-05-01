@@ -104,11 +104,15 @@ window.loaded = function loaded() {
                                 if (lang = "es") {
                                     alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
                                 } else if (lang = "en") {
-                                    alertTop(`Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-scckie" href="../editar?id=${id}">click here</a>.`, 1, 'alrtPlusContainer');
+                                    alertTop(`Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-scckie" href="../edit?id=${id}">click here</a>.`, 1, 'alrtPlusContainer');
                                 }
                             }, 1000);
                             setTimeout(function () {
-                                window.location.href = '../editar?id=' + id;
+                                if (lang = "es") {
+                                    window.location.href = '../editar?id=' + id;
+                                } else if (lang = "en") {
+                                    window.location.href = '../edit?id=' + id;
+                                }
                             }, 3000);
                         }).catch(err => console.log(err));
                     }
@@ -290,9 +294,17 @@ function shwSrch() {
             let drpitm0 = document.createElement('button');
             drpitm0.classList.add('dropdown-item');
             drpitm0.onclick = function () {
-                window.location.href = '../editar?id=' + doc.id;
+                if (lang == "es") {
+                    window.location.href = '../editar?id=' + doc.id;
+                } else if (lang == "en") {
+                    window.location.href = '../edit?id=' + doc.id;
+                }
             };
-            drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
+            if (lang == "es") {
+                drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
+            } else if (lang == "en") {
+                drpitm0.innerHTML = 'Edit <i class="fas fa-edit"></i>';
+            }
             drpmenu.appendChild(drpitm0);
             let drpitm1 = document.createElement('button');
             drpitm1.classList.add('dropdown-item');
@@ -332,7 +344,11 @@ function shwSrch() {
             card.appendChild(h);
 
             let a = document.createElement('a');
-            a.href = '../editar?id=' + doc.id;
+            if (lang == "es") {
+                a.href = '../editar?id=' + doc.id;
+            } else if (lang == "en") {
+                a.href = '../edit?id=' + doc.id;
+            }
             a.classList.add('text-decoration-none');
             a.classList.add('text-dark');
             let img = document.createElement('img');

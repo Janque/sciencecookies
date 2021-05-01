@@ -176,36 +176,36 @@ block precontent
             h5#mdlTranslateL.modal-title Generate translation
           button#btnCanTranslate1.close(type='button' data-dismiss='modal' aria-label='Close')
             span(aria-hidden='true') ×
-        .modal-body
-          p#mdlTranslateTxt
-          form#frmTranslate
-            .form-row
-              if LANG=="es"
-                .alert.alert-dismissible.fade.show.alert-danger(role='alert')
-                  | Estás en español, ¿realmente quieres traducir desde otro idioma?
-              .alert.alert-dismissible.fade.show.alert-warning(role='alert')
+        form#frmTranslate
+          .modal-body
+            p#mdlTranslateTxt
+              .form-row
                 if LANG=="es"
-                  | La traducción sobreescribe los cambios en el idioma actual
+                  .alert.alert-dismissible.fade.show.alert-danger(role='alert')
+                    | Estás en español, ¿realmente quieres traducir desde otro idioma?
+                .alert.alert-dismissible.fade.show.alert-warning(role='alert')
+                  if LANG=="es"
+                    | La traducción sobreescribe los cambios en el idioma actual
+                  else if LANG=="en"
+                    | The translation overrides the changes in the current language
+              .form-row
+                .form-group
+                if LANG=="es"
+                  label(for='inTransFrom') Traducir del
+                  select#inTransFrom.form-control(required)
+                    option(selected value="") Elegir...
                 else if LANG=="en"
-                  | The translation overrides the changes in the current language
-            .form-row
-              .form-group
-              if LANG=="es"
-                label(for='inTransFrom') Traducir del
-                select#inTransFrom.form-control(required)
-                  option(selected value="") Elegir...
-              else if LANG=="en"
-                label(for='inTransFrom') Translate from
-                select#inTransFrom.form-control(required)
-                  option(selected value="") Choose...
-          #barTranslateCont.progress.my-2.d-none
-            #barTranslate.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
-        .modal-footer
-          if LANG=="es"
-            button#btnCnfTranslate.btn.btn-scckie.btn-block(type='button') Traducir
-          else if LANG=="en"
-            button#btnCnfTranslate.btn.btn-scckie.btn-block(type='button') Translate
-          button#btnCanTranslate0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
+                  label(for='inTransFrom') Translate from
+                  select#inTransFrom.form-control(required)
+                    option(selected value="") Choose...
+            #barTranslateCont.progress.my-2.d-none
+              #barTranslate.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
+          .modal-footer
+            if LANG=="es"
+              button#btnCnfTranslate.btn.btn-scckie.btn-block(type='submit') Traducir
+            else if LANG=="en"
+              button#btnCnfTranslate.btn.btn-scckie.btn-block(type='submit') Translate
+            button#btnCanTranslate0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
 
   //- Side toolbar
   .tbar.tbar-right.btn-toolbar.mb-3(role='toolbar')
