@@ -207,7 +207,18 @@ window.addEventListener("load", function () {
     url = new URL(document.location.href);
     urlSrch = new URLSearchParams(location.search);
 
-    document.getElementById('changeLang').href+=location.search
+    document.getElementById('changeLang').href += location.search;
+    document.getElementById('changeLang').onclick = function () {
+        //@#Confirm functionality
+        if (lang = "es") {
+            window.lang = "en";
+        } else if (lang = "en") {
+            window.lang = "es";
+        }
+        let dddd = new Date();
+        dddd.setTime(dddd.getTime() + (5 * 60 * 1000));
+        document.cookie = "firebase-language-override=" + lang + "; expires=" + dddd.toUTCString();
+    }
 
     if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
     if (urlSrch.get('mode') == 'select') $('#mdlRgstr').modal('show');
@@ -221,7 +232,7 @@ window.addEventListener("load", function () {
         window.allCats = doc.data()[lang].allCats;
         window.textCats = doc.data()[lang].textCats;
         window.catTranslations = doc.data().catTranslations;
-        
+
         loaded();
     }).catch(err => { console.log(err) });
 });
