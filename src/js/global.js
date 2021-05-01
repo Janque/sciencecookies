@@ -217,7 +217,7 @@ window.addEventListener("load", function () {
         }
         let dddd = new Date();
         dddd.setTime(dddd.getTime() + (5 * 60 * 1000));
-        document.cookie = "firebase-language-override=" + lang + "; expires=" + dddd.toUTCString();
+        document.cookie = "firebase-language-override=" + window.lang + "; expires=" + dddd.toUTCString();
     }
 
     if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
