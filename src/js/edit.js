@@ -25,6 +25,13 @@ window.loaded = function loaded() {
         classes(inp, "form-check-input");
         inp.value = cat;
         inp.setAttribute('type', 'checkbox');
+        inp.onclick = function () {
+            if(inp.checked==true){
+                docDat.fixedCats.push(this.value);
+            }else{
+                docDat.fixedCats.splice(docDat.fixedCats.indexOf(this.value),1);
+            }
+        }
         div.appendChild(inp);
         let lab = document.createElement('label');
         lab.setAttribute('for', 'cat' + i);
@@ -204,8 +211,8 @@ function saveDoc() {
     langs.forEach(l => {
         if (l != lang) {
             let syncUpt = {
-                authors: docDat.authors,
-                media: docDat.media,
+                authors: docDat.authors.slice(),
+                media: docDat.media.slice(),
                 java: docDat.java,
                 notify: docDat.notify,
                 public: docDat.public,
@@ -219,9 +226,9 @@ function saveDoc() {
                 favs: docDat.favs,
                 revised: docDat.revised,
                 translations: docDat.translations,
-                fixedCats: docDat.fixedCats
+                fixedCats: docDat.fixedCats.slice()
             }
-            syncUpt.fixedCats.forEach((cat, idx) => {
+            syncUpt.fixedCats.forEach(function (cat, idx) {
                 syncUpt.fixedCats.splice(idx, 1, catTranslations[cat][l]);
             });
             syncUpt.translations[lang] = docDat.url;

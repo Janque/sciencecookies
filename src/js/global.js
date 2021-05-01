@@ -214,12 +214,14 @@ window.addEventListener("load", function () {
             window.lang = "en";
             let dddd = new Date();
             dddd.setTime(dddd.getTime() + (5 * 60 * 1000));
-            document.cookie = "firebase-language-override=en; expires=" + dddd.toUTCString();
+            document.cookie = "firebase-language-override=";
+            //document.cookie = "firebase-language-override=en; expires=" + dddd.toUTCString();
         } else if (window.lang = "en") {
             window.lang = "es";
             let dddd = new Date();
             dddd.setTime(dddd.getTime() + (5 * 60 * 1000));
-            document.cookie = "firebase-language-override=es; expires=" + dddd.toUTCString();
+            document.cookie = "firebase-language-override=";
+            //document.cookie = "firebase-language-override=es; expires=" + dddd.toUTCString();
         }
     }
 

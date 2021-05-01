@@ -6,6 +6,7 @@ const { TranslationServiceClient } = require('@google-cloud/translate');
 const translationClient = new TranslationServiceClient({ keyFilename: 'firebaseKey.json' });
 
 async function translateString(text, from, to, type = 'html') {
+    if(!text)return "";
     const [response] = await translationClient.translateText({
         parent: `projects/science-cookies`,
         contents: [text],
