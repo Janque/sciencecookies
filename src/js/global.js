@@ -210,14 +210,17 @@ window.addEventListener("load", function () {
     document.getElementById('changeLang').href += location.search;
     document.getElementById('changeLang').onclick = function () {
         //@#Confirm functionality
-        if (lang = "es") {
+        if (window.lang = "es") {
             window.lang = "en";
-        } else if (lang = "en") {
+            let dddd = new Date();
+            dddd.setTime(dddd.getTime() + (5 * 60 * 1000));
+            document.cookie = "firebase-language-override=en; expires=" + dddd.toUTCString();
+        } else if (window.lang = "en") {
             window.lang = "es";
+            let dddd = new Date();
+            dddd.setTime(dddd.getTime() + (5 * 60 * 1000));
+            document.cookie = "firebase-language-override=es; expires=" + dddd.toUTCString();
         }
-        let dddd = new Date();
-        dddd.setTime(dddd.getTime() + (5 * 60 * 1000));
-        document.cookie = "firebase-language-override=" + window.lang + "; expires=" + dddd.toUTCString();
     }
 
     if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
