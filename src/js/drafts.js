@@ -343,6 +343,24 @@ function shwSrch() {
             h.appendChild(row);
             card.appendChild(h);
 
+
+            let authTxt, noImgTxt, creatTxt, uptTxt, pubTxt, noPubTxt;
+            if (lang = "es") {
+                authTxt = "Autor(es)";
+                noImgTxt = "No hay imagen";
+                noPubTxt = "Sin publicar";
+                creatTxt = "Creado: ";
+                uptTxt = "Actualizado: ";
+                pubTxt = "Publicado: ";
+            } else if (lang = "en") {
+                authTxt = "Author(s)";
+                noImgTxt = "No image";
+                noPubTxt = "Not public";
+                creatTxt = "Created: ";
+                uptTxt = "Updated: ";
+                pubTxt = "Published: ";
+            }
+
             let a = document.createElement('a');
             if (lang == "es") {
                 a.href = '../editar?id=' + doc.id;
@@ -354,23 +372,23 @@ function shwSrch() {
             let img = document.createElement('img');
             img.src = doc.data().picUrl;
             img.classList.add('card-img-top');
-            img.alt = 'No hay imagen'
+            img.alt = noImgTxt;
             a.appendChild(img);
             let cbody = document.createElement('div');
             cbody.classList.add('card-body');
-            cbody.innerHTML = '<h3 class="card-title">' + doc.data().title + '</h3>\n<p>Autor(es):' + doc.data().authors + '</p>\n<p class="card-text">' + doc.data().description + '</p>\n'
+            cbody.innerHTML = '<h3 class="card-title">' + doc.data().title + '</h3>\n<p>' + authTxt + ':' + doc.data().authors + '</p>\n<p class="card-text">' + doc.data().description + '</p>\n'
             a.appendChild(cbody);
             let f = document.createElement('div');
             f.classList.add('card-footer');
             f.classList.add('text-muted');
-            f.innerHTML = '<p>Creado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
+            f.innerHTML = '<p>' + creatTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             d = doc.data().ledit.toDate();
-            f.innerHTML += '<p>Acutalizado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
+            f.innerHTML += '<p>' + uptTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             if (doc.data().public) {
                 d = doc.data().published.toDate();
-                f.innerHTML += '<p>Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
+                f.innerHTML += '<p>' + pubTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             } else {
-                f.innerHTML += '<p>Sin publicar</p>\n';
+                f.innerHTML += '<p>' + noPubTxt + '</p>\n';
             }
             a.appendChild(f)
             card.appendChild(a);
