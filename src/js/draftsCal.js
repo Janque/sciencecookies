@@ -82,7 +82,11 @@ function shwSrch() {
             let drpitm0 = document.createElement('button');
             classes(drpitm0, 'dropdown-item');
             drpitm0.onclick = function () {
-                window.location.href = '../editar-calendario?id=' + doc.id;
+                if (lang = "es") {
+                    window.location.href = '../editar-calendario?id=' + doc.id;
+                } else if (lang = "en") {
+                    window.location.href = '../edit-calendar?id=' + doc.id;
+                }
             };
             drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
             drpmenu.appendChild(drpitm0);
@@ -108,14 +112,25 @@ function shwSrch() {
             h.appendChild(row);
             card.appendChild(h);
 
+            let noImgTxt;
+            if (lang = "es") {
+                noImgTxt = "No hay imagen";
+            } else if (lang = "en") {
+                noImgTxt = "No image";
+            }
+
             let a = document.createElement('a');
-            a.href = '../editar-calendario?id=' + doc.id;
+            if (lang = "es") {
+                a.href = '../editar-calendario?id=' + doc.id;
+            } else if (lang = "en") {
+                a.href = '../edit-calendar?id=' + doc.id;
+            }
             classes(a, 'text-decoration-none');
             classes(a, 'text-dark');
             let img = document.createElement('img');
             img.src = dat.picUrl;
             classes(img, 'card-img-top');
-            img.alt = 'No hay imagen'
+            img.alt = noImgTxt;
             a.appendChild(img);
             let cbody = document.createElement('div');
             classes(cbody, 'card-body');
