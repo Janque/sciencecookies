@@ -40,8 +40,8 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                         es: doc.data().url + '/'
                     },
                     old: true
-                }).then(() => {
-                    return db.collection('cookies/langs/en').doc(doc.id).set({
+                })/*.then(() => {
+                    return db.collection('cookies/langs/en').doc(doc.id).update({
                         authors: doc2.data().authors,
                         cont: [
                             {
@@ -80,7 +80,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                         },
                         old: true
                     });
-                });
+                });*/
             }));
         });
         return Promise.all(promises);

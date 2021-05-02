@@ -14,6 +14,16 @@ let newMedSrc = null;
 
 let keywords = [];
 
+async function translateSimple(text, from, target) {
+    let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateSimple');
+    let res = await translate({
+        text: text,
+        from: from,
+        target: target
+    });
+    return res.data;
+}
+
 window.loaded = function loaded() {
     allCats.forEach((cat, i) => {
         let fat = document.createElement('div');
@@ -26,10 +36,10 @@ window.loaded = function loaded() {
         inp.value = cat;
         inp.setAttribute('type', 'checkbox');
         inp.onclick = function () {
-            if(inp.checked==true){
+            if (inp.checked == true) {
                 docDat.fixedCats.push(this.value);
-            }else{
-                docDat.fixedCats.splice(docDat.fixedCats.indexOf(this.value),1);
+            } else {
+                docDat.fixedCats.splice(docDat.fixedCats.indexOf(this.value), 1);
             }
         }
         div.appendChild(inp);
@@ -41,6 +51,7 @@ window.loaded = function loaded() {
         fat.appendChild(div);
         document.getElementById('catFrmCont').appendChild(fat);
     });
+
     docRef = cookiesFSRef.doc(urlSrch.get('id'));
     docRef.onSnapshot(doc => {
         docDat = doc.data();
@@ -107,12 +118,12 @@ window.loaded = function loaded() {
 
     function fileFrm() {
         let file = document.getElementById('inFile').value;
-        docRef.get().then(snap => {
+        cookiesFSRef.where("file", "==", file).get().then(snap => {
             if (!snap.empty && file != docDat.file) {
                 if (lang = "es") {
-                    alertTop("Ese nombre de archivo ya esta en uso.", 0, 'alrtPlusContainer');
+                    alertTop("Ese nombre de archivo ya esta en uso.", 0);
                 } else if (lang = "en") {
-                    alertTop("That file name is already in use.", 0, 'alrtPlusContainer');
+                    alertTop("That file name is already in use.", 0);
                 }
             } else {
                 docDat.description = document.getElementById('inDesc').value.trim();
@@ -125,6 +136,27 @@ window.loaded = function loaded() {
         event.preventDefault();
         fileFrm();
     });
+    langs.forEach((l, i) => {
+        if (l != lang) {
+            let opt = document.createElement('option');
+            if (i == 0) {
+                opt.setAttribute('selected', 'true');
+            }
+            opt.value = opt.innerText = l;
+            document.getElementById('selFileTrans').appendChild(opt);
+        }
+    })
+    document.getElementById('btnFileTrans').onclick = function () {
+        let ori = document.getElementById('selFileTrans').value
+        db.collection('cookies/langs/' + ori).doc(docId).get().then(async function (doc) {
+            let file = doc.data().file;
+            let desc = doc.data().description;
+            document.getElementById('inFile').value = await translateSimple(file, ori, lang);
+            document.getElementById('inFile').value = document.getElementById('inFile').value.trim().toLowerCase().replaceAll(' ', '-');
+            document.getElementById('inDesc').value = await translateSimple(desc, ori, lang);
+            fileFrm();
+        }).catch(err => console.log(err));
+    }
 
     function addMed(atempt) {
         let ref = store.ref('cookieMedia/' + docId + '/i' + atempt + newMedia.name);
@@ -473,7 +505,7 @@ function render() {
 
         let act = document.createElement('div');
         classes(act, 'row mb-2 px-2');
-        let btnDel, btnEdit, btnCheck, btnAdd;
+        let btnDel, btnEdit, btnCheck, btnAdd, btnTrans, selLang;
 
         if (item.type != 'head' && item.type != 'ref') {
             btnDel = document.createElement('button');
@@ -500,7 +532,51 @@ function render() {
             }
             act.appendChild(btnDel);
         }
+
+        let selLangC = document.createElement('div');
+        classes(selLangC, "col-auto");
+        selLang = document.createElement('select');
+        classes(selLang, "form-control mr-0 ml-2 h-100");
+        langs.forEach((l, i) => {
+            if (l != lang) {
+                let opt = document.createElement('option');
+                if (i == 0) {
+                    opt.setAttribute('selected', 'true');
+                }
+                opt.value = opt.innerText = l;
+                selLang.appendChild(opt);
+            }
+        })
+
         if (item.type != 'ref') {
+            selLangC.appendChild(selLang);
+            act.appendChild(selLangC);
+            btnTrans = document.createElement('button');
+            classes(btnTrans, 'btn btn-light btn-link-scckie');
+            btnTrans.innerHTML = '<i class="fas fa-language"></i>';
+            btnTrans.onclick = function () {
+                db.collection('cookies/langs/' + selLang.value).doc(docId).get().then(async function (doc) {
+                    let sect = doc.data().cont[idx];
+                    if (item.type != sect.type) return;
+                    if (sect.type == 'head') {
+                        docDat.cont[idx].title = await translateSimple(sect.title, selLang.value, lang);
+                    } else if (sect.type == 'html') {
+                        docDat.cont[idx].html = await translateSimple(sect.html, selLang.value, lang);
+                    } else if (sect.type == 'parra') {
+                        docDat.cont[idx].text = await translateSimple(sect.text, selLang.value, lang);
+                        if (sect.title != "0") {
+                            docDat.cont[idx].titleTxt = await translateSimple(sect.titleTxt, selLang.value, lang);
+                        }
+                    } else if (sect.type == 'medSimple') {
+                        docDat.cont[idx].alt = await translateSimple(sect.alt, selLang.value, lang);
+                        docDat.cont[idx].caption = await translateSimple(sect.caption, selLang.value, lang);
+                    }
+                    console.log(docDat.cont[idx]);
+                    normSave();
+                }).catch(err => console.log(err));
+            }
+            act.appendChild(btnTrans);
+
             btnEdit = document.createElement('button');
             classes(btnEdit, 'btn btn-light btn-link-scckie ml-auto');
             btnEdit.innerHTML = '<i class="fas fa-edit"></i>';

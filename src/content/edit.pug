@@ -230,6 +230,11 @@ block precontent
 
 block content
   .container-fluid.mb-2.rounded-lg.p-3(style='background-color:#57238b;')
+    .row.mb-2.px-2
+      .col-auto
+        select#selFileTrans.form-control.mr-0.ml-2.h-100
+      button#btnFileTrans.btn.btn-light.btn-link-scckie
+        i.fas.fa-language
     form#frmFile
       if LANG=="es"
         .row.mb-2

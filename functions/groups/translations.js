@@ -6,7 +6,7 @@ const { TranslationServiceClient } = require('@google-cloud/translate');
 const translationClient = new TranslationServiceClient({ keyFilename: 'firebaseKey.json' });
 
 async function translateString(text, from, to, type = 'html') {
-    if(!text)return "";
+    if (!text) return "";
     const [response] = await translationClient.translateText({
         parent: `projects/science-cookies`,
         contents: [text],
@@ -18,6 +18,10 @@ async function translateString(text, from, to, type = 'html') {
         return translation.translatedText
     }
 }
+
+exports.translateSimple = functions.region('us-east1').https.onCall(async req => {
+    return translateString(req.text, req.from, req.target);
+});
 
 exports.translateFullCookie = functions.region('us-east1').https.onCall(async req => {
     const doc = await db.collection('cookies/langs/' + req.from).doc(req.docId).get();
@@ -32,6 +36,7 @@ exports.translateFullCookie = functions.region('us-east1').https.onCall(async re
         file: file
     };
 
+    //MUST BE A NORMAL FOR
     for (let i = 0; i < data.cont.length; i++) {
         let sect = data.cont[i];
         if (sect.type == 'head') {
