@@ -12,8 +12,6 @@ window.calendarsFSRef = db.collection('calendars/langs/' + lang);
 
 window.urlSrch = '';
 var actSsn = false;
-window.mod = false
-window.author = "";
 var mobile = false;
 
 window.classes = function classes(elm, cls) {
@@ -65,6 +63,8 @@ window.displayName;
 window.email;
 window.photoURL;
 window.uid;
+window.author = "";
+window.mod = false;
 firebase.auth().onAuthStateChanged(function (user) {
     let modAuth = firebase.app().functions('us-east1').httpsCallable('publish-modAuth');
     if (user) {

@@ -1,1 +1,0 @@
-{"version":3,"sources":["styles/index.scss"],"names":[],"mappings":"AAAA;EACI;EACA;EACA;EACA","file":"js.00a46daa.css","sourceRoot":"../src","sourcesContent":[".cats-container {\n    border: solid;\n    border-width: 1px;\n    color: #f8f9fa;\n    border-color: #f8f9fa;\n}\n"]}
