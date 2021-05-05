@@ -31,6 +31,8 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
                             a.btn.btn-dark.mx-2.my-1.flex-fill.active(href='/contacto/') Contacto
                         else
                             a.btn.btn-dark.mx-2.my-1.flex-fill(href='/contacto/') Contacto
+            if site=="edit"||site=="editCal"
+                i.text-light.mx-3.my-auto#tagLstSave
         .row.justify-content-end
             .dropdown.mr-4.dropleft
                 button#usrDrpdwn.btn.btn-dark.dropdown-toggle.p-2(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
