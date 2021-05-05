@@ -288,7 +288,7 @@ function normSave() {
     });
 }
 
-function plusSect(type) {
+window.plusSect = function plusSect(type) {
     let newSect = null;
     if (type == 'html') {
         newSect = {
@@ -906,6 +906,7 @@ function render() {
                 rBtnDel.onclick = function () {
                     docDat.cont[idx].ref.splice(refIdx, 1);
                     normSave();
+                    render();//@#Important, why?
                 };
                 cBtn.appendChild(rBtnDel);
 
