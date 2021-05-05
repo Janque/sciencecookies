@@ -4,7 +4,6 @@ window.db = firebase.firestore();
 window.urlSrch = '';
 var url = new URL(window.location.href);
 var actSsn = false;
-var mod = false, author = "";
 var mobile = false;
 
 window.classes = function classes(elm, cls) {
@@ -36,6 +35,8 @@ window.displayName;
 window.email;
 window.photoURL;
 window.uid;
+window.author = "";
+window.mod = false;
 firebase.auth().onAuthStateChanged(function (user) {
     let modAuth = firebase.app().functions('us-east1').httpsCallable('publish-modAuth');
     if (user) {
@@ -83,7 +84,7 @@ function shwSsnBtns(ac) {
             document.getElementById('btnCals').classList.remove('d-none');
         }
         document.getElementById('btnLgO').classList.remove('d-none');
-        if (document.getElementById('btnLgI')!=null) document.getElementById('btnLgI').classList.add('d-none');
+        if (document.getElementById('btnLgI') != null) document.getElementById('btnLgI').classList.add('d-none');
         if (url.pathname.substring(0, 10) == "/galletas/") {
             db.collection('users').doc(uid).get().then(function (doc) {
                 let fav = doc.data().fav;
