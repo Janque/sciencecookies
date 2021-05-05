@@ -3,7 +3,7 @@ import '../styles/editCal.scss';
 var store = firebase.storage();
 var rtDb = firebase.database();
 
-let docDat, docId;
+let docDat, docId, docRef;
 let lastSave = Date.now(), saved = false;
 
 let newMedia = null;
@@ -79,6 +79,7 @@ function fullMonth(n, l) {
 }
 
 window.loaded = function loaded() {
+    docRef = calendarsFSRef.doc(urlSrch.get('id'));
     calendarsFSRef.doc(urlSrch.get('id')).onSnapshot(doc => {
         if (!doc.exists) {
             window.location.href = '../404';
@@ -121,6 +122,16 @@ window.loaded = function loaded() {
         event.preventDefault();
         descFrm();
     });
+    document.getElementById('btnFileTrans').onclick = function () {
+        let ori = document.getElementById('selFileTrans').value
+        db.collection('calendars/langs/' + ori).doc(docId).get().then(async function (doc) {
+            docDat.picCapt = document.getElementById('inPicCapt').value = await translateSimple(doc.data().picCapt, ori, lang);
+            docDat.picAlt = document.getElementById('inPicAlt').value = await translateSimple(doc.data().picAlt, ori, lang);
+            docDat.description = document.getElementById('inDesc').value = await translateSimple(doc.data().description, ori, lang);
+            docDat.descriptionShort = document.getElementById('inDescShort').value = await translateSimple(doc.data().descriptionShort, ori, lang);
+            descFrm();
+        }).catch(err => console.log(err));
+    }
 
     function addMed() {
         let ref = store.ref('calendarMedia/' + docId + '/pic');
@@ -195,7 +206,7 @@ function saveDoc() {
                 translations: docDat.translations,
             }
             syncUpt.translations[lang] = docDat.url;
-            promises.push(db.collection('cookies/langs/' + l).doc(docId).update(syncUpt));
+            promises.push(db.collection('calendars/langs/' + l).doc(docId).update(syncUpt));
         }
     })
     return Promise.all(promises).then(() => {
@@ -214,6 +225,7 @@ function normSave() {
         }, 300010);
         document.getElementById('tagLstSave').innerText = "Se han guardado los cambios";
         lastSave = Date.now();
+        console.log('Saved!');
     }).catch(err => {
         document.getElementById('tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
         console.log(err);
@@ -446,6 +458,42 @@ function render() {
             changed = true;
         };
 
+        let selLangCC = document.createElement('div');
+        classes(selLangCC, "row");
+        let selLangC = document.createElement('div');
+        classes(selLangC, "col-auto");
+        selLangCC.appendChild(selLangC);
+        let selLang = document.createElement('select');
+        classes(selLang, "form-control ml-auto h-100");
+        selLang.setAttribute("name", "selTransLang");
+        selLangC.appendChild(selLang);
+        let btnTrans = document.createElement('button');
+        classes(btnTrans, 'btn btn-scckie mx-2');
+        btnTrans.innerHTML = '<i class="fas fa-language"></i>';
+        btnTrans.onclick = function () {//@#Aqui
+            db.collection('calendar/langs/' + selLang.value).doc(docId).get().then(async function (doc) {
+                let sect = doc.data().events[key];
+                if (!sect) return;
+                if (sect.type == 'head') {
+                    docDat.cont[idx].title = await translateSimple(sect.title, selLang.value, lang);
+                } else if (sect.type == 'html') {
+                    docDat.cont[idx].html = await translateSimple(sect.html, selLang.value, lang);
+                } else if (sect.type == 'parra') {
+                    docDat.cont[idx].text = await translateSimple(sect.text, selLang.value, lang);
+                    if (sect.title != "0") {
+                        docDat.cont[idx].titleTxt = await translateSimple(sect.titleTxt, selLang.value, lang);
+                    }
+                } else if (sect.type == 'medSimple') {
+                    docDat.cont[idx].alt = await translateSimple(sect.alt, selLang.value, lang);
+                    docDat.cont[idx].caption = await translateSimple(sect.caption, selLang.value, lang);
+                }
+                console.log(docDat.cont[idx]);
+                normSave();
+            }).catch(err => console.log(err));
+        }
+        selLangCC.appendChild(btnTrans);
+        fsec.appendChild(selLangCC);
+
         let tsec = document.createElement('div');
         bod.appendChild(tsec);
         let eveTit = document.createElement('h3');
@@ -567,6 +615,22 @@ function render() {
 
         document.getElementById('eventInfoCont').appendChild(form);
     }
+
+    document.getElementsByName('selTransLang').forEach(itm => {
+        itm.innerHTML='';
+    });
+    langs.forEach((l, i) => {
+        if (l != lang) {
+            let opt = document.createElement('option');
+            if (i == 0) {
+                opt.setAttribute('selected', 'true');
+            }
+            opt.value = opt.innerText = l;
+            document.getElementsByName('selTransLang').forEach(itm => {
+                itm.appendChild(opt.cloneNode(true));
+            });
+        }
+    });
 }
 
 

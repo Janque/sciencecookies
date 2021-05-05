@@ -1,0 +1,18 @@
+.table-bordered thead,
+.table-bordered tbody,
+.table-bordered th,
+.table-bordered td {
+  border: 0.5rem solid #57238b !important;
+}
+
+.autoOverflow {
+  overflow: hidden;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.autoOverflow:hover {
+  overflow: auto;
+}
+
+/*# sourceMappingURL=/editCal.ccee67fc.css.map */
