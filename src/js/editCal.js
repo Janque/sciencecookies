@@ -3,7 +3,7 @@ import '../styles/editCal.scss';
 var store = firebase.storage();
 var rtDb = firebase.database();
 
-let docDat, docId, docRef;
+let docDat, docId, docRef, calConfig;
 let lastSave = Date.now(), saved = false;
 
 let newMedia = null;
@@ -79,39 +79,42 @@ function fullMonth(n, l) {
 }
 
 window.loaded = function loaded() {
-    docRef = calendarsFSRef.doc(urlSrch.get('id'));
-    calendarsFSRef.doc(urlSrch.get('id')).onSnapshot(doc => {
-        if (!doc.exists) {
-            window.location.href = '../404';
-            return;
-        }
-        docDat = doc.data();
-        docId = doc.id;
-        document.getElementById('title').innerHTML = docDat.title;
-        document.getElementById('prevMed').src = docDat.picUrl;
-        document.getElementById('inPicCapt').value = docDat.picCapt;
-        document.getElementById('inPicAlt').value = docDat.picAlt;
-        document.getElementById('inDesc').value = docDat.description;
-        document.getElementById('inDescShort').value = docDat.descriptionShort;
-        render();
-        if (docDat.public) {
-            hideEl(document.getElementById('btnAprove'));
-            hideEl(document.getElementById('btnPub'));
-        } else {
-            showEl(document.getElementById('btnAprove'));
-            if (docDat.pastDue) showEl(document.getElementById('btnPub'));
-        }
-        if (docDat.revised.includes(uid)) {
-            document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
-        } else {
-            document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
-        }
-        document.getElementById('btnPrevCal').href = docDat.url;
-        document.getElementById('btnPrevMail').href = '/vista-email-calendario/' + docId;
-        document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
-        document.getElementById('btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1170&reg1=3688685&reg2=9609540&town=3688689`;
-        document.getElementById('btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1724&reg1=3117732&reg2=6355233&town=3117735`;
-    }, err => console.log(err))
+    db.collection('config').doc('calTypes').get().then(doc => {
+        calConfig = doc.data();
+        docRef = calendarsFSRef.doc(urlSrch.get('id'));
+        calendarsFSRef.doc(urlSrch.get('id')).onSnapshot(doc => {
+            if (!doc.exists) {
+                window.location.href = '../404';
+                return;
+            }
+            docDat = doc.data();
+            docId = doc.id;
+            document.getElementById('title').innerHTML = docDat.title;
+            document.getElementById('prevMed').src = docDat.picUrl;
+            document.getElementById('inPicCapt').value = docDat.picCapt;
+            document.getElementById('inPicAlt').value = docDat.picAlt;
+            document.getElementById('inDesc').value = docDat.description;
+            document.getElementById('inDescShort').value = docDat.descriptionShort;
+            render();
+            if (docDat.public) {
+                hideEl(document.getElementById('btnAprove'));
+                hideEl(document.getElementById('btnPub'));
+            } else {
+                showEl(document.getElementById('btnAprove'));
+                if (docDat.pastDue) showEl(document.getElementById('btnPub'));
+            }
+            if (docDat.revised.includes(uid)) {
+                document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
+            } else {
+                document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
+            }
+            document.getElementById('btnPrevCal').href = docDat.url;
+            document.getElementById('btnPrevMail').href = '/vista-email-calendario/' + docId;
+            document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
+            document.getElementById('btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1170&reg1=3688685&reg2=9609540&town=3688689`;
+            document.getElementById('btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1724&reg1=3117732&reg2=6355233&town=3117735`;
+        }, err => console.log(err))
+    }).catch(err => console.log(err));
 
     function descFrm() {
         docDat.description = document.getElementById('inDesc').value.trim();
@@ -617,7 +620,7 @@ function render() {
     }
 
     document.getElementsByName('selTransLang').forEach(itm => {
-        itm.innerHTML='';
+        itm.innerHTML = '';
     });
     langs.forEach((l, i) => {
         if (l != lang) {
