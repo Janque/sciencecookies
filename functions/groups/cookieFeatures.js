@@ -78,7 +78,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                     label: "Luna Llena",
                     val: "22",
                 }, {
-                    label: "Cuarto mMnguante",
+                    label: "Cuarto Menguante",
                     val: "33",
                 }, {
                     label: "Superluna",
@@ -96,7 +96,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 "Luna Nueva",
                 "Luna en Cuarto Creciente",
                 "Luna Llena",
-                "Luna en Cuarto Creciente",
+                "Luna en Cuarto Menguante",
                 "Superluna"
             ]
         }, {
@@ -335,6 +335,111 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 "Equinoccio de Septiembre",
                 "Solsticio de Diciembre"
             ]
+        }, {
+            label: "Lluvia de estrellas",
+            multipleTxt: 0,
+            options: [{
+                label: "Nombre",
+                type: "text"
+            }, {
+                label: "Inicio",
+                type: "text"
+            }, {
+                label: "Fin",
+                type: "text"
+            }, {
+                label: "Pico",
+                type: "text"
+            }, {
+                label: "Constelación",
+                type: "text"
+            }],
+            text: ["La lluvia de estrellas $0$ del $g-year$ estará activa del $1$ al $2$ y alcanzará su pico el $3$. Se observarán mejor alrededor de la constelación de $4$."],
+            titleTxt: ["Lluvia de estrellas $0$ $g-year$"]
+        }, {
+            label: "Ocultamiento lunar",
+            multipleTxt: 0,
+            options: [{
+                label: "Cuerpo",
+                type: "text"
+            }, {
+                label: "Zonas",
+                type: "text",
+            }],
+            text: ["La Luna pasará enfrente de $0$ ocultándolo para $1$. Debido a la cercanía de la Luna a la Tierra, un ocultamiento no es visible desde todo el mundo."],
+            titleTxt: ["Ocultamiento lunar de $0$"]
+        }, {
+            label: "Alcanza su brillo máximo",
+            multipleTxt: 0,
+            options: [{
+                label: "Cuerpo",
+                type: "text"
+            }, {
+                label: "Distancia del sol (UA)",
+                type: "number"
+            }, {
+                label: "Distance de la Tierra (UA)",
+                type: "number"
+            }],
+            text: ["$0$ alcanzará su brillo máximo. Estará a una distancia de $1$ UA del Sol, y a una distancia de $2$ UA de la Tierra."],
+            titleTxt: ["$0$ alcanza su brillo máximo"]
+        }, {
+            label: "Cuerpo en",
+            multipleTxt: 1,
+            options: [{
+                label: "Tipo",
+                selTxt: true,
+                type: "select",
+                options: [{
+                    label: "Dichotomía",
+                    val: "00",
+                }, {
+                    label: "Mayor elongación oeste",
+                    val: "11",
+                }, {
+                    label: "Mayor elongación este",
+                    val: "22",
+                }, {
+                    label: "Brillo máximo",
+                    val: "33",
+                }, {
+                    label: "Mayor altitud en el cielo",
+                    val: "44",
+                }]
+            }, {
+                label: "Cuerpo",
+                type: "text"
+            }, {
+                label: "Aparición",
+                type: "text"
+            }, {
+                label: "Tiempo",
+                type: "select",
+                options: [{
+                    label: "Matutino",
+                    val: "matutin",
+                }, {
+                    label: "Vespertino",
+                    val: "vespertin",
+                }]
+            }, {
+                label: "Magnitud",
+                type: "number"
+            }],
+            text: [
+                "$1$ alcanzará su fase media en su aparición $3$a de $2$. Estará brillando con magnitud $4$.",
+                "$1$ alcanzará su mayor separación del Sol en su aparición $3$a de $2$. Estará brillando con magnitud $4$.",
+                "$1$ alcanzará su mayor separación del Sol en su aparición $3$a de $2$. Estará brillando con magnitud $4$.",
+                "$1$ alcanzará su brillo máximo en su aparición $3$a de $2$. Estará brillando con magnitud $4$.",
+                "$1$ alcanzará su mayor altitud en el cielo en su aparición $3$a de $2$. Estará brillando con magnitud $4$."
+            ],
+            titleTxt: [
+                "$1$ en dichotomía",
+                "$1$ en mayor elongación oeste",
+                "$1$ en mayor elongación este",
+                "$1$ en brillo máximo",
+                "$1$ en su mayor altitud en el cielo $3$o"
+            ]
         }],
         //****************
         en: [{
@@ -358,7 +463,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 label: "Cuerpo",
                 type: "text"
             }, {
-                label: "Separación (gradºmin')",
+                label: "Separation (degºmin')",
                 type: "text",
                 placeholder: "0º0\'"
             }],
@@ -678,6 +783,111 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 "June Solstice",
                 "September Equinox",
                 "December Solstice"
+            ]
+        }, {
+            label: "Meteor shower",
+            multipleTxt: 0,
+            options: [{
+                label: "Name",
+                type: "text"
+            }, {
+                label: "beginning",
+                type: "text"
+            }, {
+                label: "End",
+                type: "text"
+            }, {
+                label: "Peak",
+                type: "text"
+            }, {
+                label: "Constellation",
+                type: "text"
+            }],
+            text: ["The $0$ meteor shower $g-year$ will be active from $1$ to $2$, producing its peak rate of meteors around $3$. It will be best seen around the constellation of $4$."],
+            titleTxt: ["$0$ meteor shower $g-year$"]
+        }, {
+            label: "Lunar occultation",
+            multipleTxt: 0,
+            options: [{
+                label: "Body",
+                type: "text"
+            }, {
+                label: "Zones",
+                type: "text",
+            }],
+            text: ["The Moon will pass in front of $0$, creating a lunar occultation visible from $1$. Due to the closeness of the Moon to the Earth, a lunar occultation is not visible all the world."],
+            titleTxt: ["Lunar occultation of $0$"]
+        }, {
+            label: "Reaches its brightest",
+            multipleTxt: 0,
+            options: [{
+                label: "Body",
+                type: "text"
+            }, {
+                label: "Distance from the Sun (AU)",
+                type: "number"
+            }, {
+                label: "Distance from Earth (AU)",
+                type: "number"
+            }],
+            text: ["$0$ will reach its brightest. It will lie at a distance of $1$ AU from the Sun, and at a distance of $2$ AU from the Earth."],
+            titleTxt: ["$0$ reaches its brightest"]
+        }, {
+            label: "Body at",
+            multipleTxt: 1,
+            options: [{
+                label: "Type",
+                selTxt: true,
+                type: "select",
+                options: [{
+                    label: "Dichotomy",
+                    val: "00",
+                }, {
+                    label: "Greatest elongation west",
+                    val: "11",
+                }, {
+                    label: "Greatest elongation east",
+                    val: "22",
+                }, {
+                    label: "Greatest brightness",
+                    val: "33",
+                }, {
+                    label: "Highest altitude in evening sky",
+                    val: "44",
+                }]
+            }, {
+                label: "Body",
+                type: "text"
+            }, {
+                label: "Aparition",
+                type: "text"
+            }, {
+                label: "Time",
+                type: "select",
+                options: [{
+                    label: "Morning",
+                    val: "morning",
+                }, {
+                    label: "Evening",
+                    val: "evening",
+                }]
+            }, {
+                label: "Magnitude",
+                type: "number"
+            }],
+            text: [
+                "$1$ will reach half phase in its $2$ $3$ apparition. It will be shining brightly at mag $4$.",
+                "$1$ will reach its greatest separation from the Sun in its $2$ $3$ apparition. It will be shining brightly at mag $4$.",
+                "$1$ will reach its greatest separation from the Sun in its $2$ $3$ apparition. It will be shining brightly at mag $4$.",
+                "$1$ will reach its greatest brightness in its $2$ $3$ apparition. It will be shining brightly at mag $4$.",
+                "$1$ will reach its highest point in the sky in its $2$ $3$ apparition. It will be shining brightly at mag $4$."
+            ],
+            titleTxt: [
+                "$1$ at dichotomy",
+                "$1$ at greatest elongation west",
+                "$1$ at greatest elongation east",
+                "$1$ at greatest brightness",
+                "$1$ at highest altitude in $3$ sky"
             ]
         }]
     }).then(() => {
