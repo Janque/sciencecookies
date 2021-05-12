@@ -6,13 +6,15 @@
     "build": "./scripts/parcelBuild"
   },
   "devDependencies": {
-    "cssnano": "^4.1.10",
+    "cssnano": "^5.0.2",
     "pug": "^3.0.2",
     "sass": "^1.32.8"
   },
   "dependencies": {
     "express": "^4.17.1",
-    "is-svg": "^4.3.1"
+    "is-svg": "^4.3.1",
+    "lodash": "^4.17.21",
+    "postcss": "^8.2.15"
   },
   "browserslist": [
     "last 3 and_chr versions",
