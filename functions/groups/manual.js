@@ -299,17 +299,29 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                     val: "11",
                 }],
             }, {
-                translatable: true,
                 label: "Planeta",
-                type: "text"
+                type: "select",
+                options: [{
+                    label: "Júpiter",
+                    val: "Júpiter",
+                }, {
+                    label: "Saturno",
+                    val: "Saturno",
+                },{
+                    label: "Urano",
+                    val: "Urano",
+                }, {
+                    label: "Neptuno",
+                    val: "Neptuno",
+                }],
             }],
             text: [
                 "$1$ detendrá su usual movimiento en dirección este a través de las constelaciones y comenzará a moverse hacia el oeste.<br>Este cambio de dirección es un fenómeno debido al cambio de perspectiva por la posición de La Tierra y los planetas exteriores. Ocurre unos meses antes de alcanzar la oposición.",
                 "$1$ detendrá su movimiento en dirección oeste a través de las constelaciones y comenzará a moverse de nuevo hacia el este.<br>Este cambio de dirección es un fenómeno debido al cambio de perspectiva por la posición de La Tierra y los planetas exteriores. Ocurre unos meses después de pasar la oposición."
             ],
             titleTxt: [
-                "$1$ entra en movimiento retrograda",
-                "$1$ termina su movimiento retrograda"
+                "$1$ entra en movimiento retrógrada",
+                "$1$ termina su movimiento retrógrada"
             ]
         }, {
             label: "Eclipse",
@@ -798,9 +810,21 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                     val: "11",
                 }],
             }, {
-                translatable: true,
                 label: "Planet",
-                type: "text"
+                type: "select",
+                options: [{
+                    label: "Jupiter",
+                    val: "Jupiter",
+                }, {
+                    label: "Saturn",
+                    val: "Saturn",
+                },{
+                    label: "Uranus",
+                    val: "Uranus",
+                }, {
+                    label: "Neptune",
+                    val: "Neptune",
+                }],
             }],
             text: [
                 "$1$ will enter retrograde motion, halting its usual eastward movement through the constellations, and turning to move westwards instead.<br>This reversal of direction is a phenomenon cuased the change of perspective due to Earth's and the outer planet's position. It occurs a few months before they reach opposition.",
