@@ -10,6 +10,7 @@ exports.dynCalendars = require('./groups/dynCalendars');
 exports.dynAllCals = require('./groups/dynAllCals');
 exports.dynArchive = require('./groups/dynArchive');
 exports.maintenance = require('./groups/maintenance');
+exports.manual = require('./groups/manual');
 exports.publish = require('./groups/publish');
 exports.sitemap = require('./groups/sitemap');
 exports.translations = require('./groups/translations');

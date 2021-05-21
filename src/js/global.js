@@ -162,15 +162,15 @@ function shwSsnBtns(ac) {
 //Log Out
 document.getElementById("btnLgO").onclick = function () {
     firebase.auth().signOut().then(function () {
-        if (lang = "es") {
+        if (lang == "es") {
             alertTop("Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>", 2);
-        } else if (lang = "en") {
+        } else if (lang == "en") {
             alertTop("You have successfully closed your session. <strong>! Come back soon! </strong>", 2);
         }
     }).catch(function (err) {
-        if (lang = "es") {
+        if (lang == "es") {
             alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
-        } else if (lang = "en") {
+        } else if (lang == "en") {
             alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
         }
     });

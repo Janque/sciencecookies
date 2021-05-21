@@ -68,6 +68,7 @@ node_modules/
 *.DS_Store
 
 .cache
+.parcel-cache
 
 # GCP keys
 *Key.json

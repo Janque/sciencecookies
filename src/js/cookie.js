@@ -26,17 +26,17 @@ window.loaded = function loaded() {
             comm: reporting,
             mess: document.getElementById('inText').value,
         }).then(function () {
-            if (lang = "es") {
+            if (lang == "es") {
                 alertTop("Gracias por tu reporte, lo revisaremos lo antes posible.", 2);
-            } else if (lang = "en") {
+            } else if (lang == "en") {
                 alertTop("Thank you for your report, we will review it as soon as posible.", 2);
             }
             $('#mdlRprt').modal('hide');
         }).catch(function (err) {
             console.log('err');
-            if (lang = "es") {
+            if (lang == "es") {
                 alertTop("Ha ocurrido un error, por favor intenta nuevamente.", 0);
-            } else if (lang = "en") {
+            } else if (lang == "en") {
                 alertTop("There has been an error, please try again.", 0);
             }
             $('#mdlRprt').modal('hide');
@@ -58,9 +58,9 @@ window.loaded = function loaded() {
         };
         addComment(comFrm).then(comres => {
             if (comres.data.res == -1) {
-                if (lang = "es") {
+                if (lang == "es") {
                     alertTop("Ha ocurrido un error, por favor intenta nuevamente.", 0);
-                } else if (lang = "en") {
+                } else if (lang == "en") {
                     alertTop("There has been an error, please try again.", 0);
                 }
                 $('#mdlRprt').modal('hide');
@@ -69,9 +69,9 @@ window.loaded = function loaded() {
                     drwComs(comNum);
                     let bdate = new Date(comres.data.blc._seconds * 1000);
                     let dstr = bdate.getDate() + '/' + (bdate.getMonth() + 1) + '/' + bdate.getFullYear();
-                    if (lang = "es") {
+                    if (lang == "es") {
                         alertTop("No puedes comentar. Un moderador te ha bloqueado hasta " + dstr, 0);
-                    } else if (lang = "en") {
+                    } else if (lang == "en") {
                         alertTop("You cannot comment. A moderator has blocked you until " + dstr, 0);
                     }
                     $('#mdlRprt').modal('hide');
@@ -84,9 +84,9 @@ window.loaded = function loaded() {
                     }
                     comCount++;
                     drwComs(comNum);
-                    if (lang = "es") {
+                    if (lang == "es") {
                         alertTop("Se ha publicado tu comentario", 1);
-                    } else if (lang = "en") {
+                    } else if (lang == "en") {
                         alertTop("Your comment has been published", 1);
                     }
                     $('#mdlRprt').modal('hide');

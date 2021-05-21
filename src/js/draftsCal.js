@@ -82,9 +82,9 @@ function shwSrch() {
             let drpitm0 = document.createElement('button');
             classes(drpitm0, 'dropdown-item');
             drpitm0.onclick = function () {
-                if (lang = "es") {
+                if (lang == "es") {
                     window.location.href = '../editar-calendario?id=' + doc.id;
-                } else if (lang = "en") {
+                } else if (lang == "en") {
                     window.location.href = '../edit-calendar?id=' + doc.id;
                 }
             };
@@ -113,16 +113,16 @@ function shwSrch() {
             card.appendChild(h);
 
             let noImgTxt;
-            if (lang = "es") {
+            if (lang == "es") {
                 noImgTxt = "No hay imagen";
-            } else if (lang = "en") {
+            } else if (lang == "en") {
                 noImgTxt = "No image";
             }
 
             let a = document.createElement('a');
-            if (lang = "es") {
+            if (lang == "es") {
                 a.href = '../editar-calendario?id=' + doc.id;
-            } else if (lang = "en") {
+            } else if (lang == "en") {
                 a.href = '../edit-calendar?id=' + doc.id;
             }
             classes(a, 'text-decoration-none');

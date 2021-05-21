@@ -207,7 +207,7 @@ app.get('/cookies', (req, res) => {
 
 
 function longTri(tri, lang) {
-    if (lang = "es") {
+    if (lang == "es") {
         if (tri == 'ene-mar') return 'Enero - Marzo';
         if (tri == 'abr-jun') return 'Abril - Junio';
         if (tri == 'jul-sep') return 'Julio - Septiembre';

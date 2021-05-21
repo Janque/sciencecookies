@@ -23,9 +23,9 @@ window.loaded = function loaded() {
         let file = document.getElementById('inFile').value;
         cookiesFSRef.where('file', '==', file).limit(1).get().then(snap => {
             if (!snap.empty) {
-                if (lang = "es") {
+                if (lang == "es") {
                     alertTop("Ese nombre de archivo ya esta en uso.", 0, 'alrtPlusContainer');
-                } else if (lang = "en") {
+                } else if (lang == "en") {
                     alertTop("That file name is already in use.", 0, 'alrtPlusContainer');
                 }
             } else {
@@ -46,9 +46,9 @@ window.loaded = function loaded() {
                 }, err => {
                     if (err) {
                         setprog('0');
-                        if (lang = "es") {
+                        if (lang == "es") {
                             alertTop("<strong>Ocurrió un error: " + err + ".</strong><br>LLamar a Javier.", 0, 'alrtPlusContainer');
-                        } else if (lang = "en") {
+                        } else if (lang == "en") {
                             alertTop("<strong>There has been an error: " + err + ".</strong><br>Call Javier.", 0, 'alrtPlusContainer');
                         }
                         console.log(err);
@@ -101,16 +101,16 @@ window.loaded = function loaded() {
                             setTimeout(function () {
                                 setprog('100');
                                 document.getElementById('bar').classList.add('bg-success');
-                                if (lang = "es") {
+                                if (lang == "es") {
                                     alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
-                                } else if (lang = "en") {
+                                } else if (lang == "en") {
                                     alertTop(`Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-scckie" href="../edit?id=${id}">click here</a>.`, 1, 'alrtPlusContainer');
                                 }
                             }, 1000);
                             setTimeout(function () {
-                                if (lang = "es") {
+                                if (lang == "es") {
                                     window.location.href = '../editar?id=' + id;
-                                } else if (lang = "en") {
+                                } else if (lang == "en") {
                                     window.location.href = '../edit?id=' + id;
                                 }
                             }, 3000);
@@ -345,14 +345,14 @@ function shwSrch() {
 
 
             let authTxt, noImgTxt, creatTxt, uptTxt, pubTxt, noPubTxt;
-            if (lang = "es") {
+            if (lang == "es") {
                 authTxt = "Autor(es)";
                 noImgTxt = "No hay imagen";
                 noPubTxt = "Sin publicar";
                 creatTxt = "Creado: ";
                 uptTxt = "Actualizado: ";
                 pubTxt = "Publicado: ";
-            } else if (lang = "en") {
+            } else if (lang == "en") {
                 authTxt = "Author(s)";
                 noImgTxt = "No image";
                 noPubTxt = "Not public";

@@ -11,7 +11,21 @@ let newMedSrc = null;
 
 let eventToShow = null;
 
-const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'], longDay = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'];
+async function translateSimple(text, from, target) {
+    let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateSimple');
+    let res = await translate({
+        text: text,
+        from: from,
+        target: target
+    });
+    return res.data;
+}
+
+const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+const longDay = {
+    es: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'],
+    en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+}
 function fullMonth(n, l) {
     if (l == "es") {
         switch (n) {
@@ -143,9 +157,9 @@ window.loaded = function loaded() {
                 setprog(document.getElementById('barChgImg'), (snap.bytesTransferred / snap.totalBytes) * 100);
             },
             function error(err) {
-                if (lang = "es") {
+                if (lang == "es") {
                     alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
-                } else if (lang = "en") {
+                } else if (lang == "en") {
                     alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
                 }
                 console.log(err);
@@ -246,7 +260,7 @@ function showEvent() {
     Object.keys(docDat.events).forEach(key => {
         hideEl(document.getElementById(key));
     });
-    document.getElementById('mdlEventInfoL').innerHTML = docDat.events[eventToShow].date;
+    document.getElementById('mdlEventInfoL').innerHTML = docDat.events[eventToShow].date[lang];
     showEl(document.getElementById(eventToShow));
     enable(document.getElementById('btnPriorEve'));
     enable(document.getElementById('btnNextEve'));
@@ -368,10 +382,18 @@ function render() {
                 btnPlusEvent.innerHTML = '<i class="fas fa-plus"></i>';
                 btnPlusEvent.onclick = () => {
                     docDat.events[wIdx + daysOfWeek[i] + day.events.length] = {
-                        date: longDay[i] + " " + day.date + " de " + fullMonth(docId % 100),
+                        date: {
+                            es: longDay["es"][i] + " " + day.date + " de " + fullMonth(docId % 100, lang),
+                            en: longDay["en"][i] + ", " + fullMonth(docId % 100, "en") + " " + day.date
+                        },
+                        typeIdx: 0,
+                        vals: {
+                            0: { label: "Título", val: "Evento sin nombre" },
+                            1: { label: "Description", val: "Sin descripción" },
+                        },
                         name: "Evento sin nombre",
                         description: "Sin descripción",
-                        visibilidad: "Visible a simple vista",
+                        visibilidad: calConfig.visOpts[lang][0],
                         horario: ["Ciudad de México:", "Bogotá:", "Madrid:"]
                     };
                     day.events.push({
@@ -387,6 +409,26 @@ function render() {
     document.getElementById('eventInfoCont').innerHTML = "";
     for (const [key, event] of Object.entries(docDat.events)) {
         let changed = false;
+
+        //@#Migration
+        if (event.typeIdx == undefined) {
+            event.typeIdx = 0;
+            event.vals = {
+                0: { label: "Título", val: event.name },
+                1: { label: "Description", val: event.description },
+            }
+            regenTxt();
+            changed = true;
+        }
+        if (typeof event.date != "object") {
+            event.date = {
+                es: longDay["es"][daysOfWeek.indexOf(key.substring(1, 4))] + " " + docDat.weeks[parseInt(key.charAt(0))][key.substring(1, 4)].date + " de " + fullMonth(docId % 100, lang),
+                en: longDay["en"][daysOfWeek.indexOf(key.substring(1, 4))] + ", " + fullMonth(docId % 100, "en") + " " + docDat.weeks[parseInt(key.charAt(0))][key.substring(1, 4)].date
+            }
+            changed = true;
+        }
+        //End migration
+
         let form = document.createElement('div');
         form.id = key;
         classes(form, "d-none overflow-auto");
@@ -397,69 +439,213 @@ function render() {
         let fsec = document.createElement('div');
         classes(fsec, "d-none");
         bod.appendChild(fsec);
-        let fg0 = document.createElement('div');
-        classes(fg0, "form-group");
-        fsec.appendChild(fg0);
-        fg0.innerHTML = '<label>Nombre del evento</label>';
-        let in0 = document.createElement('input');
-        in0.id = "inEveTitle" + key;
-        in0.setAttribute("type", "text");
-        classes(in0, "form-control");
-        fg0.appendChild(in0);
-        let fg1 = document.createElement('div');
-        classes(fg1, "form-group");
-        fsec.appendChild(fg1);
-        fg1.innerHTML = '<label>Descripción</label>';
-        let in1 = document.createElement('textarea');
-        classes(in1, "form-control");
-        in1.id = "inEveDesc" + key;
-        in1.setAttribute("rows", "3");
-        fg1.appendChild(in1);
-        let fg2 = document.createElement('div');
-        classes(fg2, "form-group");
-        fsec.appendChild(fg2);
-        fg2.innerHTML = '<label>Visiblidad</label>';
-        let in2 = document.createElement('select');
-        in2.id = "inVis" + key;
-        classes(in2, "form-control");
-        let visOpts = ["Visible a simple vista", "Visible con binoculares", "Visible con un telescopio pequeño", "Visible con un telescopio de 4 pulgadas", "Visible con un telescopio grande", "No observable"]
-        visOpts.forEach((itm, idx) => {
+        let fgType = document.createElement('div');
+        classes(fgType, "form-group");
+        fsec.appendChild(fgType);
+
+        let selTypeMainL = document.createElement('label');
+        if (lang == "es") {
+            selTypeMainL.innerText = "Tipo de evento";
+        } else if (lang == "en") {
+            selTypeMainL.innerText = "Event type";
+        }
+        fgType.appendChild(selTypeMainL);
+        let selTypeMain = document.createElement('select');
+        classes(selTypeMain, "form-control");
+        selTypeMain.setAttribute('multiple', 'true');
+        calConfig[lang].forEach((itm, idx) => {
+            let opt = document.createElement('option');
+            opt.value = idx;
+            opt.innerText = itm.label;
+            if ((!event.typeIdx && idx == 0) || idx == event.typeIdx) opt.setAttribute('selected', 'true');
+            selTypeMain.appendChild(opt);
+        });
+        selTypeMain.oninput = () => {
+            changed = true;
+            event.typeIdx = parseInt(selTypeMain.value);
+            if (!event.typeIdx) event.typeIdx = 0;
+            reloadForm();
+        }
+        fgType.appendChild(selTypeMain);
+
+        let inTitleHid = document.createElement('input');
+        inTitleHid.setAttribute("type", "text");
+        inTitleHid.id = "inEveTitle" + key;
+        let inDescHid = document.createElement('textarea');
+        inDescHid.id = "inEveDesc" + key;
+
+        let fRow = document.createElement('div');
+        classes(fRow, "form-row");
+        fsec.insertBefore(fRow, fgType.nextSibling);
+        function reloadForm() {
+            fRow.innerHTML = "";
+            calConfig[lang][event.typeIdx].options.forEach((option, idx) => {
+                let fCol = document.createElement('div');
+                classes(fCol, "col-auto form-group");
+                let label = document.createElement('label');
+                label.innerText = option.label;
+                fCol.appendChild(label);
+                let inp;
+                switch (option.type) {
+                    case "select":
+                        inp = document.createElement('select');
+                        option.options.forEach((itm, i) => {
+                            let opt = document.createElement('option');
+                            opt.value = itm.val;
+                            opt.innerHTML = itm.label;
+                            if ((i == 0 && (!event.vals || !event.vals[idx])) || (event.vals && event.vals[idx] && event.vals[idx].val == itm.val)) {
+                                opt.selected = true;
+                                event.vals[idx] = {
+                                    label: itm.label,
+                                    val: itm.val,
+                                }
+                            }
+                            inp.appendChild(opt);
+                        });
+                        break;
+                    case "textarea":
+                        inp = document.createElement('textarea');
+                        inp.setAttribute("rows", "3");
+                        if (event.vals[idx] && event.vals[idx].val) inp.value = event.vals[idx].val;
+                        break;
+                    default:
+                        inp = document.createElement('input');
+                        inp.setAttribute("type", option.type);
+                        if (event.vals[idx] && event.vals[idx].val) inp.value = event.vals[idx].val;
+                }
+                if (option.placeholder) inp.placeholder = option.placeholder;
+                classes(inp, "form-control form-control-sm");
+                fCol.appendChild(inp);
+                fRow.appendChild(fCol);
+
+                let sfRow = document.createElement('div');
+                classes(sfRow, "form-row d-none");
+                fsec.insertBefore(sfRow, fRow.nextSibling);
+                if (option.valForSub) {
+                    option.sub.forEach((soption, sidx) => {
+                        let sfCol = document.createElement('div');
+                        classes(sfCol, "col-auto form-group");
+                        let slabel = document.createElement('label');
+                        slabel.innerText = soption.label;
+                        sfCol.appendChild(slabel);
+                        let sinp;
+                        switch (soption.type) {
+                            case "select":
+                                sinp = document.createElement('select');
+                                soption.options.forEach((itm, i) => {
+                                    let opt = document.createElement('option');
+                                    opt.value = itm.val;
+                                    opt.innerHTML = itm.label;
+                                    if ((i == 0 && (!event.vals || !event.vals[idx + '-' + sidx])) || (event.vals && event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val == itm.val)) {
+                                        opt.selected = true;
+                                        event.vals[idx + '-' + sidx] = {
+                                            label: itm.label,
+                                            val: itm.val,
+                                        }
+                                    }
+                                    sinp.appendChild(opt);
+                                });
+                                break;
+                            case "textarea":
+                                sinp = document.createElement('textarea');
+                                sinp.setAttribute("rows", "3");
+                                if (event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val) sinp.value = event.vals[idx + '-' + sidx].val;
+                                break;
+                            default:
+                                sinp = document.createElement('input');
+                                sinp.setAttribute("type", soption.type);
+                                if (event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val) sinp.value = event.vals[idx + '-' + sidx].val;
+                        }
+                        if (soption.placeholder) sinp.placeholder = soption.placeholder;
+                        classes(sinp, "form-control form-control-sm");
+                        sfCol.appendChild(sinp);
+                        sfRow.appendChild(sfCol);
+
+                        sinp.oninput = function () {
+                            changed = true;
+                            event.vals[idx + '-' + sidx] = {};
+                            event.vals[idx + '-' + sidx].val = sinp.value;
+                            if (option.type == "select") event.vals[idx + '-' + sidx].label = sinp.innerText;
+                            else event.vals[idx + '-' + sidx].label = soption.label;
+                            regenTxt();
+                        }
+                    });
+                }
+
+                inp.oninput = function () {
+                    changed = true;
+                    event.vals[idx] = {};
+                    event.vals[idx].val = inp.value;
+                    if (option.type == "select") event.vals[idx].label = inp.innerText;
+                    else event.vals[idx].label = option.label;
+                    if (option.valForSub) {
+                        if (option.valForSub == inp.value) showEl(sfRow);
+                        else hideEl(sfRow);
+                    }
+                    regenTxt();
+                }
+            });
+        }
+        reloadForm();
+
+        function regenTxt() {
+            if (key == '0mon0') console.log(event);
+            if (calConfig[lang][event.typeIdx].multipleTxt) {
+                event.description = parseInt(event.vals["0"].val.charAt(0));
+                event.name = parseInt(event.vals["0"].val.charAt(1));
+            } else {
+                event.description = event.name = 0;
+            }
+            event.description = calConfig[lang][event.typeIdx].text[event.description];
+            event.name = calConfig[lang][event.typeIdx].titleTxt[event.name];
+            for (const [vKey, vVal] of Object.entries(event.vals)) {
+                event.description = event.description.replaceAll("$" + vKey + "L$", vVal.label);
+                event.description = event.description.replaceAll("$" + vKey + "$", vVal.val);
+                event.name = event.name.replaceAll("$" + vKey + "L$", vVal.label);
+                event.name = event.name.replaceAll("$" + vKey + "$", vVal.val);
+            }
+        }
+        regenTxt();
+
+        let fgVis = document.createElement('div');
+        classes(fgVis, "form-group");
+        fsec.appendChild(fgVis);
+        fgVis.innerHTML = '<label>Visiblidad</label>';
+        let inVis = document.createElement('select');
+        inVis.id = "inVis" + key;
+        classes(inVis, "form-control");
+        calConfig.visOpts[lang].forEach((itm, idx) => {
             let opt = document.createElement('option');
             opt.value = idx;
             opt.innerHTML = itm;
             if (itm == event.visibilidad) opt.setAttribute('selected', "true");
-            in2.appendChild(opt);
+            inVis.appendChild(opt);
         });
-        fg2.appendChild(in2);
-        let fg3 = document.createElement('div');
-        classes(fg3, "form-group");
-        fsec.appendChild(fg3);
-        fg3.innerHTML = '<label>Horario</label>';
-        let in3 = document.createElement('textarea');
-        classes(in3, "form-control");
-        in3.id = "inTime" + key;
-        in3.setAttribute("rows", "4");
-        fg3.appendChild(in3);
-        if (in2.value == 5) hideEl(fg3);
-        else showEl(fg3);
-        in0.oninput = () => {
-            enable(reverBtn);
+        fgVis.appendChild(inVis);
+
+        let fgTime = document.createElement('div');
+        classes(fgTime, "form-group");
+        fsec.appendChild(fgTime);
+        fgTime.innerHTML = '<label>Horario</label>';
+        let inTime = document.createElement('textarea');
+        classes(inTime, "form-control");
+        inTime.id = "inTime" + key;
+        inTime.setAttribute("rows", "4");
+        fgTime.appendChild(inTime);
+        if (inVis.value == 5) hideEl(fgTime);
+        else showEl(fgTime);
+
+        inVis.oninput = () => {
+            changed = true;
+            if (inVis.value == 5) hideEl(fgTime);
+            else showEl(fgTime);
+        };
+        inTime.oninput = () => {
             changed = true;
         };
-        in1.oninput = () => {
-            enable(reverBtn);
-            changed = true;
-        };
-        in2.oninput = () => {
-            enable(reverBtn);
-            changed = true;
-            if (in2.value == 5) hideEl(fg3);
-            else showEl(fg3);
-        };
-        in3.oninput = () => {
-            enable(reverBtn);
-            changed = true;
-        };
+
+        //Must be declared here
+        let saveBtn = document.createElement('button');
 
         let selLangCC = document.createElement('div');
         classes(selLangCC, "row");
@@ -473,25 +659,60 @@ function render() {
         let btnTrans = document.createElement('button');
         classes(btnTrans, 'btn btn-scckie mx-2');
         btnTrans.innerHTML = '<i class="fas fa-language"></i>';
-        btnTrans.onclick = function () {//@#Aqui
-            db.collection('calendar/langs/' + selLang.value).doc(docId).get().then(async function (doc) {
-                let sect = doc.data().events[key];
-                if (!sect) return;
-                if (sect.type == 'head') {
-                    docDat.cont[idx].title = await translateSimple(sect.title, selLang.value, lang);
-                } else if (sect.type == 'html') {
-                    docDat.cont[idx].html = await translateSimple(sect.html, selLang.value, lang);
-                } else if (sect.type == 'parra') {
-                    docDat.cont[idx].text = await translateSimple(sect.text, selLang.value, lang);
-                    if (sect.title != "0") {
-                        docDat.cont[idx].titleTxt = await translateSimple(sect.titleTxt, selLang.value, lang);
+        btnTrans.onclick = function () {
+            db.collection('calendars/langs/' + selLang.value).doc(docId).get().then(async function (doc) {
+                let newEve = doc.data().events[key];
+                if (!newEve) return;
+                event.typeIdx = newEve.typeIdx;
+                event.vals = newEve.vals;
+                for (let i = 0; i < calConfig[lang][event.typeIdx].options.length; i++) {
+                    const option = calConfig[lang][event.typeIdx].options[i];
+                    if (option.type == "select") {
+                        event.vals[i] = option.options[
+                            calConfig[selLang.value][event.typeIdx].options[i].options
+                                .map(function (e) {
+                                    return e.val;
+                                })
+                                .indexOf(event.vals[i].val)
+                        ];
+                    } else {
+                        if (option.translatable) {
+                            event.vals[i].val = await translateSimple(event.vals[i].val, selLang.value, lang)
+                        }
+                        event.vals[i].label = option.label;
                     }
-                } else if (sect.type == 'medSimple') {
-                    docDat.cont[idx].alt = await translateSimple(sect.alt, selLang.value, lang);
-                    docDat.cont[idx].caption = await translateSimple(sect.caption, selLang.value, lang);
+                    if (event.vals["0"].val == event.valForSub) {
+                        for (let j = 0; j < calConfig[lang][event.typeIdx].options[i].sub.length; j++) {
+                            const opt = calConfig[lang][event.typeIdx].options[i].sub[j];
+                            if (opt.type == "select") {
+                                event.vals[i + "-" + j] = option.options[
+                                    calConfig[selLang.value][event.typeIdx].options[i].options
+                                        .map(function (e) {
+                                            return e.val;
+                                        })
+                                        .indexOf(event.vals[i + "-" + j].val)
+                                ];
+                            } else {
+                                if (opt.translatable) {
+                                    event.vals[i + "-" + j].val = await translateSimple(event.vals[i + "-" + j].val, selLang.value, lang)
+                                }
+                                event.vals[i + "-" + j].label = opt.label;
+                            }
+                        }
+                    }
                 }
-                console.log(docDat.cont[idx]);
-                normSave();
+                event.visibilidad = calConfig.visOpts[lang][calConfig.visOpts[selLang.value].indexOf(newEve.visibilidad)];
+                event.horario = [];
+                console.log(event.horario);
+                for (let i = 0; i < newEve.horario.length; i++) {
+                    event.horario.push(await translateSimple(newEve.horario[i], selLang.value, lang));
+                }
+                inTime.innerHTML = "";
+                event.horario.forEach(time => {
+                    inTime.innerHTML += time + "\n";
+                });
+                changed = true;
+                saveBtn.click();
             }).catch(err => console.log(err));
         }
         selLangCC.appendChild(btnTrans);
@@ -519,7 +740,7 @@ function render() {
             li.innerHTML = time;
             eveTimeLst.appendChild(li);
         });
-        if (event.visibilidad == "No observable") {
+        if (event.visibilidad == calConfig.visOpts[lang][5]) {
             hideEl(eveTime);
             hideEl(eveTimeLst);
         }
@@ -553,66 +774,41 @@ function render() {
         editBtn.setAttribute("type", "button");
         editBtn.innerText = "Editar";
         editBtn.onclick = () => {
-            in0.value = event.name;
-            in1.innerHTML = event.description;
-            in2.value = visOpts.indexOf(event.visibilidad);
-            if (in2.value == 5) hideEl(fg3);
-            else showEl(fg3);
-            in3.innerHTML = "";
+            inVis.value = calConfig.visOpts[lang].indexOf(event.visibilidad);
+            if (inVis.value == 5) hideEl(fgTime);
+            else showEl(fgTime);
+            inTime.innerHTML = "";
             event.horario.forEach(time => {
-                in3.innerHTML += time + "\n";
+                inTime.innerHTML += time + "\n";
             });
             hideEl(tsec);
             showEl(fsec);
-            showEl(reverBtn);
             showEl(saveBtn);
             enable(saveBtn);
             hideEl(editBtn);
         };
         foot.appendChild(editBtn);
-        let reverBtn = document.createElement('button');
-        classes(reverBtn, "btn btn-secondary mr-1 d-none");
-        reverBtn.setAttribute("type", "button");
-        disable(reverBtn);
-        reverBtn.innerText = "Revertir";
-        reverBtn.onclick = () => {
-            changed = false;
-            disable(reverBtn);
-            in0.value = event.name;
-            in1.innerHTML = event.description;
-            in2.value = visOpts.indexOf(event.visibilidad);
-            if (in2.value == 5) hideEl(fg3);
-            else showEl(fg3);
-            in3.innerHTML = "";
-            event.horario.forEach(time => {
-                in3.innerHTML += time.trim() + "\n";
-            });
-        };
-        foot.appendChild(reverBtn);
-        let saveBtn = document.createElement('button');
+        //Declared before
         classes(saveBtn, "btn btn-scckie d-none");
         saveBtn.setAttribute("type", "button");
         disable(saveBtn);
         saveBtn.innerText = "Guardar";
         saveBtn.onclick = () => {
-            disable(reverBtn);
             disable(saveBtn);
             if (changed) {
-                docDat.weeks[Number(key[0])][key.substr(1, 3)].events[key[4]].name = event.name = in0.value;
-                event.description = in1.value.trim();
-                event.visibilidad = visOpts[in2.value];
+                regenTxt();
+                docDat.weeks[Number(key[0])][key.substr(1, 3)].events[key[4]].name = event.name;
+                event.visibilidad = calConfig.visOpts[lang][inVis.value];
                 event.horario = [];
-                in3.value.trim().split('\n').forEach(time => {
+                inTime.value.trim().split('\n').forEach(time => {
                     if (time != "" && time != " ") event.horario.push(time);
                 });
                 normSave();
-            } else {
-                hideEl(fsec);
-                showEl(tsec);
-                hideEl(reverBtn);
-                hideEl(saveBtn);
-                showEl(editBtn);
             }
+            hideEl(fsec);
+            showEl(tsec);
+            hideEl(saveBtn);
+            showEl(editBtn);
         };
         foot.appendChild(saveBtn);
 
@@ -771,54 +967,53 @@ function newCal() {
             }
             const promises = [];
             langs.forEach(l => {
-                if (l != lang) {
-                    let newC = {
-                        events: {},
-                        published: firebase.firestore.Timestamp.fromDate(date),
-                        description: "",
-                        descriptionShort: "",
-                        finished: false,
-                        pastDue: false,
-                        picUrl: "",
-                        picAlt: "",
-                        picCapt: "",
-                        public: false,
-                        sentMail: false,
-                        revised: {},
-                        title: "",
-                        url: "",
-                        nextCal: "",
-                        priorCal: "",
-                        weeks: weeks,
-                        translations: {}
-                    }
-
-                    let intId = parseInt(nextCalID);
-                    let year = (intId - intId % 100) / 100;
-                    let nYear = (intId - intId % 100) / 100;
-                    let pYear = (intId - intId % 100) / 100;
-                    if (intId % 100 == 12) nYear++;
-                    if (intId % 100 == 1) pYear--;
-                    let month = fullMonth(intId % 100);
-                    let nMonth = fullMonth(intId % 100 + 1).toLowerCase();
-                    let pMonth = fullMonth(intId % 100 - 1).toLowerCase();
-                    let calsText = "";
-                    switch (l) {
-                        case "es":
-                            calsText = "calendario-astronomico";
-                            newC.title = "Calendario Astronómico de " + month + " " + year;
-                            break;
-                        case "en":
-                            calsText = "astronomic-calendar";
-                            newC.title = "Astronomic Calendar of " + month + " " + year;
-                            break;
-                    }
-                    newC.url = "https://sciencecookies.net/" + calsText + "/" + year + "/" + month.toLowerCase() + "/";
-                    newC.nextCal = "https://sciencecookies.net/" + calsText + "/" + nYear + "/" + nMonth + "/";
-                    newC.priorCal = "https://sciencecookies.net/" + calsText + "/" + pYear + "/" + pMonth + "/";
-
-                    promises.push(db.collection('calendars/langs/' + l).doc(Math.abs(nextCalID).toString()).set(newC));
+                let newC = {
+                    events: {},
+                    published: firebase.firestore.Timestamp.fromDate(date),
+                    description: "",
+                    descriptionShort: "",
+                    finished: false,
+                    pastDue: false,
+                    picUrl: "",
+                    picAlt: "",
+                    picCapt: "",
+                    public: false,
+                    sentMail: false,
+                    revised: {},
+                    title: "",
+                    url: "",
+                    nextCal: "",
+                    priorCal: "",
+                    weeks: weeks,
+                    translations: {}
                 }
+
+                let intId = parseInt(nextCalID);
+                let year = (intId - intId % 100) / 100;
+                let nYear = (intId - intId % 100) / 100;
+                let pYear = (intId - intId % 100) / 100;
+                if (intId % 100 == 12) nYear++;
+                if (intId % 100 == 1) pYear--;
+                let month = fullMonth(intId % 100, l);
+                let nMonth = fullMonth(intId % 100 + 1, l).toLowerCase();
+                let pMonth = fullMonth(intId % 100 - 1, l).toLowerCase();
+                let calsText = "";
+                switch (l) {
+                    case "es":
+                        calsText = "calendario-astronomico";
+                        newC.title = "Calendario Astronómico de " + month + " " + year;
+                        break;
+                    case "en":
+                        calsText = "astronomic-calendar";
+                        newC.title = "Astronomic Calendar of " + month + " " + year;
+                        break;
+                }
+                newC.url = "https://sciencecookies.net/" + calsText + "/" + year + "/" + month.toLowerCase() + "/";
+                newC.nextCal = "https://sciencecookies.net/" + calsText + "/" + nYear + "/" + nMonth + "/";
+                newC.priorCal = "https://sciencecookies.net/" + calsText + "/" + pYear + "/" + pMonth + "/";
+
+                promises.push(db.collection('calendars/langs/' + l).doc(Math.abs(nextCalID).toString()).set(newC));
+
             })
             return Promise.all(promises).then(() => {
                 console.log('exito');
@@ -851,18 +1046,18 @@ document.getElementById('btnCnfPublish').onclick = function () {
             pop: 0
         }, err => {
             if (err) {
-                if (lang = "es") {
+                if (lang == "es") {
                     alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
-                } else if (lang = "en") {
+                } else if (lang == "en") {
                     alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
                 }
                 console.log(err);
             } else {
                 setprog(document.getElementById('barPublish'), 100);
                 classes(document.getElementById('barPublish'), 'bg-success');
-                if (lang = "es") {
+                if (lang == "es") {
                     alertTop("Publicado correctamente", 1);
-                } else if (lang = "en") {
+                } else if (lang == "en") {
                     alertTop("Published successfully", 1);
                 }
                 setTimeout(function () {
@@ -874,9 +1069,9 @@ document.getElementById('btnCnfPublish').onclick = function () {
             }
         });
     }).catch(err => {
-        if (lang = "es") {
+        if (lang == "es") {
             alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
-        } else if (lang = "en") {
+        } else if (lang == "en") {
             alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
         }
         console.log(err);

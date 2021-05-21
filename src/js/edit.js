@@ -107,9 +107,9 @@ window.loaded = function loaded() {
             document.getElementById('btnCanTranslate1').classList.remove("disabled");
             hideEl(document.getElementById('barTranslateCont'))
         } else {
-            if (lang = "es") {
+            if (lang == "es") {
                 alertTop("<strong>¡Ha ocurrido un error!</strong>", 0);
-            } else if (lang = "en") {
+            } else if (lang == "en") {
                 alertTop("<strong>¡There has been an error!</strong>", 0);
             }
             console.log('err');
@@ -120,9 +120,9 @@ window.loaded = function loaded() {
         let file = document.getElementById('inFile').value;
         cookiesFSRef.where("file", "==", file).get().then(snap => {
             if (!snap.empty && file != docDat.file) {
-                if (lang = "es") {
+                if (lang == "es") {
                     alertTop("Ese nombre de archivo ya esta en uso.", 0);
-                } else if (lang = "en") {
+                } else if (lang == "en") {
                     alertTop("That file name is already in use.", 0);
                 }
             } else {
@@ -169,9 +169,9 @@ window.loaded = function loaded() {
                         setprog('barNewMed', (snap.bytesTransferred / snap.totalBytes) * 100);
                     },
                     function error(err) {
-                        if (lang = "es") {
+                        if (lang == "es") {
                             alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
-                        } else if (lang = "en") {
+                        } else if (lang == "en") {
                             alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
                         }
                         console.log(err);
@@ -398,9 +398,9 @@ function fillMed() {
                     normSave();
                 }
             } else {
-                if (lang = "es") {
+                if (lang == "es") {
                     alertTop("<strong>¿Quieres eliminar esta imagen?</strong> Presiona de nuevo el botón para confirmar.", 2);
-                } else if (lang = "en") {
+                } else if (lang == "en") {
                     alertTop("<strong>Do you want to delete this image? </strong> Press the button again to confirm.", 2);
                 }
                 toDelMed = idx;
@@ -519,9 +519,9 @@ function render() {
                     render();//Important
                     normSave();
                 } else {
-                    if (lang = "es") {
+                    if (lang == "es") {
                         alertTop("<strong>¿Quieres eliminar esta sección?</strong> Presiona de nuevo el botón para confirmar.", 2);
-                    } else if (lang = "en") {
+                    } else if (lang == "en") {
                         alertTop("<strong>Do you want to delete this section? </strong> Press the button again to confirm.", 2);
                     }
                     toDel = idx;
@@ -1401,9 +1401,9 @@ $('#mdlPublish').on('show.bs.modal', e => {
 function finishPub() {
     setprog('barPublish', 100);
     classes(document.getElementById('barPublish'), 'bg-success');
-    if (lang = "es") {
+    if (lang == "es") {
         alertTop("Publicado correctamente", 1);
-    } else if (lang = "en") {
+    } else if (lang == "en") {
         alertTop("Published successfully", 1);
     }
     setTimeout(function () {
@@ -1579,9 +1579,9 @@ document.getElementById('btnCnfPublish').onclick = function () {
             }
         });
     }).catch(err => {
-        if (lang = "es") {
+        if (lang == "es") {
             alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
-        } else if (lang = "en") {
+        } else if (lang == "en") {
             alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
         }
         console.log(err);

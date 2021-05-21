@@ -6,16 +6,11 @@
     "build": "./scripts/parcelBuild"
   },
   "devDependencies": {
-    "cssnano": "^5.0.2",
-    "pug": "^3.0.2",
-    "sass": "^1.32.8"
+    "@parcel/transformer-pug": "^2.0.0-beta.3.1",
+    "@parcel/transformer-sass": "^2.0.0-beta.3.1",
+    "parcel": "^2.0.0-beta.3.1"
   },
-  "dependencies": {
-    "express": "^4.17.1",
-    "is-svg": "^4.3.1",
-    "lodash": "^4.17.21",
-    "postcss": "^8.2.15"
-  },
+  "dependencies": {},
   "browserslist": [
     "last 3 and_chr versions",
     "last 3 chrome versions",
