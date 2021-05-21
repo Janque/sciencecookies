@@ -1,5 +1,3 @@
-import '../styles/index.scss';
-
 var catnmb;
 const previewLim = 20;
 

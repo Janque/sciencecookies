@@ -1,5 +1,3 @@
-import '../styles/edit.scss';
-
 var store = firebase.storage();
 var rtDb = firebase.database();
 
