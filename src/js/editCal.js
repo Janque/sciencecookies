@@ -1,5 +1,3 @@
-import '../styles/editCal.scss';
-
 var store = firebase.storage();
 var rtDb = firebase.database();
 
@@ -464,6 +462,7 @@ function render() {
             changed = true;
             event.typeIdx = parseInt(selTypeMain.value);
             if (!event.typeIdx) event.typeIdx = 0;
+            event.vals = {};
             reloadForm();
         }
         fgType.appendChild(selTypeMain);
@@ -589,7 +588,6 @@ function render() {
         reloadForm();
 
         function regenTxt() {
-            if (key == '0mon0') console.log(event);
             if (calConfig[lang][event.typeIdx].multipleTxt) {
                 event.description = parseInt(event.vals["0"].val.charAt(0));
                 event.name = parseInt(event.vals["0"].val.charAt(1));
