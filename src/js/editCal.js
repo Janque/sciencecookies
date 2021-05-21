@@ -599,8 +599,10 @@ function render() {
             for (const [vKey, vVal] of Object.entries(event.vals)) {
                 event.description = event.description.replaceAll("$" + vKey + "L$", vVal.label);
                 event.description = event.description.replaceAll("$" + vKey + "$", vVal.val);
+                event.description = event.description.replaceAll("$g-year$", Math.floor(docId / 100));
                 event.name = event.name.replaceAll("$" + vKey + "L$", vVal.label);
                 event.name = event.name.replaceAll("$" + vKey + "$", vVal.val);
+                event.name = event.name.replaceAll("$g-year$", Math.floor(docId / 100));
             }
         }
         regenTxt();
