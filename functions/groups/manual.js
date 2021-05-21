@@ -62,6 +62,17 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
             val: 1,
             multipleTxt: true,
             options: [{
+                label: "Tipo",
+                selTxt: true,
+                type: "select",
+                options: [{
+                    label: "Conjunción",
+                    val: "00",
+                }, {
+                    label: "Acercamiento",
+                    val: "11",
+                }]
+            },{
                 translatable: true,
                 label: "Cuerpo 1",
                 type: "text"
@@ -75,12 +86,12 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 placeholder: "0º0\'"
             }],
             text: [
-                "$0$ y $1$ compartirán la misma ascensión recta, con $0$ pasando a $3$ al sur de $1$.",
-                "$0$ y $1$ pasarán a solo $3$ uno del otro en el cielo."
+                "$1$ y $2$ compartirán la misma ascensión recta, con $1$ pasando a $3$ al sur de $2$.",
+                "$1$ y $2$ pasarán a solo $3$ uno del otro en el cielo."
             ],
             titleTxt: [
-                "Conjunción de $0$ y $1$",
-                "Acercamiento de $0$ y $1$"
+                "Conjunción de $1$ y $2$",
+                "Acercamiento de $1$ y $2$"
             ]
         }, {
             label: "Fase lunar",
