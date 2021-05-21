@@ -476,6 +476,12 @@ function render() {
         let fRow = document.createElement('div');
         classes(fRow, "form-row");
         fsec.insertBefore(fRow, fgType.nextSibling);
+
+        //Must be declared here
+        let sfRow = document.createElement('div');
+        classes(sfRow, "form-row d-none");
+        fsec.insertBefore(sfRow, fRow.nextSibling);
+
         function reloadForm() {
             fRow.innerHTML = "";
             calConfig[lang][event.typeIdx].options.forEach((option, idx) => {
@@ -498,6 +504,8 @@ function render() {
                                     label: itm.label,
                                     val: itm.val,
                                 }
+                                if (option.valForSub == itm.val) showEl(sfRow);
+                                else hideEl(sfRow);
                             }
                             inp.appendChild(opt);
                         });
@@ -517,9 +525,7 @@ function render() {
                 fCol.appendChild(inp);
                 fRow.appendChild(fCol);
 
-                let sfRow = document.createElement('div');
-                classes(sfRow, "form-row d-none");
-                fsec.insertBefore(sfRow, fRow.nextSibling);
+                //sfRow declared before
                 if (option.valForSub) {
                     option.sub.forEach((soption, sidx) => {
                         let sfCol = document.createElement('div');
