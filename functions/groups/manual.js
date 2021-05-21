@@ -71,8 +71,20 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 }, {
                     label: "Acercamiento",
                     val: "11",
+                }],
+                valForSub: "00",
+                sub: [{
+                    label: "Dirección",
+                    type: "select",
+                    options: [{
+                        label: "Norte",
+                        val: "norte",
+                    }, {
+                        label: "Sur",
+                        val: "sur",
+                    }]
                 }]
-            },{
+            }, {
                 translatable: true,
                 label: "Cuerpo 1",
                 type: "text"
@@ -86,7 +98,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 placeholder: "0º0\'"
             }],
             text: [
-                "$1$ y $2$ compartirán la misma ascensión recta, con $1$ pasando a $3$ al sur de $2$.",
+                "$1$ y $2$ compartirán la misma ascensión recta, con $1$ pasando a $3$ al $0-0$ de $2$.",
                 "$1$ y $2$ pasarán a solo $3$ uno del otro en el cielo."
             ],
             titleTxt: [
@@ -557,6 +569,18 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 }, {
                     label: "Close aproach",
                     val: "11",
+                }],
+                valForSub: "00",
+                sub: [{
+                    label: "Direction",
+                    type: "select",
+                    options: [{
+                        label: "North",
+                        val: "north",
+                    }, {
+                        label: "South",
+                        val: "south",
+                    }]
                 }]
             }, {
                 translatable: true,
@@ -572,7 +596,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 placeholder: "0º0\'"
             }],
             text: [
-                "$1$ and $2$ will share the same right ascension, with $1$ passing $3$ to the south of $2$.",
+                "$1$ and $2$ will share the same right ascension, with $1$ passing $3$ to the $0-0$ of $2$.",
                 "$1$ and $2$ will make a close approach, passing within $3$ of each other in the sky."
             ],
             titleTxt: [
