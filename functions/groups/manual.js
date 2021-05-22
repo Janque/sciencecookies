@@ -307,7 +307,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 }, {
                     label: "Saturno",
                     val: "Saturno",
-                },{
+                }, {
                     label: "Urano",
                     val: "Urano",
                 }, {
@@ -818,7 +818,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 }, {
                     label: "Saturn",
                     val: "Saturn",
-                },{
+                }, {
                     label: "Uranus",
                     val: "Uranus",
                 }, {
@@ -1194,3 +1194,45 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
         return;
     });
 });
+/*
+exports.formatDBCtemp = functions.region('us-central1').https.onRequest((req, res) => {
+    return db.collection('calendars/langs/es').doc("202106").get().then(doc => {
+        let events = {};
+        for (const [key, event] of Object.entries(doc.data().events)) {
+            events[key] = {
+                date: event.date.es,
+                horario: event.horario,
+                description: event.description,
+                name: event.name,
+                visibilidad: event.visibilidad,
+            };
+        }
+        return db.collection('calendarios').doc("202106").set({
+            events: events,
+            date: doc.data().published,
+            description: doc.data().description,
+            descriptionShort: doc.data().descriptionShort,
+            finished: doc.data().finished,
+            pastDue: doc.data().pastDue,
+            picUrl: doc.data().picUrl,
+            picAlt: doc.data().picAlt,
+            picCapt: doc.data().picCapt,
+            public: doc.data().public,
+            sentMail: doc.data().sentMail,
+            revised: doc.data().revised,
+            title: doc.data().title,
+            url: doc.data().url,
+            nextCal: doc.data().nextCal,
+            priorCal: doc.data().priorCal,
+            weeks: doc.data().weeks,
+        });
+    }).then(() => {
+        console.log("Successful");
+        res.send('Successful');
+        return;
+    }).catch(err => {
+        console.log(err);
+        res.send(err);
+        return;
+    });
+});*/
