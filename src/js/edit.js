@@ -95,23 +95,25 @@ window.loaded = function loaded() {
         classes(document.getElementById('btnCanTranslate1'), "disabled")
         setprog('barTranslate', 0);
         showEl(document.getElementById('barTranslateCont'));
-        runprog('barTranslate', 0, 90);
-        let transRes = translateFrm();
-        if (transRes) {
-            setprog('barTranslate', 100);
-            $('#mdlTranslate').modal('hide');
-            document.getElementById('btnCnfTranslate').classList.remove("disabled");
-            document.getElementById('btnCanTranslate0').classList.remove("disabled");
-            document.getElementById('btnCanTranslate1').classList.remove("disabled");
-            hideEl(document.getElementById('barTranslateCont'))
-        } else {
-            if (lang == "es") {
-                alertTop("<strong>¡Ha ocurrido un error!</strong>", 0);
-            } else if (lang == "en") {
-                alertTop("<strong>¡There has been an error!</strong>", 0);
+        runprog('barTranslate', 0, 73);
+        translateFrm().then(res => {
+            runprog('barTranslate', 73, 90);
+            if (res) {
+                setprog('barTranslate', 100);
+                $('#mdlTranslate').modal('hide');
+                document.getElementById('btnCnfTranslate').classList.remove("disabled");
+                document.getElementById('btnCanTranslate0').classList.remove("disabled");
+                document.getElementById('btnCanTranslate1').classList.remove("disabled");
+                hideEl(document.getElementById('barTranslateCont'))
+            } else {
+                if (lang == "es") {
+                    alertTop("<strong>¡Ha ocurrido un error!</strong>", 0);
+                } else if (lang == "en") {
+                    alertTop("<strong>¡There has been an error!</strong>", 0);
+                }
+                console.log('err');
             }
-            console.log('err');
-        }
+        });
     });
 
     function fileFrm() {
@@ -331,7 +333,9 @@ function runprog(bar, b, e) {
     b = Math.floor(b);
     e = Math.floor(e);
     for (let i = b; i <= e; i++) {
-        setprog(bar, i);
+        setTimeout(() => {
+            setprog(bar, i);
+        }, 5);
     }
 }
 

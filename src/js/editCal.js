@@ -148,11 +148,47 @@ window.loaded = function loaded() {
         }).catch(err => console.log(err));
     }
 
+    function translateFrm() {
+        let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateFullCalendar');
+        return translate({
+            docId: docId,
+            from: document.getElementById('inTransFrom').value,
+            target: lang
+        });
+    }
+    document.getElementById("frmTranslate").addEventListener("submit", function (event) {
+        event.preventDefault();
+        classes(document.getElementById('btnCnfTranslate'), "disabled")
+        classes(document.getElementById('btnCanTranslate0'), "disabled")
+        classes(document.getElementById('btnCanTranslate1'), "disabled")
+        setprog('barTranslate', 0);
+        showEl(document.getElementById('barTranslateCont'));
+        runprog('barTranslate', 0, 73);
+        translateFrm().then(res => {
+            runprog('barTranslate', 73, 90);
+            if (res) {
+                setprog('barTranslate', 100);
+                $('#mdlTranslate').modal('hide');
+                document.getElementById('btnCnfTranslate').classList.remove("disabled");
+                document.getElementById('btnCanTranslate0').classList.remove("disabled");
+                document.getElementById('btnCanTranslate1').classList.remove("disabled");
+                hideEl(document.getElementById('barTranslateCont'))
+            } else {
+                if (lang == "es") {
+                    alertTop("<strong>¡Ha ocurrido un error!</strong>", 0);
+                } else if (lang == "en") {
+                    alertTop("<strong>¡There has been an error!</strong>", 0);
+                }
+                console.log('err');
+            }
+        });
+    });
+
     function addMed() {
         let ref = store.ref('calendarMedia/' + docId + '/pic');
         ref.put(newMedia).on('state_changed',
             function progress(snap) {
-                setprog(document.getElementById('barChgImg'), (snap.bytesTransferred / snap.totalBytes) * 100);
+                setprog('barChgImg', (snap.bytesTransferred / snap.totalBytes) * 100);
             },
             function error(err) {
                 if (lang == "es") {
@@ -181,7 +217,7 @@ window.loaded = function loaded() {
     }
     document.getElementById("frmChgImg").addEventListener("submit", function (event) {
         event.preventDefault();
-        setprog(document.getElementById('barChgImg'), 0);
+        setprog('barChgImg', 0);
         showEl(document.getElementById("barChgImgCont"));
         hideEl(document.getElementById("frmChgImg"));
         document.getElementById("btnCnfChgImg").setAttribute('disabled', 'true');
@@ -248,10 +284,20 @@ function normSave() {
 }
 
 function setprog(bar, n) {
+    bar = document.getElementById(bar);
     n = Math.floor(n);
     bar.setAttribute('aria-valuenow', n);
     bar.style.width = n + '%';
     bar.innerText = n + '%';
+}
+function runprog(bar, b, e) {
+    b = Math.floor(b);
+    e = Math.floor(e);
+    for (let i = b; i <= e; i++) {
+        setTimeout(() => {
+            setprog(bar, i);
+        }, 5);
+    }
 }
 
 function showEvent() {
@@ -709,7 +755,6 @@ function render() {
                 }
                 event.visibilidad = calConfig.visOpts[lang][calConfig.visOpts[selLang.value].indexOf(newEve.visibilidad)];
                 event.horario = [];
-                console.log(event.horario);
                 for (let i = 0; i < newEve.horario.length; i++) {
                     event.horario.push(await translateSimple(newEve.horario[i], selLang.value, lang));
                 }
@@ -1040,14 +1085,14 @@ $('#mdlPublish').on('show.bs.modal', e => {
 
 document.getElementById('btnCnfPublish').onclick = function () {
     if (docDat.public) return;
-    setprog(document.getElementById('barPublish'), 0);
+    setprog('barPublish', 0);
     showEl(document.getElementById('barPublishCont'));
 
     docDat.public = true;
-    setprog(document.getElementById('barPublish'), 25);
+    setprog('barPublish', 25);
 
     saveDoc().then(() => {
-        setprog(document.getElementById('barPublish'), 58);
+        setprog('barPublish', 58);
         admin.database().ref('calendarios/' + docId).set({
             pop: 0
         }, err => {
@@ -1059,7 +1104,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
                 }
                 console.log(err);
             } else {
-                setprog(document.getElementById('barPublish'), 100);
+                setprog('barPublish', 100);
                 classes(document.getElementById('barPublish'), 'bg-success');
                 if (lang == "es") {
                     alertTop("Publicado correctamente", 1);
