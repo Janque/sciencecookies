@@ -1040,7 +1040,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
     });
 });
 exports.formatDB = functions.region('us-central1').https.onRequest((req, res) => {
-    return db.collection('galletas').get().then(snap => {
+    return db.collection('galletas').where('title', 'in', ['¿Cómo funcionan los rayos?', '¿Cómo traer asteroides a la Tierra?']).get().then(snap => {
         const promises = [];
         snap.forEach(doc => {
             promises.push(db.collection('galletasCont').doc(doc.id).get().then(doc2 => {
@@ -1077,7 +1077,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                         es: doc.data().url + '/'
                     },
                     old: true
-                })/*.then(() => {
+                }).then(() => {
                     return db.collection('cookies/langs/en').doc(doc.id).update({
                         authors: doc2.data().authors,
                         cont: [
@@ -1117,7 +1117,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                         },
                         old: true
                     });
-                });*/
+                });//*/
             }));
         });
         return Promise.all(promises);
