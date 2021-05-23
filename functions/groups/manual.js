@@ -20,8 +20,8 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 label: "Descripción",
                 type: "textarea",
             }],
-            text: ["$0$"],
-            titleTxt: ["$1$"]
+            text: ["$1$"],
+            titleTxt: ["$0$"]
         }, {
             label: "Conjunción Solar",
             multipleTxt: true,
@@ -531,8 +531,8 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 label: "Description",
                 type: "textarea",
             }],
-            text: ["$0$"],
-            titleTxt: ["$1$"]
+            text: ["$1$"],
+            titleTxt: ["$0$"]
         }, {
             label: "Solar Conjunction",
             multipleTxt: true,
