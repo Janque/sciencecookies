@@ -4,7 +4,7 @@ window.db = firebase.firestore();
 if (!lang) window.lang = "es";
 let expireLangCookie = new Date();
 expireLangCookie.setTime(expireLangCookie.getTime() + (5 * 60 * 1000));
-document.cookie = "firebase-language-override=" + lang + "; expires=" + expireLangCookie.toUTCString();
+//document.cookie = "firebase-language-override=" + lang + "; expires=" + expireLangCookie.toUTCString();
 console.log(lang);
 
 window.cookiesFSRef = db.collection('cookies/langs/' + lang);
