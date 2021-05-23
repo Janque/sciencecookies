@@ -227,16 +227,16 @@ window.loaded = function loaded() {
     });
 }
 
-document.getElementById('inPicCapt').oninput = () => {
+document.getElementById('inPicCapt').onchange = () => {
     docDat.picCapt = document.getElementById('inPicCapt').value.trim();
 }
-document.getElementById('inPicAlt').oninput = () => {
+document.getElementById('inPicAlt').onchange = () => {
     docDat.picAlt = document.getElementById('inPicAlt').value.trim();
 }
-document.getElementById('inDesc').oninput = () => {
+document.getElementById('inDesc').onchange = () => {
     docDat.picDesc = document.getElementById('inDesc').value.trim();
 }
-document.getElementById('inDescShort').oninput = () => {
+document.getElementById('inDescShort').onchange = () => {
     docDat.picDescShort = document.getElementById('inDescShort').value.trim();
 }
 
@@ -613,7 +613,7 @@ function render() {
                         sfCol.appendChild(sinp);
                         sfRow.appendChild(sfCol);
 
-                        sinp.oninput = function () {
+                        sinp.onchange = function () {
                             changed = true;
                             event.vals[idx + '-' + sidx] = {};
                             event.vals[idx + '-' + sidx].val = sinp.value;
@@ -624,7 +624,7 @@ function render() {
                     });
                 }
 
-                inp.oninput = function () {
+                inp.onchange = function () {
                     changed = true;
                     event.vals[idx] = {};
                     event.vals[idx].val = inp.value;
@@ -693,7 +693,7 @@ function render() {
             if (inVis.value == 5) hideEl(fgTime);
             else showEl(fgTime);
         };
-        inTime.oninput = () => {
+        inTime.onchange = () => {
             changed = true;
         };
 
