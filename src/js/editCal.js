@@ -255,7 +255,7 @@ function saveDoc() {
                 sentMail: docDat.sentMail,
                 revised: docDat.revised,
                 translations: docDat.translations,
-                timePrev: docDat.timePrev,
+                timePrev: docDat.timePrev| null,
             }
             syncUpt.translations[lang] = docDat.url;
             promises.push(db.collection('calendars/langs/' + l).doc(docId).update(syncUpt));

@@ -259,7 +259,7 @@ function saveDoc() {
                 revised: docDat.revised,
                 translations: docDat.translations,
                 fixedCats: docDat.fixedCats.slice(),
-                timePrev: docDat.timePrev,
+                timePrev: docDat.timePrev | null,
             }
             syncUpt.fixedCats.forEach(function (cat, idx) {
                 syncUpt.fixedCats.splice(idx, 1, catTranslations[cat][l]);
