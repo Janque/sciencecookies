@@ -1,7 +1,0 @@
-09:21:18.877 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
-09:21:19.024 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
-09:21:50.969 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
-09:21:50.976 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: science-cookies
-09:21:50.983 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.NamespaceActor - Stopping namespace actor for science-cookies
-09:21:50.983 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.NamespaceActor - Gauges removed for science-cookies
-09:21:50.987 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.

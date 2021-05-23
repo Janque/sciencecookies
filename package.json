@@ -2,8 +2,10 @@
   "name": "sciencecookies",
   "scripts": {
     "deployDyn": "firebase deploy --only functions:dynAllCalls,functions:dynArchive,functions:dynCalendars,functions:dynCookies",
-    "dev": "./scripts/parcelDev",
-    "build": "./scripts/parcelBuild"
+    "dev": "./scripts/parcelDev.sh",
+    "build": "./scripts/parcelBuild.sh",
+    "syncFSDB": "./scripts/syncFSDB.sh",
+    "fireStart": "./scripts/fireStart.sh"
   },
   "devDependencies": {
     "@parcel/transformer-pug": "^2.0.0-beta.3.1",

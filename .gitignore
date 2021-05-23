@@ -70,5 +70,8 @@ node_modules/
 .cache
 .parcel-cache
 
+# Local emulators data
+emulators
+
 # GCP keys
 *Key.json
