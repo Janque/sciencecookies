@@ -273,11 +273,11 @@ exports.serveSitemap = functions.region('us-central1').https.onRequest(async (re
         let urlStr = "<url><loc>";
         urlStr += url.loc;
         urlStr += "</loc>";
-        if (url.alternate) {
+        /*if (url.alternate) {
             for (const [lang, link] of Object.entries(url.alternate)) {
                 urlStr += `<xhtml:link rel="alternate" hreflang="${lang}" href="${link}"/>`;
             }
-        }
+        }*/
         if (url.priority) {
             urlStr += "<priority>";
             urlStr += url.priority;

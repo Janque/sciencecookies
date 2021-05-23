@@ -11,6 +11,7 @@ html(lang=LANG)
     if site!="cookie" && site!="cal" && site!="allCalsM" && site!="allCalsY" && site!="cook" && site!="cookTri" && site!="mailPrev"
       link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"][site])
       link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"][site])
+      link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"][site])
 
       if site=="index"
         if LANG=="es" 
