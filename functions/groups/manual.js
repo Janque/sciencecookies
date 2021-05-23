@@ -1078,7 +1078,7 @@ exports.formatDB = functions.region('us-central1').https.onRequest((req, res) =>
                     },
                     old: true
                 }).then(() => {
-                    return db.collection('cookies/langs/en').doc(doc.id).update({
+                    return db.collection('cookies/langs/en').doc(doc.id).set({
                         authors: doc2.data().authors,
                         cont: [
                             {
