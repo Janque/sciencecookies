@@ -43,7 +43,7 @@ function renderCal(req, res, lang) {
         } else {
             monthNum = "00";
         }
-        db.collection('calendars/langs/' + lang).doc(req.params.year + monthNum).get().then(doc => {
+        db.collection('calendars/langs/' + lang).doc(req.params.year + monthNum).get().then(async (doc) => {
             if (!doc.exists) {
                 console.log('doc', req.params.year + monthNum, '--', req.params.year, monthNum, ' !.exists');
                 res.redirect('https://sciencecookies.net/404');
@@ -54,6 +54,33 @@ function renderCal(req, res, lang) {
                 console.log('private');
                 res.redirect('https://sciencecookies.net/404');
                 return;
+            }
+
+            const calConfDoc = await db.collection('config').doc('calTypes').get();
+            const calConfig = calConfDoc.data();
+            for (const [key, event] of Object.entries(dat.events)) {
+                if (calConfig[lang][event.typeIdx].multipleTxt) {
+                    event.description = parseInt(event.vals["0"].val.charAt(0));
+                    event.name = parseInt(event.vals["0"].val.charAt(1));
+                } else {
+                    event.description = event.name = 0;
+                }
+
+                event.description = calConfig[lang][event.typeIdx].text[event.description];
+                event.name = calConfig[lang][event.typeIdx].titleTxt[event.name];
+                for (const [vKey, vVal] of Object.entries(event.vals)) {
+                    const rlab = new RegExp("\\\$" + vKey + "L\\\$", 'g')
+                    const rval = new RegExp("\\\$" + vKey + "\\\$", 'g')
+                    const rg1 = new RegExp("\\\$g-year\\\$", 'g')
+                    event.description = event.description.replace(rlab, vVal.label);
+                    event.description = event.description.replace(rval, vVal.val);
+                    event.description = event.description.replace(rg1, req.params.year);
+                    event.name = event.name.replace(rlab, vVal.label);
+                    event.name = event.name.replace(rval, vVal.val);
+                    event.name = event.name.replace(rg1, req.params.year);
+                }
+                dat.events[key] = event;
+                dat.weeks[Number(key[0])][key.substr(1, 3)].events[key[4]].name = event.name;
             }
 
             let orderedKeys = Object.keys(dat.events).slice().sort((a, b) => {
@@ -90,9 +117,9 @@ function renderCal(req, res, lang) {
                 java += '","' + orderedKeys[i];
             }
             java += '"];\n';
-            java += 'var eventTitles={"' + Object.keys(dat.events)[0] + '":"' + Object.values(dat.events)[0].date + '"';
+            java += 'var eventTitles={"' + Object.keys(dat.events)[0] + '":"' + Object.values(dat.events)[0].date[lang] + '"';
             for (i = 1; i < Object.keys(dat.events).length; i++) {
-                java += ',' + '"' + Object.keys(dat.events)[i] + '":"' + Object.values(dat.events)[i].date + '"';
+                java += ',' + '"' + Object.keys(dat.events)[i] + '":"' + Object.values(dat.events)[i].date[lang] + '"';
             }
             java += '};\n';
             java += `window.globID="${doc.id}"\n`;
@@ -114,6 +141,7 @@ function renderCal(req, res, lang) {
                 "java": java,
                 "setLang": lang
             });
+            return;
         }).catch(err => console.log(err));
     }
 }
