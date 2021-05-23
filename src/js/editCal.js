@@ -255,6 +255,7 @@ function saveDoc() {
                 sentMail: docDat.sentMail,
                 revised: docDat.revised,
                 translations: docDat.translations,
+                timePrev: docDat.timePrev,
             }
             syncUpt.translations[lang] = docDat.url;
             promises.push(db.collection('calendars/langs/' + l).doc(docId).update(syncUpt));
@@ -934,11 +935,11 @@ document.getElementById('inMedSrc1').onclick = function () {
 }
 
 document.getElementById('btnPrevCal').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 document.getElementById('btnPrevMail').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 

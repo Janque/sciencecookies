@@ -258,7 +258,8 @@ function saveDoc() {
                 favs: docDat.favs,
                 revised: docDat.revised,
                 translations: docDat.translations,
-                fixedCats: docDat.fixedCats.slice()
+                fixedCats: docDat.fixedCats.slice(),
+                timePrev: docDat.timePrev,
             }
             syncUpt.fixedCats.forEach(function (cat, idx) {
                 syncUpt.fixedCats.splice(idx, 1, catTranslations[cat][l]);
@@ -1347,11 +1348,11 @@ document.getElementById('inSendUpt').onclick = function () {
 }
 
 document.getElementById('btnPrevCook').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 document.getElementById('btnPrevMail').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 
