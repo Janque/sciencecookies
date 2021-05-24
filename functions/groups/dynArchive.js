@@ -139,7 +139,7 @@ app.get('/archivo', (req, res) => {
         let years = {
             "2020": {}
         }
-        let year = '2020', tri = 'abr-jun';
+        let year = '2020', tri = 'abr-jun/';
         nUrls.forEach(url => {
             let lyear = url.year, ltri = url.tri;
             if (lyear != year || ltri != tri) {
@@ -156,9 +156,10 @@ app.get('/archivo', (req, res) => {
 
 
 function longTri(tri) {
-    if (tri == 'ene-mar') return 'Enero - Marzo';
-    if (tri == 'abr-jun') return 'Abril - Junio';
-    if (tri == 'jul-sep') return 'Julio - Septiembre';
+    console.log(tri)
+    if (tri == 'ene-mar/' || tri == 'ene-mar') return 'Enero - Marzo';
+    if (tri == 'abr-jun/' || tri == 'abr-jun') return 'Abril - Junio';
+    if (tri == 'jul-sep/' || tri == 'jul-sep') return 'Julio - Septiembre';
     return 'Octubre - Noviembre';
 }
 
