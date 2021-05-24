@@ -248,7 +248,6 @@ function saveDoc() {
                 java: docDat.java,
                 notify: docDat.notify,
                 public: docDat.public,
-                beenPublic: docDat.beenPublic,
                 dledit: docDat.dledit,
                 created: docDat.created,
                 ledit: docDat.ledit,
@@ -1541,7 +1540,6 @@ document.getElementById('btnCnfPublish').onclick = function () {
 
     docDat.public = true;
     docDat.ledit = new firebase.firestore.Timestamp.now();
-    docDat.beenPublic = true;
     docDat.revised = {};
     setprog('barPublish', 31);
 
@@ -1550,13 +1548,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
         docDat.published = new firebase.firestore.Timestamp.now();
         setprog('barPublish', 62);
     } else {
-        if (document.getElementById('inSendUpt').checked) {
-            docDat.dledit = true;
-            docDat.notify = true;
-        } else {
-            docDat.dledit = false;
-            docDat.notify = false;
-        }
+        docDat.dledit = docDat.notify = document.getElementById('inSendUpt').checked;
         setprog('barPublish', 45);
         if (document.getElementById('inSendUpt').checked) {
             docDat.uptMsg = true;
