@@ -184,7 +184,7 @@ function renderArch(req, res, lang) {
         let years = {
             "2020": {}
         }
-        let year = '2020', tri = 'abr-jun';
+        let year = '2020', tri = 'abr-jun/';
         nUrls.forEach(url => {
             let lyear = url.year, ltri = url.tri;
             if (lyear != year || ltri != tri) {
@@ -208,14 +208,14 @@ app.get('/cookies', (req, res) => {
 
 function longTri(tri, lang) {
     if (lang == "es") {
-        if (tri == 'ene-mar') return 'Enero - Marzo';
-        if (tri == 'abr-jun') return 'Abril - Junio';
-        if (tri == 'jul-sep') return 'Julio - Septiembre';
+        if (tri == 'ene-mar/' || tri == 'ene-mar') return 'Enero - Marzo';
+        if (tri == 'abr-jun/' || tri == 'abr-jun') return 'Abril - Junio';
+        if (tri == 'jul-sep/' || tri == 'jul-sep') return 'Julio - Septiembre';
         return 'Octubre - Noviembre';
     } else if (lang == 'en') {
-        if (tri == 'jan-mar') return 'January - March';
-        if (tri == 'apr-jun') return 'April - June';
-        if (tri == 'jul-sep') return 'July - September';
+        if (tri == 'jan-mar/' || tri == 'jan-mar') return 'January - March';
+        if (tri == 'apr-jun/' || tri == 'apr-jun') return 'April - June';
+        if (tri == 'jul-sep/' || tri == 'jul-sep') return 'July - September';
         return 'October - November';
     }
 }
