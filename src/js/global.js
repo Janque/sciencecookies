@@ -2,10 +2,11 @@
 window.db = firebase.firestore();
 
 if (!lang) window.lang = "es";
-let expireLangCookie = new Date();
+/*let expireLangCookie = new Date();
 expireLangCookie.setTime(expireLangCookie.getTime() + (5 * 60 * 1000));
-//document.cookie = "firebase-language-override=" + lang + "; expires=" + expireLangCookie.toUTCString();
-console.log(lang);
+document.cookie = "firebase-language-override=" + window.lang + "; expires=" + expireLangCookie.toUTCString();
+/*console.log(lang);
+document.cookie = "firebase-language-override=":*/
 
 window.cookiesFSRef = db.collection('cookies/langs/' + lang);
 window.calendarsFSRef = db.collection('calendars/langs/' + lang);
@@ -203,27 +204,10 @@ function checkMobile() {
     return check;
 };
 
-document.getElementById('changeLang').href += location.search;
-
 window.addEventListener("load", function () {
     mobile = checkMobile();
     url = new URL(document.location.href);
     urlSrch = new URLSearchParams(location.search);
-
-    /*document.getElementById('changeLang').onclick = function () {
-        //@#Confirm functionality
-        if (window.lang = "es") {
-            let expireLangCookie = new Date();
-            expireLangCookie.setTime(expireLangCookie.getTime() + (5 * 60 * 1000));
-            document.cookie = "firebase-language-override=" + lang + "; expires=" + expireLangCookie.toUTCString();
-        } else if (window.lang = "en") {
-            let expireLangCookie = new Date();
-            expireLangCookie.setTime(expireLangCookie.getTime() + (5 * 60 * 1000));
-            document.cookie = "firebase-language-override=" + lang + "; expires=" + expireLangCookie.toUTCString();
-        }
-        //window.location.href = document.getElementById('changeLang').href;
-        console.log(document.getElementById('changeLang').href)
-    }*/
 
     if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
     if (urlSrch.get('mode') == 'select') $('#mdlRgstr').modal('show');

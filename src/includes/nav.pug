@@ -51,14 +51,22 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
                     button#btnLgI.btn.btn-link.text-decoration-none.text-light.d-none(data-toggle='modal' data-target='#mdlRgstr') #{Buttons[LANG]["logIn"]}
             if site=="index"
                 if LANG=="es"
-                    a#changeLang(href=HOST+'/en/') es/en
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='let expireLangCookie = new Date();expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));document.cookie = "firebase-language-override=en; expires=" + expireLangCookie.toUTCString();window.location.href="'+HOST+'/en/"+location.search')
+                        | English 
+                        i.fas.fa-globe
                 else if LANG=="en"
-                    a#changeLang(href=HOST+'/es/') es/en
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='let expireLangCookie = new Date();expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));document.cookie = "firebase-language-override=es; expires=" + expireLangCookie.toUTCString();window.location.href="'+HOST+'/es/"+location.search')
+                        | Español 
+                        i.fas.fa-globe
             else
                 if LANG=="es"
-                    a#changeLang(href=HOST+'/'+NavLinks["en"][site]) es/en
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='let expireLangCookie = new Date();expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));document.cookie = "firebase-language-override=en; expires=" + expireLangCookie.toUTCString();window.location.href="'+HOST+'/'+NavLinks["en"][site]+'"+location.search')
+                        | English 
+                        i.fas.fa-globe
                 else if LANG=="en"
-                    a#changeLang(href=HOST+'/'+NavLinks["es"][site]) es/en
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='let expireLangCookie = new Date();expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));document.cookie = "firebase-language-override=es; expires=" + expireLangCookie.toUTCString();window.location.href="'+HOST+'/'+NavLinks["es"][site]+'"+location.search')
+                        | Español 
+                        i.fas.fa-globe
 
 
 //- Alertas
