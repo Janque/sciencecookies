@@ -466,7 +466,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 selTxt: true,
                 type: "select",
                 options: [{
-                    label: "Dichotomía",
+                    label: "Dicotomía",
                     val: "00",
                 }, {
                     label: "Mayor elongación oeste",
@@ -511,7 +511,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 "$1$ alcanzará su mayor altitud en el cielo en su aparición $3$a de $2$. Estará brillando con magnitud $4$."
             ],
             titleTxt: [
-                "$1$ en dichotomía",
+                "$1$ en dicotomía",
                 "$1$ en mayor elongación oeste",
                 "$1$ en mayor elongación este",
                 "$1$ en brillo máximo",
