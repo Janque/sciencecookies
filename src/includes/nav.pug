@@ -37,18 +37,6 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
             if site=="edit"||site=="editCal"
                 i.text-light.mx-3.my-auto#tagLstSave
         .row.justify-content-end.w-nsm-100
-            .dropdown.mr-2.dropleft
-                button#usrDrpdwn.btn.btn-dark.dropdown-toggle.p-2(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
-                    i#icnUsr.fas
-                    img#picUsr.d-inline-block.align-center.ml-2.rounded-circle(src='' height='30' alt='')
-                .dropdown-menu.dropdown-menu-right.bg-dark.pl-1(aria-labelledby='usrDrpdwn')
-                    a#btnPrfl.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["profile"]) #{Buttons[LANG]["profile"]}
-                    a#btnPref.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["profile"]+'?tab=pref') #{Buttons[LANG]["prefs"]}
-                    a#btnDraft.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["drafts"]) #{Buttons[LANG]["drafts"]}
-                    a#btnCals.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["draftsCal"]) #{Buttons[LANG]["draftsCal"]}
-                    .dropdown-divider.ml-1.mr-2
-                    button#btnLgO.btn.btn-link.text-decoration-none.text-light.d-none #{Buttons[LANG]["logOut"]}
-                    button#btnLgI.btn.btn-link.text-decoration-none.text-light.d-none(data-toggle='modal' data-target='#mdlRgstr') #{Buttons[LANG]["logIn"]}
             if site=="index"
                 if LANG=="es"
                     button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='let expireLangCookie = new Date();expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));document.cookie = "firebase-language-override=en; expires=" + expireLangCookie.toUTCString();window.location.href="'+HOST+'/en/"+location.search')
@@ -67,6 +55,18 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
                     button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='let expireLangCookie = new Date();expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));document.cookie = "firebase-language-override=es; expires=" + expireLangCookie.toUTCString();window.location.href="'+HOST+'/'+NavLinks["es"][site]+'"+location.search')
                         | Español 
                         i.fas.fa-globe
+            .dropdown.mr-2.dropleft
+                button#usrDrpdwn.btn.btn-dark.dropdown-toggle.p-2(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+                    i#icnUsr.fas
+                    img#picUsr.d-inline-block.align-center.ml-2.rounded-circle(src='' height='30' alt='')
+                .dropdown-menu.dropdown-menu-right.bg-dark.pl-1(aria-labelledby='usrDrpdwn')
+                    a#btnPrfl.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["profile"]) #{Buttons[LANG]["profile"]}
+                    a#btnPref.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["profile"]+'?tab=pref') #{Buttons[LANG]["prefs"]}
+                    a#btnDraft.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["drafts"]) #{Buttons[LANG]["drafts"]}
+                    a#btnCals.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["draftsCal"]) #{Buttons[LANG]["draftsCal"]}
+                    .dropdown-divider.ml-1.mr-2
+                    button#btnLgO.btn.btn-link.text-decoration-none.text-light.d-none #{Buttons[LANG]["logOut"]}
+                    button#btnLgI.btn.btn-link.text-decoration-none.text-light.d-none(data-toggle='modal' data-target='#mdlRgstr') #{Buttons[LANG]["logIn"]}
 
 
 //- Alertas
