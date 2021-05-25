@@ -1194,7 +1194,7 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
         return;
     });
 });
-/*
+
 exports.formatDBCtemp = functions.region('us-central1').https.onRequest((req, res) => {
     return db.collection('calendars/langs/es').doc("202106").get().then(doc => {
         let events = {};
@@ -1210,13 +1210,13 @@ exports.formatDBCtemp = functions.region('us-central1').https.onRequest((req, re
         return db.collection('calendarios').doc("202106").set({
             events: events,
             date: doc.data().published,
-            description: doc.data().description,
-            descriptionShort: doc.data().descriptionShort,
+            //description: doc.data().description,
+            //descriptionShort: doc.data().descriptionShort,
             finished: doc.data().finished,
             pastDue: doc.data().pastDue,
-            picUrl: doc.data().picUrl,
-            picAlt: doc.data().picAlt,
-            picCapt: doc.data().picCapt,
+            //picUrl: doc.data().picUrl,
+            //picAlt: doc.data().picAlt,
+            //picCapt: doc.data().picCapt,
             public: doc.data().public,
             sentMail: doc.data().sentMail,
             revised: doc.data().revised,
@@ -1235,4 +1235,4 @@ exports.formatDBCtemp = functions.region('us-central1').https.onRequest((req, re
         res.send(err);
         return;
     });
-});*/
+});
