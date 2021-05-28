@@ -138,6 +138,26 @@
         "type": 301
       },
       {
+        "source": "/archivo",
+        "destination": "/galletas/",
+        "type": 301
+      },
+      {
+        "source": "/archivo/:year/:month*",
+        "destination": "/galletas/:year/:month/",
+        "type": 301
+      },
+      {
+        "source": "/archive",
+        "destination": "/cookies/",
+        "type": 301
+      },
+      {
+        "source": "/archive/:year/:month*",
+        "destination": "/cookies/:year/:month/",
+        "type": 301
+      },
+      {
         "source": "/calendario-astronomico",
         "destination": "/calendario-astronomico/2021/",
         "type": 302
