@@ -2,11 +2,8 @@
 window.db = firebase.firestore();
 
 if (!lang) window.lang = "es";
-/*let expireLangCookie = new Date();
-expireLangCookie.setTime(expireLangCookie.getTime() + (5 * 60 * 1000));
-document.cookie = "firebase-language-override=" + window.lang + "; expires=" + expireLangCookie.toUTCString();
-/*console.log(lang);
-document.cookie = "firebase-language-override=":*/
+//console.log(lang);
+document.cookie = "firebase-language-override=";
 
 window.cookiesFSRef = db.collection('cookies/langs/' + lang);
 window.calendarsFSRef = db.collection('calendars/langs/' + lang);

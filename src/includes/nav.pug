@@ -37,22 +37,25 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
             if site=="edit"||site=="editCal"
                 i.text-light.mx-3.my-auto#tagLstSave
         .row.justify-content-end.w-nsm-100
+            //- let expireLangCookie = new Date();
+            //- expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));
+            //- document.cookie = "firebase-language-override=es; path=/; expires='+expireLangCookie.toUTCString()+'";
             if site=="index"
                 if LANG=="es"
-                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='let expireLangCookie = new Date();expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));document.cookie = "firebase-language-override=en; expires=" + expireLangCookie.toUTCString();window.location.href="'+HOST+'/en/"+location.search')
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/en/"+location.search')
                         | English 
                         i.fas.fa-globe
                 else if LANG=="en"
-                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='let expireLangCookie = new Date();expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));document.cookie = "firebase-language-override=es; expires=" + expireLangCookie.toUTCString();window.location.href="'+HOST+'/es/"+location.search')
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/es/"+location.search')
                         | Español 
                         i.fas.fa-globe
             else
                 if LANG=="es"
-                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='let expireLangCookie = new Date();expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));document.cookie = "firebase-language-override=en; expires=" + expireLangCookie.toUTCString();window.location.href="'+HOST+'/'+NavLinks["en"][site]+'"+location.search')
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/'+NavLinks["en"][site]+'"+location.search')
                         | English 
                         i.fas.fa-globe
                 else if LANG=="en"
-                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='let expireLangCookie = new Date();expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));document.cookie = "firebase-language-override=es; expires=" + expireLangCookie.toUTCString();window.location.href="'+HOST+'/'+NavLinks["es"][site]+'"+location.search')
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/'+NavLinks["es"][site]+'"+location.search')
                         | Español 
                         i.fas.fa-globe
             .dropdown.mr-2.dropleft
