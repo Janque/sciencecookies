@@ -119,6 +119,38 @@
       {
         "source": "/view-profile",
         "destination": "/localized/en_ALL/ver-perfil.html"
+      },
+      {
+        "source": "/borradores",
+        "destination": "/borradores.html"
+      },
+      {
+        "source": "/calendarios",
+        "destination": "/calendarios.html"
+      },
+      {
+        "source": "/contacto",
+        "destination": "/contacto.html"
+      },
+      {
+        "source": "/editar",
+        "destination": "/editar.html"
+      },
+      {
+        "source": "/editar-calendario",
+        "destination": "/editar-calendario.html"
+      },
+      {
+        "source": "/quienes-somos",
+        "destination": "/quienes-somos.html"
+      },
+      {
+        "source": "/perfil",
+        "destination": "/perfil.html"
+      },
+      {
+        "source": "/ver-perfil",
+        "destination": "/ver-perfil.html"
       }
     ],
     "redirects": [
