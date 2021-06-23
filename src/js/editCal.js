@@ -115,7 +115,7 @@ window.loaded = function loaded() {
                 showEl(document.getElementById('btnAprove'));
                 if (docDat.pastDue) showEl(document.getElementById('btnPub'));
             }
-            if (docDat.revised.includes(uid)) {
+            if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
                 document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
             } else {
                 document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
