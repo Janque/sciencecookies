@@ -1196,7 +1196,7 @@ exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) =
 });
 
 exports.formatDBCtemp = functions.region('us-central1').https.onRequest((req, res) => {
-    return db.collection('calendars/langs/es').doc("202106").get().then(doc => {
+    return db.collection('calendars/langs/es').doc("202107").get().then(doc => {
         let events = {};
         for (const [key, event] of Object.entries(doc.data().events)) {
             events[key] = {
@@ -1207,16 +1207,16 @@ exports.formatDBCtemp = functions.region('us-central1').https.onRequest((req, re
                 visibilidad: event.visibilidad,
             };
         }
-        return db.collection('calendarios').doc("202106").set({
+        return db.collection('calendarios').doc("202107").set({
             events: events,
             date: doc.data().published,
-            //description: doc.data().description,
-            //descriptionShort: doc.data().descriptionShort,
+            description: doc.data().description,
+            descriptionShort: doc.data().descriptionShort,
             finished: doc.data().finished,
             pastDue: doc.data().pastDue,
-            //picUrl: doc.data().picUrl,
-            //picAlt: doc.data().picAlt,
-            //picCapt: doc.data().picCapt,
+            picUrl: doc.data().picUrl,
+            picAlt: doc.data().picAlt,
+            picCapt: doc.data().picCapt,
             public: doc.data().public,
             sentMail: doc.data().sentMail,
             revised: doc.data().revised,
