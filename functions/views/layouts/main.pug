@@ -12,14 +12,18 @@ html(lang=LANG)
       link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"][site])
       link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"][site])
       link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"][site])
+      meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG][site])
 
       if site=="index"
         if LANG=="es" 
-          title Artículos de ciencia con chispas de chocolate - Science Cookies
+          title Science Cookies - Artículos de ciencia con chispas de chocolate
+          meta(property="og:title" content='Science Cookies - Artículos de ciencia con chispas de chocolate')
         else if LANG=="en" 
-          title Science articles with chocolate chips - Science Cookies
+          title Science Cookies - Science articles with chocolate chips
+          meta(property="og:title" content='Science Cookies - Science articles with chocolate chips')
       else 
-        title #{Buttons[LANG][site]} - Science Cookies
+        title Science Cookies - #{Buttons[LANG][site]}
+        meta(property="og:title" content='Science Cookies - #{Buttons[LANG][site]}')
 
     script.
       window.site = "#{site}";

@@ -6,13 +6,18 @@ block lang
 block missHead
   if LANG=="es"
     meta(name='description' content="Aquí puedes encontrar todas las Galletas que tenemos.")
+    meta(property="og:description" content="Aquí puedes encontrar todas las Galletas que tenemos.")
   else if LANG=="en"
     meta(name='description' content="Here you can find all our Cookies.")
+    meta(property="og:description" content="Here you can find all our Cookies.")
 
   link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cook"])
   link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cook"])
   link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"]["cook"])
-  title #{Buttons[LANG]["cook"]} - Science Cookies
+  meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG]["cook"])
+
+  title Science Cookies - #{Buttons[LANG]["cook"]}
+  meta(property="og:title" content='Science Cookies - #{Buttons[LANG]["cook"]}')
 
   - const site="cook";
 

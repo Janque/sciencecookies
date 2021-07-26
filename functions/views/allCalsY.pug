@@ -6,13 +6,18 @@ block lang
 block missHead
   if LANG=="es"
     meta(name='description' content="Aquí puedes encontrar todos los calendarios astronómicos.")
+    meta(property="og:description" content="Aquí puedes encontrar todos los calendarios astronómicos.")
   else if LANG=="en"
     meta(name='description' content="Here you can find all the astronomic calendars.")
+    meta(property="og:description" content="Here you can find all the astronomic calendars.")
 
   link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cal"])
   link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cal"])
   link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"]["cal"])
-  title #{Buttons[LANG]["cal"]} - Science Cookies
+  meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG]["cal"])
+
+  title Science Cookies - #{Buttons[LANG]["cal"]}
+  meta(property="og:title" content='Science Cookies - #{Buttons[LANG]["cal"]}')
 
   - const site="allCalsY";
 

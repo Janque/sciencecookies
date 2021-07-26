@@ -1,11 +1,10 @@
 block missHead
   if LANG=="es"
     meta(name='description' content='¿Tienes alguna sugerencia o duda? ¿Quieres reportar un fallo? Aquí puedes hacerlo.')
+    meta(property="og:description" content='¿Tienes alguna sugerencia o duda? ¿Quieres reportar un fallo? Aquí puedes hacerlo.')
   else if LANG=="en"
     meta(name='description' content='Do you have any suggestions or doubts? Do you want to report a bug? You can do it here.')
-
-  link(rel='canonical' href=HOST+'/'+NavLinks[LANG]["contact"])
-  title Science Cookies - #{Buttons[LANG]["contact"]}
+    meta(property="og:description" content='Do you have any suggestions or doubts? Do you want to report a bug? You can do it here.')
 
   - const site="contact";
 

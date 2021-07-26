@@ -48,6 +48,7 @@ function renderCookie(req, res, lang) {
                     "month": month,
                     "file": dat.file,
                     "title": dat.title,
+                    "picUrl": dat.picUrl,
                     "content": dat.cont,
                     "java": java,
                     "setLang": lang
