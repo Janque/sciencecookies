@@ -117,7 +117,7 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
 });
 
 //Update sitemap
-exports.updateCalSitemap = functions.region('us-east1').firestore.document('calendars/langs/es').onUpdate((change, context) => {
+exports.updateCalSitemap = functions.region('us-east1').firestore.document('calendars/langs/es/{calendar}').onUpdate((change, context) => {
 //exports.updateCalSitemap = functions.region('us-central1').https.onRequest((req, res) => {
     if (!change.after.data().public || change.before.data().public) return;
     let urlsEs = [{
