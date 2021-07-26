@@ -1,13 +1,6 @@
 extends layouts/main
 
-block missHead
-  meta(name='description' content='En este blog escribimos artículos de difusión científica y sobre curiosidades y esperamos lograr alimentar la curiosidad.')
-  link(rel='canonical' href=HOST+'/quienes-somos/')
-  title Science Cookies - ¿Quiénes somos?
+block lang
+  - const LANG = "es";
 
-  - const site="who";
-
-block content
-  h1.text-center ¿Quiénes somos?
-  br
-  p Somos un grupo de estudiantes apasionados por la ciencia y motivados por la curiosidad. Cualquier persona que formule las preguntas correctas es un científico en potencia, y creemos que fue ese mismo principio el cual unió nuestros caminos en 2017. En este blog escribimos artículos de difusión científica y sobre curiosidades y esperamos lograr alimentar la curiosidad de muchas más personas y ofrezcer una respuesta a interrogantes del día a día.
+include content/who

@@ -8,14 +8,16 @@ exports.uptPop = functions.region('us-east1').pubsub.schedule('0 0 * * *').onRun
         if (!data || !data.val()) return null;
         Object.keys(data.val()).forEach(itm => {
             admin.database().ref('galletas/' + itm).once('value', cook => {
-                db.collection('galletas').doc(itm).update({
-                    pop: cook.val().pop,
-                    likes: cook.val().likes,
-                    favs: cook.val().favs
-                });
-                db.collection('galletasCont').doc(itm).update({
-                    pop: cook.val().pop
-                });
+                db.collection('config').doc('langs').get().then(doc => {
+                    const langs = doc.data().langs;
+                    langs.forEach(lang => {
+                        db.collection('cookies/langs/' + lang).doc(itm).update({
+                            pop: cook.val().pop,
+                            likes: cook.val().likes,
+                            favs: cook.val().favs
+                        });
+                    })
+                }).catch(err => { console.log(err) });
             });
         });
         admin.database().ref('uptCook').remove();
@@ -47,35 +49,42 @@ exports.uptIDs = functions.region('us-east1').pubsub.schedule('0 0 * * *').onRun
 //Update today's CookieID's
 exports.publishCal = functions.region('us-east1').pubsub.schedule('30 17 28 * *').onRun((context) => {
     let calID = "";
-    let date = new Date(admin.firestore.Timestamp.now().toMillis()-6*60*60*1000)
+    let date = new Date(admin.firestore.Timestamp.now().toMillis() - 6 * 60 * 60 * 1000)
     calID += date.getFullYear();
     let month = date.getMonth() + 2;
     if (month == 13) month = 1;
     if (month <= 9) calID += "0";
     calID += month;
-    let makePop=true;
-    return db.collection('calendarios').doc(calID).get().then(doc => {
-        if (!doc.exists) {
-            console.log(calID,' !doc.exists')
-            return null;
-        }
-        let dat = doc.data();
-        if (dat.public) {
-            console.log('Already public')
-            return null;
-        }
-        if (!dat.finished) {
-            console.log('Not finished')
-            makePop=false;
-            return db.collection('calendarios').doc(calID).update({
-                pastDue: true
-            });
-        }
-        return db.collection('calendarios').doc(calID).update({
-            public: true
-        });
+    let makePop = true;
+    return db.collection('config').doc('langs').get().then(doc => {
+        const langs = doc.data().langs;
+        const promises = [];
+        langs.forEach(lang => {
+            promises.push(db.collection('calendars/langs/'+lang).doc(calID).get().then(doc => {
+                if (!doc.exists) {
+                    console.log(calID, ' !doc.exists')
+                    return null;
+                }
+                let dat = doc.data();
+                if (dat.public) {
+                    console.log('Already public')
+                    return null;
+                }
+                if (!dat.finished) {
+                    console.log('Not finished')
+                    makePop = false;
+                    return db.collection('calendars/langs/'+lang).doc(calID).update({
+                        pastDue: true
+                    });
+                }
+                return db.collection('calendars/langs/'+lang).doc(calID).update({
+                    public: true
+                });
+            }));
+        })
+        return Promise.all(promises);
     }).then(() => {
-        if(makePop){
+        if (makePop) {
             admin.database().ref('calendarios/' + calID).set({
                 pop: 0
             }, err => {

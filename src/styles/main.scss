@@ -20,7 +20,7 @@ strong {
 
 .page-container {
   background-color: black;
-  background-image: url("/img/fondo1.jpg");
+  background-image: url("../img/fondo1.webp");
   background-position: center top;
   background-attachment: fixed;
 }
@@ -55,6 +55,24 @@ strong {
   font-weight: 400;
   color: rebeccapurple;
   text-decoration: none;
+}
+#changeLang {
+  margin: auto 14px auto 5px;
+  display: inline-block;
+  font-weight: 200;
+  color: #f8f9fa;
+  text-align: center;
+  vertical-align: middle;
+  background-color: transparent;
+  padding: auto 0.75rem;
+  font-size: .8rem;
+}
+@media (max-width: 991px) {
+  .w-nsm-100 {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+  }
 }
 
 h1 {

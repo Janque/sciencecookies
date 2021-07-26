@@ -1,5 +1,8 @@
 extends ../layouts/main
 
+block lang
+  - const LANG = "es";
+
 block missHead
   meta(name='description' content='Política de privacidad de Science Cookies')
   link(rel='canonical' href=HOST+'/privacidad')
@@ -51,7 +54,7 @@ block content
     li
       strong Sitio 
       | se refiere a Science Cookies, accesible desde 
-      a.text-warning(href='htpps://sciencecookies.net') https://sciencecookies.net.
+      a.text-warning(href=HOST) #{HOST}.
     li
       strong Usted
       |  se refiere a la persona que accede o utiliza el Servicio, o la compañía u otra entidad legal en nombre de la cual dicha persona accede o utiliza el Servicio, según corresponda.

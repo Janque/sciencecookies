@@ -10,7 +10,7 @@ window.loaded = function loaded() {
     //Check auth
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
-            document.getElementById('picUsr').setAttribute('onerror', "this.src='img/nopp.png'");
+            document.getElementById('picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
             document.getElementById('picUsr').src = photoURL;
             shwCrds(urlSrch.get('tab'));
         } else {
@@ -90,13 +90,11 @@ window.loaded = function loaded() {
         document.getElementById('btnCanPref').setAttribute('disabled', 'true');
         document.getElementById('btnCnfPref').setAttribute('disabled', 'true');
         uptPref();
-        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">    Se han guardado los cambios                                                      <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-        setTimeout(function () {
-            document.getElementById("btnAlrtClsSsn").click();
-        }, 3000);
-        $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-            document.getElementById("alrtClsSsn").innerHTML = '';
-        });
+        if (lang == "es") {
+            alertTop("Se han guardado los cambios", 1);
+        } else if (lang == "en") {
+            alertTop("Changes have been saved", 1);
+        }
     });
     function uptPP(file) {
         let ref = storage.ref('ppics/' + publicID + '/pp');
@@ -109,13 +107,11 @@ window.loaded = function loaded() {
             function error(err) {
                 resetFrm();
                 $('#mdlCngPP').modal('hide');
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert"><strong>¡Ocurrió un error!</strong> Revisa que tu archivo cumpla los límites y sea una imagen e intenta de nuevo.<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                setTimeout(function () {
-                    document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
-                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                    document.getElementById("alrtClsSsn").innerHTML = '';
-                });
+                if (lang == "es") {
+                    alertTop("<strong>¡Ha ocurrido un error!</strong> Revisa que tu archivo cumpla los límites y sea una imagen e intenta de nuevo.", 2);
+                } else if (lang == "en") {
+                    alertTop("<strong>¡There has been an error!</strong> Check that your file meets the limits and is an image and try again.", 2);
+                }
             },
             function complete() {
                 document.getElementById('picUsr').src = document.getElementById("preVIn").src;
@@ -217,7 +213,7 @@ document.getElementById('inNews').onclick = function () {
 
 function shwPrfl() {
     document.getElementById('navBtnPrfl').classList.add('active');
-    document.getElementById('disPP').setAttribute('onerror', "this.src='img/nopp.png'");
+    document.getElementById('disPP').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
     document.getElementById('disPP').src = photoURL;
     document.getElementById('disMail').innerHTML = email;
     document.getElementById('disName').innerHTML = displayName;

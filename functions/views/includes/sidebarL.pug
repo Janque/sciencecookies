@@ -1,17 +1,32 @@
 .col-md-3.col-xl-2.sidebar.my-0.ml-lg-3.mr-0.ml-md-2.py-md-1.pl-md-3.text-dark
     .row
-        h5.text-center.my-auto.mr-auto.ml-3.ml-md-auto.mt-md-2.d-md-none Galletas recomendadas
+        if LANG=="es" 
+            h5.text-center.my-auto.mr-auto.ml-3.ml-md-auto.mt-md-2.d-md-none Galletas recomendadas
+        else if LANG=="en" 
+            h5.text-center.my-auto.mr-auto.ml-3.ml-md-auto.mt-md-2.d-md-none Recommended Cookies
         button.btn.d-md-none.p-0.pr-2.mr-4(type='button' data-toggle='collapse' data-target='#sdbarL' aria-controls='sdbarL' aria-expanded='false' style='font-size: 1.8rem;')
             i.fas.fa-bars
     nav#sdbarL.collapse.sdbarCnt
         .col.justify-content-center.px-3.px-md-0.px-lg-3.px-xl-2
             #calRecom.d-none
-                h5.text-center Calendario astronómico
+                if LANG=="es" 
+                    h5.text-center Calendario Astronómico
+                else if LANG=="en" 
+                    h5.text-center Astronomic Calendar
                 #calCnt
-            h5.text-center La galleta más nueva
+            if LANG=="es" 
+                h5.text-center La Galleta más nueva
+            else if LANG=="en" 
+                h5.text-center Latest Cookie
             #newCook
             .dropdown-divider.d-md-none
-            h5.text-center Las galletas más populares
+            if LANG=="es" 
+                h5.text-center Las Galletas más populares
+            else if LANG=="en" 
+                h5.text-center Most pupular
             #popCook
         .col.justify-content-center.d-flex
-            a.btn.btn-link-scckie.mt-md-2(href="/archivo/") Ver más 
+            if LANG=="es" 
+                a.btn.btn-link-scckie.mt-md-2(href=HOST+'/'+NavLinks[LANG]["cook"]) Ver más
+            else if LANG=="en" 
+                a.btn.btn-link-scckie.mt-md-2(href=HOST+'/'+NavLinks[LANG]["cook"]) More 

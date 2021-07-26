@@ -2,17 +2,22 @@
   "name": "sciencecookies",
   "scripts": {
     "deployDyn": "firebase deploy --only functions:dynAllCalls,functions:dynArchive,functions:dynCalendars,functions:dynCookies",
-    "dev": "rm functions/views/includes/* && cp src/includes/* functions/views/includes && rm functions/views/layouts/* && cp src/layouts/* functions/views/layouts && rm -r public && parcel src/*.pug src/docs/*.pug src/styles/main.scss src/styles/cookie.scss src/js/cookie.js src/js/prevMail.js src/js/calendar.js src/js/global.js src/img/scmed/* src/img/NLogoHalignT.svg src/img/logoT.svg src/img/wlogoT.svg src/publicidad/* --out-dir public",
-    "build": "rm functions/views/includes/* && cp src/includes/* functions/views/includes && rm functions/views/layouts/* && cp src/layouts/* functions/views/layouts && rm -r public && parcel build src/*.pug src/docs/*.pug src/styles/main.scss src/styles/cookie.scss src/js/cookie.js src/js/prevMail.js src/js/calendar.js src/js/global.js src/img/scmed/* src/img/NLogoHalignT.svg src/img/logoT.svg src/img/wlogoT.svg src/publicidad/* src/google2ff882864ba47fa1.html --out-dir public"
+    "dev": "./scripts/parcelDev.sh",
+    "build": "./scripts/parcelBuild.sh",
+    "syncFSDB": "./scripts/syncFSDB.sh",
+    "fireStart": "./scripts/fireStart.sh"
   },
   "devDependencies": {
-    "cssnano": "^5.0.2",
-    "pug": "^3.0.2",
-    "sass": "^1.32.8"
+    "@parcel/transformer-pug": "^2.0.0-beta.3.1",
+    "@parcel/transformer-sass": "^2.0.0-beta.3.1",
+    "parcel": "^2.0.0-beta.3.1"
   },
-  "dependencies": {
-    "is-svg": "^4.3.1",
-    "lodash": "^4.17.21",
-    "postcss": "^8.2.15"
-  }
+  "dependencies": {},
+  "browserslist": [
+    "last 3 and_chr versions",
+    "last 3 chrome versions",
+    "last 3 opera versions",
+    "last 3 ios_saf versions",
+    "last 3 safari versions"
+  ]
 }

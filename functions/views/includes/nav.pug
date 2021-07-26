@@ -1,51 +1,75 @@
 //- Navbar
 nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
-    img.d-inline-block.align-center.mr-2(src='/img/wlogoT.svg' width='30' height='30' alt='Science Cookies Logo')
-    a.navbar-brand(href='/') Science Cookies
+    img.d-inline-block.align-center.mr-2(src=HOST+'/img/wlogoT.svg' width='30' height='30' alt='Science Cookies Logo')
+    a.navbar-brand(href=HOST+'/') Science Cookies
     button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarM' aria-controls='navbarM' aria-expanded='false' aria-label='Toggle navigation')
         span.navbar-toggler-icon
     #navbarM.collapse.navbar-collapse
         ul.navbar-nav.mr-auto.py-0
             if site=="index"
-                a.btn.btn-dark.mx-2.my-1.active(href='/') Inicio
+                a.btn.btn-dark.mx-2.my-1.active(href=HOST+'/') #{Buttons[LANG]["index"]}
             else
-                a.btn.btn-dark.mx-2.my-1(href='/') Inicio
-            if site=="arch"
-                a.btn.btn-dark.mx-2.my-1.active(href='/archivo/') Archivo
+                a.btn.btn-dark.mx-2.my-1(href=HOST+'/') #{Buttons[LANG]["index"]}
+            if site=="cook"
+                a.btn.btn-dark.mx-2.my-1.active(href=HOST+'/'+NavLinks[LANG]["cook"]) #{Buttons[LANG]["cook"]}
             else
-                a.btn.btn-dark.mx-2.my-1(href='/archivo/') Archivo
-            if site=="cal"
-                a.btn.btn-dark.mx-2.my-1.active(href='/calendario-astronomico/') Calendario Astronómico
+                a.btn.btn-dark.mx-2.my-1(href=HOST+'/'+NavLinks[LANG]["cook"]) #{Buttons[LANG]["cook"]}
+            if site=="allCalsY"
+                a.btn.btn-dark.mx-2.my-1.active(href=HOST+'/'+NavLinks[LANG]["cal"]) #{Buttons[LANG]["cal"]}
             else
-                a.btn.btn-dark.mx-2.my-1(href='/calendario-astronomico/') Calendario Astronómico
+                a.btn.btn-dark.mx-2.my-1(href=HOST+'/'+NavLinks[LANG]["cal"]) #{Buttons[LANG]["cal"]}
             .dropdown.d-flex.flex-column
-                button.btn.btn-dark.mx-2.my-1.flex-fill#usBtnsDrpdwn(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Nosotros
+                if LANG=="es"
+                    button.btn.btn-dark.mx-2.my-1.flex-fill#usBtnsDrpdwn(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Nosotros
+                else if LANG=="en"
+                    button.btn.btn-dark.mx-2.my-1.flex-fill#usBtnsDrpdwn(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Us
                 .dropdown-menu.bg-sc.px-0.mb-2.py-1(aria-labelledby="usBtnsDrpdwn" style="min-width:max-content;")
                     .col-12.px-0.d-flex
                         if site=="who"
-                            a.btn.btn-dark.mx-2.my-1.flex-fill.active(href='/quienes-somos/') ¿Quienes somos?
+                            a.btn.btn-dark.mx-2.my-1.flex-fill.active(href=HOST+'/'+NavLinks[LANG]["who"]) #{Buttons[LANG]["who"]}
                         else
-                            a.btn.btn-dark.mx-2.my-1.flex-fill(href='/quienes-somos/') ¿Quienes somos?
+                            a.btn.btn-dark.mx-2.my-1.flex-fill(href=HOST+'/'+NavLinks[LANG]["who"]) #{Buttons[LANG]["who"]}
                     .col-12.px-0.d-flex
                         if site=="contact"
-                            a.btn.btn-dark.mx-2.my-1.flex-fill.active(href='/contacto/') Contacto
+                            a.btn.btn-dark.mx-2.my-1.flex-fill.active(href=HOST+'/'+NavLinks[LANG]["contact"]) #{Buttons[LANG]["contact"]}
                         else
-                            a.btn.btn-dark.mx-2.my-1.flex-fill(href='/contacto/') Contacto
+                            a.btn.btn-dark.mx-2.my-1.flex-fill(href=HOST+'/'+NavLinks[LANG]["contact"]) #{Buttons[LANG]["contact"]}
             if site=="edit"||site=="editCal"
                 i.text-light.mx-3.my-auto#tagLstSave
-        .row.justify-content-end
-            .dropdown.mr-4.dropleft
+        .row.justify-content-end.w-nsm-100
+            //- let expireLangCookie = new Date();
+            //- expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));
+            //- document.cookie = "firebase-language-override=es; path=/; expires='+expireLangCookie.toUTCString()+'";
+            if site=="index"
+                if LANG=="es"
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/en/"+location.search')
+                        | English 
+                        i.fas.fa-globe
+                else if LANG=="en"
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/es/"+location.search')
+                        | Español 
+                        i.fas.fa-globe
+            else
+                if LANG=="es"
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/'+NavLinks["en"][site]+'"+location.search')
+                        | English 
+                        i.fas.fa-globe
+                else if LANG=="en"
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/'+NavLinks["es"][site]+'"+location.search')
+                        | Español 
+                        i.fas.fa-globe
+            .dropdown.mr-2.dropleft
                 button#usrDrpdwn.btn.btn-dark.dropdown-toggle.p-2(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                     i#icnUsr.fas
                     img#picUsr.d-inline-block.align-center.ml-2.rounded-circle(src='' height='30' alt='')
                 .dropdown-menu.dropdown-menu-right.bg-dark.pl-1(aria-labelledby='usrDrpdwn')
-                    a#btnPrfl.btn.btn-link.text-decoration-none.text-light.d-none(href='/perfil/') Mi perfíl
-                    a#btnPref.btn.btn-link.text-decoration-none.text-light.d-none(href='/perfil/?tab=pref') Preferencias
-                    a#btnDraft.btn.btn-link.text-decoration-none.text-light.d-none(href='/drafts/') Borradores
-                    a#btnCals.btn.btn-link.text-decoration-none.text-light.d-none(href='/calendarios/') Calendarios
+                    a#btnPrfl.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["profile"]) #{Buttons[LANG]["profile"]}
+                    a#btnPref.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["profile"]+'?tab=pref') #{Buttons[LANG]["prefs"]}
+                    a#btnDraft.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["drafts"]) #{Buttons[LANG]["drafts"]}
+                    a#btnCals.btn.btn-link.text-decoration-none.text-light.d-none(href=HOST+'/'+NavLinks[LANG]["draftsCal"]) #{Buttons[LANG]["draftsCal"]}
                     .dropdown-divider.ml-1.mr-2
-                    button#btnLgO.btn.btn-link.text-decoration-none.text-light.d-none Cerrar sesión
-                    button#btnLgI.btn.btn-link.text-decoration-none.text-light.d-none(data-toggle='modal' data-target='#mdlRgstr') Acceder
+                    button#btnLgO.btn.btn-link.text-decoration-none.text-light.d-none #{Buttons[LANG]["logOut"]}
+                    button#btnLgI.btn.btn-link.text-decoration-none.text-light.d-none(data-toggle='modal' data-target='#mdlRgstr') #{Buttons[LANG]["logIn"]}
 
 
 //- Alertas

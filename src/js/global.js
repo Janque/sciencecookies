@@ -1,8 +1,14 @@
 //Init database
 window.db = firebase.firestore();
 
+if (!lang) window.lang = "es";
+//console.log(lang);
+document.cookie = "firebase-language-override=";
+
+window.cookiesFSRef = db.collection('cookies/langs/' + lang);
+window.calendarsFSRef = db.collection('calendars/langs/' + lang);
+
 window.urlSrch = '';
-var url = new URL(window.location.href);
 var actSsn = false;
 var mobile = false;
 
@@ -29,6 +35,26 @@ window.disable = function disable(btn) {
     classes(btn, "disabled");
     btn.setAttribute("disabled", "true");
 }
+window.alertTop = function alertTop(msg, alert, alrtId = "alrtClsSsn") {
+    switch (alert) {
+        case 0:
+            alert = "danger";
+            break;
+        case 1:
+            alert = "success";
+            break;
+        case 2:
+            alert = "warning";
+            break;
+    }
+    document.getElementById(alrtId).innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-${alert} alert-dismissible fade show fixed-bottom" role="alert">${msg}<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
+    setTimeout(function () {
+        document.getElementById("btnAlrtClsSsn").click();
+    }, 3000);
+    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
+        document.getElementById(alrtId).innerHTML = '';
+    });
+}
 
 //Check auth
 window.displayName;
@@ -48,13 +74,13 @@ firebase.auth().onAuthStateChanged(function (user) {
         modAuth(uid).then(res => {
             mod = res.data.mod;
             author = res.data.name;
-            if (url.pathname.substring(0, 7) == "/drafts" || url.pathname.substring(0, 7) == "/editar" || url.pathname.substring(0, 13) == "/vista-previa" || url.pathname.substring(0, 12) == "/vista-email") {
+            if (site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal" || site == "mailPrev") {
                 if (!mod) window.location.href = 'https://sciencecookies.net';
             }
             shwSsnBtns(true);
         }).catch(err => console.log(err));
     } else {
-        if (url.pathname.substring(0, 7) == "/perfil" || url.pathname.substring(0, 9) == "/contacto" || url.pathname.substring(0, 7) == "/drafts" || url.pathname.substring(0, 7) == "/editar" || url.pathname.substring(0, 13) == "/vista-previa" || url.pathname.substring(0, 12) == "/vista-email") {
+        if (site == "profile" || site == "contact" || site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal" || site == "mailPrev") {
             window.location.href = 'https://sciencecookies.net';
         }
         actSsn = false;
@@ -71,10 +97,10 @@ function shwSsnBtns(ac) {
     if (ac) {
         document.getElementById('icnUsr').classList.remove('fa-user-slash');
         document.getElementById('icnUsr').classList.add('fa-user');
-        document.getElementById('picUsr').setAttribute('onerror', "this.src='https://sciencecookies.net/img/nopp.png'");
+        document.getElementById('picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
         document.getElementById('picUsr').src = photoURL;
         if (document.getElementById('ppCom')) {
-            document.getElementById('ppCom').setAttribute('onerror', "this.src='https://sciencecookies.net/img/nopp.png'");
+            document.getElementById('ppCom').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
             document.getElementById('ppCom').src = photoURL;
         }
         document.getElementById('btnPrfl').classList.remove('d-none');
@@ -84,8 +110,8 @@ function shwSsnBtns(ac) {
             document.getElementById('btnCals').classList.remove('d-none');
         }
         document.getElementById('btnLgO').classList.remove('d-none');
-        if (document.getElementById('btnLgI') != null) document.getElementById('btnLgI').classList.add('d-none');
-        if (url.pathname.substring(0, 10) == "/galletas/") {
+        if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.add('d-none');
+        if (site == "cookie") {
             db.collection('users').doc(uid).get().then(function (doc) {
                 let fav = doc.data().fav;
                 let liked = doc.data().liked;
@@ -124,7 +150,7 @@ function shwSsnBtns(ac) {
         document.getElementById('btnLgO').classList.add('d-none');
         if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.remove('d-none');
     }
-    if (url.pathname.substring(0, 10) == "/galletas/") {
+    if (site == "cookie") {
         document.getElementById('btnFav').classList.remove('disabled');
         document.getElementById('btnLike').classList.remove('disabled');
         document.getElementById('btnLdComs').classList.remove('disabled');
@@ -134,15 +160,17 @@ function shwSsnBtns(ac) {
 //Log Out
 document.getElementById("btnLgO").onclick = function () {
     firebase.auth().signOut().then(function () {
-        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert">Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-    }).catch(function (error) {
-        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-    });
-    setTimeout(function () {
-        document.getElementById("btnAlrtClsSsn").click();
-    }, 3000);
-    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-        document.getElementById("alrtClsSsn").innerHTML = '';
+        if (lang == "es") {
+            alertTop("Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>", 2);
+        } else if (lang == "en") {
+            alertTop("You have successfully closed your session. <strong>! Come back soon! </strong>", 2);
+        }
+    }).catch(function (err) {
+        if (lang == "es") {
+            alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+        } else if (lang == "en") {
+            alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+        }
     });
 };
 //Autenticaciones
@@ -172,20 +200,31 @@ function checkMobile() {
     (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
 };
+
 window.addEventListener("load", function () {
-    console.log(checkMobile());
     mobile = checkMobile();
     url = new URL(document.location.href);
     urlSrch = new URLSearchParams(location.search);
+
     if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
     if (urlSrch.get('mode') == 'select') $('#mdlRgstr').modal('show');
     shwRecom();
     shareBtns();
-    loaded();
+
+    db.collection('config').doc('langs').get().then(doc => {
+        window.langs = doc.data().langs;
+        return db.collection('config').doc('cats').get();
+    }).then(doc => {
+        window.allCats = doc.data()[lang].allCats;
+        window.textCats = doc.data()[lang].textCats;
+        window.catTranslations = doc.data().catTranslations;
+
+        loaded();
+    }).catch(err => { console.log(err) });
 });
 
 function shwRecom() {
-    db.collection('galletas').where('public', '==', true).orderBy('date', 'desc').limit(1).get().then(snap => {
+    cookiesFSRef.where('public', '==', true).orderBy('published', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();
@@ -202,10 +241,10 @@ function shwRecom() {
             card.appendChild(img0);
             let bod0 = document.createElement('div');
             classes(bod0, "card-body");
-            let d = dat.date.toDate();
+            let d = dat.published.toDate();
             bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
-                <p class="card-text">` + dat.descrip + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authrs + `</p>`;
+                <p class="card-text">` + dat.description + `</p>
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             card.appendChild(bod0);
             document.getElementById("newCook").appendChild(a0);
 
@@ -225,13 +264,13 @@ function shwRecom() {
             let bod1 = document.createElement('div');
             classes(bod1, "media-body");
             bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
-                <p class="card-text">` + dat.descrip + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authrs + `</p>`;
+                <p class="card-text">` + dat.description + `</p>
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             med.appendChild(bod1);
             document.getElementById("newCook").appendChild(a1);
         })
     }).catch(err => console.log(err));
-    db.collection('galletas').where('public', '==', true).orderBy('pop', 'desc').limit(3).get().then(snap => {
+    cookiesFSRef.where('public', '==', true).orderBy('pop', 'desc').limit(3).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();
@@ -248,10 +287,10 @@ function shwRecom() {
             card.appendChild(img0);
             let bod0 = document.createElement('div');
             classes(bod0, "card-body");
-            let d = dat.date.toDate();
+            let d = dat.published.toDate();
             bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
-                <p class="card-text">` + dat.descrip + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authrs + `</p>`;
+                <p class="card-text">` + dat.description + `</p>
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             card.appendChild(bod0);
             document.getElementById("popCook").appendChild(a0);
 
@@ -271,8 +310,8 @@ function shwRecom() {
             let bod1 = document.createElement('div');
             classes(bod1, "media-body");
             bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
-                <p class="card-text">` + dat.descrip + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authrs + `</p>`;
+                <p class="card-text">` + dat.description + `</p>
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             med.appendChild(bod1);
             document.getElementById("popCook").appendChild(a1);
 
@@ -281,7 +320,7 @@ function shwRecom() {
             document.getElementById("popCook").appendChild(divider);
         });
     }).catch(err => console.log(err));
-    db.collection('calendarios').where("public", "==", true).orderBy('date', 'desc').limit(1).get().then(snap => {
+    calendarsFSRef.where("public", "==", true).orderBy('published', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();

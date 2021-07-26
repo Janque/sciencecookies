@@ -1,24 +1,53 @@
 extends layouts/main
 
-block missHead
-  meta(name='description' content="Aquí puedes encontrar todas las galletas que tenemos.")
-  link(rel='canonical' href=HOST+'/archivo/')
-  title Archivo - Science Cookies
+block lang 
+  - const LANG=setLang
 
-  - const site="arch";
+block missHead
+  if LANG=="es"
+    meta(name='description' content="Aquí puedes encontrar todas las Galletas que tenemos.")
+    meta(property="og:description" content="Aquí puedes encontrar todas las Galletas que tenemos.")
+  else if LANG=="en"
+    meta(name='description' content="Here you can find all our Cookies.")
+    meta(property="og:description" content="Here you can find all our Cookies.")
+
+  link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cook"])
+  link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cook"])
+  link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"]["cook"])
+  meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG]["cook"])
+
+  title Science Cookies - #{Buttons[LANG]["cook"]}
+  meta(property="og:title" content='Science Cookies - #{Buttons[LANG]["cook"]}')
+
+  - const site="cook";
 
 block content
-  h1.text-center Archivo de Science Cookies
-  nav(aria-label='breadcrumb')
-    ol.breadcrumb.mb-3
-      li.breadcrumb-item.active(aria-current='page') Archivo
-  .container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
-    p Aquí puedes encontrar todas las galletas que tenemos.
-    each tris, year in years 
-      h2 !{year}
-      ul 
-        each ltri, tri in tris
-          li 
-            a.btn-link-scckie.text-light(href="/archivo/" + year + "/" + tri)
-              h6 !{ltri}
+  if LANG=="es"
+    h1.text-center Todas las Galletas de Science Cookies
+    nav(aria-label='breadcrumb')
+      ol.breadcrumb.mb-3
+        li.breadcrumb-item.active(aria-current='page') #{Buttons[LANG]["cook"]}
+    .container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
+      p Aquí puedes encontrar todas las Galletas que tenemos.
+      each tris, year in years 
+        h2 !{year}
+        ul 
+          each ltri, tri in tris
+            li 
+              a.btn-link-scckie.text-light(href=HOST+"/" + NavLinks[LANG]["cook"] + year + "/" + tri)
+                h6 !{ltri}
+  else if LANG=="en"
+    h1.text-center All of Science Cookies' Cookies
+    nav(aria-label='breadcrumb')
+      ol.breadcrumb.mb-3
+        li.breadcrumb-item.active(aria-current='page') #{Buttons[LANG]["cook"]}
+    .container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
+      p Here you can find all our Cookies.
+      each tris, year in years 
+        h2 !{year}
+        ul 
+          each ltri, tri in tris
+            li 
+              a.btn-link-scckie.text-light(href=HOST+"/" + NavLinks[LANG]["cook"] + year + "/" + tri)
+                h6 !{ltri}
 

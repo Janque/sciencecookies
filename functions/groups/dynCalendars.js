@@ -8,7 +8,7 @@ const app = express();
 app.set('views', './views');
 app.set('view engine', 'pug');
 
-app.get('/calendario-astronomico/:year/:month', (req, res) => {
+function renderCal(req, res, lang) {
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
     if (!/^[0-9]{4}$/.test(req.params.year)) {
         console.log('badUrl');
@@ -16,49 +16,36 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
         return;
     } else {
         let monthNum;
-        switch (req.params.month) {
-            case "enero":
-                monthNum = "01";
-                break;
-            case "febrero":
-                monthNum = "02";
-                break;
-            case "marzo":
-                monthNum = "03";
-                break;
-            case "abril":
-                monthNum = "04";
-                break;
-            case "mayo":
-                monthNum = "05";
-                break;
-            case "junio":
-                monthNum = "06";
-                break;
-            case "julio":
-                monthNum = "07";
-                break;
-            case "agosto":
-                monthNum = "08";
-                break;
-            case "septiembre":
-                monthNum = "09";
-                break;
-            case "octubre":
-                monthNum = "10";
-                break;
-            case "noviembre":
-                monthNum = "11";
-                break;
-            case "diciembre":
-                monthNum = "12";
-            default:
-                monthNum = "00";
-                break;
+        if (req.params.month == "enero" || req.params.month == "january") {
+            monthNum = "01";
+        } else if (req.params.month == "febrero" || req.params.month == "february") {
+            monthNum = "02";
+        } else if (req.params.month == "marzo" || req.params.month == "march") {
+            monthNum = "03";
+        } else if (req.params.month == "abril" || req.params.month == "april") {
+            monthNum = "04";
+        } else if (req.params.month == "mayo" || req.params.month == "may") {
+            monthNum = "05";
+        } else if (req.params.month == "junio" || req.params.month == "june") {
+            monthNum = "06";
+        } else if (req.params.month == "julio" || req.params.month == "july") {
+            monthNum = "07";
+        } else if (req.params.month == "agosto" || req.params.month == "august") {
+            monthNum = "08";
+        } else if (req.params.month == "septiembre" || req.params.month == "september") {
+            monthNum = "09";
+        } else if (req.params.month == "octubre" || req.params.month == "october") {
+            monthNum = "10";
+        } else if (req.params.month == "noviembre" || req.params.month == "november") {
+            monthNum = "11";
+        } else if (req.params.month == "diciembre" || req.params.month == "december") {
+            monthNum = "11";
+        } else {
+            monthNum = "00";
         }
-        db.collection('calendarios').doc(req.params.year + monthNum).get().then(doc => {
+        db.collection('calendars/langs/' + lang).doc(req.params.year + monthNum).get().then(async (doc) => {
             if (!doc.exists) {
-                console.log('doc', req.params.year + monthNum, '--', req.params.year, monthNum, '!.exists');
+                console.log('doc', req.params.year + monthNum, '--', req.params.year, monthNum, ' !.exists');
                 res.redirect('https://sciencecookies.net/404');
                 return;
             }
@@ -67,6 +54,33 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
                 console.log('private');
                 res.redirect('https://sciencecookies.net/404');
                 return;
+            }
+
+            const calConfDoc = await db.collection('config').doc('calTypes').get();
+            const calConfig = calConfDoc.data();
+            for (const [key, event] of Object.entries(dat.events)) {
+                if (calConfig[lang][event.typeIdx].multipleTxt) {
+                    event.description = parseInt(event.vals["0"].val.charAt(0));
+                    event.name = parseInt(event.vals["0"].val.charAt(1));
+                } else {
+                    event.description = event.name = 0;
+                }
+
+                event.description = calConfig[lang][event.typeIdx].text[event.description];
+                event.name = calConfig[lang][event.typeIdx].titleTxt[event.name];
+                for (const [vKey, vVal] of Object.entries(event.vals)) {
+                    const rlab = new RegExp("\\\$" + vKey + "L\\\$", 'g')
+                    const rval = new RegExp("\\\$" + vKey + "\\\$", 'g')
+                    const rg1 = new RegExp("\\\$g-year\\\$", 'g')
+                    event.description = event.description.replace(rlab, vVal.label);
+                    event.description = event.description.replace(rval, vVal.val);
+                    event.description = event.description.replace(rg1, req.params.year);
+                    event.name = event.name.replace(rlab, vVal.label);
+                    event.name = event.name.replace(rval, vVal.val);
+                    event.name = event.name.replace(rg1, req.params.year);
+                }
+                dat.events[key] = event;
+                dat.weeks[Number(key[0])][key.substr(1, 3)].events[key[4]].name = event.name;
             }
 
             let orderedKeys = Object.keys(dat.events).slice().sort((a, b) => {
@@ -103,12 +117,12 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
                 java += '","' + orderedKeys[i];
             }
             java += '"];\n';
-            java += 'var eventTitles={"' + Object.keys(dat.events)[0] + '":"' + Object.values(dat.events)[0].date + '"';
+            java += 'var eventTitles={"' + Object.keys(dat.events)[0] + '":"' + Object.values(dat.events)[0].date[lang] + '"';
             for (i = 1; i < Object.keys(dat.events).length; i++) {
-                java += ',' + '"' + Object.keys(dat.events)[i] + '":"' + Object.values(dat.events)[i].date + '"';
+                java += ',' + '"' + Object.keys(dat.events)[i] + '":"' + Object.values(dat.events)[i].date[lang] + '"';
             }
             java += '};\n';
-            java+=`window.globID="${doc.id}"\n`;
+            java += `window.globID="${doc.id}"\n`;
 
             res.render('calendario', {
                 "descriptionShort": dat.descriptionShort,
@@ -124,10 +138,18 @@ app.get('/calendario-astronomico/:year/:month', (req, res) => {
                 "events": Object.entries(dat.events),
                 "nextCal": dat.nextCal,
                 "priorCal": dat.priorCal,
-                "java": java
+                "java": java,
+                "setLang": lang
             });
+            return;
         }).catch(err => console.log(err));
     }
+}
+app.get('/calendario-astronomico/:year/:month', (req, res) => {
+    return renderCal(req, res, "es");
+});
+app.get('/astronomic-calendar/:year/:month', (req, res) => {
+    return renderCal(req, res, "en");
 });
 
 app.get('/vista-email-calendario/:file', (req, res) => {

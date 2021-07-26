@@ -1,40 +1,23 @@
 extends layouts/main
 
+block lang
+  - const LANG=setLang
+
 block missHead
   meta(name='description' content= descriptionShort)
-  link(rel='canonical' href=HOST+'/calendario-astronomico/'+year+'/'+month+'/')
-  title #{title} - Science Cookies
+  meta(property="og:description" content= descriptionShort)
+
+  link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cal"]+year+'/'+month+'/')
+  link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cal"]+year+'/'+month+'/')
+  link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"]["cal"]+year+'/'+month+'/')
+  meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG]["cal"]+year+'/'+month+'/')
+
+  link(rel="stylesheet" href=HOST+"/styles/cal.css")
+
+  title Science Cookies - #{title}
+  meta(property="og:title" content='Science Cookies - #{title}')
 
   - const site="cal";
-
-  style.
-    .table-bordered thead,
-    .table-bordered tbody,
-    .table-bordered th,
-    .table-bordered td {
-    border: .5rem solid #57238b !important;
-    }
-    .autoOverflow {
-    overflow: hidden;
-    margin-right: .5rem;
-    margin-left: .5rem;
-    }
-    .autoOverflow:hover {
-    overflow: auto;
-    }
-    .portImg{
-      position: relative;
-      border-radius: .25rem;
-      width: 75%;
-    }
-    .dayHead{
-      min-width: 7rem;
-      width: 13%;
-    }
-    .eventCont{
-      background-color: #c3e6cb;
-      border-color: #8fd19e;
-    }
 
 block precontent
   //- Event Info modal
@@ -58,12 +41,20 @@ block precontent
               .modal-body
                 h3 !{event.name}
                 p !{event.description}
-                p Visibilidad: !{event.visibilidad}
-                if (event.visibilidad != "No observable")
-                  p.mb-0 Horario:
-                  ul 
-                    each time in event.horario
-                      li !{time}
+                if LANG=="es"
+                  p Visibilidad: !{event.visibilidad}
+                  if (event.visibilidad != "No observable")
+                    p.mb-0 Horario:
+                    ul 
+                      each time in event.horario
+                        li !{time}
+                else if LANG=="en"
+                  p Visibility: !{event.visibilidad}
+                  if (event.visibilidad != "Not observable")
+                    p.mb-0 Observing time:
+                    ul 
+                      each time in event.horario
+                        li !{time}
 
 block content
   div.container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
@@ -82,13 +73,22 @@ block content
       table.table.table-bordered.table-light.rounded
         thead.thead-dark
           tr
-            th.dayHead Domingo
-            th.dayHead Lunes
-            th.dayHead Martes
-            th.dayHead Miercoles
-            th.dayHead Jueves
-            th.dayHead Viernes
-            th.dayHead Sabado
+            if LANG=="es"
+              th.dayHead Domingo
+              th.dayHead Lunes
+              th.dayHead Martes
+              th.dayHead Miercoles
+              th.dayHead Jueves
+              th.dayHead Viernes
+              th.dayHead Sabado
+            else if LANG=="en"
+              th.dayHead Sunday
+              th.dayHead Monday
+              th.dayHead Tuesday
+              th.dayHead Wednesday
+              th.dayHead Thursday
+              th.dayHead Friday
+              th.dayHead Saturday
         tbody
           - const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
           each week, wIdx in weeks
@@ -106,10 +106,15 @@ block content
     br
     br
     p
-      a.text-warning.text-break(href='https://in-the-sky.org/newscal.php?month='+monthNum+'&year='+year+'&maxdiff=6' target='_blank' rel='nofollow')
-        | Saber más
-        i.fas.fa-external-link-alt.ml-1(aria-hidden='true')
+      if LANG=="es"
+        a.text-warning.text-break(href='https://in-the-sky.org/newscal.php?month='+monthNum+'&year='+year+'&maxdiff=6' target='_blank' rel='nofollow')
+          | Saber más
+          i.fas.fa-external-link-alt.ml-1(aria-hidden='true')
+      else if LANG=="en"
+        a.text-warning.text-break(href='https://in-the-sky.org/newscal.php?month='+monthNum+'&year='+year+'&maxdiff=6' target='_blank' rel='nofollow')
+          | Find out more
+          i.fas.fa-external-link-alt.ml-1(aria-hidden='true')
 
 block ownjs
-  script(src=HOST+'/js/calendar.js')
   script !{java}
+  script(src=HOST+'/js/calendar.js')

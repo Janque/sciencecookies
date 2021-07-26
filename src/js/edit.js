@@ -1,9 +1,7 @@
-import '../styles/edit.scss';
-
 var store = firebase.storage();
 var rtDb = firebase.database();
 
-let docDat, docId;
+let docDat, docId, docRef;
 let toDel = -1, toAdd = -1;
 let lastSave = Date.now(), saved = false;
 
@@ -14,66 +12,151 @@ let newMedSrc = null;
 
 let keywords = [];
 
+async function translateSimple(text, from, target) {
+    let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateSimple');
+    let res = await translate({
+        text: text,
+        from: from,
+        target: target
+    });
+    return res.data;
+}
+
 window.loaded = function loaded() {
-    db.collection('galletasCont').where('file', '==', urlSrch.get('file')).limit(1).onSnapshot(snap => {
-        if (snap.empty) {
-            window.location.href = '../404';
-            return;
+    allCats.forEach((cat, i) => {
+        let fat = document.createElement('div');
+        classes(fat, "form-group col-auto");
+        let div = document.createElement('div');
+        classes(div, "form-check");
+        let inp = document.createElement('input');
+        inp.id = "cat" + i;
+        classes(inp, "form-check-input");
+        inp.value = cat;
+        inp.setAttribute('type', 'checkbox');
+        inp.onclick = function () {
+            if (inp.checked == true) {
+                docDat.fixedCats.push(this.value);
+            } else {
+                docDat.fixedCats.splice(docDat.fixedCats.indexOf(this.value), 1);
+            }
         }
-        snap.forEach(doc => {
-            docDat = doc.data();
-            docId = doc.id;
-            document.getElementById('inFile').value = docDat.file;
-            document.getElementById('inDesc').value = docDat.description;
-            render();
-            fillMed();
-            if (docDat.public) {
-                document.getElementById('btnPrivate').classList.remove('d-none');
-                document.getElementById('btnAprove').classList.add('d-none');
-                document.getElementById('btnPub').classList.add('d-none');
-            } else {
-                document.getElementById('btnPrivate').classList.add('d-none');
-                document.getElementById('btnAprove').classList.remove('d-none');
-                document.getElementById('btnPub').classList.remove('d-none');
-            }
-            if (docDat.revised.includes(uid)) {
-                document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
-            } else {
-                document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
-            }
-            let d = docDat.published.toDate();
-            let month = d.getFullYear().toString();
-            if (d.getMonth() < 9) {
-                month += '0';
-            }
-            month += (d.getMonth() + 1);
-            document.getElementById('btnPrevCook').href = '../galletas/' + month + '/' + docDat.file;
-            document.getElementById('btnPrevMail').href = '../vista-email/' + docDat.file;
-            fillKW();
+        div.appendChild(inp);
+        let lab = document.createElement('label');
+        lab.setAttribute('for', 'cat' + i);
+        classes(lab, "form-check-label")
+        lab.innerText = textCats[i];
+        div.appendChild(lab);
+        fat.appendChild(div);
+        document.getElementById('catFrmCont').appendChild(fat);
+    });
+
+    docRef = cookiesFSRef.doc(urlSrch.get('id'));
+    docRef.onSnapshot(doc => {
+        docDat = doc.data();
+        docId = doc.id;
+        document.getElementById('inFile').value = docDat.file;
+        document.getElementById('inDesc').value = docDat.description;
+        allCats.forEach((cat, i) => {
+            document.getElementById('cat' + i).checked = docDat.fixedCats.includes(document.getElementById('cat' + i).value);
         });
-    }, err => console.log(err))
+        render();
+        fillMed();
+        if (docDat.public) {
+            document.getElementById('btnPrivate').classList.remove('d-none');
+            document.getElementById('btnAprove').classList.add('d-none');
+            document.getElementById('btnPub').classList.add('d-none');
+        } else {
+            document.getElementById('btnPrivate').classList.add('d-none');
+            document.getElementById('btnAprove').classList.remove('d-none');
+            document.getElementById('btnPub').classList.remove('d-none');
+        }
+        if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
+            document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
+        } else {
+            document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
+        }
+        document.getElementById('btnPrevCook').href = docDat.url;
+        document.getElementById('btnPrevMail').href = '../vista-email/' + docDat.file;
+    }, err => { console.log(err) });
+
+    fillTrans();
+    function translateFrm() {
+        let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateFullCookie');
+        return translate({
+            docId: docId,
+            from: document.getElementById('inTransFrom').value,
+            target: lang
+        });
+    }
+    document.getElementById("frmTranslate").addEventListener("submit", function (event) {
+        event.preventDefault();
+        classes(document.getElementById('btnCnfTranslate'), "disabled")
+        classes(document.getElementById('btnCanTranslate0'), "disabled")
+        classes(document.getElementById('btnCanTranslate1'), "disabled")
+        setprog('barTranslate', 0);
+        showEl(document.getElementById('barTranslateCont'));
+        runprog('barTranslate', 0, 73);
+        translateFrm().then(res => {
+            runprog('barTranslate', 73, 90);
+            if (res) {
+                setprog('barTranslate', 100);
+                $('#mdlTranslate').modal('hide');
+                document.getElementById('btnCnfTranslate').classList.remove("disabled");
+                document.getElementById('btnCanTranslate0').classList.remove("disabled");
+                document.getElementById('btnCanTranslate1').classList.remove("disabled");
+                hideEl(document.getElementById('barTranslateCont'))
+            } else {
+                if (lang == "es") {
+                    alertTop("<strong>¡Ha ocurrido un error!</strong>", 0);
+                } else if (lang == "en") {
+                    alertTop("<strong>¡There has been an error!</strong>", 0);
+                }
+                console.log('err');
+            }
+        });
+    });
 
     function fileFrm() {
         let file = document.getElementById('inFile').value;
-        db.collection('galletasCont').where('file', '==', file).limit(1).get().then(snap => {
-            if (!snap.empty && file != urlSrch.get('file')) {
-                document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                    Ese nombre de archivo ya esta en uso.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>`;
+        cookiesFSRef.where("file", "==", file).get().then(snap => {
+            if (!snap.empty && file != docDat.file) {
+                if (lang == "es") {
+                    alertTop("Ese nombre de archivo ya esta en uso.", 0);
+                } else if (lang == "en") {
+                    alertTop("That file name is already in use.", 0);
+                }
             } else {
                 docDat.description = document.getElementById('inDesc').value.trim();
                 docDat.file = file;
-                return saveDoc();
+                normSave();
             }
-        }).then(() => {
-            window.location.href = '?file=' + file;
-        }).catch(err => console.log(err));
+        }).then(() => { console.log('exito') }).catch(err => console.log(err));
     }
     document.getElementById("frmFile").addEventListener("submit", function (event) {
         event.preventDefault();
         fileFrm();
     });
+    langs.forEach((l, i) => {
+        if (l != lang) {
+            let opt = document.createElement('option');
+            if (i == 0) {
+                opt.setAttribute('selected', 'true');
+            }
+            opt.value = opt.innerText = l;
+            document.getElementById('selFileTrans').appendChild(opt);
+        }
+    })
+    document.getElementById('btnFileTrans').onclick = function () {
+        let ori = document.getElementById('selFileTrans').value
+        db.collection('cookies/langs/' + ori).doc(docId).get().then(async function (doc) {
+            let file = doc.data().file;
+            let desc = doc.data().description;
+            document.getElementById('inFile').value = await translateSimple(file, ori, lang);
+            document.getElementById('inFile').value = document.getElementById('inFile').value.trim().toLowerCase().replaceAll(' ', '-');
+            document.getElementById('inDesc').value = await translateSimple(desc, ori, lang);
+            fileFrm();
+        }).catch(err => console.log(err));
+    }
 
     function addMed(atempt) {
         let ref = store.ref('cookieMedia/' + docId + '/i' + atempt + newMedia.name);
@@ -83,13 +166,14 @@ window.loaded = function loaded() {
             if (err.code == 'storage/object-not-found') {
                 ref.put(newMedia).on('state_changed',
                     function progress(snap) {
-                        setprog(document.getElementById('barNewMed'), Math.floor((snap.bytesTransferred / snap.totalBytes) * 100));
+                        setprog('barNewMed', (snap.bytesTransferred / snap.totalBytes) * 100);
                     },
                     function error(err) {
-                        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert"><strong>¡Ocurrió un error!</strong> ' + err.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                        setTimeout(function () {
-                            if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
-                        }, 3000);
+                        if (lang == "es") {
+                            alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+                        } else if (lang == "en") {
+                            alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+                        }
                         console.log(err);
                         $('#mdlAddMed').modal('hide');
                     },
@@ -124,7 +208,7 @@ window.loaded = function loaded() {
     }
     document.getElementById("frmAddMed").addEventListener("submit", function (event) {
         event.preventDefault();
-        setprog(document.getElementById('barNewMed'), "0");
+        setprog('barNewMed', 0);
         showEl(document.getElementById("barNewMedCont"));
         hideEl(document.getElementById("frmAddMed"));
         document.getElementById("btnCnfNewMed").setAttribute('disabled', 'true');
@@ -138,7 +222,54 @@ window.loaded = function loaded() {
 let savedInterval;
 function saveDoc() {
     console.log('Saving...');
-    return db.collection('galletasCont').doc(docId).update(docDat);
+    let d = docDat.published.toDate();
+    let month = d.getFullYear().toString();
+    if (d.getMonth() < 9) {
+        month += '0';
+    }
+    month += (d.getMonth() + 1);
+    let galletasText = "";
+    switch (lang) {
+        case "es":
+            galletasText = "galletas";
+            break;
+        case "en":
+            galletasText = "cookies";
+            break;
+    }
+    docDat.url = 'https://sciencecookies.net/' + galletasText + '/' + month + '/' + docDat.file + '/';
+    fillKW();
+    const promises = [];
+    langs.forEach(l => {
+        if (l != lang) {
+            let syncUpt = {
+                authors: docDat.authors.slice(),
+                media: docDat.media.slice(),
+                java: docDat.java,
+                notify: docDat.notify,
+                public: docDat.public,
+                dledit: docDat.dledit,
+                created: docDat.created,
+                ledit: docDat.ledit,
+                published: docDat.published,
+                pop: docDat.pop,
+                likes: docDat.likes,
+                favs: docDat.favs,
+                revised: docDat.revised,
+                translations: docDat.translations,
+                fixedCats: docDat.fixedCats.slice(),
+                timePrev: docDat.timePrev | null,
+            }
+            syncUpt.fixedCats.forEach(function (cat, idx) {
+                syncUpt.fixedCats.splice(idx, 1, catTranslations[cat][l]);
+            });
+            syncUpt.translations[lang] = docDat.url;
+            promises.push(db.collection('cookies/langs/' + l).doc(docId).update(syncUpt));
+        }
+    })
+    return Promise.all(promises).then(() => {
+        return docRef.update(docDat);
+    });
 }
 function normSave() {
     saveDoc().then(() => {
@@ -179,7 +310,7 @@ window.plusSect = function plusSect(type) {
     } else if (type == 'medSimple') {
         newSect = {
             type: type,
-            medUrl: "https://via.placeholder.com/150",
+            medUrl: "https://via.placeholder.com/150.webp",
             alt: "",
             caption: "",
             hasCapt: "true",
@@ -192,9 +323,20 @@ window.plusSect = function plusSect(type) {
 }
 
 function setprog(bar, n) {
+    bar = document.getElementById(bar);
+    n = Math.floor(n);
     bar.setAttribute('aria-valuenow', n);
     bar.style.width = n + '%';
     bar.innerText = n + '%';
+}
+function runprog(bar, b, e) {
+    b = Math.floor(b);
+    e = Math.floor(e);
+    for (let i = b; i <= e; i++) {
+        setTimeout(() => {
+            setprog(bar, i);
+        }, 5);
+    }
 }
 
 function removeMedia(medFileName) {
@@ -258,16 +400,14 @@ function fillMed() {
                     normSave();
                 }
             } else {
-                document.getElementById("alrtClsSsn").innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                    <strong>¿Quieres eliminar esta imagen?</strong> Presiona de nuevo el botón para confirmar.
-                    <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>`;
+                if (lang == "es") {
+                    alertTop("<strong>¿Quieres eliminar esta imagen?</strong> Presiona de nuevo el botón para confirmar.", 2);
+                } else if (lang == "en") {
+                    alertTop("<strong>Do you want to delete this image? </strong> Press the button again to confirm.", 2);
+                }
                 toDelMed = idx;
                 setTimeout(() => {
                     toDelMed = -1;
-                    if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
                 }, 3000);
             }
         };
@@ -350,7 +490,7 @@ function render() {
     if (docDat.beenPublic) {
         publishDate = docDat.published;
     } else {
-        publishDate = new firebase.firestore.Timestamp.now();
+        docDat.published = publishDate = new firebase.firestore.Timestamp.now();
     }
     docDat.cont.forEach((item, idx) => {
         let sect = document.createElement('div');
@@ -367,7 +507,7 @@ function render() {
 
         let act = document.createElement('div');
         classes(act, 'row mb-2 px-2');
-        let btnDel, btnEdit, btnCheck, btnAdd;
+        let btnDel, btnEdit, btnCheck, btnAdd, btnTrans, selLang;
 
         if (item.type != 'head' && item.type != 'ref') {
             btnDel = document.createElement('button');
@@ -381,22 +521,64 @@ function render() {
                     render();//Important
                     normSave();
                 } else {
-                    document.getElementById("alrtClsSsn").innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                        <strong>¿Quieres eliminar esta sección?</strong> Presiona de nuevo el botón para confirmar.
-                        <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>`;
+                    if (lang == "es") {
+                        alertTop("<strong>¿Quieres eliminar esta sección?</strong> Presiona de nuevo el botón para confirmar.", 2);
+                    } else if (lang == "en") {
+                        alertTop("<strong>Do you want to delete this section? </strong> Press the button again to confirm.", 2);
+                    }
                     toDel = idx;
                     setTimeout(() => {
                         toDel = -1;
-                        if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
                     }, 3000);
                 }
             }
             act.appendChild(btnDel);
         }
+
+        let selLangC = document.createElement('div');
+        classes(selLangC, "col-auto");
+        selLang = document.createElement('select');
+        classes(selLang, "form-control mr-0 ml-2 h-100");
+        langs.forEach((l, i) => {
+            if (l != lang) {
+                let opt = document.createElement('option');
+                if (i == 0) {
+                    opt.setAttribute('selected', 'true');
+                }
+                opt.value = opt.innerText = l;
+                selLang.appendChild(opt);
+            }
+        })
+
         if (item.type != 'ref') {
+            selLangC.appendChild(selLang);
+            act.appendChild(selLangC);
+            btnTrans = document.createElement('button');
+            classes(btnTrans, 'btn btn-light btn-link-scckie');
+            btnTrans.innerHTML = '<i class="fas fa-language"></i>';
+            btnTrans.onclick = function () {
+                db.collection('cookies/langs/' + selLang.value).doc(docId).get().then(async function (doc) {
+                    let sect = doc.data().cont[idx];
+                    if (item.type != sect.type) return;
+                    if (sect.type == 'head') {
+                        docDat.cont[idx].title = await translateSimple(sect.title, selLang.value, lang);
+                    } else if (sect.type == 'html') {
+                        docDat.cont[idx].html = await translateSimple(sect.html, selLang.value, lang);
+                    } else if (sect.type == 'parra') {
+                        docDat.cont[idx].text = await translateSimple(sect.text, selLang.value, lang);
+                        if (sect.title != "0") {
+                            docDat.cont[idx].titleTxt = await translateSimple(sect.titleTxt, selLang.value, lang);
+                        }
+                    } else if (sect.type == 'medSimple') {
+                        docDat.cont[idx].alt = await translateSimple(sect.alt, selLang.value, lang);
+                        docDat.cont[idx].caption = await translateSimple(sect.caption, selLang.value, lang);
+                    }
+                    console.log(docDat.cont[idx]);
+                    normSave();
+                }).catch(err => console.log(err));
+            }
+            act.appendChild(btnTrans);
+
             btnEdit = document.createElement('button');
             classes(btnEdit, 'btn btn-light btn-link-scckie ml-auto');
             btnEdit.innerHTML = '<i class="fas fa-edit"></i>';
@@ -446,15 +628,25 @@ function render() {
             h.innerHTML = docDat.cont[0].title;
             subt.appendChild(h);
             let pPub = document.createElement('p');
-            pPub.innerText = "Publicado: " + d;
+            let publishTxt, lstUptTxt, authrsTxt;
+            if (lang == "es") {
+                publishTxt = "Publicado: ";
+                lstUptTxt = "Ultima actualización: ";
+                authrsTxt = "Autor(es): "
+            } else if (lang == "en") {
+                publishTxt = "Published: ";
+                lstUptTxt = "Last updated: ";
+                authrsTxt = "Author(s):"
+            }
+            pPub.innerText = publishTxt + d;
             subt.appendChild(pPub);
             if (docDat.dledit) {
                 let pLEdit = document.createElement('p');
-                pLEdit.innerText = "Ultima actualización: " + ld;
+                pLEdit.innerText = lstUptTxt + ld;
                 subt.appendChild(pLEdit);
             }
             let pAuth = document.createElement('p');
-            pAuth.innerText = "Autor(es):" + docDat.cont[0].author;
+            pAuth.innerText = authrsTxt + docDat.cont[0].author;
             subt.appendChild(pAuth);
 
             let fd0 = document.createElement('div');
@@ -478,7 +670,7 @@ function render() {
             classes(fd1, "row mb-2");
             let fl1 = document.createElement('label');
             classes(fl1, "col-sm-2 col-form-label");
-            fl1.innerText = "Publicado: ";
+            fl1.innerText = publishTxt;
             let fc1 = document.createElement('div');
             classes(fc1, "col");
             let in1 = document.createElement('input');
@@ -498,7 +690,7 @@ function render() {
             if (docDat.dledit) {
                 classes(fd2, "row mb-2");
                 classes(fl2, "col-sm-2 col-form-label");
-                fl2.innerText = "Ultima actualización: ";
+                fl2.innerText = lstUptTxt;
                 classes(fc2, "col");
                 classes(in2, "form-control");
                 in2.setAttribute('type', 'text');
@@ -514,7 +706,7 @@ function render() {
             classes(fd3, "row mb-2");
             let fl3 = document.createElement('label');
             classes(fl3, "col-sm-2 col-form-label");
-            fl3.innerText = "Autor(es): ";
+            fl3.innerText = authrsTxt;
             let fr3 = document.createElement('div');
             classes(fr3, "form-row justify-content-around pt-2");
             let f3c0 = document.createElement('div');
@@ -593,7 +785,11 @@ function render() {
             subf.appendChild(fd3);
         } else if (item.type == 'ref') {
             let h = document.createElement('h3');
-            h.innerHTML = '<br>Referencias';
+            if (lang == "es") {
+                h.innerHTML = '<br>Referencias';
+            } else if (lang == "en") {
+                h.innerHTML = '<br>References';
+            }
             subt.appendChild(h);
             item.ref.forEach((ref, refIdx) => {
                 let refR = document.createElement('div');
@@ -639,7 +835,7 @@ function render() {
                         in0.setAttribute('placeholder', 'https://google.com');
                     } else if (ref.type == 'cite') {
                         makeRefCite(ref.link);
-                        in0.setAttribute('placeholder', 'Referencia');
+                        in0.setAttribute('placeholder', 'Ref');
                     }
                 }
                 let fr0 = document.createElement('div');
@@ -654,7 +850,7 @@ function render() {
                 in0.setAttribute('type', 'text');
                 in0.value = ref.link;
                 if (ref.type == 'web') in0.setAttribute('placeholder', 'https://google.com');
-                if (ref.type == 'cite') in0.setAttribute('placeholder', 'Referencia');
+                if (ref.type == 'cite') in0.setAttribute('placeholder', 'Ref');
                 in0.onchange = function () { changeRef(); }
                 classes(in1, "form-control form-control-sm");
                 let inOpt0 = document.createElement('option');
@@ -1085,6 +1281,16 @@ document.getElementById('btnCheckJs').onclick = function () {
     normSave();
 };
 
+function fillTrans() {
+    langs.forEach(l => {
+        if (l != lang) {
+            let opt = document.createElement('option');
+            opt.value = opt.innerText = l;
+            document.getElementById('inTransFrom').appendChild(opt);
+        }
+    })
+}
+
 $('#mdlAddMed').on('hidden.bs.modal', e => {
     document.getElementById("prevNewMed").src = '';
     document.getElementById('inNewMedL').innerHTML = 'Elige una imagen';
@@ -1141,26 +1347,26 @@ document.getElementById('inSendUpt').onclick = function () {
 }
 
 document.getElementById('btnPrevCook').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 document.getElementById('btnPrevMail').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 
 document.getElementById('btnPrivate').onclick = function () {
-    db.collection('galletasCont').doc(docId).update({
-        public: false
-    });
+    docDat.public = false;
+    normSave();
 };
 
 document.getElementById('btnAprove').onclick = function () {
-    if (docDat.revised.includes(uid)) {
-        docDat.revised.splice(docDat.revised.indexOf(uid), 1);
+    if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
+        docDat.revised[lang].splice(docDat.revised[lang].indexOf(uid), 1);
         document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
     } else {
-        docDat.revised.push(uid);
+        if (!docDat.revised[lang]) docDat.revised[lang] = [];
+        docDat.revised[lang].push(uid);
         document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
     }
     normSave();
@@ -1176,9 +1382,13 @@ $('#mdlAddMed').on('hiden.bs.modal', e => {
 });
 
 $('#mdlPublish').on('show.bs.modal', e => {
-    let rev = docDat.revised.length;
-    if (!docDat.revised.includes(uid)) rev++;
-    if (rev < 2) {
+    let revLangs = 0;
+    langs.forEach(l => {
+        let rev = docDat.revised[l] ? docDat.revised[l].length : 0;
+        if (docDat.revised[l] && !docDat.revised[l].includes(uid)) rev++;
+        if (rev >= 2) revLangs++;
+    });
+    if (revLangs == langs.length) {
         classes(document.getElementById('btnCnfPublish'), "d-none");
         document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
         document.getElementById('frmPublish').classList.add('d-none');
@@ -1191,43 +1401,27 @@ $('#mdlPublish').on('show.bs.modal', e => {
 });
 
 function finishPub() {
-    setprog(document.getElementById('barPublish'), '100');
+    setprog('barPublish', 100);
     classes(document.getElementById('barPublish'), 'bg-success');
-    document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-    let d = docDat.published.toDate();
-    let month = d.getFullYear().toString();
-    if (d.getMonth() < 9) {
-        month += '0';
+    if (lang == "es") {
+        alertTop("Publicado correctamente", 1);
+    } else if (lang == "en") {
+        alertTop("Published successfully", 1);
     }
-    month += (d.getMonth() + 1);
     setTimeout(function () {
-        window.open('../galletas/' + month + '/' + docDat.file, '_blank').focus();
+        window.open(docDat.url, '_blank').focus();
     }, 2500);
     console.log("Data saved successfully.");
-    setTimeout(function () {
-        document.getElementById("btnAlrtClsSsn").click();
-    }, 3000);
-    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-        document.getElementById("alrtClsSsn").innerHTML = '';
-    });
     $('#mdlPublish').modal('hide');
 }
 function fillKW() {
     let n = 0
     function prog() {
-        setprog(document.getElementById('barPublish'), Math.floor(n).toString());
+        setprog('barPublish', n);
     }
     keywords = [];
     keywords.push(docDat.published.toDate().getFullYear().toString());
-    keywords.push(docDat.ledit.toDate().getFullYear().toString());
-    n++;
-    prog();
-    //Categorías@#
-    if (document.getElementById('cat0').checked) keywords.push('astronomia');
-    if (document.getElementById('cat1').checked) keywords.push('biologia');
-    if (document.getElementById('cat2').checked) keywords.push('curiosidades');
-    if (document.getElementById('cat3').checked) keywords.push('fisica');
-    if (document.getElementById('cat4').checked) keywords.push('tecnologia');
+    if (docDat.published.toDate().getFullYear().toString() != docDat.ledit.toDate().getFullYear().toString()) keywords.push(docDat.ledit.toDate().getFullYear().toString());
     n++;
     prog();
     docDat.authors.forEach(itm => {
@@ -1332,124 +1526,59 @@ function fillKW() {
         n += (3 / Object.entries(kWObj).length);
         prog();
     }
-
+    docDat.fixedCats.forEach(itm => {
+        keywords.push(itm);
+    });
+    docDat.cats = keywords;
     console.log(keywords);
 }
+
 document.getElementById('btnCnfPublish').onclick = function () {
     if (docDat.public) return;
-    setprog(document.getElementById('barPublish'), '0');
-    document.getElementById('barPublishCont').classList.remove('d-none');
-    fillKW();
+    setprog('barPublish', 0);
+    showEl(document.getElementById("barPublishCont"));
+
+    docDat.public = true;
+    docDat.ledit = new firebase.firestore.Timestamp.now();
+    docDat.revised = {};
+    setprog('barPublish', 31);
+
     if (!docDat.beenPublic) {
-        setprog(document.getElementById('barPublish'), '30');
-        db.collection('galletasCont').doc(docId).update({
-            beenPublic: true,
-            public: true,
-            ledit: new firebase.firestore.Timestamp.now(),
-            published: new firebase.firestore.Timestamp.now(),
-            revised: []
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '49');
-            let d = docDat.published.toDate();
-            let month = d.getFullYear().toString();
-            if (d.getMonth() < 9) {
-                month += '0';
-            }
-            month += (d.getMonth() + 1);
-            return db.collection('galletas').doc(docId).set({
-                likes: 0,
-                favs: 0,
-                pop: 0,
-                ledit: new firebase.firestore.Timestamp.now(),
-                date: new firebase.firestore.Timestamp.now(),
-                dledit: false,
-                notify: false,
-                public: true,
-                title: docDat.title,
-                descrip: docDat.description,
-                url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
-                picUrl: docDat.picUrl,
-                authrs: docDat.authors,
-                cats: keywords
-            })
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '78');
-            rtDb.ref('galletas/' + docId).set({
-                pop: 0,
-                likes: 0,
-                favs: 0
-            }, err => {
-                if (err) {
-                    console.log("Data could not be saved." + err);
-                } else {
-                    setprog(document.getElementById('barPublish'), '84');
-                    finishPub();
-                }
-            });
-        }).catch(error => {
-            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-            console.log(error);
-            setTimeout(function () {
-                document.getElementById("btnAlrtClsSsn").click();
-            }, 3000);
-            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                document.getElementById("alrtClsSsn").innerHTML = '';
-            });
-        });
+        docDat.notify = true;
+        docDat.published = new firebase.firestore.Timestamp.now();
+        setprog('barPublish', 62);
     } else {
-        setprog(document.getElementById('barPublish'), '30');
-        db.collection('galletasCont').doc(docId).update({
-            public: true,
-            ledit: new firebase.firestore.Timestamp.now(),
-            revised: []
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '42');
-            let d = docDat.published.toDate();
-            let month = d.getFullYear().toString();
-            if (d.getMonth() < 9) {
-                month += '0';
-            }
-            month += (d.getMonth() + 1);
-            let cook = {
-                title: docDat.title,
-                descrip: docDat.description,
-                url: 'https://sciencecookies.net/galletas/' + month + '/' + docDat.file,
-                picUrl: docDat.picUrl,
-                authrs: docDat.authors,
-                cats: keywords,
-                public: true,
-            };
-            setprog(document.getElementById('barPublish'), '57');
-            if (document.getElementById('inSendUpt').checked) {
-                cook.ledit = new firebase.firestore.Timestamp.now();
-                cook.dledit = true;
-                cook.notify = true;
-            } else {
-                cook.dledit = false;
-                cook.notify = false;
-            }
-            setprog(document.getElementById('barPublish'), '61');
-            if (document.getElementById('inSendUpt').checked) {
-                cook.uptMsg = true;
-                cook.uptDescrip = document.getElementById('inUptDesc').value.trim();
-            } else {
-                cook.uptMsg = false;
-                cook.uptDescrip = '';
-            }
-            setprog(document.getElementById('barPublish'), '66');
-            return db.collection('galletas').doc(docId).update(cook);
-        }).then(() => {
-            setprog(document.getElementById('barPublish'), '78');
-            finishPub();
-        }).catch(error => {
-            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-            console.log(error);
-            setTimeout(function () {
-                document.getElementById("btnAlrtClsSsn").click();
-            }, 3000);
-            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                document.getElementById("alrtClsSsn").innerHTML = '';
-            });
-        });
+        docDat.dledit = docDat.notify = document.getElementById('inSendUpt').checked;
+        setprog('barPublish', 45);
+        if (document.getElementById('inSendUpt').checked) {
+            docDat.uptMsg = true;
+            docDat.uptDescrip = document.getElementById('inUptDesc').value.trim();
+        } else {
+            docDat.uptMsg = false;
+            docDat.uptDescrip = "";
+        }
+        setprog('barPublish', 62);
     }
+
+    saveDoc().then(() => {
+        rtDb.ref('galletas/' + docId).set({
+            pop: docDat.pop,
+            likes: docDat.likes,
+            favs: docDat.favs
+        }, err => {
+            if (err) {
+                console.log("Data could not be saved." + err);
+            } else {
+                setprog('barPublish', 84);
+                finishPub();
+            }
+        });
+    }).catch(err => {
+        if (lang == "es") {
+            alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+        } else if (lang == "en") {
+            alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+        }
+        console.log(err);
+    });
 };

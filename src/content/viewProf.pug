@@ -1,0 +1,46 @@
+block missHead
+  - const site="viewProf";
+
+block content
+  ul.nav.nav-tabs
+    if LANG=="es"
+      li.nav-item.mx-lg-1.mx-0
+        a#navBtnPrfl.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(1);') Su perfíl
+      li.nav-item.mx-lg-1.mx-0
+        a#navBtnFav.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(2);') Sus favoritos
+      li.nav-item.ml-lg-1.mr-lg-auto.mx-0
+        a#navBtnLike.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(3);') Sus me gusta
+    else if LANG=="en"
+      li.nav-item.mx-lg-1.mx-0
+        a#navBtnPrfl.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(1);') Their profile
+      li.nav-item.mx-lg-1.mx-0
+        a#navBtnFav.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(2);') Their favorites
+      li.nav-item.ml-lg-1.mr-lg-auto.mx-0
+        a#navBtnLike.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(3);') Their likes
+  .container-fluid.px-2
+    #crdPrfl.card.text-light.border-light.bg-transparent.mt-2.d-none
+      ul.list-group.list-group-flush
+        li#contPic.list-group-item.text-light.border-light.bg-transparent
+          img#disPP.rounded(src='' alt='' height='150')
+        li#contEmail.list-group-item.text-light.border-light.bg-transparent.d-none
+          .container
+            .row
+              .col.col-4
+                strong Email
+              #disMail.col.col-8
+        li.list-group-item.text-light.border-light.bg-transparent
+          .container
+            #contNull.row
+              .col.col-4
+                if LANG=="es"
+                  strong Nombre
+                else if LANG=="en"
+                  strong Name
+              #disName.col.col-8
+    #crdFav.card.text-light.border-light.bg-transparent.mt-2.d-none
+      ul#cntFav.list-group.list-group-flush
+    #crdLike.card.text-light.border-light.bg-transparent.mt-2.d-none
+      ul#cntLike.list-group.list-group-flush
+
+block ownjs
+  script(src=HOST+'/js/viewProf.js')

@@ -1,10 +1,22 @@
 extends layouts/main
 
+block lang 
+  - const LANG=setLang
+
 block missHead
   meta(name='description' content= description)
-  link(rel='canonical' href=HOST+'/galletas/'+month+'/'+file+'/')
-  title #{title} - Science Cookies
+  meta(property="og:description" content= description)
+  
+  link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cook"]+month+'/'+file+'/')
+  link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cook"]+month+'/'+file+'/')
+  link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"]["cook"]+month+'/'+file+'/')
+  meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG]["cook"]+month+'/'+file+'/')
+
   link(rel="stylesheet" href=HOST+"/styles/cookie.css")
+
+  title Science Cookies - #{title}
+  meta(property="og:title" content='Science Cookies - #{title}')
+  meta(property="og:image" content='#{picUrl}')
 
   - const site="cookie";
 
@@ -13,30 +25,56 @@ block precontent
   #mdlRprt.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlRprtL' aria-hidden='true' data-backdrop='static')
     .modal-dialog.modal-dialog-centered
       .modal-content
-        .modal-header
-          h5#mdlRprtL.modal-title Reportar contenido
-          button.close(type='button' data-dismiss='modal' aria-label='Close')
-            span(aria-hidden='true') ×
-        .modal-body
-          form#frmRprt
-            .form-group.row
-              label.col-sm-2.col-form-label(for='inReas') Razón
-              .col-sm-10
-                select#inReas.form-control(required='')
-                  option(value='') Escoge...
-                  option(value='Spam o contenido comercial no deseado') Spam o contenido comercial no deseado
-                  option(value='Abuso o acoso') Abuso o acoso
-                  option(value='Fomenta el odio o la violencia') Fomenta el odio o la violencia
-                  option(value='Lenguaje ofensivo') Lenguaje ofensivo
-                  option(value='Material sexualmente explícito') Material sexualmente explícito
-                  option(value='Otro') Otro
-            .form-group.row
-              label.col-sm-2.col-form-label(for='inText') Detalles
-              .col-sm-10
-                textarea#inText.form-control(type='text' placeholder='Opcional' rows='3' maxlength='300')
-        .modal-footer
-          button.btn.btn-secondary(type='button' data-dismiss='modal') Cancelar
-          button.btn.btn-primary(type='submit' form='frmRprt') Reportar
+        if LANG=="es"
+          .modal-header
+            h5#mdlRprtL.modal-title Reportar contenido
+            button.close(type='button' data-dismiss='modal' aria-label='Close')
+              span(aria-hidden='true') ×
+          .modal-body
+            form#frmRprt
+              .form-group.row
+                label.col-sm-2.col-form-label(for='inReas') Razón
+                .col-sm-10
+                  select#inReas.form-control(required='')
+                    option(value='') Escoge...
+                    option(value='Spam o contenido comercial no deseado') Spam o contenido comercial no deseado
+                    option(value='Abuso o acoso') Abuso o acoso
+                    option(value='Fomenta el odio o la violencia') Fomenta el odio o la violencia
+                    option(value='Lenguaje ofensivo') Lenguaje ofensivo
+                    option(value='Material sexualmente explícito') Material sexualmente explícito
+                    option(value='Otro') Otro
+              .form-group.row
+                label.col-sm-2.col-form-label(for='inText') Detalles
+                .col-sm-10
+                  textarea#inText.form-control(type='text' placeholder='Opcional' rows='3' maxlength='300')
+          .modal-footer
+            button.btn.btn-secondary(type='button' data-dismiss='modal') Cancelar
+            button.btn.btn-primary(type='submit' form='frmRprt') Reportar
+        else if LANG=="en"
+          .modal-header
+            h5#mdlRprtL.modal-title Report content
+            button.close(type='button' data-dismiss='modal' aria-label='Close')
+              span(aria-hidden='true') ×
+          .modal-body
+            form#frmRprt
+              .form-group.row
+                label.col-sm-2.col-form-label(for='inReas') Reason
+                .col-sm-10
+                  select#inReas.form-control(required='')
+                    option(value='') Choose...
+                    option(value='Spam or unwanted commertial content') Spam or unwanted commertial content
+                    option(value='Abuse or harassment') Abuse or harassment
+                    option(value='Encourages hatred or violence') Encourages hatred or violence
+                    option(value='Offensive language') Offensive language
+                    option(value='Sexually explicit material') Sexually explicit material
+                    option(value='Other') Otro
+              .form-group.row
+                label.col-sm-2.col-form-label(for='inText') Details
+                .col-sm-10
+                  textarea#inText.form-control(type='text' placeholder='Opcional' rows='3' maxlength='300')
+          .modal-footer
+            button.btn.btn-secondary(type='button' data-dismiss='modal') Cancel
+            button.btn.btn-primary(type='submit' form='frmRprt') Report
 
 block content
   div.container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
@@ -45,13 +83,29 @@ block content
         when 'head'
           h1.text-center= item.title
           - let d = published
-          p= 'Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
-          if dledit
-            - let ld = ledit
-            p= 'Ultima actualización: ' + ld.getDate() + '/' + (ld.getMonth() + 1) + '/' + ld.getFullYear()
-          p= 'Autor(es):' + item.author
+          if LANG=="es"
+            p= 'Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
+            if dledit
+              - let ld = ledit
+              p= 'Ultima actualización: ' + ld.getDate() + '/' + (ld.getMonth() + 1) + '/' + ld.getFullYear()
+            if item.author.length>1
+              p= 'Autores:' + item.author
+            else
+              p= 'Autor:' + item.author
+          else if LANG=="en"
+            p= 'Published: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
+            if dledit
+              - let ld = ledit
+              p= 'Last updated: ' + ld.getDate() + '/' + (ld.getMonth() + 1) + '/' + ld.getFullYear()
+            if item.author.length>1
+              p= 'Authors:' + item.author
+            else
+              p= 'Author:' + item.author
         when 'ref'
-          h3 Referencias
+          if LANG=="es"
+            h3 Referencias
+          else if LANG=="en"
+            h3 References
           each link in item.ref
             case link.type
               when 'web'
@@ -91,19 +145,35 @@ block content
 
   //- Like&Fav
   #btnsFL.row.justify-content-start.mb-2
-    .col-auto
-      button#btnFav.btn.btn-outline-light.p-1.disabled.mt-2.mx-2
-        | Añadir a favoritos 
-        i#btnFavTxt.far.fa-heart
-        span#favCount.badge.badge-dark.ml-w
-    .col-auto
-      button#btnLike.btn.btn-outline-light.p-1.disabled.m-2
-        | Dar me gusta 
-        i#btnLikeTxt.far.fa-thumbs-up
-        span#likeCount.badge.badge-dark.m-2
+    if LANG=="es"
+      .col-auto
+        button#btnFav.btn.btn-outline-light.p-1.disabled.mt-2.mx-2
+          | Añadir a favoritos 
+          i#btnFavTxt.far.fa-heart
+          span#favCount.badge.badge-dark.ml-w
+      .col-auto
+        button#btnLike.btn.btn-outline-light.p-1.disabled.m-2
+          | Dar me gusta 
+          i#btnLikeTxt.far.fa-thumbs-up
+          span#likeCount.badge.badge-dark.m-2
+    else if LANG=="en"
+      .col-auto
+        button#btnFav.btn.btn-outline-light.p-1.disabled.mt-2.mx-2
+          | Add to favorites 
+          i#btnFavTxt.far.fa-heart
+          span#favCount.badge.badge-dark.ml-w
+      .col-auto
+        button#btnLike.btn.btn-outline-light.p-1.disabled.m-2
+          | Like
+          i#btnLikeTxt.far.fa-thumbs-up
+          span#likeCount.badge.badge-dark.m-2
+
   //- Comentarios
   .row
-    button#btnLdComs.btn.btn-block.btn-scckie.mb-2.disabled Cargar comentarios
+    if LANG=="es"
+      button#btnLdComs.btn.btn-block.btn-scckie.mb-2.disabled Cargar comentarios
+    else if LANG=="en"
+      button#btnLdComs.btn.btn-block.btn-scckie.mb-2.disabled Load comments
     #spnCom.container-fluid.d-none
       .text-center
         .spinner-border.text-primary(role='status')
@@ -111,7 +181,10 @@ block content
     #cntComs.container-fluid.text-dark.d-none
       .container-fluid.bg-light.p-2.rounded-lg.mb-1
         .row
-          #comCount.col Aún no hay comentarios
+          if LANG=="es"
+            #comCount.col Aún no hay comentarios
+          else if LANG=="en"
+            #comCount.col No comments yet
         .dropdown-divider
         form#frmNwCom
           .form-group.row
@@ -119,19 +192,29 @@ block content
               label(for='inNwCom')
                 img#ppCom.rounded-circle(src='' alt='' height='35' width='35')
             .col
-              textarea#inNwCom.form-control-plaintext.border-bottom(type='text' maxlength='200' placeholder='Nuevo comentario' required='' rows='3')
-              small.text-muted Máximo 200 caracteres
+              if LANG=="es"
+                textarea#inNwCom.form-control-plaintext.border-bottom(type='text' maxlength='200' placeholder='Nuevo comentario' required='' rows='3')
+                small.text-muted Máximo 200 caracteres
+              else if LANG=="en"
+                textarea#inNwCom.form-control-plaintext.border-bottom(type='text' maxlength='200' placeholder='New comment' required='' rows='3')
+                small.text-muted Maximum 200 characters
         #frmNwComBtns.row.justify-content-end.d-none
           .col-auto
-            button#btnCanCom.btn.btn-secondary(onclick="document.getElementById('inNwCom').value='';document.getElementById('frmNwComBtns').classList.add('d-none');replying=-1;document.getElementById('inNwCom').setAttribute('placeholder','Nuevo comentario');") Cancelar
-            button#btnAddCom.btn.btn-scckie(type='submit' form='frmNwCom') Comentar
+            button#btnCanCom.btn.btn-secondary(onclick="document.getElementById('inNwCom').value='';document.getElementById('frmNwComBtns').classList.add('d-none');replying=-1;document.getElementById('inNwCom').setAttribute('placeholder','Nuevo comentario');") #{Buttons[LANG]["cancel"]}
+            if LANG=="es"
+              button#btnAddCom.btn.btn-scckie(type='submit' form='frmNwCom') Comentar
+            else if LANG=="en"
+              button#btnAddCom.btn.btn-scckie(type='submit' form='frmNwCom') Comment
       #cntComs2.container-fluid.text-dark.d-none.p-0
-    button#btnLdMrComs.btn.btn-block.btn-scckie.mb-2.disabled.d-none Más comentarios
+    if LANG=="es"
+      button#btnLdMrComs.btn.btn-block.btn-scckie.mb-2.disabled.d-none Más comentarios
+    else if LANG=="en"
+      button#btnLdMrComs.btn.btn-block.btn-scckie.mb-2.disabled.d-none More comments
     #spnCom2.container-fluid.d-none
       .text-center
         .spinner-border.text-primary(role='status')
           span.sr-only
 
 block ownjs
-  script(src=HOST+'/js/cookie.js')
   script !{java}
+  script(src=HOST+'/js/cookie.js')
