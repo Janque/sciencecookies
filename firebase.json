@@ -16,9 +16,16 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "i18n": {
+      "root": "/localized"
+    },
     "rewrites": [
       {
-        "source": "/galletas/**/**",
+        "regex": "/galletas/\\d{6}/.+$",
+        "function": "dynCookies-showCookie"
+      },
+      {
+        "regex": "/cookies/\\d{6}/.+$",
         "function": "dynCookies-showCookie"
       },
       {
@@ -42,22 +49,114 @@
         "function": "dynCalendars-showCalendar"
       },
       {
-        "source": "/archivo",
+        "source": "/astronomic-calendar",
+        "function": "dynAllCals-showAllCal"
+      },
+      {
+        "source": "/astronomic-calendar/*",
+        "function": "dynAllCals-showAllCal"
+      },
+      {
+        "source": "/astronomic-calendar/*/*",
+        "function": "dynCalendars-showCalendar"
+      },
+      {
+        "regex": "/galletas/?$",
         "function": "dynArchive-showArchive"
       },
       {
-        "source": "/archivo/**/**",
+        "regex": "/galletas/\\d{4}/.+$",
+        "function": "dynArchive-showArchive"
+      },
+      {
+        "regex": "/cookies/?$",
+        "function": "dynArchive-showArchive"
+      },
+      {
+        "regex": "/cookies/\\d{4}/.+$",
         "function": "dynArchive-showArchive"
       },
       {
         "source": "/sitemap.xml",
         "function": "sitemap-serveSitemap"
+      },
+      {
+        "source": "/es",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/en",
+        "destination": "/localized/en_ALL/index.html"
+      },
+      {
+        "source": "/drafts",
+        "destination": "/localized/en_ALL/borradores.html"
+      },
+      {
+        "source": "/calendars",
+        "destination": "/localized/en_ALL/calendarios.html"
+      },
+      {
+        "source": "/contact",
+        "destination": "/localized/en_ALL/contacto.html"
+      },
+      {
+        "source": "/edit",
+        "destination": "/localized/en_ALL/editar.html"
+      },
+      {
+        "source": "/edit-calendar",
+        "destination": "/localized/en_ALL/editar-calendario.html"
+      },
+      {
+        "source": "/who-are-we",
+        "destination": "/localized/en_ALL/quienes-somos.html"
+      },
+      {
+        "source": "/profile",
+        "destination": "/localized/en_ALL/perfil.html"
+      },
+      {
+        "source": "/view-profile",
+        "destination": "/localized/en_ALL/ver-perfil.html"
+      },
+      {
+        "source": "/borradores",
+        "destination": "/borradores.html"
+      },
+      {
+        "source": "/calendarios",
+        "destination": "/calendarios.html"
+      },
+      {
+        "source": "/contacto",
+        "destination": "/contacto.html"
+      },
+      {
+        "source": "/editar",
+        "destination": "/editar.html"
+      },
+      {
+        "source": "/editar-calendario",
+        "destination": "/editar-calendario.html"
+      },
+      {
+        "source": "/quienes-somos",
+        "destination": "/quienes-somos.html"
+      },
+      {
+        "source": "/perfil",
+        "destination": "/perfil.html"
+      },
+      {
+        "source": "/ver-perfil",
+        "destination": "/ver-perfil.html"
       }
     ],
     "redirects": [
       {
-        "source": "/archivo/2020/ago-sep",
-        "destination": "/archivo/2020/jul-sep/",
+        "source": "/galletas/2020/ago-sep",
+        "destination": "/galletas/2020/jul-sep/",
         "type": 301
       },
       {
@@ -68,6 +167,26 @@
       {
         "regex": "/(.*/?)*(\\.html)",
         "destination": "/:1/",
+        "type": 301
+      },
+      {
+        "source": "/archivo",
+        "destination": "/galletas/",
+        "type": 301
+      },
+      {
+        "source": "/archivo/:year/:month*",
+        "destination": "/galletas/:year/:month/",
+        "type": 301
+      },
+      {
+        "source": "/archive",
+        "destination": "/cookies/",
+        "type": 301
+      },
+      {
+        "source": "/archive/:year/:month*",
+        "destination": "/cookies/:year/:month/",
         "type": 301
       },
       {

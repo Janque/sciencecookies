@@ -1,7 +1,4 @@
-import '../styles/index.scss';
-
-//Categorías@#
-const catnmb = 5, allCats = ['astronomia', 'biologia', 'curiosidades', 'fisica', 'tecnologia'];
+var catnmb;
 const previewLim = 20;
 
 //Get search params
@@ -41,7 +38,7 @@ function initSrch(stAf) {
     srtOrd = urlSrch.get('o');
     if (srtOrd != null) {
         if (srtOrd == 'new') {
-            srtOrd = 'date';
+            srtOrd = 'ledit';
             desc = true;
             document.getElementById("inSrchOrd1").selected = true;
         }
@@ -60,15 +57,15 @@ function initSrch(stAf) {
     }
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         if (!desc) {
-            srchRef = db.collection('galletas').where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
         } else {
-            srchRef = db.collection('galletas').where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
         }
     } else {
         if (!desc) {
-            srchRef = db.collection('galletas').where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).limit(previewLim);
+            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).limit(previewLim);
         } else {
-            srchRef = db.collection('galletas').where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
+            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
         }
     }
     shwSrch();
@@ -137,7 +134,7 @@ function shwSrch() {
             tit.innerHTML = doc.data().title;
             bod.appendChild(tit);
             let descr = document.createElement('p');
-            descr.innerHTML = doc.data().descrip;
+            descr.innerHTML = doc.data().description;
             bod.appendChild(descr);
             let dates = document.createElement('p');
             classes(dates, "my-0");
@@ -145,13 +142,13 @@ function shwSrch() {
                 let dl = doc.data().ledit.toDate();
                 dates.innerText = 'Actualizado: ' + dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear();
             } else {
-                let d = doc.data().date.toDate();
+                let d = doc.data().published.toDate();
                 dates.innerText = 'Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
             }
             bod.appendChild(dates);
             let auhtTxt = document.createElement('p');
             classes(auhtTxt, "mt-0");
-            auhtTxt.innerText = ' Autor(es):' + doc.data().authrs;
+            auhtTxt.innerText = ' Autor(es):' + doc.data().authors;
             bod.appendChild(auhtTxt);
             a.appendChild(med);
             med.appendChild(img);
@@ -182,7 +179,7 @@ function shwSrch() {
             document.getElementById("pgTPrv").removeAttribute('disabled');
             document.getElementById("pgBPrv").removeAttribute('disabled');
         }
-    }).catch(err => { console.log('err') });
+    }).catch(err => { console.log(err) });
 }
 
 document.getElementById("pgTPrv").onclick = function () { reSrch(-1); };
@@ -199,43 +196,44 @@ function reSrch(np) {
     document.getElementById("cookCnt").scrollIntoView();
 }
 
-//Submit search
-document.getElementById('catA').onclick = function () {
-    if (!allChk) {
-        for (let i = 0; i < catnmb; i++) {
-            document.getElementById('cat' + i).checked = true;
-        }
-    } else {
-        for (let i = 0; i < catnmb; i++) {
-            document.getElementById('cat' + i).checked = false;
-        }
-    }
-    allChk = !allChk;
-};
-for (let i = 0; i < catnmb; i++) {
-    document.getElementById('cat' + i).onclick = function () {
-        if (allChk) {
-            document.getElementById('catA').checked = false;
-            allChk = false;
-        }
-        else {
-            let all = true;
+function prepCatBtns() {
+    //Submit search
+    document.getElementById('catA').onclick = function () {
+        if (!allChk) {
             for (let i = 0; i < catnmb; i++) {
-                if (document.getElementById('cat' + i).checked == false) {
-                    all = false;
-                    break;
+                document.getElementById('cat' + i).checked = true;
+            }
+        } else {
+            for (let i = 0; i < catnmb; i++) {
+                document.getElementById('cat' + i).checked = false;
+            }
+        }
+        allChk = !allChk;
+    };
+    for (let i = 0; i < catnmb; i++) {
+        document.getElementById('cat' + i).onclick = function () {
+            if (allChk) {
+                document.getElementById('catA').checked = false;
+                allChk = false;
+            }
+            else {
+                let all = true;
+                for (let i = 0; i < catnmb; i++) {
+                    if (document.getElementById('cat' + i).checked == false) {
+                        all = false;
+                        break;
+                    }
+                }
+                if (all) {
+                    allChk = true;
+                    document.getElementById('catA').checked = true;
                 }
             }
-            if (all) {
-                allChk = true;
-                document.getElementById('catA').checked = true;
-            }
-        }
-    };
+        };
+    }
 }
-
 function shwCalMain() {
-    db.collection('calendarios').where("public", "==", true).orderBy('date', 'desc').limit(1).get().then(snap => {
+    calendarsFSRef.where("public", "==", true).orderBy('published', 'desc').limit(1).get().then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let a = document.createElement('a');
@@ -269,6 +267,8 @@ function shwCalMain() {
 }
 
 window.loaded = function loaded() {
+    catnmb = allCats.length;
+    prepCatBtns();
     initSrch(false);
     shwCalMain();
     function send() {

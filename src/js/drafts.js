@@ -21,12 +21,13 @@ window.loaded = function loaded() {
     function plusCookie() {
         let title = document.getElementById('inTitle').value.trim();
         let file = document.getElementById('inFile').value;
-        db.collection('galletasCont').where('file', '==', file).limit(1).get().then(snap => {
+        cookiesFSRef.where('file', '==', file).limit(1).get().then(snap => {
             if (!snap.empty) {
-                document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                    Ese nombre de archivo ya esta en uso.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>`;
+                if (lang == "es") {
+                    alertTop("Ese nombre de archivo ya esta en uso.", 0, 'alrtPlusContainer');
+                } else if (lang == "en") {
+                    alertTop("That file name is already in use.", 0, 'alrtPlusContainer');
+                }
             } else {
                 document.getElementById('btnPlusConf').classList.add('d-none');
                 document.getElementById('btnCanPlus0').setAttribute('disabled', 'true');
@@ -45,54 +46,73 @@ window.loaded = function loaded() {
                 }, err => {
                     if (err) {
                         setprog('0');
-                        document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
-                            <strong>Ocurrió un error: `+ err + `.</strong><br>LLamar a Javier.
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        </div>`;
+                        if (lang == "es") {
+                            alertTop("<strong>Ocurrió un error: " + err + ".</strong><br>LLamar a Javier.", 0, 'alrtPlusContainer');
+                        } else if (lang == "en") {
+                            alertTop("<strong>There has been an error: " + err + ".</strong><br>Call Javier.", 0, 'alrtPlusContainer');
+                        }
                         console.log(err);
                     } else {
                         setprog('52');
-                        db.collection('galletasCont').doc(id).set({
-                            authors: [author],
-                            cont: [
-                                {
-                                    type: "head",
-                                    title: title,
-                                    author: [author]
-                                },
-                                {
-                                    type: "ref",
-                                    ref: []
+                        const promises = [];
+                        langs.forEach((l, i) => {
+                            setprog(30 / langs.length * i);
+                            promises.push(db.collection('cookies/langs/' + l).doc(id).set({
+                                authors: [author],
+                                cont: [
+                                    {
+                                        type: "head",
+                                        title: title,
+                                        author: [author]
+                                    },
+                                    {
+                                        type: "ref",
+                                        ref: []
+                                    }
+                                ],
+                                media: [],
+                                picUrl: "",
+                                title: title,
+                                description: "",
+                                file: file,
+                                owner: uid,
+                                java: "",
+                                revised: {},
+                                notify: false,
+                                public: false,
+                                beenPublic: false,
+                                dledit: false,
+                                created: new firebase.firestore.Timestamp.now(),
+                                ledit: new firebase.firestore.Timestamp.now(),
+                                published: new firebase.firestore.Timestamp.now(),
+                                pop: 0,
+                                likes: 0,
+                                favs: 0,
+                                url: "",
+                                fixedCats: [],
+                                cats: [],
+                                translations: {
+                                    es: file
                                 }
-                            ],
-                            media: [],
-                            description: "Sin descripción",
-                            picUrl: "",
-                            title: title,
-                            file: file,
-                            owner: uid,
-                            java: "",
-                            revised: [],
-                            public: false,
-                            beenPublic: false,
-                            dledit: false,
-                            created: new firebase.firestore.Timestamp.now(),
-                            ledit: new firebase.firestore.Timestamp.now(),
-                            published: new firebase.firestore.Timestamp.now(),
-                            pop: 0
-                        }).then(() => {
-                            setprog('80');
+                            }));
+                        });
+                        Promise.all(promises).then(() => {
+                            setprog('90');
                             setTimeout(function () {
                                 setprog('100');
                                 document.getElementById('bar').classList.add('bg-success');
-                                document.getElementById('alrtPlusContainer').innerHTML = `<div class="alert alert-success alert-dismissible fade show fixed-top" role="alert">
-                                    Creado con exito. Redirigiendo...<br>
-                                    Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?file=`+ file + `">click aqui</a>.
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                </div>`;
+                                if (lang == "es") {
+                                    alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
+                                } else if (lang == "en") {
+                                    alertTop(`Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-scckie" href="../edit?id=${id}">click here</a>.`, 1, 'alrtPlusContainer');
+                                }
                             }, 1000);
                             setTimeout(function () {
-                                window.location.href = '../editar?file=' + file;
+                                if (lang == "es") {
+                                    window.location.href = '../editar?id=' + id;
+                                } else if (lang == "en") {
+                                    window.location.href = '../edit?id=' + id;
+                                }
                             }, 3000);
                         }).catch(err => console.log(err));
                     }
@@ -152,29 +172,29 @@ function initSrch(stAf) {
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         if (kywords == undefined || kywords == null || kywords == "") {
             if (!desc) {
-                srchRef = db.collection('galletasCont').orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = cookiesFSRef.orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
             } else {
-                srchRef = db.collection('galletasCont').orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = cookiesFSRef.orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
             }
         } else {
             if (!desc) {
-                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
             } else {
-                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+                srchRef = dcookiesFSRef.where('title', '==', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
             }
         }
     } else {
         if (kywords == undefined || kywords == null || kywords == "") {
             if (!desc) {
-                srchRef = db.collection('galletasCont').orderBy(srtOrd).limit(previewLim);
+                srchRef = cookiesFSRef.orderBy(srtOrd).limit(previewLim);
             } else {
-                srchRef = db.collection('galletasCont').orderBy(srtOrd, 'desc').limit(previewLim);
+                srchRef = cookiesFSRef.orderBy(srtOrd, 'desc').limit(previewLim);
             }
         } else {
             if (!desc) {
-                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd).limit(previewLim);
+                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd).limit(previewLim);
             } else {
-                srchRef = db.collection('galletasCont').where('title', '==', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
+                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
             }
         }
     }
@@ -274,9 +294,17 @@ function shwSrch() {
             let drpitm0 = document.createElement('button');
             drpitm0.classList.add('dropdown-item');
             drpitm0.onclick = function () {
-                window.location.href = '../editar?file=' + doc.data().file;
+                if (lang == "es") {
+                    window.location.href = '../editar?id=' + doc.id;
+                } else if (lang == "en") {
+                    window.location.href = '../edit?id=' + doc.id;
+                }
             };
-            drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
+            if (lang == "es") {
+                drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
+            } else if (lang == "en") {
+                drpitm0.innerHTML = 'Edit <i class="fas fa-edit"></i>';
+            }
             drpmenu.appendChild(drpitm0);
             let drpitm1 = document.createElement('button');
             drpitm1.classList.add('dropdown-item');
@@ -296,17 +324,17 @@ function shwSrch() {
                         month += '0';
                     }
                     month += (d.getMonth() + 1);
-                    window.open('../galletas/' + month + '/' + doc.data().file, '_blank').focus();
+                    window.open(doc.data().url, '_blank').focus();
                 };
                 drpitm2.innerHTML = 'Ver artículo <i class="fas fa-eye"></i>';
                 drpmenu.appendChild(drpitm2);
-                drpitm3.classList.add('dropdown-item');
+                /*drpitm3.classList.add('dropdown-item');@# sync langs
                 drpitm3.onclick = function () {
-                    db.collection('galletasCont').doc(doc.id).update({
+                    cookiesFSRef.doc(doc.id).update({
                         public: false
                     });
                 };
-                drpitm3.innerHTML = 'Volver privado <i class="fas fa-lock"></i>';
+                drpitm3.innerHTML = 'Volver privado <i class="fas fa-lock"></i>';*/
                 drpmenu.appendChild(drpitm3);
             }
             drp.appendChild(drpmenu);
@@ -315,30 +343,52 @@ function shwSrch() {
             h.appendChild(row);
             card.appendChild(h);
 
+
+            let authTxt, noImgTxt, creatTxt, uptTxt, pubTxt, noPubTxt;
+            if (lang == "es") {
+                authTxt = "Autor(es)";
+                noImgTxt = "No hay imagen";
+                noPubTxt = "Sin publicar";
+                creatTxt = "Creado: ";
+                uptTxt = "Actualizado: ";
+                pubTxt = "Publicado: ";
+            } else if (lang == "en") {
+                authTxt = "Author(s)";
+                noImgTxt = "No image";
+                noPubTxt = "Not public";
+                creatTxt = "Created: ";
+                uptTxt = "Updated: ";
+                pubTxt = "Published: ";
+            }
+
             let a = document.createElement('a');
-            a.href = '../editar?file=' + doc.data().file;
+            if (lang == "es") {
+                a.href = '../editar?id=' + doc.id;
+            } else if (lang == "en") {
+                a.href = '../edit?id=' + doc.id;
+            }
             a.classList.add('text-decoration-none');
             a.classList.add('text-dark');
             let img = document.createElement('img');
             img.src = doc.data().picUrl;
             img.classList.add('card-img-top');
-            img.alt = 'No hay imagen'
+            img.alt = noImgTxt;
             a.appendChild(img);
             let cbody = document.createElement('div');
             cbody.classList.add('card-body');
-            cbody.innerHTML = '<h3 class="card-title">' + doc.data().title + '</h3>\n<p>Autor(es):' + doc.data().authors + '</p>\n<p class="card-text">' + doc.data().description + '</p>\n'
+            cbody.innerHTML = '<h3 class="card-title">' + doc.data().title + '</h3>\n<p>' + authTxt + ':' + doc.data().authors + '</p>\n<p class="card-text">' + doc.data().description + '</p>\n'
             a.appendChild(cbody);
             let f = document.createElement('div');
             f.classList.add('card-footer');
             f.classList.add('text-muted');
-            f.innerHTML = '<p>Creado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
+            f.innerHTML = '<p>' + creatTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             d = doc.data().ledit.toDate();
-            f.innerHTML += '<p>Acutalizado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
+            f.innerHTML += '<p>' + uptTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             if (doc.data().public) {
                 d = doc.data().published.toDate();
-                f.innerHTML += '<p>Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
+                f.innerHTML += '<p>' + pubTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             } else {
-                f.innerHTML += '<p>Sin publicar</p>\n';
+                f.innerHTML += '<p>' + noPubTxt + '</p>\n';
             }
             a.appendChild(f)
             card.appendChild(a);

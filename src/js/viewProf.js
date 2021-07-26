@@ -12,7 +12,7 @@ function shwPrfl() {
     document.getElementById('navBtnPrfl').classList.add('active');
     firebase.storage().ref('ppics/' + urlSrch.get('u') + '/pp_200x200').getDownloadURL().then(url => {
         if (ppic != null) document.getElementById('disPP').setAttribute('onerror', "this.src='" + ppic + "'");
-        else document.getElementById('disPP').setAttribute('onerror', "this.src='img/nopp.png'");
+        else document.getElementById('disPP').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
         document.getElementById('disPP').src = url;
         if (pemail != null) document.getElementById('contEmail').classList.remove('d-none');
         document.getElementById('disMail').innerHTML = pemail;
@@ -20,7 +20,7 @@ function shwPrfl() {
         document.getElementById('crdPrfl').classList.remove('d-none');
     }).catch(err => {
         if (ppic != null) document.getElementById('disPP').setAttribute('onerror', "this.src='" + ppic + "'");
-        else document.getElementById('disPP').setAttribute('onerror', "this.src='img/nopp.png'");
+        else document.getElementById('disPP').setAttribute('onerror', "https://via.placeholder.com/20.webp'");
         document.getElementById('disPP').src = '';
         if (pemail != null) document.getElementById('contEmail').classList.remove('d-none');
         document.getElementById('disMail').innerHTML = pemail;

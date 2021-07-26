@@ -1,0 +1,228 @@
+block missHead
+  if LANG=="es"
+    meta(name='description' content='Edita los Calendarios')
+    meta(property="og:description" content='Edita los Calendarios')
+  else if LANG=="en"
+    meta(name='description' content='Edit the Calendars')
+    meta(property="og:description" content='Edit the Calendars')
+
+  link(rel="stylesheet" href=HOST+"/styles/editCal.css")
+  
+  - const site="editCal";
+
+block precontent
+  //- Publish modal
+  #mdlPublish.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlPublishL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          if LANG=="es"
+            h5#mdlPublishL.modal-title Publicar el Calendario
+          else if LANG=="en"
+            h5#mdlPublishL.modal-title Publish the Calendar
+          button#btnCanPublish1.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          p#mdlPublishTxt
+          img.d-none(src='' alt='' class='@#')
+          #barPublishCont.progress.my-2.d-none
+            #barPublish.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
+        .modal-footer
+          if LANG=="es"
+            button#btnCnfPublish.btn.btn-scckie.btn-block(type='button') Publicar
+          else if LANG=="en"
+            button#btnCnfPublish.btn.btn-scckie.btn-block(type='button') Publish
+          button#btnCanPublish0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
+
+  //- Event Info modal
+  #mdlEventInfo.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlEventInfoL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h5#mdlEventInfoL.modal-title
+          button.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .row.px-4.py-2
+          button#btnPriorEve.btn.btn-scckie.mr-auto
+            i.fas.fa-arrow-left
+          button#btnNextEve.btn.btn-scckie
+            i.fas.fa-arrow-right
+        #eventInfoCont.overflow-auto
+
+  //- Translate modal
+  #mdlTranslate.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mdlTranslateL' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          if LANG=="es"
+            h5#mdlTranslateL.modal-title Generar traducción
+          else if LANG=="en"
+            h5#mdlTranslateL.modal-title Generate translation
+          button#btnCanTranslate1.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        form#frmTranslate
+          .modal-body
+            p#mdlTranslateTxt
+              .form-row
+                if LANG=="es"
+                  .alert.alert-dismissible.fade.show.alert-danger(role='alert')
+                    | Estás en español, ¿realmente quieres traducir desde otro idioma?
+                .alert.alert-dismissible.fade.show.alert-warning(role='alert')
+                  if LANG=="es"
+                    | La traducción sobreescribe los cambios en el idioma actual
+                  else if LANG=="en"
+                    | The translation overrides the changes in the current language
+              .form-row
+                .form-group
+                  if LANG=="es"
+                    label(for='inTransFrom') Traducir del
+                  else if LANG=="en"
+                    label(for='inTransFrom') Translate from
+                  select#inTransFrom.form-control(required name="selTransLang")
+            #barTranslateCont.progress.my-2.d-none
+              #barTranslate.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
+          .modal-footer
+            if LANG=="es"
+              button#btnCnfTranslate.btn.btn-scckie.btn-block(type='submit') Traducir
+            else if LANG=="en"
+              button#btnCnfTranslate.btn.btn-scckie.btn-block(type='submit') Translate
+            button#btnCanTranslate0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
+
+  //- Side toolbar
+  .tbar.tbar-right.btn-toolbar.mb-3(role='toolbar')
+    .btn-group-vertical.mr-2.btn-group-lg(role='group')
+      button.btn.btn-scckie(data-toggle='modal' data-target='#mdlTranslate')
+        i.fas.fa-language
+      a#btnPrevCal.btn.btn-scckie(target="_blank")
+        i.fas.fa-eye
+      a#btnPrevMail.btn.btn-scckie(target="_blank")
+        i.fas.fa-envelope
+      button#btnAprove.btn.btn-scckie.d-none
+        i.far.fa-check-square
+      button#btnPub.btn.btn-scckie.d-none(data-toggle='modal' data-target='#mdlPublish')
+        i.fas.fa-paper-plane
+      a#btnSrcCal.btn.btn-scckie.text-decoration-none(target="_blank")
+        i.fas.fa-calendar-day
+      a#btnSrcCal2.btn.btn-scckie.text-decoration-none(target="_blank")
+        i.fas.fa-calendar-day
+      a#btnSrcCal3.btn.btn-scckie.text-decoration-none(target="_blank")
+        i.fas.fa-calendar-day
+
+block content
+  .container-fluid.mb-2.rounded-lg.p-3(style='background-color:#57238b;')
+    .row.mt-2.mb-4.pr-2
+      .col-auto
+        select#selFileTrans.form-control.mr-0.ml-2.h-100(name="selTransLang")
+      button#btnFileTrans.btn.btn-light.btn-link-scckie
+        i.fas.fa-language
+    h1#title.text-center
+    .row.mb-2.justify-content-center
+      if LANG=="es"
+        label.col-12.col-form-label Imagen
+      else if LANG=="en"
+        label.col-12.col-form-label Image
+      figure.col-9.col-xl-6.mb-3.p-0(style='position: relative; border-radius: 0.25rem;')
+        img#prevMed.card-img.m-0(src='https://via.placeholder.com/200.webp' onerror="this.src='https://via.placeholder.com/200.webp'")
+        .card-img-overlay.pt-0(style='padding-left: 0.9rem; padding-right: 0.9rem;')
+          .row.mb-2.p-0
+            button#btnChgImg.btn.btn-light.btn-scckie.btn-sm.ml-auto
+              i.fas.fa-exchange-alt(aria-hidden='true')
+        br
+        if LANG=="es"
+          .row
+            .col
+              label Pie de foto
+              input#inPicCapt.form-control(type='text')
+        else if LANG=="en"
+          .row
+            .col
+              label Caption
+              input#inPicCapt.form-control(type='text')
+        .row
+          .col
+            label Alt
+            input#inPicAlt.form-control(type='text')
+    #barChgImgCont.progress.mb-2.d-none
+      #barChgImg.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
+    form#frmChgImg.d-none
+      .row.mb-3.justify-content-center
+        .form-check.form-check-inline.ml-3
+          input#inMedSrc0.form-check-input(type='radio' name='radsMedSrc' required='')
+          if LANG=="es"
+            label.form-check-label(for='inMedSrc0') Propio
+          else if LANG=="en"
+            label.form-check-label(for='inMedSrc0') Own
+        .form-check.form-check-inline.ml-3
+          input#inMedSrc1.form-check-input(type='radio' name='radsMedSrc' value='out')
+          if LANG=="es"
+            label.form-check-label(for='inMedSrc1') Externo
+          else if LANG=="en"
+            label.form-check-label(for='inMedSrc1') External
+      #inChgImgFileCont.custom-file.mb-5.d-none
+        input#inChgImg.custom-file-input(type='file')
+        if LANG=="es"
+          label#inChgImgL.custom-file-label(for='inChgImg' data-browse='Elegir') Subir archivo
+        else if LANG=="en"
+          label#inChgImgL.custom-file-label(for='inChgImg' data-browse='Choose') Upload
+      #inChgImgUrlCont.row.mb-2.d-none
+        .col
+          if LANG=="es"
+            label(for='inChgImgUrl') URL del archivo
+            input#inChgImgUrl.form-control(type='text' placeholder='https://imagen.com')
+          else if LANG=="en"
+            label(for='inChgImgUrl') Media URL
+            input#inChgImgUrl.form-control(type='text' placeholder='https://image.com')
+      .row.mb-2.justify-content-center
+        button#btnCanChgImg.btn.btn-secondary.mx-2(type='submit') #{Buttons[LANG]["cancel"]}
+        if LANG=="es"
+          button#btnCnfChgImg.btn.btn-primary.mx-2(type='submit') Aceptar
+        else if LANG=="en"
+          button#btnCnfChgImg.btn.btn-primary.mx-2(type='submit') Accept
+    form#frmText
+      if LANG=="es"
+        .row.mb-2
+          label.col-12.col-form-label Descripción
+          .col
+            textarea#inDesc.form-control(rows='3')
+        .row.mb-2
+          label.col-12.col-form-label Descripción corta
+          .col
+            textarea#inDescShort.form-control(rows='3')
+      else if LANG=="en"
+        .row.mb-2
+          label.col-12.col-form-label Description
+          .col
+            textarea#inDesc.form-control(rows='3')
+        .row.mb-2
+          label.col-12.col-form-label Short description
+          .col
+            textarea#inDescShort.form-control(rows='3')
+      .row.mb-2.justify-content-end
+        button.btn.btn-light.btn-link-scckie.mx-3(type='submit')
+          i.fas.fa-check
+  .container-fluid.mb-2.rounded-lg.p-2.overflow-auto(style='background-color:#57238b;')
+    .table-responsive
+      table.table.table-bordered.table-light.rounded
+        thead.thead-dark
+          tr
+            if LANG=="es"
+              th(style='min-width: 7rem; width: 13%;') Domingo
+              th(style='min-width: 7rem; width: 13%;') Lunes
+              th(style='min-width: 7rem; width: 13%;') Martes
+              th(style='min-width: 7rem; width: 13%;') Miercoles
+              th(style='min-width: 7rem; width: 13%;') Jueves
+              th(style='min-width: 7rem; width: 13%;') Viernes
+              th(style='min-width: 7rem; width: 13%;') Sabado
+            else if LANG=="en"
+              th(style='min-width: 7rem; width: 13%;') Sunday
+              th(style='min-width: 7rem; width: 13%;') Monday
+              th(style='min-width: 7rem; width: 13%;') Tuesday
+              th(style='min-width: 7rem; width: 13%;') Wednesday
+              th(style='min-width: 7rem; width: 13%;') Thursday
+              th(style='min-width: 7rem; width: 13%;') Friday
+              th(style='min-width: 7rem; width: 13%;') Saturday
+        tbody#weeksCont
+
+
+block ownjs
+  script(src=HOST+'/js/editCal.js')

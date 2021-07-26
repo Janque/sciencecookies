@@ -14,11 +14,10 @@ exports.addComment = functions.region('us-east1').https.onCall((data) => {
             };
         }
         else {
-            return db.collection('galletas').doc(data.id).collection('coms').doc('1').get();
+            return db.collection('cookies/comments/'+data.id).doc('1').get();
         }
     }).then(doc => {
         if (doc.res == -2) return doc;
-        console.log(doc);
         if (doc.exists) {
             comList = doc.data().coms;
             comCount = doc.data().comCount;
@@ -43,7 +42,7 @@ exports.addComment = functions.region('us-east1').https.onCall((data) => {
             comList[data.to].reps.push(comFrm);
         }
         comCount++;
-        return db.collection('galletas').doc(data.id).collection('coms').doc('1').set({
+        return db.collection('cookies/comments/'+data.id).doc('1').set({
             coms: comList,
             comCount: comCount,
         });

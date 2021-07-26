@@ -8,14 +8,14 @@ const app = express();
 app.set('views', './views');
 app.set('view engine', 'pug');
 
-app.get('/galletas/:month/:file', (req, res) => {
+function renderCookie(req, res, lang) {
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
     if (!/^[0-9]{6}$/.test(req.params.month)) {
         console.log('badUrl');
         res.redirect('http://sciencecookies.net/404');
         return;
     } else {
-        db.collection('galletasCont').where('file', '==', req.params.file).limit(1).get().then(snap => {
+        db.collection('cookies/langs/'+lang).where('file', '==', req.params.file).limit(1).get().then(snap => {
             if (snap.empty) {
                 console.log('snap.empty');
                 res.redirect('https://sciencecookies.net/404');
@@ -34,12 +34,13 @@ app.get('/galletas/:month/:file', (req, res) => {
                     month += '0';
                 }
                 month += (d.getMonth() + 1);
-                
-                let java=dat.java;
-                java+=`window.id = '${doc.id}';\n`;
-                java+=`window.cTitle = '${dat.title}';\n`;
-                
-                res.render('galleta', {
+
+                let java = dat.java;
+                java += `window.id = '${doc.id}';\n`;
+                java += `window.cTitle = '${dat.title}';\n`;
+                java += `window.cRef = '${doc.id}/${dat.file}/';\n`;
+
+                return res.render('galleta', {
                     "published": dat.published.toDate(),
                     "dledit": dat.dledit,
                     "ledit": dat.ledit.toDate(),
@@ -47,18 +48,25 @@ app.get('/galletas/:month/:file', (req, res) => {
                     "month": month,
                     "file": dat.file,
                     "title": dat.title,
+                    "picUrl": dat.picUrl,
                     "content": dat.cont,
-                    "java": java
+                    "java": java,
+                    "setLang": lang
                 });
-                return;
             });
         }).catch(err => console.log(err));
     }
+}
+app.get('/galletas/:month/:file', (req, res) => {
+    return renderCookie(req, res, "es");
+});
+app.get('/cookies/:month/:file', (req, res) => {
+    return renderCookie(req, res, "en");
 });
 
 app.get('/vista-email/:file', (req, res) => {
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
-    db.collection('galletasCont').where('file', '==', req.params.file).limit(1).get().then(snap => {
+    db.collection('cookies/langs/es').where('file', '==', req.params.file).limit(1).get().then(snap => {
         if (snap.empty) {
             res.redirect('http://sciencecookies.net/404');
             return;

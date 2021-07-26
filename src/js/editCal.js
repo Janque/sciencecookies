@@ -1,9 +1,7 @@
-import '../styles/editCal.scss';
-
 var store = firebase.storage();
 var rtDb = firebase.database();
 
-let docDat, docId;
+let docDat, docId, docRef, calConfig;
 let lastSave = Date.now(), saved = false;
 
 let newMedia = null;
@@ -11,73 +9,124 @@ let newMedSrc = null;
 
 let eventToShow = null;
 
-const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'], longDay = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'];
-function fullMonth(n) {
-    switch (n) {
-        case 1:
-            return "Enero";
-        case 2:
-            return "Febrero";
-        case 3:
-            return "Marzo";
-        case 4:
-            return "Abril";
-        case 5:
-            return "Mayo";
-        case 6:
-            return "Junio";
-        case 7:
-            return "Julio";
-        case 8:
-            return "Agosto";
-        case 9:
-            return "Septiembre";
-        case 10:
-            return "Octubre";
-        case 11:
-            return "Noviembre";
-        case 12:
-            return "Diciembre";
-        case 0:
-            return "Diciembre";
-        case 13:
-            return "Enero";
+async function translateSimple(text, from, target) {
+    let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateSimple');
+    let res = await translate({
+        text: text,
+        from: from,
+        target: target
+    });
+    return res.data;
+}
+
+const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+const longDay = {
+    es: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'],
+    en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+}
+function fullMonth(n, l) {
+    if (l == "es") {
+        switch (n) {
+            case 1:
+                return "Enero";
+            case 2:
+                return "Febrero";
+            case 3:
+                return "Marzo";
+            case 4:
+                return "Abril";
+            case 5:
+                return "Mayo";
+            case 6:
+                return "Junio";
+            case 7:
+                return "Julio";
+            case 8:
+                return "Agosto";
+            case 9:
+                return "Septiembre";
+            case 10:
+                return "Octubre";
+            case 11:
+                return "Noviembre";
+            case 12:
+                return "Diciembre";
+            case 0:
+                return "Diciembre";
+            case 13:
+                return "Enero";
+        }
+    } else if (l == "en") {
+        switch (n) {
+            case 1:
+                return "January";
+            case 2:
+                return "February";
+            case 3:
+                return "March";
+            case 4:
+                return "April";
+            case 5:
+                return "May";
+            case 6:
+                return "June";
+            case 7:
+                return "July";
+            case 8:
+                return "August";
+            case 9:
+                return "September";
+            case 10:
+                return "October";
+            case 11:
+                return "November";
+            case 12:
+                return "December";
+            case 0:
+                return "December";
+            case 13:
+                return "January";
+        }
     }
 }
 
 window.loaded = function loaded() {
-    db.collection('calendarios').doc(urlSrch.get('file')).onSnapshot(doc => {
-        if (!doc.exists) {
-            window.location.href = '../404';
-            return;
-        }
-        docDat = doc.data();
-        docId = doc.id;
-        document.getElementById('title').innerHTML = docDat.title;
-        document.getElementById('prevMed').src = docDat.picUrl;
-        document.getElementById('inPicCapt').value = docDat.picCapt;
-        document.getElementById('inPicAlt').value = docDat.picAlt;
-        document.getElementById('inDesc').value = docDat.description;
-        document.getElementById('inDescShort').value = docDat.descriptionShort;
-        render();
-        if (docDat.public) {
-            hideEl(document.getElementById('btnAprove'));
-            hideEl(document.getElementById('btnPub'));
-        } else {
-            showEl(document.getElementById('btnAprove'));
-            if (docDat.pastDue) showEl(document.getElementById('btnPub'));
-        }
-        if (docDat.revised.includes(uid)) {
-            document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
-        } else {
-            document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
-        }
-        document.getElementById('btnPrevCal').href = docDat.url;
-        document.getElementById('btnPrevMail').href = '/vista-email-calendario/' + docId;
-        document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
-        document.getElementById('btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1170&reg1=3688685&reg2=9609540&town=3688689`;
-        document.getElementById('btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('file').substr(5, 6)}&year=${urlSrch.get('file').substr(0, 4)}&maxdiff=7&country=1724&reg1=3117732&reg2=6355233&town=3117735`;
-    }, err => console.log(err))
+    db.collection('config').doc('calTypes').get().then(doc => {
+        calConfig = doc.data();
+        docRef = calendarsFSRef.doc(urlSrch.get('id'));
+        calendarsFSRef.doc(urlSrch.get('id')).onSnapshot(doc => {
+            if (!doc.exists) {
+                window.location.href = '../404';
+                return;
+            }
+            docDat = doc.data();
+            docId = doc.id;
+            document.getElementById('title').innerHTML = docDat.title;
+            document.getElementById('prevMed').src = docDat.picUrl;
+            document.getElementById('inPicCapt').value = docDat.picCapt;
+            document.getElementById('inPicAlt').value = docDat.picAlt;
+            document.getElementById('inDesc').value = docDat.description;
+            document.getElementById('inDescShort').value = docDat.descriptionShort;
+            render();
+            if (docDat.public) {
+                hideEl(document.getElementById('btnAprove'));
+                hideEl(document.getElementById('btnPub'));
+            } else {
+                showEl(document.getElementById('btnAprove'));
+                if (docDat.pastDue) showEl(document.getElementById('btnPub'));
+            }
+            if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
+                document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
+            } else {
+                document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
+            }
+            document.getElementById('btnPrevCal').href = docDat.url;
+            document.getElementById('btnPrevMail').href = '/vista-email-calendario/' + docId;
+            document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
+            document.getElementById('btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1170&reg1=3688685&reg2=9609540&town=3688689`;
+            document.getElementById('btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1724&reg1=3117732&reg2=6355233&town=3117735`;
+        }, err => console.log(err))
+    }).catch(err => console.log(err));
 
     function descFrm() {
         docDat.description = document.getElementById('inDesc').value.trim();
@@ -88,18 +137,65 @@ window.loaded = function loaded() {
         event.preventDefault();
         descFrm();
     });
+    document.getElementById('btnFileTrans').onclick = function () {
+        let ori = document.getElementById('selFileTrans').value
+        db.collection('calendars/langs/' + ori).doc(docId).get().then(async function (doc) {
+            docDat.picCapt = document.getElementById('inPicCapt').value = await translateSimple(doc.data().picCapt, ori, lang);
+            docDat.picAlt = document.getElementById('inPicAlt').value = await translateSimple(doc.data().picAlt, ori, lang);
+            docDat.description = document.getElementById('inDesc').value = await translateSimple(doc.data().description, ori, lang);
+            docDat.descriptionShort = document.getElementById('inDescShort').value = await translateSimple(doc.data().descriptionShort, ori, lang);
+            descFrm();
+        }).catch(err => console.log(err));
+    }
+
+    function translateFrm() {
+        let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateFullCalendar');
+        return translate({
+            docId: docId,
+            from: document.getElementById('inTransFrom').value,
+            target: lang
+        });
+    }
+    document.getElementById("frmTranslate").addEventListener("submit", function (event) {
+        event.preventDefault();
+        classes(document.getElementById('btnCnfTranslate'), "disabled")
+        classes(document.getElementById('btnCanTranslate0'), "disabled")
+        classes(document.getElementById('btnCanTranslate1'), "disabled")
+        setprog('barTranslate', 0);
+        showEl(document.getElementById('barTranslateCont'));
+        runprog('barTranslate', 0, 73);
+        translateFrm().then(res => {
+            runprog('barTranslate', 73, 90);
+            if (res) {
+                setprog('barTranslate', 100);
+                $('#mdlTranslate').modal('hide');
+                document.getElementById('btnCnfTranslate').classList.remove("disabled");
+                document.getElementById('btnCanTranslate0').classList.remove("disabled");
+                document.getElementById('btnCanTranslate1').classList.remove("disabled");
+                hideEl(document.getElementById('barTranslateCont'))
+            } else {
+                if (lang == "es") {
+                    alertTop("<strong>¡Ha ocurrido un error!</strong>", 0);
+                } else if (lang == "en") {
+                    alertTop("<strong>¡There has been an error!</strong>", 0);
+                }
+                console.log('err');
+            }
+        });
+    });
 
     function addMed() {
         let ref = store.ref('calendarMedia/' + docId + '/pic');
         ref.put(newMedia).on('state_changed',
             function progress(snap) {
-                setprog(document.getElementById('barChgImg'), Math.floor((snap.bytesTransferred / snap.totalBytes) * 100));
+                setprog('barChgImg', (snap.bytesTransferred / snap.totalBytes) * 100);
             },
             function error(err) {
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert"><strong>¡Ocurrió un error!</strong> ' + err.code + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                setTimeout(function () {
-                    if (document.getElementById("btnAlrtClsSsn")) document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
+                if (lang == "es") {
+                    alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+                } else if (lang == "en") {
+                    alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+                }
                 console.log(err);
                 $('#mdlAddMed').modal('hide');
             },
@@ -121,7 +217,7 @@ window.loaded = function loaded() {
     }
     document.getElementById("frmChgImg").addEventListener("submit", function (event) {
         event.preventDefault();
-        setprog(document.getElementById('barChgImg'), "0");
+        setprog('barChgImg', 0);
         showEl(document.getElementById("barChgImgCont"));
         hideEl(document.getElementById("frmChgImg"));
         document.getElementById("btnCnfChgImg").setAttribute('disabled', 'true');
@@ -131,23 +227,43 @@ window.loaded = function loaded() {
     });
 }
 
-document.getElementById('inPicCapt').oninput = () => {
+document.getElementById('inPicCapt').onchange = () => {
     docDat.picCapt = document.getElementById('inPicCapt').value.trim();
 }
-document.getElementById('inPicAlt').oninput = () => {
+document.getElementById('inPicAlt').onchange = () => {
     docDat.picAlt = document.getElementById('inPicAlt').value.trim();
 }
-document.getElementById('inDesc').oninput = () => {
+document.getElementById('inDesc').onchange = () => {
     docDat.picDesc = document.getElementById('inDesc').value.trim();
 }
-document.getElementById('inDescShort').oninput = () => {
+document.getElementById('inDescShort').onchange = () => {
     docDat.picDescShort = document.getElementById('inDescShort').value.trim();
 }
 
 let savedInterval;
 function saveDoc() {
     console.log('Saving...');
-    return db.collection('calendarios').doc(docId).update(docDat);
+
+    const promises = [];
+    langs.forEach(l => {
+        if (l != lang) {
+            let syncUpt = {
+                published: docDat.published,
+                finished: docDat.finished,
+                pastDue: docDat.pastDue,
+                public: docDat.public,
+                sentMail: docDat.sentMail,
+                revised: docDat.revised,
+                translations: docDat.translations,
+                timePrev: docDat.timePrev| null,
+            }
+            syncUpt.translations[lang] = docDat.url;
+            promises.push(db.collection('calendars/langs/' + l).doc(docId).update(syncUpt));
+        }
+    })
+    return Promise.all(promises).then(() => {
+        return docRef.update(docDat);
+    });
 }
 function normSave() {
     saveDoc().then(() => {
@@ -161,6 +277,7 @@ function normSave() {
         }, 300010);
         document.getElementById('tagLstSave').innerText = "Se han guardado los cambios";
         lastSave = Date.now();
+        console.log('Saved!');
     }).catch(err => {
         document.getElementById('tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
         console.log(err);
@@ -168,16 +285,27 @@ function normSave() {
 }
 
 function setprog(bar, n) {
+    bar = document.getElementById(bar);
+    n = Math.floor(n);
     bar.setAttribute('aria-valuenow', n);
     bar.style.width = n + '%';
     bar.innerText = n + '%';
+}
+function runprog(bar, b, e) {
+    b = Math.floor(b);
+    e = Math.floor(e);
+    for (let i = b; i <= e; i++) {
+        setTimeout(() => {
+            setprog(bar, i);
+        }, 5);
+    }
 }
 
 function showEvent() {
     Object.keys(docDat.events).forEach(key => {
         hideEl(document.getElementById(key));
     });
-    document.getElementById('mdlEventInfoL').innerHTML = docDat.events[eventToShow].date;
+    document.getElementById('mdlEventInfoL').innerHTML = docDat.events[eventToShow].date[lang];
     showEl(document.getElementById(eventToShow));
     enable(document.getElementById('btnPriorEve'));
     enable(document.getElementById('btnNextEve'));
@@ -299,10 +427,18 @@ function render() {
                 btnPlusEvent.innerHTML = '<i class="fas fa-plus"></i>';
                 btnPlusEvent.onclick = () => {
                     docDat.events[wIdx + daysOfWeek[i] + day.events.length] = {
-                        date: longDay[i] + " " + day.date + " de " + fullMonth(docId % 100),
+                        date: {
+                            es: longDay["es"][i] + " " + day.date + " de " + fullMonth(docId % 100, lang),
+                            en: longDay["en"][i] + ", " + fullMonth(docId % 100, "en") + " " + day.date
+                        },
+                        typeIdx: 0,
+                        vals: {
+                            0: { label: "Título", val: "Evento sin nombre" },
+                            1: { label: "Description", val: "Sin descripción" },
+                        },
                         name: "Evento sin nombre",
                         description: "Sin descripción",
-                        visibilidad: "Visible a simple vista",
+                        visibilidad: calConfig.visOpts[lang][0],
                         horario: ["Ciudad de México:", "Bogotá:", "Madrid:"]
                     };
                     day.events.push({
@@ -318,6 +454,26 @@ function render() {
     document.getElementById('eventInfoCont').innerHTML = "";
     for (const [key, event] of Object.entries(docDat.events)) {
         let changed = false;
+
+        //@#Migration
+        if (event.typeIdx == undefined) {
+            event.typeIdx = 0;
+            event.vals = {
+                0: { label: "Título", val: event.name },
+                1: { label: "Description", val: event.description },
+            }
+            regenTxt();
+            changed = true;
+        }
+        if (typeof event.date != "object") {
+            event.date = {
+                es: longDay["es"][daysOfWeek.indexOf(key.substring(1, 4))] + " " + docDat.weeks[parseInt(key.charAt(0))][key.substring(1, 4)].date + " de " + fullMonth(docId % 100, lang),
+                en: longDay["en"][daysOfWeek.indexOf(key.substring(1, 4))] + ", " + fullMonth(docId % 100, "en") + " " + docDat.weeks[parseInt(key.charAt(0))][key.substring(1, 4)].date
+            }
+            changed = true;
+        }
+        //End migration
+
         let form = document.createElement('div');
         form.id = key;
         classes(form, "d-none overflow-auto");
@@ -328,69 +484,291 @@ function render() {
         let fsec = document.createElement('div');
         classes(fsec, "d-none");
         bod.appendChild(fsec);
-        let fg0 = document.createElement('div');
-        classes(fg0, "form-group");
-        fsec.appendChild(fg0);
-        fg0.innerHTML = '<label>Nombre del evento</label>';
-        let in0 = document.createElement('input');
-        in0.id = "inEveTitle" + key;
-        in0.setAttribute("type", "text");
-        classes(in0, "form-control");
-        fg0.appendChild(in0);
-        let fg1 = document.createElement('div');
-        classes(fg1, "form-group");
-        fsec.appendChild(fg1);
-        fg1.innerHTML = '<label>Descripción</label>';
-        let in1 = document.createElement('textarea');
-        classes(in1, "form-control");
-        in1.id = "inEveDesc" + key;
-        in1.setAttribute("rows", "3");
-        fg1.appendChild(in1);
-        let fg2 = document.createElement('div');
-        classes(fg2, "form-group");
-        fsec.appendChild(fg2);
-        fg2.innerHTML = '<label>Visiblidad</label>';
-        let in2 = document.createElement('select');
-        in2.id = "inVis" + key;
-        classes(in2, "form-control");
-        let visOpts = ["Visible a simple vista", "Visible con binoculares", "Visible con un telescopio pequeño", "Visible con un telescopio de 4 pulgadas", "Visible con un telescopio grande", "No observable"]
-        visOpts.forEach((itm, idx) => {
+        let fgType = document.createElement('div');
+        classes(fgType, "form-group");
+        fsec.appendChild(fgType);
+
+        let selTypeMainL = document.createElement('label');
+        if (lang == "es") {
+            selTypeMainL.innerText = "Tipo de evento";
+        } else if (lang == "en") {
+            selTypeMainL.innerText = "Event type";
+        }
+        fgType.appendChild(selTypeMainL);
+        let selTypeMain = document.createElement('select');
+        classes(selTypeMain, "form-control");
+        selTypeMain.setAttribute('multiple', 'true');
+        calConfig[lang].forEach((itm, idx) => {
+            let opt = document.createElement('option');
+            opt.value = idx;
+            opt.innerText = itm.label;
+            if ((!event.typeIdx && idx == 0) || idx == event.typeIdx) opt.setAttribute('selected', 'true');
+            selTypeMain.appendChild(opt);
+        });
+        selTypeMain.oninput = () => {
+            changed = true;
+            event.typeIdx = parseInt(selTypeMain.value);
+            if (!event.typeIdx) event.typeIdx = 0;
+            event.vals = {};
+            reloadForm();
+        }
+        fgType.appendChild(selTypeMain);
+
+        let inTitleHid = document.createElement('input');
+        inTitleHid.setAttribute("type", "text");
+        inTitleHid.id = "inEveTitle" + key;
+        let inDescHid = document.createElement('textarea');
+        inDescHid.id = "inEveDesc" + key;
+
+        let fRow = document.createElement('div');
+        classes(fRow, "form-row");
+        fsec.insertBefore(fRow, fgType.nextSibling);
+
+        //Must be declared here
+        let sfRow = document.createElement('div');
+        classes(sfRow, "form-row d-none");
+        fsec.insertBefore(sfRow, fRow.nextSibling);
+
+        function reloadForm() {
+            fRow.innerHTML = "";
+            calConfig[lang][event.typeIdx].options.forEach((option, idx) => {
+                let fCol = document.createElement('div');
+                classes(fCol, "col-auto form-group");
+                let label = document.createElement('label');
+                label.innerText = option.label;
+                fCol.appendChild(label);
+                let inp;
+                switch (option.type) {
+                    case "select":
+                        inp = document.createElement('select');
+                        option.options.forEach((itm, i) => {
+                            let opt = document.createElement('option');
+                            opt.value = itm.val;
+                            opt.innerHTML = itm.label;
+                            if ((i == 0 && (!event.vals || !event.vals[idx])) || (event.vals && event.vals[idx] && event.vals[idx].val == itm.val)) {
+                                opt.selected = true;
+                                event.vals[idx] = {
+                                    label: itm.label,
+                                    val: itm.val,
+                                }
+                                if (option.valForSub == itm.val) showEl(sfRow);
+                                else hideEl(sfRow);
+                            }
+                            inp.appendChild(opt);
+                        });
+                        break;
+                    case "textarea":
+                        inp = document.createElement('textarea');
+                        inp.setAttribute("rows", "3");
+                        if (event.vals[idx] && event.vals[idx].val) inp.value = event.vals[idx].val;
+                        break;
+                    default:
+                        inp = document.createElement('input');
+                        inp.setAttribute("type", option.type);
+                        if (event.vals[idx] && event.vals[idx].val) inp.value = event.vals[idx].val;
+                }
+                if (option.placeholder) inp.placeholder = option.placeholder;
+                classes(inp, "form-control form-control-sm");
+                fCol.appendChild(inp);
+                fRow.appendChild(fCol);
+
+                //sfRow declared before
+                if (option.valForSub) {
+                    option.sub.forEach((soption, sidx) => {
+                        let sfCol = document.createElement('div');
+                        classes(sfCol, "col-auto form-group");
+                        let slabel = document.createElement('label');
+                        slabel.innerText = soption.label;
+                        sfCol.appendChild(slabel);
+                        let sinp;
+                        switch (soption.type) {
+                            case "select":
+                                sinp = document.createElement('select');
+                                soption.options.forEach((itm, i) => {
+                                    let opt = document.createElement('option');
+                                    opt.value = itm.val;
+                                    opt.innerHTML = itm.label;
+                                    if ((i == 0 && (!event.vals || !event.vals[idx + '-' + sidx])) || (event.vals && event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val == itm.val)) {
+                                        opt.selected = true;
+                                        event.vals[idx + '-' + sidx] = {
+                                            label: itm.label,
+                                            val: itm.val,
+                                        }
+                                    }
+                                    sinp.appendChild(opt);
+                                });
+                                break;
+                            case "textarea":
+                                sinp = document.createElement('textarea');
+                                sinp.setAttribute("rows", "3");
+                                if (event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val) sinp.value = event.vals[idx + '-' + sidx].val;
+                                break;
+                            default:
+                                sinp = document.createElement('input');
+                                sinp.setAttribute("type", soption.type);
+                                if (event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val) sinp.value = event.vals[idx + '-' + sidx].val;
+                        }
+                        if (soption.placeholder) sinp.placeholder = soption.placeholder;
+                        classes(sinp, "form-control form-control-sm");
+                        sfCol.appendChild(sinp);
+                        sfRow.appendChild(sfCol);
+
+                        sinp.onchange = function () {
+                            changed = true;
+                            event.vals[idx + '-' + sidx] = {};
+                            event.vals[idx + '-' + sidx].val = sinp.value;
+                            if (option.type == "select") event.vals[idx + '-' + sidx].label = sinp.innerText;
+                            else event.vals[idx + '-' + sidx].label = soption.label;
+                            regenTxt();
+                        }
+                    });
+                }
+
+                inp.onchange = function () {
+                    changed = true;
+                    event.vals[idx] = {};
+                    event.vals[idx].val = inp.value;
+                    if (option.type == "select") event.vals[idx].label = inp.innerText;
+                    else event.vals[idx].label = option.label;
+                    if (option.valForSub) {
+                        if (option.valForSub == inp.value) showEl(sfRow);
+                        else hideEl(sfRow);
+                    }
+                    regenTxt();
+                }
+            });
+        }
+        reloadForm();
+
+        function regenTxt() {
+            if (calConfig[lang][event.typeIdx].multipleTxt) {
+                event.description = parseInt(event.vals["0"].val.charAt(0));
+                event.name = parseInt(event.vals["0"].val.charAt(1));
+            } else {
+                event.description = event.name = 0;
+            }
+            event.description = calConfig[lang][event.typeIdx].text[event.description];
+            event.name = calConfig[lang][event.typeIdx].titleTxt[event.name];
+            for (const [vKey, vVal] of Object.entries(event.vals)) {
+                event.description = event.description.replaceAll("$" + vKey + "L$", vVal.label);
+                event.description = event.description.replaceAll("$" + vKey + "$", vVal.val);
+                event.description = event.description.replaceAll("$g-year$", Math.floor(docId / 100));
+                event.name = event.name.replaceAll("$" + vKey + "L$", vVal.label);
+                event.name = event.name.replaceAll("$" + vKey + "$", vVal.val);
+                event.name = event.name.replaceAll("$g-year$", Math.floor(docId / 100));
+            }
+        }
+        regenTxt();
+
+        let fgVis = document.createElement('div');
+        classes(fgVis, "form-group");
+        fsec.appendChild(fgVis);
+        fgVis.innerHTML = '<label>Visiblidad</label>';
+        let inVis = document.createElement('select');
+        inVis.id = "inVis" + key;
+        classes(inVis, "form-control");
+        calConfig.visOpts[lang].forEach((itm, idx) => {
             let opt = document.createElement('option');
             opt.value = idx;
             opt.innerHTML = itm;
             if (itm == event.visibilidad) opt.setAttribute('selected', "true");
-            in2.appendChild(opt);
+            inVis.appendChild(opt);
         });
-        fg2.appendChild(in2);
-        let fg3 = document.createElement('div');
-        classes(fg3, "form-group");
-        fsec.appendChild(fg3);
-        fg3.innerHTML = '<label>Horario</label>';
-        let in3 = document.createElement('textarea');
-        classes(in3, "form-control");
-        in3.id = "inTime" + key;
-        in3.setAttribute("rows", "4");
-        fg3.appendChild(in3);
-        if (in2.value == 5) hideEl(fg3);
-        else showEl(fg3);
-        in0.oninput = () => {
-            enable(reverBtn);
+        fgVis.appendChild(inVis);
+
+        let fgTime = document.createElement('div');
+        classes(fgTime, "form-group");
+        fsec.appendChild(fgTime);
+        fgTime.innerHTML = '<label>Horario</label>';
+        let inTime = document.createElement('textarea');
+        classes(inTime, "form-control");
+        inTime.id = "inTime" + key;
+        inTime.setAttribute("rows", "4");
+        fgTime.appendChild(inTime);
+        if (inVis.value == 5) hideEl(fgTime);
+        else showEl(fgTime);
+
+        inVis.oninput = () => {
+            changed = true;
+            if (inVis.value == 5) hideEl(fgTime);
+            else showEl(fgTime);
+        };
+        inTime.onchange = () => {
             changed = true;
         };
-        in1.oninput = () => {
-            enable(reverBtn);
-            changed = true;
-        };
-        in2.oninput = () => {
-            enable(reverBtn);
-            changed = true;
-            if (in2.value == 5) hideEl(fg3);
-            else showEl(fg3);
-        };
-        in3.oninput = () => {
-            enable(reverBtn);
-            changed = true;
-        };
+
+        //Must be declared here
+        let saveBtn = document.createElement('button');
+
+        let selLangCC = document.createElement('div');
+        classes(selLangCC, "row");
+        let selLangC = document.createElement('div');
+        classes(selLangC, "col-auto");
+        selLangCC.appendChild(selLangC);
+        let selLang = document.createElement('select');
+        classes(selLang, "form-control ml-auto h-100");
+        selLang.setAttribute("name", "selTransLang");
+        selLangC.appendChild(selLang);
+        let btnTrans = document.createElement('button');
+        classes(btnTrans, 'btn btn-scckie mx-2');
+        btnTrans.innerHTML = '<i class="fas fa-language"></i>';
+        btnTrans.onclick = function () {
+            db.collection('calendars/langs/' + selLang.value).doc(docId).get().then(async function (doc) {
+                let newEve = doc.data().events[key];
+                if (!newEve) return;
+                event.typeIdx = newEve.typeIdx;
+                event.vals = newEve.vals;
+                for (let i = 0; i < calConfig[lang][event.typeIdx].options.length; i++) {
+                    const option = calConfig[lang][event.typeIdx].options[i];
+                    if (option.type == "select") {
+                        event.vals[i] = option.options[
+                            calConfig[selLang.value][event.typeIdx].options[i].options
+                                .map(function (e) {
+                                    return e.val;
+                                })
+                                .indexOf(event.vals[i].val)
+                        ];
+                    } else {
+                        if (option.translatable) {
+                            event.vals[i].val = await translateSimple(event.vals[i].val, selLang.value, lang)
+                        }
+                        event.vals[i].label = option.label;
+                    }
+                    if (event.vals["0"].val == event.valForSub) {
+                        for (let j = 0; j < calConfig[lang][event.typeIdx].options[i].sub.length; j++) {
+                            const opt = calConfig[lang][event.typeIdx].options[i].sub[j];
+                            if (opt.type == "select") {
+                                event.vals[i + "-" + j] = option.options[
+                                    calConfig[selLang.value][event.typeIdx].options[i].options
+                                        .map(function (e) {
+                                            return e.val;
+                                        })
+                                        .indexOf(event.vals[i + "-" + j].val)
+                                ];
+                            } else {
+                                if (opt.translatable) {
+                                    event.vals[i + "-" + j].val = await translateSimple(event.vals[i + "-" + j].val, selLang.value, lang)
+                                }
+                                event.vals[i + "-" + j].label = opt.label;
+                            }
+                        }
+                    }
+                }
+                event.visibilidad = calConfig.visOpts[lang][calConfig.visOpts[selLang.value].indexOf(newEve.visibilidad)];
+                event.horario = [];
+                for (let i = 0; i < newEve.horario.length; i++) {
+                    event.horario.push(await translateSimple(newEve.horario[i], selLang.value, lang));
+                }
+                inTime.innerHTML = "";
+                event.horario.forEach(time => {
+                    inTime.innerHTML += time + "\n";
+                });
+                changed = true;
+                saveBtn.click();
+            }).catch(err => console.log(err));
+        }
+        selLangCC.appendChild(btnTrans);
+        fsec.appendChild(selLangCC);
 
         let tsec = document.createElement('div');
         bod.appendChild(tsec);
@@ -414,7 +792,7 @@ function render() {
             li.innerHTML = time;
             eveTimeLst.appendChild(li);
         });
-        if (event.visibilidad == "No observable") {
+        if (event.visibilidad == calConfig.visOpts[lang][5]) {
             hideEl(eveTime);
             hideEl(eveTimeLst);
         }
@@ -448,71 +826,62 @@ function render() {
         editBtn.setAttribute("type", "button");
         editBtn.innerText = "Editar";
         editBtn.onclick = () => {
-            in0.value = event.name;
-            in1.innerHTML = event.description;
-            in2.value = visOpts.indexOf(event.visibilidad);
-            if (in2.value == 5) hideEl(fg3);
-            else showEl(fg3);
-            in3.innerHTML = "";
+            inVis.value = calConfig.visOpts[lang].indexOf(event.visibilidad);
+            if (inVis.value == 5) hideEl(fgTime);
+            else showEl(fgTime);
+            inTime.innerHTML = "";
             event.horario.forEach(time => {
-                in3.innerHTML += time + "\n";
+                inTime.innerHTML += time + "\n";
             });
             hideEl(tsec);
             showEl(fsec);
-            showEl(reverBtn);
             showEl(saveBtn);
             enable(saveBtn);
             hideEl(editBtn);
         };
         foot.appendChild(editBtn);
-        let reverBtn = document.createElement('button');
-        classes(reverBtn, "btn btn-secondary mr-1 d-none");
-        reverBtn.setAttribute("type", "button");
-        disable(reverBtn);
-        reverBtn.innerText = "Revertir";
-        reverBtn.onclick = () => {
-            changed = false;
-            disable(reverBtn);
-            in0.value = event.name;
-            in1.innerHTML = event.description;
-            in2.value = visOpts.indexOf(event.visibilidad);
-            if (in2.value == 5) hideEl(fg3);
-            else showEl(fg3);
-            in3.innerHTML = "";
-            event.horario.forEach(time => {
-                in3.innerHTML += time.trim() + "\n";
-            });
-        };
-        foot.appendChild(reverBtn);
-        let saveBtn = document.createElement('button');
+        //Declared before
         classes(saveBtn, "btn btn-scckie d-none");
         saveBtn.setAttribute("type", "button");
         disable(saveBtn);
         saveBtn.innerText = "Guardar";
         saveBtn.onclick = () => {
-            disable(reverBtn);
             disable(saveBtn);
             if (changed) {
-                docDat.weeks[Number(key[0])][key.substr(1, 3)].events[key[4]].name = event.name = in0.value;
-                event.description = in1.value.trim();
-                event.visibilidad = visOpts[in2.value];
+                regenTxt();
+                docDat.weeks[Number(key[0])][key.substr(1, 3)].events[key[4]].name = event.name;
+                event.visibilidad = calConfig.visOpts[lang][inVis.value];
                 event.horario = [];
-                in3.value.trim().split('\n').forEach(time => {
+                inTime.value.trim().split('\n').forEach(time => {
                     if (time != "" && time != " ") event.horario.push(time);
                 });
                 normSave();
-            } else {
-                hideEl(fsec);
-                showEl(tsec);
-                hideEl(reverBtn);
-                hideEl(saveBtn);
-                showEl(editBtn);
             }
+            hideEl(fsec);
+            showEl(tsec);
+            hideEl(saveBtn);
+            showEl(editBtn);
         };
         foot.appendChild(saveBtn);
 
         document.getElementById('eventInfoCont').appendChild(form);
     }
+
+    document.getElementsByName('selTransLang').forEach(itm => {
+        itm.innerHTML = '';
+    });
+    langs.forEach((l, i) => {
+        if (l != lang) {
+            let opt = document.createElement('option');
+            if (i == 0) {
+                opt.setAttribute('selected', 'true');
+            }
+            opt.value = opt.innerText = l;
+            document.getElementsByName('selTransLang').forEach(itm => {
+                itm.appendChild(opt.cloneNode(true));
+            });
+        }
+    });
 }
 
 
@@ -566,26 +935,38 @@ document.getElementById('inMedSrc1').onclick = function () {
 }
 
 document.getElementById('btnPrevCal').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 document.getElementById('btnPrevMail').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 900000);
+    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 
+function validateRevision() {
+    let revLangs = 0;
+    langs.forEach(l => {
+        let rev = docDat.revised[l] ? docDat.revised[l].length : 0;
+        if (docDat.revised[l] && !docDat.revised[l].includes(uid)) rev++;
+        if (rev >= 2) revLangs++;
+    });
+    return revLangs == langs.length;
+}
+
 document.getElementById('btnAprove').onclick = function () {
-    if (docDat.revised.includes(uid)) {
-        docDat.revised.splice(docDat.revised.indexOf(uid), 1);
-        docDat.finished = false;
+    if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
+        docDat.revised[lang].splice(docDat.revised[lang].indexOf(uid), 1);
         document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
     } else {
-        docDat.revised.push(uid);
+        if (!docDat.revised[lang]) docDat.revised[lang] = [];
+        docDat.revised[lang].push(uid);
         document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
-        if (docDat.revised.length > 1) {
-            docDat.finished = true;
-            newCal();
-        }
+    }
+    if (validateRevision()) {
+        docDat.finished = true;
+        newCal();
+    } else {
+        docDat.finished = false;
     }
     normSave();
 };
@@ -606,7 +987,6 @@ function newCal() {
         if (error) {
             console.log(error);
         } else {
-            let month = fullMonth(nextCalID % 100);
             let date = new Date((nextCalID - nextCalID % 100) / 100 + ' ' + nextCalID % 100 + ' ' + '00:00');
             let weeks = [];
             let days;
@@ -637,97 +1017,115 @@ function newCal() {
                 weeks.push(week);
                 bDay = 0;
             }
-            let nYear = (nextCalID - nextCalID % 100) / 100;
-            let pYear = (nextCalID - nextCalID % 100) / 100;
-            if (nextCalID % 100 == 12) nYear++;
-            if (nextCalID % 100 == 1) pYear--;
-            let nMonth = fullMonth(nextCalID % 100 + 1).toLowerCase();
-            let pMonth = fullMonth(nextCalID % 100 - 1).toLowerCase();
-            db.collection('calendarios').doc(Math.abs(nextCalID).toString()).set({
-                events: {},
-                date: firebase.firestore.Timestamp.fromDate(date),
-                description: "Sin descripción",
-                descriptionShort: "Sin descripción",
-                finished: false,
-                pastDue: false,
-                picUrl: "",
-                picAlt: "",
-                picCapt: "",
-                public: false,
-                sentMail: false,
-                revised: [],
-                title: "Calendario Astronómico de " + month + " " + (nextCalID - nextCalID % 100) / 100,
-                url: "https://sciencecookies.net/calendario-astronomico/" + (nextCalID - nextCalID % 100) / 100 + "/" + month.toLowerCase(),
-                nextCal: "https://sciencecookies.net/calendario-astronomico/" + nYear + "/" + nMonth,
-                priorCal: "https://sciencecookies.net/calendario-astronomico/" + pYear + "/" + pMonth,
-                weeks: weeks
-            }).then(() => {
-                console.log('nuevo calendario');
+            const promises = [];
+            langs.forEach(l => {
+                let newC = {
+                    events: {},
+                    published: firebase.firestore.Timestamp.fromDate(date),
+                    description: "",
+                    descriptionShort: "",
+                    finished: false,
+                    pastDue: false,
+                    picUrl: "",
+                    picAlt: "",
+                    picCapt: "",
+                    public: false,
+                    sentMail: false,
+                    revised: {},
+                    title: "",
+                    url: "",
+                    nextCal: "",
+                    priorCal: "",
+                    weeks: weeks,
+                    translations: {}
+                }
+
+                let intId = parseInt(nextCalID);
+                let year = (intId - intId % 100) / 100;
+                let nYear = (intId - intId % 100) / 100;
+                let pYear = (intId - intId % 100) / 100;
+                if (intId % 100 == 12) nYear++;
+                if (intId % 100 == 1) pYear--;
+                let month = fullMonth(intId % 100, l);
+                let nMonth = fullMonth(intId % 100 + 1, l).toLowerCase();
+                let pMonth = fullMonth(intId % 100 - 1, l).toLowerCase();
+                let calsText = "";
+                switch (l) {
+                    case "es":
+                        calsText = "calendario-astronomico";
+                        newC.title = "Calendario Astronómico de " + month + " " + year;
+                        break;
+                    case "en":
+                        calsText = "astronomic-calendar";
+                        newC.title = "Astronomic Calendar of " + month + " " + year;
+                        break;
+                }
+                newC.url = "https://sciencecookies.net/" + calsText + "/" + year + "/" + month.toLowerCase() + "/";
+                newC.nextCal = "https://sciencecookies.net/" + calsText + "/" + nYear + "/" + nMonth + "/";
+                newC.priorCal = "https://sciencecookies.net/" + calsText + "/" + pYear + "/" + pMonth + "/";
+
+                promises.push(db.collection('calendars/langs/' + l).doc(Math.abs(nextCalID).toString()).set(newC));
+
+            })
+            return Promise.all(promises).then(() => {
+                console.log('exito');
             }).catch(err => console.log(err));
         }
     });
 }
 
 $('#mdlPublish').on('show.bs.modal', e => {
-    let rev = docDat.revised.length;
-    if (!docDat.revised.includes(uid)) rev++;
-    if (rev < 2) {
-        hideEl(document.getElementById('btnCnfPublish'));
-        document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
-    } else {
+    if (validateRevision()) {
         showEl(document.getElementById('btnCnfPublish'));
         document.getElementById('mdlPublishTxt').innerText = "El calendario está listo para publicar";
+    } else {
+        hideEl(document.getElementById('btnCnfPublish'));
+        document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
     }
 });
 
 document.getElementById('btnCnfPublish').onclick = function () {
     if (docDat.public) return;
-    setprog(document.getElementById('barPublish'), '0');
+    setprog('barPublish', 0);
     showEl(document.getElementById('barPublishCont'));
-    setprog(document.getElementById('barPublish'), '25');
-    db.collection('calendarios').doc(docId).update({
-        public: true
-    }).then(() => {
-        setprog(document.getElementById('barPublish'), '63');
-        admin.database().ref('calendarios/' + calID).set({
+
+    docDat.public = true;
+    setprog('barPublish', 25);
+
+    saveDoc().then(() => {
+        setprog('barPublish', 58);
+        admin.database().ref('calendarios/' + docId).set({
             pop: 0
         }, err => {
             if (err) {
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + err + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                if (lang == "es") {
+                    alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+                } else if (lang == "en") {
+                    alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+                }
                 console.log(err);
-                setTimeout(function () {
-                    document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
-                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                    document.getElementById("alrtClsSsn").innerHTML = '';
-                });
             } else {
-                setprog(document.getElementById('barPublish'), '100');
+                setprog('barPublish', 100);
                 classes(document.getElementById('barPublish'), 'bg-success');
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Publicado correctamente<strong></strong>                                                                           <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                if (lang == "es") {
+                    alertTop("Publicado correctamente", 1);
+                } else if (lang == "en") {
+                    alertTop("Published successfully", 1);
+                }
                 setTimeout(function () {
                     window.open(docDat.url, '_blank').focus();
                 }, 2500);
-                console.log("Published successfully.");
-                setTimeout(function () {
-                    document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
-                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                    document.getElementById("alrtClsSsn").innerHTML = '';
-                });
                 $('#mdlPublish').modal('hide');
-                console.log('Published ' + calID + ' calendar');
+                console.log('Published ' + docId + ' calendar');
                 return null;
             }
         });
-    }).catch(error => {
-        document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert"><strong>!Ha ocurrido un error! </strong>' + error + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-        console.log(error);
-        setTimeout(function () {
-            document.getElementById("btnAlrtClsSsn").click();
-        }, 3000);
-        $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-            document.getElementById("alrtClsSsn").innerHTML = '';
-        });
+    }).catch(err => {
+        if (lang == "es") {
+            alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
+        } else if (lang == "en") {
+            alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
+        }
+        console.log(err);
     });
 };

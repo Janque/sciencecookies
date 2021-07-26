@@ -1,19 +1,33 @@
 extends layouts/main
 
-block missHead
-  meta(name='description' content="Aquí puedes encontrar todas las galletas de "+triLC+"del"+year+".")
-  link(rel='canonical' href=HOST+'/archivo/'+year+'/'+triLC +'/')
-  title Archivo #{year} #{triLC} - Science Cookies
+block lang 
+  - const LANG=setLang
 
-  - const site="archTri";
+block missHead
+  if LANG=="es"
+    meta(name='description' content="Aquí puedes encontrar todas las galletas de "+triLC+" del "+year+".")
+    meta(property="og:description" content="Aquí puedes encontrar todas las galletas de "+triLC+" del "+year+".")
+  else if LANG=="en"
+    meta(name='description' content="Here you can find all Cookies from "+triLC+" of "+year+".")
+    meta(property="og:description" content="Here you can find all Cookies from "+triLC+" of "+year+".")
+
+  link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cook"]+year+'/'+sTri +'/')
+  link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cook"]+year+'/'+sTri +'/')
+  link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"]["cook"]+year+'/'+sTri +'/')
+  meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG]["cook"]+year+'/'+sTri +'/')
+
+  title Science Cookies - #{Buttons[LANG]["cook"]} #{year} #{triLC}
+  meta(property="og:title" content='Science Cookies - #{Buttons[LANG]["cook"]} #{year} #{triLC}')
+
+  - const site="cookTri";
 
 block content
   nav(aria-label='breadcrumb')
     ol.breadcrumb.mb-4
       li.breadcrumb-item(aria-current='page')
-        a(href='/archivo') Archivo
+        a(href=HOST+'/'+NavLinks[LANG]["cook"]) #{Buttons[LANG]["cook"]}
       li.breadcrumb-item(aria-current='page')
-        a(href='/archivo') #{year}
+        a(href=HOST+'/'+NavLinks[LANG]["cook"]) #{year}
       li.breadcrumb-item.active(aria-current='page') #{tri}
   br
   each cooks, month in months
@@ -26,11 +40,24 @@ block content
           .media-body
             h5.mt-0 !{cook.title}
             p !{cook.descrip}
-            if(cook.dledit)
-              p.my-0 Actualizado: !{cook.ledit}
-            else
-              p.my-0 Publicado:  !{cook.pub}
-            p.mt-0 Autor(es): !{cook.authrs}
+            if LANG=="es"
+              if(cook.dledit)
+                p.my-0 Actualizado: !{cook.ledit}
+              else
+                p.my-0 Publicado:  !{cook.pub}
+              if cook.authors.length>1
+                p.mt-0= 'Autores:' + cook.authors
+              else
+                p.mt-0= 'Autor:' + cook.authors
+            else if LANG=="en"
+              if(cook.dledit)
+                p.my-0 Updated: !{cook.ledit}
+              else
+                p.my-0 Published:  !{cook.pub}
+              if cook.authors.length>1
+                p.mt-0= 'Authors:' + cook.authors
+              else
+                p.mt-0= 'Author:' + cook.authors
       .dropdown-divider.d-md-none
 
 

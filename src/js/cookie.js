@@ -1,13 +1,10 @@
 var cookRef = null;
-var cRef = '', pubID;
+var pubID;
 var replying = -1;
 
 window.loaded = function loaded() {
     cookRef = firebase.database().ref('galletas/' + id);
-    cRef = window.location.href;
-    let i = 0;
-    while (!(cRef[i] == 'a' && cRef[i + 1] == 's')) i++;
-    cRef = cRef.substr(i + 3);
+    console.log(cRef)
     cookRef.on('value', snap => {
         if (snap.val()) {
             document.getElementById('favCount').innerText = snap.val().favs;
@@ -29,24 +26,20 @@ window.loaded = function loaded() {
             comm: reporting,
             mess: document.getElementById('inText').value,
         }).then(function () {
-            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-warning alert-dismissible fade show fixed-bottom" role="alert">Gracias por tu reporte, lo revisaremos lo antes posible.            <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+            if (lang == "es") {
+                alertTop("Gracias por tu reporte, lo revisaremos lo antes posible.", 2);
+            } else if (lang == "en") {
+                alertTop("Thank you for your report, we will review it as soon as posible.", 2);
+            }
             $('#mdlRprt').modal('hide');
-            setTimeout(function () {
-                document.getElementById("btnAlrtClsSsn").click();
-            }, 3000);
-            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                document.getElementById("alrtClsSsn").innerHTML = '';
-            });
         }).catch(function (err) {
             console.log('err');
-            document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert">Ha ocurrido un error, por favor intenta nuevamente.            <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+            if (lang == "es") {
+                alertTop("Ha ocurrido un error, por favor intenta nuevamente.", 0);
+            } else if (lang == "en") {
+                alertTop("There has been an error, please try again.", 0);
+            }
             $('#mdlRprt').modal('hide');
-            setTimeout(function () {
-                document.getElementById("btnAlrtClsSsn").click();
-            }, 3000);
-            $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                document.getElementById("alrtClsSsn").innerHTML = '';
-            });
         })
     }
     document.getElementById("frmRprt").addEventListener("submit", function (event) {
@@ -65,27 +58,23 @@ window.loaded = function loaded() {
         };
         addComment(comFrm).then(comres => {
             if (comres.data.res == -1) {
-                document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert">Ha ocurrido un error, por favor intenta nuevamente.            <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                if (lang == "es") {
+                    alertTop("Ha ocurrido un error, por favor intenta nuevamente.", 0);
+                } else if (lang == "en") {
+                    alertTop("There has been an error, please try again.", 0);
+                }
                 $('#mdlRprt').modal('hide');
-                setTimeout(function () {
-                    document.getElementById("btnAlrtClsSsn").click();
-                }, 3000);
-                $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                    document.getElementById("alrtClsSsn").innerHTML = '';
-                });
             } else {
                 if (comres.data.res == -2) {
                     drwComs(comNum);
                     let bdate = new Date(comres.data.blc._seconds * 1000);
-                    let dstr = ' ' + bdate.getDate() + '/' + (bdate.getMonth() + 1) + '/' + bdate.getFullYear();
-                    document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-danger alert-dismissible fade show fixed-bottom" role="alert">No puedes comentar. Un moderador te ha bloqueado hasta' + dstr + '<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                    let dstr = bdate.getDate() + '/' + (bdate.getMonth() + 1) + '/' + bdate.getFullYear();
+                    if (lang == "es") {
+                        alertTop("No puedes comentar. Un moderador te ha bloqueado hasta " + dstr, 0);
+                    } else if (lang == "en") {
+                        alertTop("You cannot comment. A moderator has blocked you until " + dstr, 0);
+                    }
                     $('#mdlRprt').modal('hide');
-                    setTimeout(function () {
-                        document.getElementById("btnAlrtClsSsn").click();
-                    }, 3000);
-                    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                        document.getElementById("alrtClsSsn").innerHTML = '';
-                    });
                 } else {
                     if (comres.data.res == 0) {
                         comList[comres.data.pos] = comres.data.com;
@@ -95,14 +84,12 @@ window.loaded = function loaded() {
                     }
                     comCount++;
                     drwComs(comNum);
-                    document.getElementById("alrtClsSsn").innerHTML = '<div id="alrtClsSsnAlrt" class="alert alert-success alert-dismissible fade show fixed-bottom" role="alert">Se ha publicado tu comentario                         <button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                    if (lang == "es") {
+                        alertTop("Se ha publicado tu comentario", 1);
+                    } else if (lang == "en") {
+                        alertTop("Your comment has been published", 1);
+                    }
                     $('#mdlRprt').modal('hide');
-                    setTimeout(function () {
-                        document.getElementById("btnAlrtClsSsn").click();
-                    }, 3000);
-                    $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-                        document.getElementById("alrtClsSsn").innerHTML = '';
-                    });
                 }
             }
             replying = -1;
@@ -328,7 +315,7 @@ function reply(r) {
 document.getElementById('btnLdComs').onclick = function () {
     document.getElementById('btnLdComs').classList.add('d-none');
     document.getElementById('spnCom').classList.remove('d-none');
-    db.collection('galletas').doc(id).collection('coms').doc('1').get().then(doc => {
+    db.collection('cookies/comments/'+id).doc('1').get().then(doc => {
         if (doc.exists) {
             comList = doc.data().coms;
             comCount = doc.data().comCount;
@@ -373,7 +360,7 @@ function createCom(comDat) {
     a.classList.add('text-decoration-none');
     a.classList.add('text-dark');
     a.href = '../../ver-perfil?user=' + comDat.authKey;
-    a.innerHTML = '<img src="' + comDat.pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`../../img/nopp.png`">' + comDat.from;
+    a.innerHTML = '<img src="' + comDat.pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`https://via.placeholder.com/20.webp`">' + comDat.from;
     usr.appendChild(a);
     head.appendChild(usr);
     let rprt = document.createElement('div');
@@ -457,7 +444,7 @@ function createCom(comDat) {
         ra.classList.add('text-decoration-none');
         ra.classList.add('text-dark');
         ra.href = '../../ver-perfil?user=' + comDat.reps[i].authKey;
-        ra.innerHTML = '<img src="' + comDat.reps[i].pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`../../img/nopp.png`">' + comDat.reps[i].from;
+        ra.innerHTML = '<img src="' + comDat.reps[i].pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`https://via.placeholder.com/20.webp`">' + comDat.reps[i].from;
         rusr.appendChild(ra);
         rHd.appendChild(rusr);
         let rrprt = document.createElement('div');

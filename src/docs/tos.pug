@@ -1,5 +1,8 @@
 extends ../layouts/main
 
+block lang
+  - const LANG = "es";
+
 block missHead
   meta(name='description' content='Términos de servicio de Science Cookies')
   link(rel='canonical' href=HOST+'/tos')
@@ -15,7 +18,7 @@ block content
   p Última actualización: 3 de agosto del 2020
   p
     | Lea estos Términos de servicio detenidamente antes de utilizar el Sitio 
-    a.text-warning(href='https://sciencecookies.net') https://sciencecookies.net
+    a.text-warning(href=HOST)= HOST
     |  operado por Science Cookies ("nosotros", "nosotros" o "nuestro").
   p
     | Su acceso y uso del Servicio está condicionado a su aceptación y cumplimiento de estos términos. Estos Términos se aplican a todos los visitantes, usuarios y otras personas que acceden o utilizan el Servicio.
@@ -34,7 +37,7 @@ block content
     li
       strong Sitio 
       | se refiere a Science Cookies, accesible desde 
-      a.text-warning(href='htpps://sciencecookies.net') https://sciencecookies.net.
+      a.text-warning(href=HOST) #{HOST}.
     li
       strong
         | Términos (referido al mismo como "Términos de Servicio", "los Términos" o " estos Términos")
