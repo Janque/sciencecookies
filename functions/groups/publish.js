@@ -344,7 +344,7 @@ exports.cookiesNewsletter = functions.region('us-east1').firestore.document('coo
                                         </tbody>
                                         <tbody>
                                         <tr>
-                                            <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">Autor(es):`+ dat.authrs + `</td>
+                                            <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">Autor(es):`+ dat.authors + `</td>
                                         </tr>
                                         <tr>
                                             <td height="10" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
@@ -360,7 +360,7 @@ exports.cookiesNewsletter = functions.region('us-east1').firestore.document('coo
                                         </tbody>
                                         <tbody>
                                             <tr>
-                                            <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">`+ dat.descrip + `</td>
+                                            <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">`+ dat.description+ `</td>
                                             </tr>
                                             <tr>
                                             <td height="20" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
@@ -773,7 +773,7 @@ exports.cookiesNewsletter = functions.region('us-east1').firestore.document('coo
                                             </tbody>
                                             <tbody>
                                             <tr>
-                                                <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">Autor(es):`+ dat.authrs + `</td>
+                                                <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">Autor(es):`+ dat.authors + `</td>
                                             </tr>
                                             <tr>
                                                 <td height="10" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
@@ -789,7 +789,7 @@ exports.cookiesNewsletter = functions.region('us-east1').firestore.document('coo
                                             </tbody>
                                             <tbody>
                                                 <tr>
-                                                <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">`+ dat.descrip + `</td>
+                                                <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">`+ dat.description+ `</td>
                                                 </tr>
                                                 <tr>
                                                 <td height="20" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
