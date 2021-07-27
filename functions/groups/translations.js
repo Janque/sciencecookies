@@ -98,12 +98,12 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
                 }
                 event.vals[i].label = option.label;
             }
-            if (event.vals["0"].val == event.valForSub) {
+            if (event.vals[i].val == option.valForSub) {
                 for (let j = 0; j < calConfig[req.target][event.typeIdx].options[i].sub.length; j++) {
                     const opt = calConfig[req.target][event.typeIdx].options[i].sub[j];
                     if (opt.type == "select") {
-                        event.vals[i + "-" + j] = option.options[
-                            calConfig[req.from][event.typeIdx].options[i].options
+                        event.vals[i + "-" + j] = opt.options[
+                            calConfig[selLang.value][event.typeIdx].options[i].sub[j].options
                                 .map(function (e) {
                                     return e.val;
                                 })
@@ -130,7 +130,7 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
         } else {
             event.description = event.name = 0;
         }
-        
+
         event.description = calConfig[req.target][event.typeIdx].text[event.description];
         event.name = calConfig[req.target][event.typeIdx].titleTxt[event.name];
         for (const [vKey, vVal] of Object.entries(event.vals)) {

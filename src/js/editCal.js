@@ -255,7 +255,7 @@ function saveDoc() {
                 sentMail: docDat.sentMail,
                 revised: docDat.revised,
                 translations: docDat.translations,
-                timePrev: docDat.timePrev| null,
+                timePrev: docDat.timePrev | null,
             }
             syncUpt.translations[lang] = docDat.url;
             promises.push(db.collection('calendars/langs/' + l).doc(docId).update(syncUpt));
@@ -734,12 +734,12 @@ function render() {
                         }
                         event.vals[i].label = option.label;
                     }
-                    if (event.vals["0"].val == event.valForSub) {
+                    if (event.vals[i].val == option.valForSub) {
                         for (let j = 0; j < calConfig[lang][event.typeIdx].options[i].sub.length; j++) {
                             const opt = calConfig[lang][event.typeIdx].options[i].sub[j];
                             if (opt.type == "select") {
-                                event.vals[i + "-" + j] = option.options[
-                                    calConfig[selLang.value][event.typeIdx].options[i].options
+                                event.vals[i + "-" + j] = opt.options[
+                                    calConfig[selLang.value][event.typeIdx].options[i].sub[j].options
                                         .map(function (e) {
                                             return e.val;
                                         })
