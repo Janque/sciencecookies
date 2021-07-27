@@ -1388,7 +1388,7 @@ $('#mdlPublish').on('show.bs.modal', e => {
         if (docDat.revised[l] && !docDat.revised[l].includes(uid)) rev++;
         if (rev >= 2) revLangs++;
     });
-    if (revLangs == langs.length) {
+    if (revLangs < langs.length) {
         classes(document.getElementById('btnCnfPublish'), "d-none");
         document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
         document.getElementById('frmPublish').classList.add('d-none');
