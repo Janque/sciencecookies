@@ -103,7 +103,7 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
                     const opt = calConfig[req.target][event.typeIdx].options[i].sub[j];
                     if (opt.type == "select") {
                         event.vals[i + "-" + j] = opt.options[
-                            calConfig[selLang.value][event.typeIdx].options[i].sub[j].options
+                            calConfig[req.target][event.typeIdx].options[i].sub[j].options
                                 .map(function (e) {
                                     return e.val;
                                 })
