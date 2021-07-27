@@ -50,14 +50,25 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-sc
                         | Español 
                         i.fas.fa-globe
             else
-                if LANG=="es"
-                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/'+NavLinks["en"][site]+'"+location.search')
-                        | English 
+                //-if site!="cookie" && site!="cal" && site!="allCalsM" && site!="allCalsY" && site!="cook" && site!="cookTri"
+                if site!="cookie" && site!="cal"
+                    if LANG=="es"
+                        button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/'+NavLinks["en"][site]+'"+location.search')
+                            | English 
+                            i.fas.fa-globe
+                    else if LANG=="en"
+                        button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/'+NavLinks["es"][site]+'"+location.search')
+                            | Español 
+                            i.fas.fa-globe
+                else
+                    if LANG=="es"
+                        - lTxt="English"
+                    else if LANG=="en"
+                        - lTxt="Español"
+                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+transLink+'"+location.search')
+                        | #{lTxt}
                         i.fas.fa-globe
-                else if LANG=="en"
-                    button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/'+NavLinks["es"][site]+'"+location.search')
-                        | Español 
-                        i.fas.fa-globe
+
             .dropdown.mr-2.dropleft
                 button#usrDrpdwn.btn.btn-dark.dropdown-toggle.p-2(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                     i#icnUsr.fas

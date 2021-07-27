@@ -15,7 +15,7 @@ function renderCookie(req, res, lang) {
         res.redirect('http://sciencecookies.net/404');
         return;
     } else {
-        db.collection('cookies/langs/'+lang).where('file', '==', req.params.file).limit(1).get().then(snap => {
+        db.collection('cookies/langs/' + lang).where('file', '==', req.params.file).limit(1).get().then(snap => {
             if (snap.empty) {
                 console.log('snap.empty');
                 res.redirect('https://sciencecookies.net/404');
@@ -40,6 +40,8 @@ function renderCookie(req, res, lang) {
                 java += `window.cTitle = '${dat.title}';\n`;
                 java += `window.cRef = '${doc.id}/${dat.file}/';\n`;
 
+                otlang = 'es';
+                if (lang == 'es') otlang = 'en';
                 return res.render('galleta', {
                     "published": dat.published.toDate(),
                     "dledit": dat.dledit,
@@ -51,7 +53,8 @@ function renderCookie(req, res, lang) {
                     "picUrl": dat.picUrl,
                     "content": dat.cont,
                     "java": java,
-                    "setLang": lang
+                    "setLang": lang,
+                    "transLink": dat.translations[otlang]
                 });
             });
         }).catch(err => console.log(err));
