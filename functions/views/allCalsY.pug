@@ -2,7 +2,7 @@ extends layouts/main
 
 block lang 
   - const LANG=setLang
-  
+
 block missHead
   if LANG=="es"
     meta(name='description' content="Aquí puedes encontrar todos los calendarios astronómicos.")
@@ -17,7 +17,7 @@ block missHead
   meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG]["cal"])
 
   title Science Cookies - #{Buttons[LANG]["cal"]}
-  meta(property="og:title" content='Science Cookies - #{Buttons[LANG]["cal"]}')
+  meta(property="og:title" content='Science Cookies - '+Buttons[LANG]["cal"])
 
   - const site="allCalsY";
 

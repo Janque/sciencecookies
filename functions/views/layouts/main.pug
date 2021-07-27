@@ -23,7 +23,7 @@ html(lang=LANG)
           meta(property="og:title" content='Science Cookies - Science articles with chocolate chips')
       else 
         title Science Cookies - #{Buttons[LANG][site]}
-        meta(property="og:title" content='Science Cookies - #{Buttons[LANG][site]}')
+        meta(property="og:title" content='Science Cookies - '+Buttons[LANG][site])
 
     script.
       window.site = "#{site}";
