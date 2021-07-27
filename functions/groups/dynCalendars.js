@@ -124,6 +124,8 @@ function renderCal(req, res, lang) {
             java += '};\n';
             java += `window.globID="${doc.id}"\n`;
 
+            otlang = 'es';
+            if (lang == 'es') otlang = 'en';
             res.render('calendario', {
                 "descriptionShort": dat.descriptionShort,
                 "description": dat.description,
@@ -139,7 +141,8 @@ function renderCal(req, res, lang) {
                 "nextCal": dat.nextCal,
                 "priorCal": dat.priorCal,
                 "java": java,
-                "setLang": lang
+                "setLang": lang,
+                "transLink": dat.translations[otlang]
             });
             return;
         }).catch(err => console.log(err));
