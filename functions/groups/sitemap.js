@@ -25,19 +25,19 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
     let urlsEs = [];
     let urlsEn = [];
     let archUrlsEs = [{
-        loc: 'https://sciencecookies.net/archivo/',
+        loc: 'https://sciencecookies.net/galletas/',
         alternate: {
-            "es": "https://sciencecookies.net/archivo/",
-            "en": "https://sciencecookies.net/archive/"
+            "es": "https://sciencecookies.net/galletas/",
+            "en": "https://sciencecookies.net/cookies/"
         },
         priority: '0.7',
         lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
     }];
     let archUrlsEn = [{
-        loc: 'https://sciencecookies.net/archive/',
+        loc: 'https://sciencecookies.net/cookies/',
         alternate: {
-            "es": "https://sciencecookies.net/archivo/",
-            "en": "https://sciencecookies.net/archive/"
+            "es": "https://sciencecookies.net/galletas/",
+            "en": "https://sciencecookies.net/cookies/"
         },
         priority: '0.7',
         lastmod: admin.firestore.Timestamp.now().toDate().toISOString()
@@ -61,10 +61,10 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
                 tri = ltri;
                 year = lyear;
                 archUrlsEs.push({
-                    loc: 'https://sciencecookies.net/archivo/' + year + '/' + tri + '/',
+                    loc: 'https://sciencecookies.net/galletas/' + year + '/' + tri + '/',
                     alternate: {
-                        "es": "https://sciencecookies.net/archivo/" + year + "/" + tri + "/",
-                        "en": "https://sciencecookies.net/archive/" + year + "/" + getTri(dat.published.toDate().getMonth(), "en") + "/"
+                        "es": "https://sciencecookies.net/galletas/" + year + "/" + tri + "/",
+                        "en": "https://sciencecookies.net/cookies/" + year + "/" + getTri(dat.published.toDate().getMonth(), "en") + "/"
                     },
                     priority: '0.6'
                 });
@@ -90,10 +90,10 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
                 tri = ltri;
                 year = lyear;
                 archUrlsEn.push({
-                    loc: 'https://sciencecookies.net/archive/' + year + '/' + tri + '/',
+                    loc: 'https://sciencecookies.net/cookies/' + year + '/' + tri + '/',
                     alternate: {
-                        "es": "https://sciencecookies.net/archivo/" + year + "/" + tri + "/",
-                        "en": "https://sciencecookies.net/archive/" + year + "/" + getTri(dat.published.toDate().getMonth(), "es") + "/"
+                        "es": "https://sciencecookies.net/galletas/" + year + "/" + tri + "/",
+                        "en": "https://sciencecookies.net/cookies/" + year + "/" + getTri(dat.published.toDate().getMonth(), "es") + "/"
                     },
                     priority: '0.6'
                 });
