@@ -78,6 +78,6 @@ emulators
 *Key.json
 
 # Public folder
-public/*
-functions/views/includes*
-functions/views/layouts*
+public*
+functions/views/includes/*
+functions/views/layouts/*
