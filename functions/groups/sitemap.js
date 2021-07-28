@@ -4,8 +4,11 @@ const db = admin.firestore();
 
 //Update sitemap
 exports.updateSitemap = functions.region('us-east1').firestore.document('cookies/langs/es/{cookie}').onUpdate((change, context) => {
-//exports.updateSitemap = functions.region('us-central1').https.onRequest((req, res) => {
-    if (!change.after.data().public || change.before.data().public) return;
+    //exports.updateSitemap = functions.region('us-central1').https.onRequest((req, res) => {
+    if (!change.after.data().public || change.before.data().public) {
+        functions.logger.log('No update');
+        return null;
+    }
     function getTri(m, l) {
         if (l == "es") {
             if (m <= 2) return 'ene-mar';
@@ -107,18 +110,18 @@ exports.updateSitemap = functions.region('us-east1').firestore.document('cookies
             }
         });
     }).then(() => {
-        console.log('Sitemap updated');
+        functions.logger.log('Sitemap updated');
         //res.send('Successful');
-        return;
+        return null;
     }).catch(err => {
-        console.log('Failed to update sitemap: ', err);
-        return;
+        functions.logger.log('Failed to update sitemap: ', err);
+        return null;
     });
 });
 
 //Update sitemap
 exports.updateCalSitemap = functions.region('us-east1').firestore.document('calendars/langs/es/{calendar}').onUpdate((change, context) => {
-//exports.updateCalSitemap = functions.region('us-central1').https.onRequest((req, res) => {
+    //exports.updateCalSitemap = functions.region('us-central1').https.onRequest((req, res) => {
     if (!change.after.data().public || change.before.data().public) return;
     let urlsEs = [{
         loc: 'https://sciencecookies.net/calendario-astronomico/',
