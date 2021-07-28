@@ -8,7 +8,7 @@ name: Deploy to Firebase Hosting on PR
 env:
   GIT_USERNAME: ${{ github.actor }}
   GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-  FIX_COMMIT_MESSAGE: Fixed /hook_tools/lint.py lints
+  FIX_COMMIT_MESSAGE: Built public/ & functions/views/
 
 jobs:
   build_public:
@@ -19,7 +19,8 @@ jobs:
         with:
           node-version: "14.x"
           registry-url: "https://registry.npmjs.org"
-      - run: |
+      - name: Build with parcel
+        run: |
           git show ${{ github.event.pull_request.head.sha }} --format=%s --no-patch --no-color
 
           if [[ "$(git show ${{ github.event.pull_request.head.sha }} --format=%s --no-patch --no-color)" == "${{ env.FIX_COMMIT_MESSAGE }}" ]]; then
@@ -29,23 +30,13 @@ jobs:
 
           npm install
           ./scripts/parcelBuild.sh
-
-          # Authenticate with GitHub.
-          git config --global user.name "${{ env.GIT_USERNAME }}"
-          git config --global user.email "${{ env.GIT_USERNAME }}@users.noreply.github.com"
-          cat <<- EOF > $HOME/.netrc
-          machine github.com
-          login ${{ env.GIT_USERNAME }}
-          password ${{ env.GIT_PASSWORD }}
-          machine api.github.com
-          login ${{ env.GIT_USERNAME }}
-          password ${{ env.GIT_PASSWORD }}
-          EOF
-          chmod 600 $HOME/.netrc
-
-          # Now push that commit to the source branch.
-          git commit -am "${{ env.FIX_COMMIT_MESSAGE }}"
-          git push origin HEAD:${{ github.head_ref }}
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: '["public","functions/views"]'
+          author_name: ${{ GIT_USERNAME }}
+          default_author: github_actions
+          message: "${{ env.FIX_COMMIT_MESSAGE }}"
 
   build_and_preview:
     needs: build_public
