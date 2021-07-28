@@ -3,7 +3,7 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 
 //Update sitemap
-exports.updateSitemap = functions.region('us-east1').firestore.document('cookies/lang/es/{cookie}').onUpdate((change, context) => {
+exports.updateSitemap = functions.region('us-east1').firestore.document('cookies/langs/es/{cookie}').onUpdate((change, context) => {
 //exports.updateSitemap = functions.region('us-central1').https.onRequest((req, res) => {
     if (!change.after.data().public || change.before.data().public) return;
     function getTri(m, l) {
