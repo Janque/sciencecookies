@@ -6,8 +6,6 @@ name: Deploy to Firebase Hosting on PR
 "on": pull_request
 
 env:
-  GIT_USERNAME: ${{ github.actor }}
-  GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
   FIX_COMMIT_MESSAGE: Built public/ & functions/views/
 
 jobs:
@@ -34,7 +32,7 @@ jobs:
         uses: EndBug/add-and-commit@v7
         with:
           add: '["public","functions/views"]'
-          author_name: ${{ GIT_USERNAME }}
+          author_name: ${{ github.actor }}
           default_author: github_actions
           message: "${{ env.FIX_COMMIT_MESSAGE }}"
 
