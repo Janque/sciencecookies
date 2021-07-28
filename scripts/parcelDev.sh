@@ -1,8 +1,8 @@
 rm functions/views/includes/*
-cp -r src/includes/* functions/views/includes
+cp -r src/includes/* functions/views/includes/
 
 rm functions/views/layouts/*
-cp -r src/layouts/* functions/views/layouts
+cp -r src/layouts/* functions/views/layouts/
 
 rm -r public
 
