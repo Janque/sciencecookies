@@ -13,7 +13,7 @@ jobs:
           node-version: "14.x"
           registry-url: "https://registry.npmjs.org"
       - run: npm install
-      - run: ./../../scripts/parcelBuild.sh
+      - run: ./scripts/parcelBuild.sh
   build_and_preview:
     needs: build_public
     runs-on: ubuntu-latest
