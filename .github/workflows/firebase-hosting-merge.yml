@@ -6,6 +6,11 @@ name: Deploy to Firebase Hosting on merge
   push:
     branches:
       - main
+env:
+  GIT_USERNAME: ${{ github.actor }}
+  GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+  FIX_COMMIT_MESSAGE: Fixed /hook_tools/lint.py lints
+
 jobs:
   build_public:
     runs-on: ubuntu-latest
@@ -15,8 +20,34 @@ jobs:
         with:
           node-version: "14.x"
           registry-url: "https://registry.npmjs.org"
-      - run: npm install
-      - run: ./scripts/parcelBuild.sh
+      - run: |
+          git show ${{ github.event.pull_request.head.sha }} --format=%s --no-patch --no-color
+
+          if [[ "$(git show ${{ github.event.pull_request.head.sha }} --format=%s --no-patch --no-color)" == "${{ env.FIX_COMMIT_MESSAGE }}" ]]; then
+            # The previous commit is a Build.
+            exit 0
+          fi
+
+          npm install
+          ./scripts/parcelBuild.sh
+
+          # Authenticate with GitHub.
+          git config --global user.name "${{ env.GIT_USERNAME }}"
+          git config --global user.email "${{ env.GIT_USERNAME }}@users.noreply.github.com"
+          cat <<- EOF > $HOME/.netrc
+          machine github.com
+          login ${{ env.GIT_USERNAME }}
+          password ${{ env.GIT_PASSWORD }}
+          machine api.github.com
+          login ${{ env.GIT_USERNAME }}
+          password ${{ env.GIT_PASSWORD }}
+          EOF
+          chmod 600 $HOME/.netrc
+
+          # Now push that commit to the source branch.
+          git commit -am "${{ env.FIX_COMMIT_MESSAGE }}"
+          git push origin HEAD:${{ github.head_ref }}
+          
   build_and_deploy:
     needs: build_public
     runs-on: ubuntu-latest
