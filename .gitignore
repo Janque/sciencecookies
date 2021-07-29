@@ -79,6 +79,5 @@ emulators
 
 # Public folder
 public*
-*.css.map
-functions/views/includes/*
-functions/views/layouts/*
+functions/views/includes*
+functions/views/layouts*
