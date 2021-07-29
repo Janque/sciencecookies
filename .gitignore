@@ -67,6 +67,7 @@ node_modules/
 .runtimeconfig.json
 *.DS_Store
 
+# parcel cache
 .cache
 .parcel-cache
 
@@ -75,3 +76,8 @@ emulators
 
 # GCP keys
 *Key.json
+
+# Public folder
+public*
+functions/views/includes*
+functions/views/layouts*
