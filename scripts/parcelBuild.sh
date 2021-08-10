@@ -21,4 +21,4 @@ fi
 rm -r public
 
 
-npx parcel build src/*.pug src/localized/en_ALL/*.pug src/docs/*.pug src/styles/*.scss src/js/*.js src/img/scmed/* src/img/NLogoHalignT.svg src/img/logoT.svg src/img/wlogoT.svg src/publicidad/* --dist-dir public
+npx parcel build src/*.pug src/localized/en_ALL/*.pug src/docs/*.pug src/styles/*.scss src/js/*.js src/img/scmed/* src/img/NLogoHalignT.svg src/img/logoT.svg src/img/wlogoT.svg src/publicidad/* src/vendor/bootstrap/bootstrap.scss src/vendor/bootstrap/bootstrap.bundle.min.js src/vendor/font-awesome/css/all.min.css src/vendor/font-awesome/webfonts/* --dist-dir public

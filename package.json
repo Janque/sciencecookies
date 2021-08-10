@@ -8,11 +8,11 @@
     "fireStart": "./scripts/fireStart.sh"
   },
   "devDependencies": {
+    "@parcel/resolver-glob": "^2.0.0-nightly.2338",
     "@parcel/transformer-pug": "^2.0.0-beta.3.1",
     "@parcel/transformer-sass": "^2.0.0-beta.3.1",
     "parcel": "^2.0.0-beta.3.1"
   },
-  "dependencies": {},
   "browserslist": [
     "last 3 and_chr versions",
     "last 3 chrome versions",
