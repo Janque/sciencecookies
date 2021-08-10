@@ -1,6 +1,7 @@
+@import "types.scss";
+
 body {
-  font-family: "Raleway", sans-serif;
-  font-weight: 600;
+  font-family: raleway-semi-bold, sans-serif;
 }
 
 .bg-rebecca {
@@ -13,8 +14,9 @@ body {
   background-color: #6c91c2;
 }
 
+b,
 strong {
-  font-weight: 900;
+  font-family: raleway-bold;
   color: #f8f9fa;
 }
 
@@ -65,7 +67,7 @@ strong {
   vertical-align: middle;
   background-color: transparent;
   padding: auto 0.75rem;
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
 @media (max-width: 991px) {
   .w-nsm-100 {
