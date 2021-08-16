@@ -1,8 +1,4 @@
 import firebase from 'firebase/compat/app';
-import "firebase/compat/analytics";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
-import "firebase/compat/functions";
 
 var firebaseConfig = {
     apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
@@ -14,12 +10,16 @@ var firebaseConfig = {
     appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
     measurementId: "G-1MYVREMBFV"
 };
-
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig)
 }
 
-firebase.analytics();
+import { getAnalytics } from "firebase/analytics";
+const analytics = getAnalytics();
+
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import "firebase/compat/functions";
 
 //Init database
 window.db = firebase.firestore();
