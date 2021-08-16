@@ -1,6 +1,9 @@
 import { getDatabase, ref, set, increment, onValue, runTransaction, child } from "firebase/database";
 const RTDB = getDatabase();
 
+import { getFunctions, httpsCallable } from "firebase/functions";
+const FUNCTIONS = getFunctions();
+
 var cookRef;
 var replying = -1;
 
@@ -45,7 +48,7 @@ window.loaded = function loaded() {
         if (actSsn) sendRep();
     });
     function sendNwCom() {
-        var addComment = firebase.app().functions('us-east1').httpsCallable('addComment');
+        const addComment = httpsCallable(FUNCTIONS, 'cookieFeatures-addComment');
         let comFrm = {
             id: id,
             from: displayName,

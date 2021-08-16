@@ -1,9 +1,12 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 const AUTH = getAuth();
 
+import { getFunctions, httpsCallable } from "firebase/functions";
+const FUNCTIONS = getFunctions();
+
 var uid;
 onAuthStateChanged(AUTH, (user) => {
-    let modAuth = firebase.app().functions('us-east1').httpsCallable('publish-modAuth');
+    const modAuth = httpsCallable(FUNCTIONS, 'publish-modAuth');
     if (user) {
         uid = user.uid;
         modAuth(uid).then(res => {

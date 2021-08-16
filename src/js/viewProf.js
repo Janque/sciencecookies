@@ -1,3 +1,6 @@
+import { getFunctions, httpsCallable } from "firebase/functions";
+const FUNCTIONS = getFunctions();
+
 //Global
 var points, rank, gotFL = false;
 var favn, favl, likedn, likedl;
@@ -54,7 +57,7 @@ function shwCrds(t, u) {
     }
     if (t == null || favn == null) t = 'prof';
     if (gotFL == false) {
-        let getUserPublic = firebase.app().functions('us-east1').httpsCallable('getUserPublic');
+        const getUserPublic = httpsCallable(FUNCTIONS, 'users-getUserPublic');
         getUserPublic(u).then(userPublic => {
             userPublic = userPublic.data;
             if (userPublic == null) {

@@ -21,7 +21,10 @@ import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from
 const AUTH = getAuth();
 
 import "firebase/compat/firestore";
-import "firebase/compat/functions";
+
+import { getFunctions, httpsCallable } from "firebase/functions";
+//const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
+const FUNCTIONS = getFunctions();
 
 //Init database
 window.db = firebase.firestore();
@@ -90,7 +93,7 @@ window.author = "";
 window.mod = false;
 window.pubID;
 onAuthStateChanged(AUTH, (user) => {
-    let modAuth = firebase.app().functions('us-east1').httpsCallable('publish-modAuth');
+    const modAuth = httpsCallable(FUNCTIONS, 'publish-modAuth');
     if (user) {
         displayName = user.displayName;
         email = user.email;
@@ -104,6 +107,7 @@ onAuthStateChanged(AUTH, (user) => {
                 if (!mod) window.location.href = 'https://sciencecookies.net';
             }
             shwSsnBtns(true);
+            console.log(res.data);
         }).catch(err => console.log(err));
     } else {
         if (site == "profile" || site == "contact" || site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal" || site == "mailPrev") {

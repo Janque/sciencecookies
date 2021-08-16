@@ -1,6 +1,9 @@
 import { getDatabase, ref, set } from "firebase/database";
 const RTDB = getDatabase();
 
+import { getFunctions, httpsCallable } from "firebase/functions";
+const FUNCTIONS = getFunctions();
+
 var store = firebase.storage();
 
 let docDat, docId, docRef;
@@ -15,7 +18,7 @@ let newMedSrc = null;
 let keywords = [];
 
 async function translateSimple(text, from, target) {
-    let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateSimple');
+    var translate = httpsCallable(FUNCTIONS, 'translations-translateSimple');
     let res = await translate({
         text: text,
         from: from,
@@ -83,7 +86,7 @@ window.loaded = function loaded() {
 
     fillTrans();
     function translateFrm() {
-        let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateFullCookie');
+        const translate = httpsCallable(FUNCTIONS, 'translations-translateFullCookie');
         return translate({
             docId: docId,
             from: document.getElementById('inTransFrom').value,
