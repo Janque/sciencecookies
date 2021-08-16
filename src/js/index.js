@@ -1,3 +1,6 @@
+import { getDatabase, ref, set, increment } from "firebase/database";
+const RTDB = getDatabase();
+
 var catnmb;
 const previewLim = 20;
 
@@ -69,30 +72,11 @@ function initSrch(stAf) {
         }
     }
     shwSrch();
-    const promises = [];
-    let notSrchd = [], allP = null;
     for (let i = 0; i < kywords.length; i++) {
         let itm = kywords[i];
         if (itm == '' || itm == ' ') continue;
-        const p = firebase.database().ref('searchQs/' + itm).transaction(search => {
-            if (search) {
-                notSrchd.splice(notSrchd.indexOf(itm), 1);
-                search.count++;
-            } else {
-                notSrchd.push(itm);
-            }
-            return search;
-        });
-        promises.push(p);
+        set(ref(RTDB, 'searchQs/' + itm + '/count'), increment(1));
     }
-    allP = Promise.all(promises);
-    allP.then(() => {
-        notSrchd.forEach((itm) => {
-            firebase.database().ref('searchQs/' + itm).set({
-                count: 1
-            });
-        })
-    }).catch(err => { console.log('err') });
 }
 function shwSrch() {
     document.getElementById('cookiesCont').innerHTML = "";

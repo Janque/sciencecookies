@@ -1,3 +1,6 @@
+import { getDatabase, ref, set, increment } from "firebase/database";
+const RTDB = getDatabase();
+
 window.eventToShow = null;
 window.showEvent = function showEvent() {
     eventKeys.forEach(key => {
@@ -28,10 +31,5 @@ document.getElementById('btnNextEve').onclick = () => {
 };
 
 window.loaded = function loaded() {
-    firebase.database().ref('calendarios/' + globID).transaction(cal => {
-        if (cal) {
-            cal.pop++;
-        }
-        return cal;
-    });
+    set(ref(RTDB, 'calendarios/' + globID + '/pop'), increment(1));
 }

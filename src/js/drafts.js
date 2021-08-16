@@ -1,4 +1,5 @@
-var rtDB = firebase.database();
+import { getDatabase, ref, set, get, increment } from "firebase/database";
+const RTDB = getDatabase();
 
 window.loaded = function loaded() {
     initSrch(false);
@@ -34,88 +35,87 @@ window.loaded = function loaded() {
                 document.getElementById('btnCanPlus1').setAttribute('disabled', 'true');
                 document.getElementById('barCont').classList.remove('d-none');
                 setprog('3');
+
                 let id;
-                rtDB.ref('tdaysID').transaction(today => {
-                    if (today) {
-                        today.last++;
-                        id = today.today;
-                        if (today.last < 10) id += '0';
-                        id += today.last;
+                get(ref(RTBD, 'tdaysID')).then((snap) => {
+                    var today = snap.val();
+                    today.last++;
+                    id = today.today;
+                    if (today.last < 10) id += '0';
+                    id += today.last;
+
+                    set(ref(RTBD, 'tdaysID/last'), increment(1));
+                    setprog('52');
+
+                    const promises = [];
+                    langs.forEach((l, i) => {
+                        setprog(30 / langs.length * i);
+                        promises.push(db.collection('cookies/langs/' + l).doc(id).set({
+                            authors: [author],
+                            cont: [
+                                {
+                                    type: "head",
+                                    title: title,
+                                    author: [author]
+                                },
+                                {
+                                    type: "ref",
+                                    ref: []
+                                }
+                            ],
+                            media: [],
+                            picUrl: "",
+                            title: title,
+                            description: "",
+                            file: file,
+                            owner: uid,
+                            java: "",
+                            revised: {},
+                            notify: false,
+                            public: false,
+                            beenPublic: false,
+                            dledit: false,
+                            created: new firebase.firestore.Timestamp.now(),
+                            ledit: new firebase.firestore.Timestamp.now(),
+                            published: new firebase.firestore.Timestamp.now(),
+                            pop: 0,
+                            likes: 0,
+                            favs: 0,
+                            url: "",
+                            fixedCats: [],
+                            cats: [],
+                            translations: {
+                                es: file
+                            }
+                        }));
+                    });
+                    Promise.all(promises).then(() => {
+                        setprog('90');
+                        setTimeout(function () {
+                            setprog('100');
+                            document.getElementById('bar').classList.add('bg-success');
+                            if (lang == "es") {
+                                alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
+                            } else if (lang == "en") {
+                                alertTop(`Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-scckie" href="../edit?id=${id}">click here</a>.`, 1, 'alrtPlusContainer');
+                            }
+                        }, 1000);
+                        setTimeout(function () {
+                            if (lang == "es") {
+                                window.location.href = '../editar?id=' + id;
+                            } else if (lang == "en") {
+                                window.location.href = '../edit?id=' + id;
+                            }
+                        }, 3000);
+                    }).catch(err => console.log(err));
+                }).catch((err) => {
+                    setprog('0');
+                    if (lang == "es") {
+                        alertTop("<strong>Ocurrió un error: " + err + ".</strong><br>LLamar a Javier.", 0, 'alrtPlusContainer');
+                    } else if (lang == "en") {
+                        alertTop("<strong>There has been an error: " + err + ".</strong><br>Call Javier.", 0, 'alrtPlusContainer');
                     }
-                    return today;
-                }, err => {
-                    if (err) {
-                        setprog('0');
-                        if (lang == "es") {
-                            alertTop("<strong>Ocurrió un error: " + err + ".</strong><br>LLamar a Javier.", 0, 'alrtPlusContainer');
-                        } else if (lang == "en") {
-                            alertTop("<strong>There has been an error: " + err + ".</strong><br>Call Javier.", 0, 'alrtPlusContainer');
-                        }
-                        console.log(err);
-                    } else {
-                        setprog('52');
-                        const promises = [];
-                        langs.forEach((l, i) => {
-                            setprog(30 / langs.length * i);
-                            promises.push(db.collection('cookies/langs/' + l).doc(id).set({
-                                authors: [author],
-                                cont: [
-                                    {
-                                        type: "head",
-                                        title: title,
-                                        author: [author]
-                                    },
-                                    {
-                                        type: "ref",
-                                        ref: []
-                                    }
-                                ],
-                                media: [],
-                                picUrl: "",
-                                title: title,
-                                description: "",
-                                file: file,
-                                owner: uid,
-                                java: "",
-                                revised: {},
-                                notify: false,
-                                public: false,
-                                beenPublic: false,
-                                dledit: false,
-                                created: new firebase.firestore.Timestamp.now(),
-                                ledit: new firebase.firestore.Timestamp.now(),
-                                published: new firebase.firestore.Timestamp.now(),
-                                pop: 0,
-                                likes: 0,
-                                favs: 0,
-                                url: "",
-                                fixedCats: [],
-                                cats: [],
-                                translations: {
-                                    es: file
-                                }
-                            }));
-                        });
-                        Promise.all(promises).then(() => {
-                            setprog('90');
-                            setTimeout(function () {
-                                setprog('100');
-                                document.getElementById('bar').classList.add('bg-success');
-                                if (lang == "es") {
-                                    alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
-                                } else if (lang == "en") {
-                                    alertTop(`Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-scckie" href="../edit?id=${id}">click here</a>.`, 1, 'alrtPlusContainer');
-                                }
-                            }, 1000);
-                            setTimeout(function () {
-                                if (lang == "es") {
-                                    window.location.href = '../editar?id=' + id;
-                                } else if (lang == "en") {
-                                    window.location.href = '../edit?id=' + id;
-                                }
-                            }, 3000);
-                        }).catch(err => console.log(err));
-                    }
+                    console.log(err);
                 });
             }
         }).catch(err => console.log(err));

@@ -1,3 +1,26 @@
+import firebase from 'firebase/compat/app';
+import "firebase/compat/analytics";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import "firebase/compat/functions";
+
+var firebaseConfig = {
+    apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
+    authDomain: "sciencecookies.net",
+    databaseURL: "https://science-cookies.firebaseio.com",
+    projectId: "science-cookies",
+    storageBucket: "science-cookies.appspot.com",
+    messagingSenderId: "906770471712",
+    appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
+    measurementId: "G-1MYVREMBFV"
+};
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig)
+}
+
+firebase.analytics();
+
 //Init database
 window.db = firebase.firestore();
 
@@ -9,8 +32,8 @@ window.cookiesFSRef = db.collection('cookies/langs/' + lang);
 window.calendarsFSRef = db.collection('calendars/langs/' + lang);
 
 window.urlSrch = '';
-var actSsn = false;
-var mobile = false;
+window.actSsn = false;
+window.mobile = false;
 
 window.classes = function classes(elm, cls) {
     cls = cls.split(' ');
@@ -63,6 +86,7 @@ window.photoURL;
 window.uid;
 window.author = "";
 window.mod = false;
+window.pubID;
 firebase.auth().onAuthStateChanged(function (user) {
     let modAuth = firebase.app().functions('us-east1').httpsCallable('publish-modAuth');
     if (user) {
@@ -173,7 +197,7 @@ document.getElementById("btnLgO").onclick = function () {
         }
     });
 };
-//Autenticaciones
+/*/Autenticaciones
 var uiConfig = {
     signInSuccessUrl: window.location,
     signInOptions: [
@@ -193,7 +217,7 @@ var uiConfig = {
 };
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
 ui.start('#firebaseui-auth-container', uiConfig);
-
+/*/
 
 function checkMobile() {
     let check = false;
@@ -206,7 +230,8 @@ window.addEventListener("load", function () {
     url = new URL(document.location.href);
     urlSrch = new URLSearchParams(location.search);
 
-    if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
+    //if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
+
     if (urlSrch.get('mode') == 'select') $('#mdlRgstr').modal('show');
     shwRecom();
     shareBtns();
@@ -222,6 +247,31 @@ window.addEventListener("load", function () {
         loaded();
     }).catch(err => { console.log(err) });
 });
+
+window.hh = function hh() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth()
+        .signInWithPopup(provider)
+        .then((result) => {
+            /** @type {firebase.auth.OAuthCredential} */
+            var credential = result.credential;
+
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            var token = credential.accessToken;
+            // The signed-in user info.
+            var user = result.user;
+            // ...
+        }).catch((error) => {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+            // ...
+        });
+}
 
 function shwRecom() {
     cookiesFSRef.where('public', '==', true).orderBy('published', 'desc').limit(1).get().then(snap => {

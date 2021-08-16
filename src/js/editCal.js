@@ -1,5 +1,7 @@
+import { getDatabase, ref, set} from "firebase/database";
+const RTDB = getDatabase();
+
 var store = firebase.storage();
-var rtDb = firebase.database();
 
 let docDat, docId, docRef, calConfig;
 let lastSave = Date.now(), saved = false;
@@ -972,6 +974,8 @@ document.getElementById('btnAprove').onclick = function () {
 };
 
 function newCal() {
+    return;
+    //@#Move to CF
     let nextCalID;
     rtDb.ref('nextCal').transaction(nCal => {
         if (nCal) {
@@ -1094,32 +1098,23 @@ document.getElementById('btnCnfPublish').onclick = function () {
 
     saveDoc().then(() => {
         setprog('barPublish', 58);
-        admin.database().ref('calendarios/' + docId).set({
+        return set(ref(RTDB, 'calendarios/' + docId), {
             pop: 0
-        }, err => {
-            if (err) {
-                if (lang == "es") {
-                    alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
-                } else if (lang == "en") {
-                    alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
-                }
-                console.log(err);
-            } else {
-                setprog('barPublish', 100);
-                classes(document.getElementById('barPublish'), 'bg-success');
-                if (lang == "es") {
-                    alertTop("Publicado correctamente", 1);
-                } else if (lang == "en") {
-                    alertTop("Published successfully", 1);
-                }
-                setTimeout(function () {
-                    window.open(docDat.url, '_blank').focus();
-                }, 2500);
-                $('#mdlPublish').modal('hide');
-                console.log('Published ' + docId + ' calendar');
-                return null;
-            }
         });
+    }).then(() => {
+        setprog('barPublish', 100);
+        classes(document.getElementById('barPublish'), 'bg-success');
+        if (lang == "es") {
+            alertTop("Publicado correctamente", 1);
+        } else if (lang == "en") {
+            alertTop("Published successfully", 1);
+        }
+        setTimeout(function () {
+            window.open(docDat.url, '_blank').focus();
+        }, 2500);
+        $('#mdlPublish').modal('hide');
+        console.log('Published ' + docId + ' calendar');
+        return null;
     }).catch(err => {
         if (lang == "es") {
             alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);

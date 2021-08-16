@@ -1,23 +1,21 @@
-var cookRef = null;
-var pubID;
+import { getDatabase, ref, set, increment, onValue, runTransaction, child } from "firebase/database";
+const RTDB = getDatabase();
+
+var cookRef;
 var replying = -1;
 
 window.loaded = function loaded() {
-    cookRef = firebase.database().ref('galletas/' + id);
-    console.log(cRef)
-    cookRef.on('value', snap => {
-        if (snap.val()) {
-            document.getElementById('favCount').innerText = snap.val().favs;
-            document.getElementById('likeCount').innerText = snap.val().likes;
+    cookRef = ref(RTDB, 'galletas/' + id);
+
+    onValue(cookRef, (snap) => {
+        const data = snap.val();
+        if (data) {
+            document.getElementById('favCount').innerText = data.favs;
+            document.getElementById('likeCount').innerText = data.likes;
         }
     });
-    cookRef.transaction(cook => {
-        if (cook) {
-            cook.pop++;
-        }
-        return cook;
-    });
-    firebase.database().ref('uptCook/' + id).set("true").then(() => { }).catch(err => console.error('err'));
+    set(child(cookRef, 'pop'), increment(1));
+    set(ref(RTDB, 'uptCook/' + id), "true");
 
     function sendRep() {
         db.collection('reports').add({
@@ -114,23 +112,28 @@ window.loaded = function loaded() {
 
 document.getElementById('btnFav').onclick = function () {
     if (actSsn) {
+        let fav, favn, favl, liked, likedn, likedl, ifav, iliked, npop, nlik, nfav;
         db.collection('users').doc(uid).get().then(function (doc) {
-            let fav = doc.data().fav;
-            let favn = doc.data().favn;
-            let favl = doc.data().favn;
-            let liked = doc.data().liked;
-            let likedn = doc.data().likedn;
-            let likedl = doc.data().likedl;
-            let ifav = fav.indexOf(id);
-            let iliked = liked.indexOf(id);
-            let npop = 0, nlik = 0, nfav = 0;
+            fav = doc.data().fav;
+            favn = doc.data().favn;
+            favl = doc.data().favn;
+            liked = doc.data().liked;
+            likedn = doc.data().likedn;
+            likedl = doc.data().likedl;
+            ifav = fav.indexOf(id);
+            iliked = liked.indexOf(id);
+            npop = 0;
+            nlik = 0;
+            nfav = 0;
             if (ifav != -1) {
                 fav.splice(ifav, 1);
                 favn.splice(favn.indexOf(cTitle), 1);
                 favl.splice(favl.indexOf(cRef), 1);
-                document.getElementById('btnFav').innerText = 'Añadir a favoritos';
-                document.getElementById('btnFavTxt').classList.remove('fas');
-                document.getElementById('btnFavTxt').classList.add('far');
+                let langTxt = "Añadir a favoritos";
+                if (lang == "en") {
+                    langTxt = "Add to favorites";
+                }
+                document.getElementById('btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-w" id="favCount"></span>';
                 document.getElementById('btnFav').classList.remove('btn-light');
                 document.getElementById('btnFav').classList.add('btn-outline-light');
                 npop = -20;
@@ -146,17 +149,21 @@ document.getElementById('btnFav').onclick = function () {
                     likedl.push(cRef);
                     npop = 30;
                     nlik = 1;
-                    document.getElementById('btnLike').innerText = 'Me gusta';
-                    document.getElementById('btnLikeTxt').classList.add('fas');
-                    document.getElementById('btnLikeTxt').classList.remove('far');
+                    let langTxt = "Me gusta";
+                    if (lang == "en") {
+                        langTxt = "I like it";
+                    }
+                    document.getElementById('btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark m-2" id="likeCount"></span>';
                     document.getElementById('btnLike').classList.remove('btn-outline-light');
                     document.getElementById('btnLike').classList.add('btn-light');
                 }
                 else npop = 20;
                 nfav = 1;
-                document.getElementById('btnFav').innerText = 'En mis favoritos';
-                document.getElementById('btnFavTxt').classList.remove('far');
-                document.getElementById('btnFavTxt').classList.add('fas');
+                let langTxt = "En mis favoritos";
+                if (lang == "en") {
+                    langTxt = "In my favorites";
+                }
+                document.getElementById('btnFav').innerHTML = langTxt + '  <i class="fas fa-heart"></i> <span class="badge badge-dark ml-w" id="favCount"></span>';
                 document.getElementById('btnFav').classList.remove('btn-outline-light');
                 document.getElementById('btnFav').classList.add('btn-light');
             }
@@ -179,7 +186,7 @@ document.getElementById('btnFav').onclick = function () {
                 likedl: likedl,
             });
         }).then(() => {
-            cookRef.transaction(cook => {
+            runTransaction(cookRef, (cook) => {
                 if (cook) {
                     cook.pop += npop;
                     cook.likes += nlik;
@@ -195,25 +202,30 @@ document.getElementById('btnFav').onclick = function () {
 };
 document.getElementById('btnLike').onclick = function () {
     if (actSsn) {
+        let fav, favn, favl, liked, likedn, likedl, ifav, iliked, npop, nlik, nfav;
         db.collection('users').doc(uid).get().then(function (doc) {
-            let fav = doc.data().fav;
-            let favn = doc.data().favn;
-            let favl = doc.data().favn;
-            let liked = doc.data().liked;
-            let likedn = doc.data().likedn;
-            let likedl = doc.data().likedl;
-            let ifav = fav.indexOf(id);
-            let iliked = liked.indexOf(id);
-            let npop = 0, nlik = 0, nfav = 0;
+            fav = doc.data().fav;
+            favn = doc.data().favn;
+            favl = doc.data().favn;
+            liked = doc.data().liked;
+            likedn = doc.data().likedn;
+            likedl = doc.data().likedl;
+            ifav = fav.indexOf(id);
+            iliked = liked.indexOf(id);
+            npop = 0;
+            nlik = 0;
+            nfav = 0;
             if (iliked == -1) {
                 liked.push(id);
                 likedn.push(cTitle);
                 likedl.push(cRef);
                 npop = 10;
                 nlik = 1;
-                document.getElementById('btnLike').innerText = 'Me gusta';
-                document.getElementById('btnLikeTxt').classList.add('fas');
-                document.getElementById('btnLikeTxt').classList.remove('far');
+                let langTxt = "Me gusta";
+                if (lang == "en") {
+                    langTxt = "I like it";
+                }
+                document.getElementById('btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark m-2" id="likeCount"></span>';
                 document.getElementById('btnLike').classList.remove('btn-outline-light');
                 document.getElementById('btnLike').classList.add('btn-light');
             }
@@ -228,16 +240,20 @@ document.getElementById('btnLike').onclick = function () {
                     favl.splice(favl.indexOf(cRef), 1);
                     npop = -30;
                     nfav = -1;
-                    document.getElementById('btnFav').innerText = 'Añadir a favoritos';
-                    document.getElementById('btnFavTxt').classList.remove('fas');
-                    document.getElementById('btnFavTxt').classList.add('far');
+                    let langTxt = "Añadir a favoritos";
+                    if (lang == "en") {
+                        langTxt = "Add to favorites";
+                    }
+                    document.getElementById('btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-w" id="favCount"></span>';
                     document.getElementById('btnFav').classList.remove('btn-light');
                     document.getElementById('btnFav').classList.add('btn-outline-light');
                 }
+                let langTxt = "Dar me gusta";
+                if (lang == "en") {
+                    langTxt = "Like";
+                }
                 nlik = -1;
-                document.getElementById('btnLike').innerText = 'Dar me gusta';
-                document.getElementById('btnLikeTxt').classList.add('far');
-                document.getElementById('btnLikeTxt').classList.remove('fas');
+                document.getElementById('btnLike').innerHTML = langTxt + ' <i class="far fa-thumbs-up"></i> <span class="badge badge-dark m-2" id="likeCount"></span>';
                 document.getElementById('btnLike').classList.remove('btn-light');
                 document.getElementById('btnLike').classList.add('btn-outline-light');
             }
@@ -261,15 +277,10 @@ document.getElementById('btnLike').onclick = function () {
                 likedl: likedl,
             });
         }).then(() => {
-            cookRef.transaction(cook => {
-                if (cook) {
-                    cook.pop += npop;
-                    cook.likes += nlik;
-                    cook.favs += nfav;
-                }
-                return cook;
-            });
-        }).catch(function (err) { console.log('err') });
+            set(child(cookRef, 'pop'), increment(npop));
+            set(child(cookRef, 'likes'), increment(nlik));
+            set(child(cookRef, 'favs'), increment(nfav));
+        }).catch(function (err) { console.log(err) });
     } else {
         document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
         $('#mdlRgstr').modal('show');
@@ -315,7 +326,7 @@ function reply(r) {
 document.getElementById('btnLdComs').onclick = function () {
     document.getElementById('btnLdComs').classList.add('d-none');
     document.getElementById('spnCom').classList.remove('d-none');
-    db.collection('cookies/comments/'+id).doc('1').get().then(doc => {
+    db.collection('cookies/comments/' + id).doc('1').get().then(doc => {
         if (doc.exists) {
             comList = doc.data().coms;
             comCount = doc.data().comCount;

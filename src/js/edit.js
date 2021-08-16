@@ -1,5 +1,7 @@
+import { getDatabase, ref, set } from "firebase/database";
+const RTDB = getDatabase();
+
 var store = firebase.storage();
-var rtDb = firebase.database();
 
 let docDat, docId, docRef;
 let toDel = -1, toAdd = -1;
@@ -1561,18 +1563,14 @@ document.getElementById('btnCnfPublish').onclick = function () {
     }
 
     saveDoc().then(() => {
-        rtDb.ref('galletas/' + docId).set({
+        return set(ref(RTDB, 'galletas/' + docId), {
             pop: docDat.pop,
             likes: docDat.likes,
             favs: docDat.favs
-        }, err => {
-            if (err) {
-                console.log("Data could not be saved." + err);
-            } else {
-                setprog('barPublish', 84);
-                finishPub();
-            }
         });
+    }).then(() => {
+        setprog('barPublish', 84);
+        finishPub();
     }).catch(err => {
         if (lang == "es") {
             alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
