@@ -17,7 +17,9 @@ if (!firebase.apps.length) {
 import { getAnalytics } from "firebase/analytics";
 const analytics = getAnalytics();
 
-import "firebase/compat/auth";
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+const AUTH = getAuth();
+
 import "firebase/compat/firestore";
 import "firebase/compat/functions";
 
@@ -87,7 +89,7 @@ window.uid;
 window.author = "";
 window.mod = false;
 window.pubID;
-firebase.auth().onAuthStateChanged(function (user) {
+onAuthStateChanged(AUTH, (user) => {
     let modAuth = firebase.app().functions('us-east1').httpsCallable('publish-modAuth');
     if (user) {
         displayName = user.displayName;
@@ -248,29 +250,9 @@ window.addEventListener("load", function () {
     }).catch(err => { console.log(err) });
 });
 
-window.hh = function hh() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth()
-        .signInWithPopup(provider)
-        .then((result) => {
-            /** @type {firebase.auth.OAuthCredential} */
-            var credential = result.credential;
-
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            var token = credential.accessToken;
-            // The signed-in user info.
-            var user = result.user;
-            // ...
-        }).catch((error) => {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // The email of the user's account used.
-            var email = error.email;
-            // The firebase.auth.AuthCredential type that was used.
-            var credential = error.credential;
-            // ...
-        });
+window.tempLogin = function tempLogin() {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(provider).then((res) => { }).catch((err) => { console.log(err) });
 }
 
 function shwRecom() {

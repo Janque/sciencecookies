@@ -1,3 +1,6 @@
+import { getAuth, onAuthStateChanged, updateProfile } from "firebase/auth";
+const AUTH = getAuth();
+
 //Global
 var fav, liked, points, rank, gotFL = false;
 var favn, favl, likedn, likedl;
@@ -8,7 +11,8 @@ var fileForUp = null;
 
 window.loaded = function loaded() {
     //Check auth
-    firebase.auth().onAuthStateChanged(function (user) {
+
+    onAuthStateChanged(AUTH, (user) => {
         if (user) {
             document.getElementById('picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
             document.getElementById('picUsr').src = photoURL;
@@ -19,8 +23,8 @@ window.loaded = function loaded() {
     });
     function send() {
         displayName = document.getElementById('inNewNck').value;
-        firebase.auth().currentUser.updateProfile({
-            displayName: displayName,
+        updateProfile(AUTH.currentUser, {
+            displayName: displayName
         }).then(function () {
             db.collection('usersPublic').doc(publicID).update({
                 name: displayName,
@@ -34,7 +38,7 @@ window.loaded = function loaded() {
                 rank: rank,
                 visible: document.getElementById('inPubPrfl').checked,
                 vemail: document.getElementById('inPubEmail').checked,
-                vfl: document.getElementById('inPubFL').checked,
+                vfl: document.getElementById('inPubFL').checked
             }).then(() => {
                 resetFrm();
                 document.getElementById('disName').innerHTML = newNk;
@@ -120,8 +124,8 @@ window.loaded = function loaded() {
                 $('#mdlCngPP').modal('hide');
                 ref.getDownloadURL().then(url => {
                     url = url.replace('pp?', 'pp_200x200?');
-                    firebase.auth().currentUser.updateProfile({
-                        photoURL: url,
+                    updateProfile(AUTH.currentUser, {
+                        photoURL: url
                     }).then(() => {
                         db.collection('usersPublic').doc(publicID).update({
                             pic: url,
@@ -131,7 +135,7 @@ window.loaded = function loaded() {
                             likedn: likedn,
                             likedl: likedl,
                             points: points,
-                            rank: rank,
+                            rank: rank
                         }).then(() => { }).catch(err => { console.log(err) });
                     }).catch(err => { console.log(err) });
                 }).catch(err => { console.log(err) });

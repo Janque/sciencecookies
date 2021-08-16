@@ -1,5 +1,8 @@
+import { getAuth, onAuthStateChanged} from "firebase/auth";
+const AUTH = getAuth();
+
 //Check auth
-firebase.auth().onAuthStateChanged(function (user) {
+onAuthStateChanged(AUTH, (user) => {
     if (user) {
         document.getElementById('inEmail').value = email;
     } else {
