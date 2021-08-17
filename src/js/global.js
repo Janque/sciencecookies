@@ -1,4 +1,4 @@
-import firebase from 'firebase/compat/app';
+import { initializeApp } from "firebase/app"
 
 var firebaseConfig = {
     apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
@@ -10,12 +10,10 @@ var firebaseConfig = {
     appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
     measurementId: "G-1MYVREMBFV"
 };
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig)
-}
+const firebaseApp = initializeApp(firebaseConfig);
 
 import { getAnalytics } from "firebase/analytics";
-const analytics = getAnalytics();
+const ANALYTICS = getAnalytics();
 
 import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 const AUTH = getAuth();
@@ -24,8 +22,7 @@ import { getFirestore, collection, getDoc, doc as docRef, query, where, orderBy,
 const FSDB = getFirestore();
 
 import { getFunctions, httpsCallable } from "firebase/functions";
-//const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
-const FUNCTIONS = getFunctions();
+const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
 if (!lang) window.lang = "es";
 //console.log(lang);
@@ -105,7 +102,6 @@ onAuthStateChanged(AUTH, (user) => {
                 if (!mod) window.location.href = 'https://sciencecookies.net';
             }
             shwSsnBtns(true);
-            console.log(res.data);
         }).catch(err => console.log(err));
     } else {
         if (site == "profile" || site == "contact" || site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal" || site == "mailPrev") {

@@ -25,7 +25,7 @@ window.loaded = function loaded() {
     function plusCookie() {
         let title = document.getElementById('inTitle').value.trim();
         let file = document.getElementById('inFile').value;
-        getDocs(cookiesFSColl, where('file', '==', file), limit(1)).then(snap => {
+        getDocs(query(cookiesFSColl, where('file', '==', file), limit(1))).then(snap => {
             if (!snap.empty) {
                 if (lang == "es") {
                     alertTop("Ese nombre de archivo ya esta en uso.", 0, 'alrtPlusContainer');

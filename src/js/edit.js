@@ -4,7 +4,7 @@ const RTDB = getDatabase();
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions();
 
-import { getFirestore, getDoc, doc as docRef, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
+import { getFirestore, getDoc, doc as docRef, getDocs, onSnapshot, updateDoc, query } from "firebase/firestore";
 const FSDB = getFirestore();
 
 var store = firebase.storage();
@@ -127,7 +127,7 @@ window.loaded = function loaded() {
 
     function fileFrm() {
         let file = document.getElementById('inFile').value;
-        getDocs(cookiesFSColl, where("file", "==", file)).then(snap => {
+        getDocs(query(cookiesFSColl, where("file", "==", file))).then(snap => {
             if (!snap.empty && file != docDat.file) {
                 if (lang == "es") {
                     alertTop("Ese nombre de archivo ya esta en uso.", 0);

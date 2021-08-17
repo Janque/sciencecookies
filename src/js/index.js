@@ -219,7 +219,7 @@ function prepCatBtns() {
     }
 }
 function shwCalMain() {
-    getDocs(calendarsFSColl, where("public", "==", true), orderBy('published', 'desc'), limit(1)).then(snap => {
+    getDocs(query(calendarsFSColl, where("public", "==", true), orderBy('published', 'desc'), limit(1))).then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let a = document.createElement('a');
