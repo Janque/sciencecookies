@@ -4,9 +4,12 @@ const RTDB = getDatabase();
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions();
 
+import { getFirestore, getDoc, doc as docRef, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
+const FSDB = getFirestore();
+
 var store = firebase.storage();
 
-let docDat, docId, docRef;
+let docDat, docId, cookDocRef;
 let toDel = -1, toAdd = -1;
 let lastSave = Date.now(), saved = false;
 
@@ -55,8 +58,9 @@ window.loaded = function loaded() {
         document.getElementById('catFrmCont').appendChild(fat);
     });
 
-    docRef = cookiesFSRef.doc(urlSrch.get('id'));
-    docRef.onSnapshot(doc => {
+
+    cookDocRef = docRef(cookiesFSColl, urlSrch.get('id'));
+    onSnapshot(cookDocRef, doc => {
         docDat = doc.data();
         docId = doc.id;
         document.getElementById('inFile').value = docDat.file;
@@ -123,7 +127,7 @@ window.loaded = function loaded() {
 
     function fileFrm() {
         let file = document.getElementById('inFile').value;
-        cookiesFSRef.where("file", "==", file).get().then(snap => {
+        getDocs(cookiesFSColl, where("file", "==", file)).then(snap => {
             if (!snap.empty && file != docDat.file) {
                 if (lang == "es") {
                     alertTop("Ese nombre de archivo ya esta en uso.", 0);
@@ -153,7 +157,7 @@ window.loaded = function loaded() {
     })
     document.getElementById('btnFileTrans').onclick = function () {
         let ori = document.getElementById('selFileTrans').value
-        db.collection('cookies/langs/' + ori).doc(docId).get().then(async function (doc) {
+        getDoc(docRef(FSDB, 'cookies/langs/' + ori, docId)).then(async function (doc) {
             let file = doc.data().file;
             let desc = doc.data().description;
             document.getElementById('inFile').value = await translateSimple(file, ori, lang);
@@ -269,11 +273,11 @@ function saveDoc() {
                 syncUpt.fixedCats.splice(idx, 1, catTranslations[cat][l]);
             });
             syncUpt.translations[lang] = docDat.url;
-            promises.push(db.collection('cookies/langs/' + l).doc(docId).update(syncUpt));
+            promises.push(updateDoc(docRef(FSDB, 'cookies/langs/' + l, docId), syncUpt));
         }
     })
     return Promise.all(promises).then(() => {
-        return docRef.update(docDat);
+        return updateDoc(cookDocRef, docDat);
     });
 }
 function normSave() {
@@ -562,7 +566,7 @@ function render() {
             classes(btnTrans, 'btn btn-light btn-link-scckie');
             btnTrans.innerHTML = '<i class="fas fa-language"></i>';
             btnTrans.onclick = function () {
-                db.collection('cookies/langs/' + selLang.value).doc(docId).get().then(async function (doc) {
+                getDoc(docRef(FSDB, 'cookies/langs/' + selLang.value, docId)).then(async function (doc) {
                     let sect = doc.data().cont[idx];
                     if (item.type != sect.type) return;
                     if (sect.type == 'head') {

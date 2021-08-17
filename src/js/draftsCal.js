@@ -1,3 +1,5 @@
+import { query, orderBy, limit, startAfter, getDocs } from "firebase/firestore";
+
 window.loaded = function loaded() {
     initSrch(false);
 }
@@ -8,15 +10,15 @@ var nxtp = false, paglast = [null], page = 1;
 var allChk = false;
 function initSrch(stAf) {
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
-        srchRef = calendarsFSRef.orderBy('published', 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+        srchQuery = query(calendarsFSColl, orderBy('published', 'desc'), startAfter(paglast[page - 1]), limit(previewLim));
     } else {
-        srchRef = calendarsFSRef.orderBy('published', 'desc').limit(previewLim);
+        srchQuery = query(calendarsFSColl, orderBy('published', 'desc'), limit(previewLim));
     }
     shwSrch();
 }
 function shwSrch() {
     document.getElementById('crdContainer').innerHTML = "";
-    srchRef.get().then(snap => {
+    getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
         docs.forEach((doc, idx) => {

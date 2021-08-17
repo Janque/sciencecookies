@@ -20,21 +20,19 @@ const analytics = getAnalytics();
 import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 const AUTH = getAuth();
 
-import "firebase/compat/firestore";
+import { getFirestore, collection, getDoc, doc as docRef, query, where, orderBy, limit, getDocs } from "firebase/firestore";
+const FSDB = getFirestore();
 
 import { getFunctions, httpsCallable } from "firebase/functions";
 //const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 const FUNCTIONS = getFunctions();
 
-//Init database
-window.db = firebase.firestore();
-
 if (!lang) window.lang = "es";
 //console.log(lang);
 document.cookie = "firebase-language-override=";
 
-window.cookiesFSRef = db.collection('cookies/langs/' + lang);
-window.calendarsFSRef = db.collection('calendars/langs/' + lang);
+window.cookiesFSColl = collection(FSDB, 'cookies/langs/' + lang);
+window.calendarsFSColl = collection(FSDB, 'calendars/langs/' + lang);
 
 window.urlSrch = '';
 window.actSsn = false;
@@ -142,7 +140,7 @@ function shwSsnBtns(ac) {
         document.getElementById('btnLgO').classList.remove('d-none');
         if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.add('d-none');
         if (site == "cookie") {
-            db.collection('users').doc(uid).get().then(function (doc) {
+            getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
                 let fav = doc.data().fav;
                 let liked = doc.data().liked;
                 pubID = doc.data().publicID;
@@ -242,9 +240,9 @@ window.addEventListener("load", function () {
     shwRecom();
     shareBtns();
 
-    db.collection('config').doc('langs').get().then(doc => {
+    getDoc(docRef(FSDB, 'config', 'langs')).then(function (doc) {
         window.langs = doc.data().langs;
-        return db.collection('config').doc('cats').get();
+        return getDoc(docRef(FSDB, 'config', 'cats'));
     }).then(doc => {
         window.allCats = doc.data()[lang].allCats;
         window.textCats = doc.data()[lang].textCats;
@@ -260,7 +258,7 @@ window.tempLogin = function tempLogin() {
 }
 
 function shwRecom() {
-    cookiesFSRef.where('public', '==', true).orderBy('published', 'desc').limit(1).get().then(snap => {
+    getDocs(query(cookiesFSColl, where('public', '==', true), orderBy('published', 'desc'), limit(1))).then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();
@@ -306,7 +304,7 @@ function shwRecom() {
             document.getElementById("newCook").appendChild(a1);
         })
     }).catch(err => console.log(err));
-    cookiesFSRef.where('public', '==', true).orderBy('pop', 'desc').limit(3).get().then(snap => {
+    getDocs(query(cookiesFSColl, where('public', '==', true), orderBy('pop', 'desc'), limit(3))).then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();
@@ -356,7 +354,7 @@ function shwRecom() {
             document.getElementById("popCook").appendChild(divider);
         });
     }).catch(err => console.log(err));
-    calendarsFSRef.where("public", "==", true).orderBy('published', 'desc').limit(1).get().then(snap => {
+    getDocs(query(calendarsFSColl, where('public', '==', true), orderBy('published', 'desc'), limit(1))).then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();

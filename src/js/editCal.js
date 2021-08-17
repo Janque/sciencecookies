@@ -4,9 +4,12 @@ const RTDB = getDatabase();
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions();
 
+import { getFirestore, getDoc, doc as docRef, onSnapshot, updateDoc, setDoc } from "firebase/firestore";
+const FSDB = getFirestore();
+
 var store = firebase.storage();
 
-let docDat, docId, docRef, calConfig;
+let docDat, docId, calDocRef, calConfig;
 let lastSave = Date.now(), saved = false;
 
 let newMedia = null;
@@ -96,10 +99,10 @@ function fullMonth(n, l) {
 }
 
 window.loaded = function loaded() {
-    db.collection('config').doc('calTypes').get().then(doc => {
+    getDoc(docRef(FSDB, 'config', 'calTypes')).then(doc => {
         calConfig = doc.data();
-        docRef = calendarsFSRef.doc(urlSrch.get('id'));
-        calendarsFSRef.doc(urlSrch.get('id')).onSnapshot(doc => {
+        calDocRef = docRef(calendarsFSColl, urlSrch.get('id'));
+        onSnapshot(calDocRef, doc => {
             if (!doc.exists) {
                 window.location.href = '../404';
                 return;
@@ -144,7 +147,7 @@ window.loaded = function loaded() {
     });
     document.getElementById('btnFileTrans').onclick = function () {
         let ori = document.getElementById('selFileTrans').value
-        db.collection('calendars/langs/' + ori).doc(docId).get().then(async function (doc) {
+        getDoc(docRef(FSDB, 'calendars/langs/' + ori, docId)).then(async function (doc) {
             docDat.picCapt = document.getElementById('inPicCapt').value = await translateSimple(doc.data().picCapt, ori, lang);
             docDat.picAlt = document.getElementById('inPicAlt').value = await translateSimple(doc.data().picAlt, ori, lang);
             docDat.description = document.getElementById('inDesc').value = await translateSimple(doc.data().description, ori, lang);
@@ -263,11 +266,11 @@ function saveDoc() {
                 timePrev: docDat.timePrev | null,
             }
             syncUpt.translations[lang] = docDat.url;
-            promises.push(db.collection('calendars/langs/' + l).doc(docId).update(syncUpt));
+            promises.push(updateDoc(docRef(FSDB, 'calendars/langs/' + l, docId), syncUpt));
         }
     })
     return Promise.all(promises).then(() => {
-        return docRef.update(docDat);
+        return updateDoc(calDocRef, docDat);
     });
 }
 function normSave() {
@@ -718,7 +721,7 @@ function render() {
         classes(btnTrans, 'btn btn-scckie mx-2');
         btnTrans.innerHTML = '<i class="fas fa-language"></i>';
         btnTrans.onclick = function () {
-            db.collection('calendars/langs/' + selLang.value).doc(docId).get().then(async function (doc) {
+            getDoc(docRef(FSDB, 'calendars/langs/' + selLang.value, docId)).then(async function (doc) {
                 let newEve = doc.data().events[key];
                 if (!newEve) return;
                 event.typeIdx = newEve.typeIdx;
@@ -1071,7 +1074,7 @@ function newCal() {
                 newC.nextCal = "https://sciencecookies.net/" + calsText + "/" + nYear + "/" + nMonth + "/";
                 newC.priorCal = "https://sciencecookies.net/" + calsText + "/" + pYear + "/" + pMonth + "/";
 
-                promises.push(db.collection('calendars/langs/' + l).doc(Math.abs(nextCalID).toString()).set(newC));
+                promises.push(setDoc(docRef(FSDB, 'calendars/langs/' + l, Math.abs(nextCalID).toString()), newC));
 
             })
             return Promise.all(promises).then(() => {

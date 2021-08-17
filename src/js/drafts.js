@@ -1,6 +1,9 @@
 import { getDatabase, ref, set, get, increment } from "firebase/database";
 const RTDB = getDatabase();
 
+import { getFirestore, doc as docRef, query, where, orderBy, limit, startAfter, getDocs, setDoc } from "firebase/firestore";
+const FSDB = getFirestore();
+
 window.loaded = function loaded() {
     initSrch(false);
     function newSrch() {
@@ -22,7 +25,7 @@ window.loaded = function loaded() {
     function plusCookie() {
         let title = document.getElementById('inTitle').value.trim();
         let file = document.getElementById('inFile').value;
-        cookiesFSRef.where('file', '==', file).limit(1).get().then(snap => {
+        getDocs(cookiesFSColl, where('file', '==', file), limit(1)).then(snap => {
             if (!snap.empty) {
                 if (lang == "es") {
                     alertTop("Ese nombre de archivo ya esta en uso.", 0, 'alrtPlusContainer');
@@ -50,7 +53,7 @@ window.loaded = function loaded() {
                     const promises = [];
                     langs.forEach((l, i) => {
                         setprog(30 / langs.length * i);
-                        promises.push(db.collection('cookies/langs/' + l).doc(id).set({
+                        promises.push(setDoc(docRef(FSDB, 'cookies/langs/' + l, id), {
                             authors: [author],
                             cont: [
                                 {
@@ -128,7 +131,7 @@ window.loaded = function loaded() {
 
 const previewLim = 21;
 //Get search params
-var kywords, srtOrd, desc, srchRef;
+var kywords, srtOrd, desc, srchQuery;
 var nxtp = false, paglast = [null], page = 1;
 var allChk = false;
 function initSrch(stAf) {
@@ -172,29 +175,29 @@ function initSrch(stAf) {
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         if (kywords == undefined || kywords == null || kywords == "") {
             if (!desc) {
-                srchRef = cookiesFSRef.orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+                srchQuery = query(cookiesFSColl, orderBy(srtOrd), startAfter(paglast[page - 1]), limit(previewLim));
             } else {
-                srchRef = cookiesFSRef.orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+                srchQuery = query(cookiesFSColl, orderBy(srtOrd, 'desc'), startAfter(paglast[page - 1]), limit(previewLim));
             }
         } else {
             if (!desc) {
-                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+                srchQuery = query(cookiesFSColl, where('title', '==', kywords), orderBy(srtOrd), startAfter(paglast[page - 1]), limit(previewLim));
             } else {
-                srchRef = dcookiesFSRef.where('title', '==', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+                srchQuery = query(dcookiesFSColl, where('title', '==', kywords), orderBy(srtOrd, 'desc'), startAfter(paglast[page - 1]), limit(previewLim));
             }
         }
     } else {
         if (kywords == undefined || kywords == null || kywords == "") {
             if (!desc) {
-                srchRef = cookiesFSRef.orderBy(srtOrd).limit(previewLim);
+                srchQuery = query(cookiesFSColl, orderBy(srtOrd), limit(previewLim));
             } else {
-                srchRef = cookiesFSRef.orderBy(srtOrd, 'desc').limit(previewLim);
+                srchQuery = query(cookiesFSColl, orderBy(srtOrd, 'desc'), limit(previewLim));
             }
         } else {
             if (!desc) {
-                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd).limit(previewLim);
+                srchQuery = query(cookiesFSColl, where('title', '==', kywords), orderBy(srtOrd), limit(previewLim));
             } else {
-                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
+                srchQuery = query(cookiesFSColl, where('title', '==', kywords), orderBy(srtOrd, 'desc'), limit(previewLim));
             }
         }
     }
@@ -212,7 +215,7 @@ function shwSrch() {
     } else {
         document.getElementById('crdContainer').innerHTML = "";
     }
-    srchRef.get().then(snap => {
+    getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
         let idx = 0;
@@ -314,7 +317,6 @@ function shwSrch() {
             drpitm1.innerHTML = 'Vista correo <i class="fas fa-envelope"></i>';
             drpmenu.appendChild(drpitm1);
             let drpitm2 = document.createElement('button');
-            let drpitm3 = document.createElement('button');
             let d = doc.data().created.toDate();
             if (doc.data().public) {
                 drpitm2.classList.add('dropdown-item');
@@ -328,14 +330,6 @@ function shwSrch() {
                 };
                 drpitm2.innerHTML = 'Ver artículo <i class="fas fa-eye"></i>';
                 drpmenu.appendChild(drpitm2);
-                /*drpitm3.classList.add('dropdown-item');@# sync langs
-                drpitm3.onclick = function () {
-                    cookiesFSRef.doc(doc.id).update({
-                        public: false
-                    });
-                };
-                drpitm3.innerHTML = 'Volver privado <i class="fas fa-lock"></i>';*/
-                drpmenu.appendChild(drpitm3);
             }
             drp.appendChild(drpmenu);
             col1.appendChild(drp);

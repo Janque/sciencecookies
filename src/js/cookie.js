@@ -4,6 +4,9 @@ const RTDB = getDatabase();
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions();
 
+import { getFirestore, collection, getDoc, doc as docRef, addDoc, updateDoc } from "firebase/firestore";
+const FSDB = getFirestore();
+
 var cookRef;
 var replying = -1;
 
@@ -21,7 +24,7 @@ window.loaded = function loaded() {
     set(ref(RTDB, 'uptCook/' + id), "true");
 
     function sendRep() {
-        db.collection('reports').add({
+        addDoc(collection(FSDB, 'reports'), {
             from: email,
             reason: document.getElementById('inReas').value,
             comm: reporting,
@@ -116,7 +119,7 @@ window.loaded = function loaded() {
 document.getElementById('btnFav').onclick = function () {
     if (actSsn) {
         let fav, favn, favl, liked, likedn, likedl, ifav, iliked, npop, nlik, nfav;
-        db.collection('users').doc(uid).get().then(function (doc) {
+        getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
             fav = doc.data().fav;
             favn = doc.data().favn;
             favl = doc.data().favn;
@@ -170,7 +173,7 @@ document.getElementById('btnFav').onclick = function () {
                 document.getElementById('btnFav').classList.remove('btn-outline-light');
                 document.getElementById('btnFav').classList.add('btn-light');
             }
-            return db.collection('users').doc(uid).update({
+            return updateDoc(docRef(FSDB, 'users', uid), {
                 fav: fav,
                 liked: liked,
                 favn: favn,
@@ -179,7 +182,7 @@ document.getElementById('btnFav').onclick = function () {
                 likedl: likedl,
             });
         }).then(() => {
-            return db.collection('usersPublic').doc(pubID).update({
+            return updateDoc(docRef(FSDB, 'usersPublic', pubID), {
                 name: displayName,
                 pic: photoURL,
                 email: email,
@@ -206,7 +209,7 @@ document.getElementById('btnFav').onclick = function () {
 document.getElementById('btnLike').onclick = function () {
     if (actSsn) {
         let fav, favn, favl, liked, likedn, likedl, ifav, iliked, npop, nlik, nfav;
-        db.collection('users').doc(uid).get().then(function (doc) {
+        getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
             fav = doc.data().fav;
             favn = doc.data().favn;
             favl = doc.data().favn;
@@ -261,7 +264,7 @@ document.getElementById('btnLike').onclick = function () {
                 document.getElementById('btnLike').classList.add('btn-outline-light');
             }
         }).then(() => {
-            return db.collection('users').doc(uid).update({
+            return updateDoc(docRef(FSDB, 'users', uid), {
                 fav: fav,
                 liked: liked,
                 favn: favn,
@@ -270,7 +273,7 @@ document.getElementById('btnLike').onclick = function () {
                 likedl: likedl,
             });
         }).then(() => {
-            return db.collection('usersPublic').doc(pubID).update({
+            return updateDoc(docRef(FSDB, 'usersPublic', pubID), {
                 name: displayName,
                 pic: photoURL,
                 email: email,
@@ -329,7 +332,7 @@ function reply(r) {
 document.getElementById('btnLdComs').onclick = function () {
     document.getElementById('btnLdComs').classList.add('d-none');
     document.getElementById('spnCom').classList.remove('d-none');
-    db.collection('cookies/comments/' + id).doc('1').get().then(doc => {
+    getDoc(collection(FSDB, 'cookies/comments/' + id), '1').then(doc => {
         if (doc.exists) {
             comList = doc.data().coms;
             comCount = doc.data().comCount;

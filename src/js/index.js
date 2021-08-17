@@ -1,11 +1,13 @@
 import { getDatabase, ref, set, increment } from "firebase/database";
 const RTDB = getDatabase();
 
+import { query, where, orderBy, limit, getDocs, startAfter } from "firebase/firestore";
+
 var catnmb;
 const previewLim = 20;
 
 //Get search params
-var cats = [], kywords, srtOrd, desc, srchRef;
+var cats = [], kywords, srtOrd, desc, srchQuery;
 var nxtp = false, paglast = [null], page = 1;
 var allChk = false;
 function initSrch(stAf) {
@@ -60,15 +62,15 @@ function initSrch(stAf) {
     }
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         if (!desc) {
-            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+            srchQuery = query(cookiesFSColl, where('public', '==', true), where('cats', 'array-contains-any', kywords), orderBy(srtOrd), startAfter(paglast[page - 1]), limit(previewLim));
         } else {
-            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+            srchQuery = query(cookiesFSColl, where('public', '==', true), where('cats', 'array-contains-any', kywords), orderBy(srtOrd, 'desc'), startAfter(paglast[page - 1]), limit(previewLim));
         }
     } else {
         if (!desc) {
-            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).limit(previewLim);
+            srchQuery = query(cookiesFSColl, where('public', '==', true), where('cats', 'array-contains-any', kywords), orderBy(srtOrd), limit(previewLim));
         } else {
-            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
+            srchQuery = query(cookiesFSColl, where('public', '==', true), where('cats', 'array-contains-any', kywords), orderBy(srtOrd, 'desc'), limit(previewLim));
         }
     }
     shwSrch();
@@ -80,7 +82,7 @@ function initSrch(stAf) {
 }
 function shwSrch() {
     document.getElementById('cookiesCont').innerHTML = "";
-    srchRef.get().then(snap => {
+    getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
         if (docs.length == 0) {
@@ -217,7 +219,7 @@ function prepCatBtns() {
     }
 }
 function shwCalMain() {
-    calendarsFSRef.where("public", "==", true).orderBy('published', 'desc').limit(1).get().then(snap => {
+    getDocs(calendarsFSColl, where("public", "==", true), orderBy('published', 'desc'), limit(1)).then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let a = document.createElement('a');
