@@ -172,9 +172,9 @@ block content
   //- Comentarios
   .row
     if LANG=="es"
-      button#btnLdComs.btn.btn-block.btn-scckie.mb-2.disabled Cargar comentarios
+      button#btnLdComs.btn.btn-block.btn-science.mb-2.disabled Cargar comentarios
     else if LANG=="en"
-      button#btnLdComs.btn.btn-block.btn-scckie.mb-2.disabled Load comments
+      button#btnLdComs.btn.btn-block.btn-science.mb-2.disabled Load comments
     #spnCom.container-fluid.d-none
       .text-center
         .spinner-border.text-primary(role='status')
@@ -203,14 +203,14 @@ block content
           .col-auto
             button#btnCanCom.btn.btn-secondary(onclick="document.getElementById('inNwCom').value='';document.getElementById('frmNwComBtns').classList.add('d-none');replying=-1;document.getElementById('inNwCom').setAttribute('placeholder','Nuevo comentario');") #{Buttons[LANG]["cancel"]}
             if LANG=="es"
-              button#btnAddCom.btn.btn-scckie(type='submit' form='frmNwCom') Comentar
+              button#btnAddCom.btn.btn-science(type='submit' form='frmNwCom') Comentar
             else if LANG=="en"
-              button#btnAddCom.btn.btn-scckie(type='submit' form='frmNwCom') Comment
+              button#btnAddCom.btn.btn-science(type='submit' form='frmNwCom') Comment
       #cntComs2.container-fluid.text-dark.d-none.p-0
     if LANG=="es"
-      button#btnLdMrComs.btn.btn-block.btn-scckie.mb-2.disabled.d-none Más comentarios
+      button#btnLdMrComs.btn.btn-block.btn-science.mb-2.disabled.d-none Más comentarios
     else if LANG=="en"
-      button#btnLdMrComs.btn.btn-block.btn-scckie.mb-2.disabled.d-none More comments
+      button#btnLdMrComs.btn.btn-block.btn-science.mb-2.disabled.d-none More comments
     #spnCom2.container-fluid.d-none
       .text-center
         .spinner-border.text-primary(role='status')

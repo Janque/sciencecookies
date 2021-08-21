@@ -1,23 +1,46 @@
-@import "types.scss";
-
-body {
-  font-family: raleway-semi-bold, sans-serif;
-}
+@import "_types.scss";
 
 .bg-rebecca {
-  background-color: rebeccapurple;
+  background-color: $rebecca;
 }
-.bg-sc {
-  background-color: #791acd;
+.bg-science {
+  background-color: $science;
 }
-.bg-scinfo {
-  background-color: #6c91c2;
+.bg-blue {
+  background-color: $blue;
+}
+.bg-white {
+  background-color: $white;
+}
+.bg-black {
+  background-color: $black;
 }
 
-b,
-strong {
-  font-family: raleway-bold;
-  color: #f8f9fa;
+.navbar {
+  .container-fluid {
+    .logo {
+      img {
+        width: 30px;
+        height: 30px;
+      }
+    }
+    #navbarMenu {
+      flex: 0 0 100%;
+    }
+
+    #changeLang {
+      font-family: raleway-regular;
+      margin: auto 14px auto 5px;
+      display: inline-block;
+      color: $white;
+      text-align: center;
+      vertical-align: middle;
+      background-color: transparent;
+      padding: auto 0.75rem;
+      font-size: 0.8rem;
+      width: 91px;
+    }
+  }
 }
 
 .page-container {
@@ -34,7 +57,7 @@ strong {
   margin-left: -15px;
 }
 .sidebar {
-  background-color: #fff8e7;
+  background-color: $latte;
 }
 @media (min-width: 768px) {
   .sidebar {
@@ -48,58 +71,12 @@ strong {
   }
 }
 
-.btn-scckie {
-  color: #f8f9fa;
-  background-color: rebeccapurple;
-  border-color: rebeccapurple;
-}
-.btn-link-scckie {
-  font-weight: 400;
-  color: rebeccapurple;
-  text-decoration: none;
-}
-#changeLang {
-  margin: auto 14px auto 5px;
-  display: inline-block;
-  font-weight: 200;
-  color: #f8f9fa;
-  text-align: center;
-  vertical-align: middle;
-  background-color: transparent;
-  padding: auto 0.75rem;
-  font-size: 0.8rem;
-}
 @media (max-width: 991px) {
   .w-nsm-100 {
     width: 100%;
     margin-right: 0;
     margin-left: 0;
   }
-}
-
-h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-}
-h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-h3 {
-  font-size: 1.3rem;
-  font-weight: 700;
-}
-h4 {
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-h5 {
-  font-size: 1.15rem;
-  font-weight: 700;
-}
-h6 {
-  font-size: 1.1rem;
-  font-weight: 700;
 }
 
 .tbar {
@@ -122,11 +99,6 @@ h6 {
 .cardBorder {
   border-width: 3px;
   border-radius: 10px;
-}
-
-.figcaption {
-  font-size: 70%;
-  font-weight: lighter;
 }
 
 footer {
@@ -162,6 +134,7 @@ div.follow-us {
 }
 
 div.share {
+  background-color: $science;
   position: fixed;
   top: auto;
   bottom: 0;

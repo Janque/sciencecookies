@@ -17,8 +17,11 @@ cp -r src/layouts/* functions/views/layouts
 if [ ! -d "public" ] 
 then
     mkdir public
+else
+    rm -r public/*
 fi
-rm -r public
 
+mkdir public/vendor/
+cp -r src/vendor/* public/vendor
 
 npx parcel build $(cat scripts/toCompile) --dist-dir public
