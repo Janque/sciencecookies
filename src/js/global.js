@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app"
+import { initializeApp } from "firebase/app";
 
 var firebaseConfig = {
     apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
@@ -15,7 +15,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 import { getAnalytics } from "firebase/analytics";
 const ANALYTICS = getAnalytics();
 
-import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, signOut, onAuthStateChanged, EmailAuthProvider, ProviderId } from "firebase/auth";
 const AUTH = getAuth();
 
 import { getFirestore, collection, getDoc, doc as docRef, query, where, orderBy, limit, getDocs } from "firebase/firestore";
@@ -23,6 +23,8 @@ const FSDB = getFirestore();
 
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
+
+var firebaseui = require('firebaseui');
 
 if (!lang) window.lang = "es";
 //console.log(lang);
@@ -183,7 +185,7 @@ function shwSsnBtns(ac) {
 }
 //Log Out
 document.getElementById("btnLgO").onclick = function () {
-    firebase.auth().signOut().then(function () {
+    signOut(AUTH).then(function () {
         if (lang == "es") {
             alertTop("Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>", 2);
         } else if (lang == "en") {
@@ -197,27 +199,24 @@ document.getElementById("btnLgO").onclick = function () {
         }
     });
 };
-/*/Autenticaciones
+
 var uiConfig = {
     signInSuccessUrl: window.location,
     signInOptions: [
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+        ProviderId.GOOGLE,
+        ProviderId.FACEBOOK,
         {
-            provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            signInMethod: firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD,
+            provider: ProviderId.PASSWORD,
+            signInMethod: EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
             forceSameDevice: false,
-            requireDisplayName: true,
-            signInMethod: 'emailLink',
-        },
-        //firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+            requireDisplayName: true
+        }
     ],
     tosUrl: 'https://sciencecookies.net/docs/tos',
     privacyPolicyUrl: 'https://sciencecookies.net/docs/privacidad'
 };
-var ui = new firebaseui.auth.AuthUI(firebase.auth());
+var ui = new firebaseui.auth.AuthUI(AUTH);
 ui.start('#firebaseui-auth-container', uiConfig);
-/*/
 
 function checkMobile() {
     let check = false;
@@ -230,7 +229,7 @@ window.addEventListener("load", function () {
     url = new URL(document.location.href);
     urlSrch = new URLSearchParams(location.search);
 
-    //if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
+    if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
 
     if (urlSrch.get('mode') == 'select') $('#mdlRgstr').modal('show');
     shwRecom();
@@ -247,11 +246,6 @@ window.addEventListener("load", function () {
         loaded();
     }).catch(err => { console.log(err) });
 });
-
-window.tempLogin = function tempLogin() {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(provider).then((res) => { }).catch((err) => { console.log(err) });
-}
 
 function shwRecom() {
     getDocs(query(cookiesFSColl, where('public', '==', true), orderBy('published', 'desc'), limit(1))).then(snap => {
