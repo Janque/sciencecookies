@@ -193,6 +193,11 @@
         "source": "/calendario-astronomico",
         "destination": "/calendario-astronomico/2021/",
         "type": 302
+      },
+      {
+        "source": "/astronomic-calendar",
+        "destination": "/astronomic-calendar/2021/",
+        "type": 302
       }
     ]
   },
