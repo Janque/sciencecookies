@@ -993,117 +993,11 @@ document.getElementById('btnAprove').onclick = function () {
     }
     if (validateRevision()) {
         docDat.finished = true;
-        newCal();
     } else {
         docDat.finished = false;
     }
     normSave();
 };
-
-function newCal() {
-    return;
-    //@#Move to CF
-    let nextCalID;
-    rtDb.ref('nextCal').transaction(nCal => {
-        if (nCal) {
-            nextCalID = nCal;
-            nCal++;
-            if (nCal % 100 == 13) {
-                nCal -= 12;
-                nCal += 100;
-            }
-        }
-        return nCal;
-    }, (error) => {
-        if (error) {
-            console.log(error);
-        } else {
-            let date = new Date((nextCalID - nextCalID % 100) / 100 + ' ' + nextCalID % 100 + ' ' + '00:00');
-            let weeks = [];
-            let days;
-            if (date.getMonth() == 1) {
-                if (date.getFullYear() % 4 == 0) {
-                    days = 29;
-                } else {
-                    days = 28;
-                }
-            } else if (date.getMonth() % 2 == 0) {
-                if (date.getMonth() <= 6) days = 31;
-                else days = 30;
-            } else {
-                if (date.getMonth() <= 6) days = 30;
-                else days = 31;
-            }
-            let bDay = date.getDay();
-            for (let i = 1; i <= days; i = i) {
-                let week = {};
-                for (let j = bDay; j < daysOfWeek.length; j++) {
-                    if (i > days) break;
-                    week[daysOfWeek[j]] = {
-                        date: i,
-                        events: []
-                    }
-                    i++;
-                }
-                weeks.push(week);
-                bDay = 0;
-            }
-            const promises = [];
-            langs.forEach(l => {
-                let newC = {
-                    events: {},
-                    published: firebase.firestore.Timestamp.fromDate(date),
-                    description: "",
-                    descriptionShort: "",
-                    finished: false,
-                    pastDue: false,
-                    picUrl: "",
-                    picAlt: "",
-                    picCapt: "",
-                    public: false,
-                    sentMail: false,
-                    revised: {},
-                    title: "",
-                    url: "",
-                    nextCal: "",
-                    priorCal: "",
-                    weeks: weeks,
-                    translations: {}
-                }
-
-                let intId = parseInt(nextCalID);
-                let year = (intId - intId % 100) / 100;
-                let nYear = (intId - intId % 100) / 100;
-                let pYear = (intId - intId % 100) / 100;
-                if (intId % 100 == 12) nYear++;
-                if (intId % 100 == 1) pYear--;
-                let month = fullMonth(intId % 100, l);
-                let nMonth = fullMonth(intId % 100 + 1, l).toLowerCase();
-                let pMonth = fullMonth(intId % 100 - 1, l).toLowerCase();
-                let calsText = "";
-                switch (l) {
-                    case "es":
-                        calsText = "calendario-astronomico";
-                        newC.title = "Calendario Astronómico de " + month + " " + year;
-                        break;
-                    case "en":
-                        calsText = "astronomic-calendar";
-                        newC.title = "Astronomic Calendar of " + month + " " + year;
-                        break;
-                }
-                newC.url = "https://sciencecookies.net/" + calsText + "/" + year + "/" + month.toLowerCase() + "/";
-                newC.nextCal = "https://sciencecookies.net/" + calsText + "/" + nYear + "/" + nMonth + "/";
-                newC.priorCal = "https://sciencecookies.net/" + calsText + "/" + pYear + "/" + pMonth + "/";
-
-                promises.push(setDoc(docRef(FSDB, 'calendars/langs/' + l, Math.abs(nextCalID).toString()), newC));
-
-            })
-            return Promise.all(promises).then(() => {
-                console.log('exito');
-            }).catch(err => console.log(err));
-        }
-    });
-}
 
 $('#mdlPublish').on('show.bs.modal', e => {
     if (validateRevision()) {
