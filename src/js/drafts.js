@@ -1,4 +1,29 @@
-var rtDB = firebase.database();
+import { initializeApp, getApps, getApp } from "firebase/app"
+
+var firebaseConfig = {
+    apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
+    authDomain: "sciencecookies.net",
+    databaseURL: "https://science-cookies.firebaseio.com",
+    projectId: "science-cookies",
+    storageBucket: "science-cookies.appspot.com",
+    messagingSenderId: "906770471712",
+    appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
+    measurementId: "G-1MYVREMBFV"
+};
+
+var firebaseApp;
+if (!getApps().length) {
+    firebaseApp = initializeApp(firebaseConfig);
+}
+else {
+    firebaseApp = getApp();
+}
+
+import { getDatabase, ref, set, get, increment } from "firebase/database";
+const RTDB = getDatabase();
+
+import { getFirestore, doc as docRef, query, where, orderBy, limit, startAfter, getDocs, setDoc } from "firebase/firestore";
+const FSDB = getFirestore();
 
 window.loaded = function loaded() {
     initSrch(false);
@@ -21,7 +46,7 @@ window.loaded = function loaded() {
     function plusCookie() {
         let title = document.getElementById('inTitle').value.trim();
         let file = document.getElementById('inFile').value;
-        cookiesFSRef.where('file', '==', file).limit(1).get().then(snap => {
+        getDocs(query(cookiesFSColl, where('file', '==', file), limit(1))).then(snap => {
             if (!snap.empty) {
                 if (lang == "es") {
                     alertTop("Ese nombre de archivo ya esta en uso.", 0, 'alrtPlusContainer');
@@ -34,88 +59,87 @@ window.loaded = function loaded() {
                 document.getElementById('btnCanPlus1').setAttribute('disabled', 'true');
                 document.getElementById('barCont').classList.remove('d-none');
                 setprog('3');
+
                 let id;
-                rtDB.ref('tdaysID').transaction(today => {
-                    if (today) {
-                        today.last++;
-                        id = today.today;
-                        if (today.last < 10) id += '0';
-                        id += today.last;
+                get(ref(RTBD, 'tdaysID')).then((snap) => {
+                    var today = snap.val();
+                    today.last++;
+                    id = today.today;
+                    if (today.last < 10) id += '0';
+                    id += today.last;
+
+                    set(ref(RTBD, 'tdaysID/last'), increment(1));
+                    setprog('52');
+
+                    const promises = [];
+                    langs.forEach((l, i) => {
+                        setprog(30 / langs.length * i);
+                        promises.push(setDoc(docRef(FSDB, 'cookies/langs/' + l, id), {
+                            authors: [author],
+                            cont: [
+                                {
+                                    type: "head",
+                                    title: title,
+                                    author: [author]
+                                },
+                                {
+                                    type: "ref",
+                                    ref: []
+                                }
+                            ],
+                            media: [],
+                            picUrl: "",
+                            title: title,
+                            description: "",
+                            file: file,
+                            owner: uid,
+                            java: "",
+                            revised: {},
+                            notify: false,
+                            public: false,
+                            beenPublic: false,
+                            dledit: false,
+                            created: new firebase.firestore.Timestamp.now(),
+                            ledit: new firebase.firestore.Timestamp.now(),
+                            published: new firebase.firestore.Timestamp.now(),
+                            pop: 0,
+                            likes: 0,
+                            favs: 0,
+                            url: "",
+                            fixedCats: [],
+                            cats: [],
+                            translations: {
+                                es: file
+                            }
+                        }));
+                    });
+                    Promise.all(promises).then(() => {
+                        setprog('90');
+                        setTimeout(function () {
+                            setprog('100');
+                            document.getElementById('bar').classList.add('bg-success');
+                            if (lang == "es") {
+                                alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
+                            } else if (lang == "en") {
+                                alertTop(`Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-scckie" href="../edit?id=${id}">click here</a>.`, 1, 'alrtPlusContainer');
+                            }
+                        }, 1000);
+                        setTimeout(function () {
+                            if (lang == "es") {
+                                window.location.href = '../editar?id=' + id;
+                            } else if (lang == "en") {
+                                window.location.href = '../edit?id=' + id;
+                            }
+                        }, 3000);
+                    }).catch(err => console.log(err));
+                }).catch((err) => {
+                    setprog('0');
+                    if (lang == "es") {
+                        alertTop("<strong>Ocurrió un error: " + err + ".</strong><br>LLamar a Javier.", 0, 'alrtPlusContainer');
+                    } else if (lang == "en") {
+                        alertTop("<strong>There has been an error: " + err + ".</strong><br>Call Javier.", 0, 'alrtPlusContainer');
                     }
-                    return today;
-                }, err => {
-                    if (err) {
-                        setprog('0');
-                        if (lang == "es") {
-                            alertTop("<strong>Ocurrió un error: " + err + ".</strong><br>LLamar a Javier.", 0, 'alrtPlusContainer');
-                        } else if (lang == "en") {
-                            alertTop("<strong>There has been an error: " + err + ".</strong><br>Call Javier.", 0, 'alrtPlusContainer');
-                        }
-                        console.log(err);
-                    } else {
-                        setprog('52');
-                        const promises = [];
-                        langs.forEach((l, i) => {
-                            setprog(30 / langs.length * i);
-                            promises.push(db.collection('cookies/langs/' + l).doc(id).set({
-                                authors: [author],
-                                cont: [
-                                    {
-                                        type: "head",
-                                        title: title,
-                                        author: [author]
-                                    },
-                                    {
-                                        type: "ref",
-                                        ref: []
-                                    }
-                                ],
-                                media: [],
-                                picUrl: "",
-                                title: title,
-                                description: "",
-                                file: file,
-                                owner: uid,
-                                java: "",
-                                revised: {},
-                                notify: false,
-                                public: false,
-                                beenPublic: false,
-                                dledit: false,
-                                created: new firebase.firestore.Timestamp.now(),
-                                ledit: new firebase.firestore.Timestamp.now(),
-                                published: new firebase.firestore.Timestamp.now(),
-                                pop: 0,
-                                likes: 0,
-                                favs: 0,
-                                url: "",
-                                fixedCats: [],
-                                cats: [],
-                                translations: {
-                                    es: file
-                                }
-                            }));
-                        });
-                        Promise.all(promises).then(() => {
-                            setprog('90');
-                            setTimeout(function () {
-                                setprog('100');
-                                document.getElementById('bar').classList.add('bg-success');
-                                if (lang == "es") {
-                                    alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
-                                } else if (lang == "en") {
-                                    alertTop(`Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-scckie" href="../edit?id=${id}">click here</a>.`, 1, 'alrtPlusContainer');
-                                }
-                            }, 1000);
-                            setTimeout(function () {
-                                if (lang == "es") {
-                                    window.location.href = '../editar?id=' + id;
-                                } else if (lang == "en") {
-                                    window.location.href = '../edit?id=' + id;
-                                }
-                            }, 3000);
-                        }).catch(err => console.log(err));
-                    }
+                    console.log(err);
                 });
             }
         }).catch(err => console.log(err));
@@ -128,7 +152,7 @@ window.loaded = function loaded() {
 
 const previewLim = 21;
 //Get search params
-var kywords, srtOrd, desc, srchRef;
+var kywords, srtOrd, desc, srchQuery;
 var nxtp = false, paglast = [null], page = 1;
 var allChk = false;
 function initSrch(stAf) {
@@ -172,29 +196,29 @@ function initSrch(stAf) {
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         if (kywords == undefined || kywords == null || kywords == "") {
             if (!desc) {
-                srchRef = cookiesFSRef.orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+                srchQuery = query(cookiesFSColl, orderBy(srtOrd), startAfter(paglast[page - 1]), limit(previewLim));
             } else {
-                srchRef = cookiesFSRef.orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+                srchQuery = query(cookiesFSColl, orderBy(srtOrd, 'desc'), startAfter(paglast[page - 1]), limit(previewLim));
             }
         } else {
             if (!desc) {
-                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+                srchQuery = query(cookiesFSColl, where('title', '==', kywords), orderBy(srtOrd), startAfter(paglast[page - 1]), limit(previewLim));
             } else {
-                srchRef = dcookiesFSRef.where('title', '==', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+                srchQuery = query(dcookiesFSColl, where('title', '==', kywords), orderBy(srtOrd, 'desc'), startAfter(paglast[page - 1]), limit(previewLim));
             }
         }
     } else {
         if (kywords == undefined || kywords == null || kywords == "") {
             if (!desc) {
-                srchRef = cookiesFSRef.orderBy(srtOrd).limit(previewLim);
+                srchQuery = query(cookiesFSColl, orderBy(srtOrd), limit(previewLim));
             } else {
-                srchRef = cookiesFSRef.orderBy(srtOrd, 'desc').limit(previewLim);
+                srchQuery = query(cookiesFSColl, orderBy(srtOrd, 'desc'), limit(previewLim));
             }
         } else {
             if (!desc) {
-                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd).limit(previewLim);
+                srchQuery = query(cookiesFSColl, where('title', '==', kywords), orderBy(srtOrd), limit(previewLim));
             } else {
-                srchRef = cookiesFSRef.where('title', '==', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
+                srchQuery = query(cookiesFSColl, where('title', '==', kywords), orderBy(srtOrd, 'desc'), limit(previewLim));
             }
         }
     }
@@ -212,7 +236,7 @@ function shwSrch() {
     } else {
         document.getElementById('crdContainer').innerHTML = "";
     }
-    srchRef.get().then(snap => {
+    getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
         let idx = 0;
@@ -314,7 +338,6 @@ function shwSrch() {
             drpitm1.innerHTML = 'Vista correo <i class="fas fa-envelope"></i>';
             drpmenu.appendChild(drpitm1);
             let drpitm2 = document.createElement('button');
-            let drpitm3 = document.createElement('button');
             let d = doc.data().created.toDate();
             if (doc.data().public) {
                 drpitm2.classList.add('dropdown-item');
@@ -328,14 +351,6 @@ function shwSrch() {
                 };
                 drpitm2.innerHTML = 'Ver artículo <i class="fas fa-eye"></i>';
                 drpmenu.appendChild(drpitm2);
-                /*drpitm3.classList.add('dropdown-item');@# sync langs
-                drpitm3.onclick = function () {
-                    cookiesFSRef.doc(doc.id).update({
-                        public: false
-                    });
-                };
-                drpitm3.innerHTML = 'Volver privado <i class="fas fa-lock"></i>';*/
-                drpmenu.appendChild(drpitm3);
             }
             drp.appendChild(drpmenu);
             col1.appendChild(drp);

@@ -25,12 +25,12 @@ block precontent
         .modal-body
           .d-flex.flex-wrap
             if LANG=="es"
-              button.btn.btn-scckie.m-2(onclick="plusSect('parra');" data-dismiss='modal') Párrafo
+              button.btn.btn-science.m-2(onclick="plusSect('parra');" data-dismiss='modal') Párrafo
             else if LANG=="en"
-              button.btn.btn-scckie.m-2(onclick="plusSect('parra');" data-dismiss='modal') Paragraph
-            button.btn.btn-scckie.m-2(onclick="plusSect('html');" data-dismiss='modal') HTML
-            button.btn.btn-scckie.m-2(onclick="plusSect('youtube');" data-dismiss='modal') Youtube
-            button.btn.btn-scckie.m-2(onclick="plusSect('medSimple');" data-dismiss='modal') Multimedia
+              button.btn.btn-science.m-2(onclick="plusSect('parra');" data-dismiss='modal') Paragraph
+            button.btn.btn-science.m-2(onclick="plusSect('html');" data-dismiss='modal') HTML
+            button.btn.btn-science.m-2(onclick="plusSect('youtube');" data-dismiss='modal') Youtube
+            button.btn.btn-science.m-2(onclick="plusSect('medSimple');" data-dismiss='modal') Multimedia
           //- Add more@#
         .modal-footer
           button.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
@@ -164,9 +164,9 @@ block precontent
             #barPublish.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
         .modal-footer
           if LANG=="es"
-            button#btnCnfPublish.btn.btn-scckie.btn-block(type='button') Publicar
+            button#btnCnfPublish.btn.btn-science.btn-block(type='button') Publicar
           else if LANG=="en"
-            button#btnCnfPublish.btn.btn-scckie.btn-block(type='button') Publish
+            button#btnCnfPublish.btn.btn-science.btn-block(type='button') Publish
           button#btnCanPublish0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
       
   //- Translate modal
@@ -206,29 +206,29 @@ block precontent
               #barTranslate.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
           .modal-footer
             if LANG=="es"
-              button#btnCnfTranslate.btn.btn-scckie.btn-block(type='submit') Traducir
+              button#btnCnfTranslate.btn.btn-science.btn-block(type='submit') Traducir
             else if LANG=="en"
-              button#btnCnfTranslate.btn.btn-scckie.btn-block(type='submit') Translate
+              button#btnCnfTranslate.btn.btn-science.btn-block(type='submit') Translate
             button#btnCanTranslate0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
 
   //- Side toolbar
   .tbar.tbar-right.btn-toolbar.mb-3(role='toolbar')
     .btn-group-vertical.mr-2.btn-group-lg(role='group')
-      button.btn.btn-scckie(data-toggle='modal' data-target='#mdlPlusSect' onclick='toAdd=docDat.cont.length-1;')
+      button.btn.btn-science(data-toggle='modal' data-target='#mdlPlusSect' onclick='toAdd=docDat.cont.length-1;')
         i.fas.fa-plus
-      button.btn.btn-scckie(data-toggle='modal' data-target='#mdlMedMan')
+      button.btn.btn-science(data-toggle='modal' data-target='#mdlMedMan')
         i.fas.fa-image
-      button.btn.btn-scckie(data-toggle='modal' data-target='#mdlTranslate')
+      button.btn.btn-science(data-toggle='modal' data-target='#mdlTranslate')
         i.fas.fa-language
-      a#btnPrevCook.btn.btn-scckie(target="_blank")
+      a#btnPrevCook.btn.btn-science(target="_blank")
         i.fas.fa-eye
-      a#btnPrevMail.btn.btn-scckie(target="_blank")
+      a#btnPrevMail.btn.btn-science(target="_blank")
         i.fas.fa-envelope
-      button#btnPrivate.btn.btn-scckie.d-none
+      button#btnPrivate.btn.btn-science.d-none
         i.fas.fa-lock
-      button#btnAprove.btn.btn-scckie.d-none
+      button#btnAprove.btn.btn-science.d-none
         i.far.fa-check-square
-      button#btnPub.btn.btn-scckie.d-none(data-toggle='modal' data-target='#mdlPublish')
+      button#btnPub.btn.btn-science.d-none(data-toggle='modal' data-target='#mdlPublish')
         i.fas.fa-paper-plane
 
 

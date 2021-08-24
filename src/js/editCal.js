@@ -1,7 +1,36 @@
-var store = firebase.storage();
-var rtDb = firebase.database();
+import { initializeApp, getApps, getApp } from "firebase/app"
 
-let docDat, docId, docRef, calConfig;
+var firebaseConfig = {
+    apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
+    authDomain: "sciencecookies.net",
+    databaseURL: "https://science-cookies.firebaseio.com",
+    projectId: "science-cookies",
+    storageBucket: "science-cookies.appspot.com",
+    messagingSenderId: "906770471712",
+    appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
+    measurementId: "G-1MYVREMBFV"
+};
+
+var firebaseApp;
+if (!getApps().length) {
+    firebaseApp = initializeApp(firebaseConfig);
+}
+else {
+    firebaseApp = getApp();
+}
+
+import { getDatabase, ref, set } from "firebase/database";
+const RTDB = getDatabase();
+
+import { getFunctions, httpsCallable } from "firebase/functions";
+const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
+
+import { getFirestore, getDoc, doc as docRef, onSnapshot, updateDoc, setDoc } from "firebase/firestore";
+const FSDB = getFirestore();
+
+var store = firebase.storage();
+
+let docDat, docId, calDocRef, calConfig;
 let lastSave = Date.now(), saved = false;
 
 let newMedia = null;
@@ -10,7 +39,7 @@ let newMedSrc = null;
 let eventToShow = null;
 
 async function translateSimple(text, from, target) {
-    let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateSimple');
+    var translate = httpsCallable(FUNCTIONS, 'translations-translateSimple');
     let res = await translate({
         text: text,
         from: from,
@@ -91,10 +120,10 @@ function fullMonth(n, l) {
 }
 
 window.loaded = function loaded() {
-    db.collection('config').doc('calTypes').get().then(doc => {
+    getDoc(docRef(FSDB, 'config', 'calTypes')).then(doc => {
         calConfig = doc.data();
-        docRef = calendarsFSRef.doc(urlSrch.get('id'));
-        calendarsFSRef.doc(urlSrch.get('id')).onSnapshot(doc => {
+        calDocRef = docRef(calendarsFSColl, urlSrch.get('id'));
+        onSnapshot(calDocRef, doc => {
             if (!doc.exists) {
                 window.location.href = '../404';
                 return;
@@ -139,7 +168,7 @@ window.loaded = function loaded() {
     });
     document.getElementById('btnFileTrans').onclick = function () {
         let ori = document.getElementById('selFileTrans').value
-        db.collection('calendars/langs/' + ori).doc(docId).get().then(async function (doc) {
+        getDoc(docRef(FSDB, 'calendars/langs/' + ori, docId)).then(async function (doc) {
             docDat.picCapt = document.getElementById('inPicCapt').value = await translateSimple(doc.data().picCapt, ori, lang);
             docDat.picAlt = document.getElementById('inPicAlt').value = await translateSimple(doc.data().picAlt, ori, lang);
             docDat.description = document.getElementById('inDesc').value = await translateSimple(doc.data().description, ori, lang);
@@ -149,7 +178,7 @@ window.loaded = function loaded() {
     }
 
     function translateFrm() {
-        let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateFullCalendar');
+        const translate = httpsCallable(FUNCTIONS, 'translations-translateFullCalendar');
         return translate({
             docId: docId,
             from: document.getElementById('inTransFrom').value,
@@ -258,11 +287,11 @@ function saveDoc() {
                 timePrev: docDat.timePrev | null,
             }
             syncUpt.translations[lang] = docDat.url;
-            promises.push(db.collection('calendars/langs/' + l).doc(docId).update(syncUpt));
+            promises.push(updateDoc(docRef(FSDB, 'calendars/langs/' + l, docId), syncUpt));
         }
     })
     return Promise.all(promises).then(() => {
-        return docRef.update(docDat);
+        return updateDoc(calDocRef, docDat);
     });
 }
 function normSave() {
@@ -713,7 +742,7 @@ function render() {
         classes(btnTrans, 'btn btn-scckie mx-2');
         btnTrans.innerHTML = '<i class="fas fa-language"></i>';
         btnTrans.onclick = function () {
-            db.collection('calendars/langs/' + selLang.value).doc(docId).get().then(async function (doc) {
+            getDoc(docRef(FSDB, 'calendars/langs/' + selLang.value, docId)).then(async function (doc) {
                 let newEve = doc.data().events[key];
                 if (!newEve) return;
                 event.typeIdx = newEve.typeIdx;
@@ -964,115 +993,11 @@ document.getElementById('btnAprove').onclick = function () {
     }
     if (validateRevision()) {
         docDat.finished = true;
-        newCal();
     } else {
         docDat.finished = false;
     }
     normSave();
 };
-
-function newCal() {
-    let nextCalID;
-    rtDb.ref('nextCal').transaction(nCal => {
-        if (nCal) {
-            nextCalID = nCal;
-            nCal++;
-            if (nCal % 100 == 13) {
-                nCal -= 12;
-                nCal += 100;
-            }
-        }
-        return nCal;
-    }, (error) => {
-        if (error) {
-            console.log(error);
-        } else {
-            let date = new Date((nextCalID - nextCalID % 100) / 100 + ' ' + nextCalID % 100 + ' ' + '00:00');
-            let weeks = [];
-            let days;
-            if (date.getMonth() == 1) {
-                if (date.getFullYear() % 4 == 0) {
-                    days = 29;
-                } else {
-                    days = 28;
-                }
-            } else if (date.getMonth() % 2 == 0) {
-                if (date.getMonth() <= 6) days = 31;
-                else days = 30;
-            } else {
-                if (date.getMonth() <= 6) days = 30;
-                else days = 31;
-            }
-            let bDay = date.getDay();
-            for (let i = 1; i <= days; i = i) {
-                let week = {};
-                for (let j = bDay; j < daysOfWeek.length; j++) {
-                    if (i > days) break;
-                    week[daysOfWeek[j]] = {
-                        date: i,
-                        events: []
-                    }
-                    i++;
-                }
-                weeks.push(week);
-                bDay = 0;
-            }
-            const promises = [];
-            langs.forEach(l => {
-                let newC = {
-                    events: {},
-                    published: firebase.firestore.Timestamp.fromDate(date),
-                    description: "",
-                    descriptionShort: "",
-                    finished: false,
-                    pastDue: false,
-                    picUrl: "",
-                    picAlt: "",
-                    picCapt: "",
-                    public: false,
-                    sentMail: false,
-                    revised: {},
-                    title: "",
-                    url: "",
-                    nextCal: "",
-                    priorCal: "",
-                    weeks: weeks,
-                    translations: {}
-                }
-
-                let intId = parseInt(nextCalID);
-                let year = (intId - intId % 100) / 100;
-                let nYear = (intId - intId % 100) / 100;
-                let pYear = (intId - intId % 100) / 100;
-                if (intId % 100 == 12) nYear++;
-                if (intId % 100 == 1) pYear--;
-                let month = fullMonth(intId % 100, l);
-                let nMonth = fullMonth(intId % 100 + 1, l).toLowerCase();
-                let pMonth = fullMonth(intId % 100 - 1, l).toLowerCase();
-                let calsText = "";
-                switch (l) {
-                    case "es":
-                        calsText = "calendario-astronomico";
-                        newC.title = "Calendario Astronómico de " + month + " " + year;
-                        break;
-                    case "en":
-                        calsText = "astronomic-calendar";
-                        newC.title = "Astronomic Calendar of " + month + " " + year;
-                        break;
-                }
-                newC.url = "https://sciencecookies.net/" + calsText + "/" + year + "/" + month.toLowerCase() + "/";
-                newC.nextCal = "https://sciencecookies.net/" + calsText + "/" + nYear + "/" + nMonth + "/";
-                newC.priorCal = "https://sciencecookies.net/" + calsText + "/" + pYear + "/" + pMonth + "/";
-
-                promises.push(db.collection('calendars/langs/' + l).doc(Math.abs(nextCalID).toString()).set(newC));
-
-            })
-            return Promise.all(promises).then(() => {
-                console.log('exito');
-            }).catch(err => console.log(err));
-        }
-    });
-}
 
 $('#mdlPublish').on('show.bs.modal', e => {
     if (validateRevision()) {
@@ -1094,32 +1019,23 @@ document.getElementById('btnCnfPublish').onclick = function () {
 
     saveDoc().then(() => {
         setprog('barPublish', 58);
-        admin.database().ref('calendarios/' + docId).set({
+        return set(ref(RTDB, 'calendarios/' + docId), {
             pop: 0
-        }, err => {
-            if (err) {
-                if (lang == "es") {
-                    alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
-                } else if (lang == "en") {
-                    alertTop("<strong>¡There has been an error!</strong> " + err.code, 0);
-                }
-                console.log(err);
-            } else {
-                setprog('barPublish', 100);
-                classes(document.getElementById('barPublish'), 'bg-success');
-                if (lang == "es") {
-                    alertTop("Publicado correctamente", 1);
-                } else if (lang == "en") {
-                    alertTop("Published successfully", 1);
-                }
-                setTimeout(function () {
-                    window.open(docDat.url, '_blank').focus();
-                }, 2500);
-                $('#mdlPublish').modal('hide');
-                console.log('Published ' + docId + ' calendar');
-                return null;
-            }
         });
+    }).then(() => {
+        setprog('barPublish', 100);
+        classes(document.getElementById('barPublish'), 'bg-success');
+        if (lang == "es") {
+            alertTop("Publicado correctamente", 1);
+        } else if (lang == "en") {
+            alertTop("Published successfully", 1);
+        }
+        setTimeout(function () {
+            window.open(docDat.url, '_blank').focus();
+        }, 2500);
+        $('#mdlPublish').modal('hide');
+        console.log('Published ' + docId + ' calendar');
+        return null;
     }).catch(err => {
         if (lang == "es") {
             alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);

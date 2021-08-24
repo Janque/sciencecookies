@@ -1,7 +1,36 @@
-var store = firebase.storage();
-var rtDb = firebase.database();
+import { initializeApp, getApps, getApp } from "firebase/app"
 
-let docDat, docId, docRef;
+var firebaseConfig = {
+    apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
+    authDomain: "sciencecookies.net",
+    databaseURL: "https://science-cookies.firebaseio.com",
+    projectId: "science-cookies",
+    storageBucket: "science-cookies.appspot.com",
+    messagingSenderId: "906770471712",
+    appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
+    measurementId: "G-1MYVREMBFV"
+};
+
+var firebaseApp;
+if (!getApps().length) {
+    firebaseApp = initializeApp(firebaseConfig);
+}
+else {
+    firebaseApp = getApp();
+}
+
+import { getDatabase, ref, set } from "firebase/database";
+const RTDB = getDatabase();
+
+import { getFunctions, httpsCallable } from "firebase/functions";
+const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
+
+import { getFirestore, getDoc, doc as docRef, getDocs, onSnapshot, updateDoc, query } from "firebase/firestore";
+const FSDB = getFirestore();
+
+var store = firebase.storage();
+
+let docDat, docId, cookDocRef;
 let toDel = -1, toAdd = -1;
 let lastSave = Date.now(), saved = false;
 
@@ -13,7 +42,7 @@ let newMedSrc = null;
 let keywords = [];
 
 async function translateSimple(text, from, target) {
-    let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateSimple');
+    var translate = httpsCallable(FUNCTIONS, 'translations-translateSimple');
     let res = await translate({
         text: text,
         from: from,
@@ -50,8 +79,9 @@ window.loaded = function loaded() {
         document.getElementById('catFrmCont').appendChild(fat);
     });
 
-    docRef = cookiesFSRef.doc(urlSrch.get('id'));
-    docRef.onSnapshot(doc => {
+
+    cookDocRef = docRef(cookiesFSColl, urlSrch.get('id'));
+    onSnapshot(cookDocRef, doc => {
         docDat = doc.data();
         docId = doc.id;
         document.getElementById('inFile').value = docDat.file;
@@ -81,7 +111,7 @@ window.loaded = function loaded() {
 
     fillTrans();
     function translateFrm() {
-        let translate = firebase.app().functions('us-east1').httpsCallable('translations-translateFullCookie');
+        const translate = httpsCallable(FUNCTIONS, 'translations-translateFullCookie');
         return translate({
             docId: docId,
             from: document.getElementById('inTransFrom').value,
@@ -118,7 +148,7 @@ window.loaded = function loaded() {
 
     function fileFrm() {
         let file = document.getElementById('inFile').value;
-        cookiesFSRef.where("file", "==", file).get().then(snap => {
+        getDocs(query(cookiesFSColl, where("file", "==", file))).then(snap => {
             if (!snap.empty && file != docDat.file) {
                 if (lang == "es") {
                     alertTop("Ese nombre de archivo ya esta en uso.", 0);
@@ -148,7 +178,7 @@ window.loaded = function loaded() {
     })
     document.getElementById('btnFileTrans').onclick = function () {
         let ori = document.getElementById('selFileTrans').value
-        db.collection('cookies/langs/' + ori).doc(docId).get().then(async function (doc) {
+        getDoc(docRef(FSDB, 'cookies/langs/' + ori, docId)).then(async function (doc) {
             let file = doc.data().file;
             let desc = doc.data().description;
             document.getElementById('inFile').value = await translateSimple(file, ori, lang);
@@ -264,11 +294,11 @@ function saveDoc() {
                 syncUpt.fixedCats.splice(idx, 1, catTranslations[cat][l]);
             });
             syncUpt.translations[lang] = docDat.url;
-            promises.push(db.collection('cookies/langs/' + l).doc(docId).update(syncUpt));
+            promises.push(updateDoc(docRef(FSDB, 'cookies/langs/' + l, docId), syncUpt));
         }
     })
     return Promise.all(promises).then(() => {
-        return docRef.update(docDat);
+        return updateDoc(cookDocRef, docDat);
     });
 }
 function normSave() {
@@ -557,7 +587,7 @@ function render() {
             classes(btnTrans, 'btn btn-light btn-link-scckie');
             btnTrans.innerHTML = '<i class="fas fa-language"></i>';
             btnTrans.onclick = function () {
-                db.collection('cookies/langs/' + selLang.value).doc(docId).get().then(async function (doc) {
+                getDoc(docRef(FSDB, 'cookies/langs/' + selLang.value, docId)).then(async function (doc) {
                     let sect = doc.data().cont[idx];
                     if (item.type != sect.type) return;
                     if (sect.type == 'head') {
@@ -1561,18 +1591,14 @@ document.getElementById('btnCnfPublish').onclick = function () {
     }
 
     saveDoc().then(() => {
-        rtDb.ref('galletas/' + docId).set({
+        return set(ref(RTDB, 'galletas/' + docId), {
             pop: docDat.pop,
             likes: docDat.likes,
             favs: docDat.favs
-        }, err => {
-            if (err) {
-                console.log("Data could not be saved." + err);
-            } else {
-                setprog('barPublish', 84);
-                finishPub();
-            }
         });
+    }).then(() => {
+        setprog('barPublish', 84);
+        finishPub();
     }).catch(err => {
         if (lang == "es") {
             alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);

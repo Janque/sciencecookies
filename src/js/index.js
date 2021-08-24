@@ -1,8 +1,34 @@
+import { initializeApp, getApps, getApp } from "firebase/app"
+
+var firebaseConfig = {
+    apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
+    authDomain: "sciencecookies.net",
+    databaseURL: "https://science-cookies.firebaseio.com",
+    projectId: "science-cookies",
+    storageBucket: "science-cookies.appspot.com",
+    messagingSenderId: "906770471712",
+    appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
+    measurementId: "G-1MYVREMBFV"
+};
+
+var firebaseApp;
+if (!getApps().length) {
+    firebaseApp = initializeApp(firebaseConfig);
+}
+else {
+    firebaseApp = getApp();
+}
+
+import { getDatabase, ref, set, increment } from "firebase/database";
+const RTDB = getDatabase();
+
+import { query, where, orderBy, limit, getDocs, startAfter } from "firebase/firestore";
+
 var catnmb;
 const previewLim = 20;
 
 //Get search params
-var cats = [], kywords, srtOrd, desc, srchRef;
+var cats = [], kywords, srtOrd, desc, srchQuery;
 var nxtp = false, paglast = [null], page = 1;
 var allChk = false;
 function initSrch(stAf) {
@@ -57,46 +83,27 @@ function initSrch(stAf) {
     }
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         if (!desc) {
-            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).startAfter(paglast[page - 1]).limit(previewLim);
+            srchQuery = query(cookiesFSColl, where('public', '==', true), where('cats', 'array-contains-any', kywords), orderBy(srtOrd), startAfter(paglast[page - 1]), limit(previewLim));
         } else {
-            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').startAfter(paglast[page - 1]).limit(previewLim);
+            srchQuery = query(cookiesFSColl, where('public', '==', true), where('cats', 'array-contains-any', kywords), orderBy(srtOrd, 'desc'), startAfter(paglast[page - 1]), limit(previewLim));
         }
     } else {
         if (!desc) {
-            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd).limit(previewLim);
+            srchQuery = query(cookiesFSColl, where('public', '==', true), where('cats', 'array-contains-any', kywords), orderBy(srtOrd), limit(previewLim));
         } else {
-            srchRef = cookiesFSRef.where('public', '==', true).where('cats', 'array-contains-any', kywords).orderBy(srtOrd, 'desc').limit(previewLim);
+            srchQuery = query(cookiesFSColl, where('public', '==', true), where('cats', 'array-contains-any', kywords), orderBy(srtOrd, 'desc'), limit(previewLim));
         }
     }
     shwSrch();
-    const promises = [];
-    let notSrchd = [], allP = null;
     for (let i = 0; i < kywords.length; i++) {
         let itm = kywords[i];
         if (itm == '' || itm == ' ') continue;
-        const p = firebase.database().ref('searchQs/' + itm).transaction(search => {
-            if (search) {
-                notSrchd.splice(notSrchd.indexOf(itm), 1);
-                search.count++;
-            } else {
-                notSrchd.push(itm);
-            }
-            return search;
-        });
-        promises.push(p);
+        set(ref(RTDB, 'searchQs/' + itm + '/count'), increment(1));
     }
-    allP = Promise.all(promises);
-    allP.then(() => {
-        notSrchd.forEach((itm) => {
-            firebase.database().ref('searchQs/' + itm).set({
-                count: 1
-            });
-        })
-    }).catch(err => { console.log('err') });
 }
 function shwSrch() {
     document.getElementById('cookiesCont').innerHTML = "";
-    srchRef.get().then(snap => {
+    getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
         if (docs.length == 0) {
@@ -233,7 +240,7 @@ function prepCatBtns() {
     }
 }
 function shwCalMain() {
-    calendarsFSRef.where("public", "==", true).orderBy('published', 'desc').limit(1).get().then(snap => {
+    getDocs(query(calendarsFSColl, where("public", "==", true), orderBy('published', 'desc'), limit(1))).then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let a = document.createElement('a');

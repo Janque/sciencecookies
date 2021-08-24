@@ -8,16 +8,20 @@
     "fireStart": "./scripts/fireStart.sh"
   },
   "devDependencies": {
-    "@parcel/transformer-pug": "^2.0.0-beta.3.1",
-    "@parcel/transformer-sass": "^2.0.0-beta.3.1",
-    "parcel": "^2.0.0-beta.3.1"
+    "@parcel/resolver-glob": "^2.0.0-rc.0",
+    "@parcel/transformer-pug": "^2.0.0-rc.0",
+    "@parcel/transformer-sass": "^2.0.0-rc.0",
+    "parcel": "^2.0.0-rc.0"
   },
-  "dependencies": {},
   "browserslist": [
     "last 3 and_chr versions",
     "last 3 chrome versions",
     "last 3 opera versions",
     "last 3 ios_saf versions",
     "last 3 safari versions"
-  ]
+  ],
+  "dependencies": {
+    "firebase": "^9.0.0-beta.7",
+    "firebaseui": "^0.600.0-rc.0"
+  }
 }

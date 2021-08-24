@@ -1,3 +1,30 @@
+import { initializeApp, getApps, getApp } from "firebase/app"
+
+var firebaseConfig = {
+    apiKey: "AIzaSyCc5LmjPpufLuHzR6RiXR7awOdGuWpztTk",
+    authDomain: "sciencecookies.net",
+    databaseURL: "https://science-cookies.firebaseio.com",
+    projectId: "science-cookies",
+    storageBucket: "science-cookies.appspot.com",
+    messagingSenderId: "906770471712",
+    appId: "1:906770471712:web:c7a2c16bac19b6c2d7d545",
+    measurementId: "G-1MYVREMBFV"
+};
+
+var firebaseApp;
+if (!getApps().length) {
+    firebaseApp = initializeApp(firebaseConfig);
+}
+else {
+    firebaseApp = getApp();
+}
+
+import { getAuth, onAuthStateChanged, updateProfile } from "firebase/auth";
+const AUTH = getAuth();
+
+import { getFirestore, getDoc, doc as docRef, updateDoc } from "firebase/firestore";
+const FSDB = getFirestore();
+
 //Global
 var fav, liked, points, rank, gotFL = false;
 var favn, favl, likedn, likedl;
@@ -8,7 +35,8 @@ var fileForUp = null;
 
 window.loaded = function loaded() {
     //Check auth
-    firebase.auth().onAuthStateChanged(function (user) {
+
+    onAuthStateChanged(AUTH, (user) => {
         if (user) {
             document.getElementById('picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
             document.getElementById('picUsr').src = photoURL;
@@ -19,10 +47,10 @@ window.loaded = function loaded() {
     });
     function send() {
         displayName = document.getElementById('inNewNck').value;
-        firebase.auth().currentUser.updateProfile({
-            displayName: displayName,
+        updateProfile(AUTH.currentUser, {
+            displayName: displayName
         }).then(function () {
-            db.collection('usersPublic').doc(publicID).update({
+            updateDoc(docRef(FSDB, "usersPublic", publicID), {
                 name: displayName,
                 pic: photoURL,
                 email: email,
@@ -34,7 +62,7 @@ window.loaded = function loaded() {
                 rank: rank,
                 visible: document.getElementById('inPubPrfl').checked,
                 vemail: document.getElementById('inPubEmail').checked,
-                vfl: document.getElementById('inPubFL').checked,
+                vfl: document.getElementById('inPubFL').checked
             }).then(() => {
                 resetFrm();
                 document.getElementById('disName').innerHTML = newNk;
@@ -47,20 +75,20 @@ window.loaded = function loaded() {
         $('#mdlCngNck').modal('hide');
     });
     function uptPref() {
-        db.collection('users').doc(uid).update({
+        updateDoc(docRef(FSDB, 'users', uid), {
             visible: document.getElementById('inPubPrfl').checked,
             vemail: document.getElementById('inPubEmail').checked,
             vfl: document.getElementById('inPubFL').checked,
             rNews: document.getElementById('inNews').checked,
         }).then(() => {
             if (rNews != lrNews) {
-                let newsRef = db.collection("newsletters").doc("base");
+                let newsRef = docRef(FSDB, "newsletters", "base");
                 if (lrNews) {
-                    newsRef.update({
+                    updateDoc(newsRef, {
                         emails: firebase.firestore.FieldValue.arrayUnion(email)
                     });
                 } else {
-                    newsRef.update({
+                    updateDoc(newsRef, {
                         emails: firebase.firestore.FieldValue.arrayRemove(email)
                     });
                 }
@@ -69,7 +97,7 @@ window.loaded = function loaded() {
             vemail = lvemail;
             vfl = lvfl;
             rNews = lrNews;
-            db.collection('usersPublic').doc(publicID).update({
+            updateDoc(docRef(FSDB, "usersPublic", publicID), {
                 name: displayName,
                 pic: photoURL,
                 email: email,
@@ -120,10 +148,10 @@ window.loaded = function loaded() {
                 $('#mdlCngPP').modal('hide');
                 ref.getDownloadURL().then(url => {
                     url = url.replace('pp?', 'pp_200x200?');
-                    firebase.auth().currentUser.updateProfile({
-                        photoURL: url,
+                    updateProfile(AUTH.currentUser, {
+                        photoURL: url
                     }).then(() => {
-                        db.collection('usersPublic').doc(publicID).update({
+                        updateDoc(docRef(FSDB, "usersPublic", publicID), {
                             pic: url,
                             email: email,
                             favn: favn,
@@ -131,7 +159,7 @@ window.loaded = function loaded() {
                             likedn: likedn,
                             likedl: likedl,
                             points: points,
-                            rank: rank,
+                            rank: rank
                         }).then(() => { }).catch(err => { console.log(err) });
                     }).catch(err => { console.log(err) });
                 }).catch(err => { console.log(err) });
@@ -262,7 +290,7 @@ function shwPref() {
 }
 function shwCrds(t) {
     if (gotFL == false) {
-        db.collection('users').doc(uid).get().then(function (doc) {
+        getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
             fav = doc.data().fav;
             liked = doc.data().liked;
             favn = doc.data().favn;

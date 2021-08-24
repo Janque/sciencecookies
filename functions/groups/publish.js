@@ -4,6 +4,7 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const axios = require('axios');
 const config = functions.config();
+const RTDB = admin.database();
 
 //Auth for moderators
 exports.modAuth = functions.region('us-east1').https.onCall((uid) => {
@@ -360,7 +361,7 @@ exports.cookiesNewsletter = functions.region('us-east1').firestore.document('coo
                                         </tbody>
                                         <tbody>
                                             <tr>
-                                            <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">`+ dat.description+ `</td>
+                                            <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">`+ dat.description + `</td>
                                             </tr>
                                             <tr>
                                             <td height="20" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
@@ -789,7 +790,7 @@ exports.cookiesNewsletter = functions.region('us-east1').firestore.document('coo
                                             </tbody>
                                             <tbody>
                                                 <tr>
-                                                <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">`+ dat.description+ `</td>
+                                                <td class="pc-fb-font" style="font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 300; line-height: 28px; letter-spacing: -0.2px; color: #f8f9fa" valign="top" align="center">`+ dat.description + `</td>
                                                 </tr>
                                                 <tr>
                                                 <td height="20" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
@@ -949,9 +950,118 @@ exports.cookiesNewsletter = functions.region('us-east1').firestore.document('coo
     });
 });
 
+
+//New calendar
+function newCal() {
+    return db.collection('config').doc('langs').get().then(config => {
+        const langs = config.data().langs;
+        let nextCalID;
+        RTDB.ref('nextCal').transaction(nCal => {
+            if (nCal) {
+                nextCalID = nCal;
+                nCal++;
+                if (nCal % 100 == 13) {
+                    nCal -= 12;
+                    nCal += 100;
+                }
+            }
+            return nCal;
+        }, (error) => {
+            if (error) {
+                console.log(error);
+            } else {
+                let date = new Date((nextCalID - nextCalID % 100) / 100 + ' ' + nextCalID % 100 + ' ' + '00:00');
+                let weeks = [];
+                let days;
+                if (date.getMonth() == 1) {
+                    if (date.getFullYear() % 4 == 0) {
+                        days = 29;
+                    } else {
+                        days = 28;
+                    }
+                } else if (date.getMonth() % 2 == 0) {
+                    if (date.getMonth() <= 6) days = 31;
+                    else days = 30;
+                } else {
+                    if (date.getMonth() <= 6) days = 30;
+                    else days = 31;
+                }
+                let bDay = date.getDay();
+                for (let i = 1; i <= days; i = i) {
+                    let week = {};
+                    for (let j = bDay; j < daysOfWeek.length; j++) {
+                        if (i > days) break;
+                        week[daysOfWeek[j]] = {
+                            date: i,
+                            events: []
+                        }
+                        i++;
+                    }
+                    weeks.push(week);
+                    bDay = 0;
+                }
+                const promises = [];
+                langs.forEach(l => {
+                    let newC = {
+                        events: {},
+                        published: admin.firestore.Timestamp.fromDate(date),
+                        description: "",
+                        descriptionShort: "",
+                        finished: false,
+                        pastDue: false,
+                        picUrl: "",
+                        picAlt: "",
+                        picCapt: "",
+                        public: false,
+                        sentMail: false,
+                        revised: {},
+                        title: "",
+                        url: "",
+                        nextCal: "",
+                        priorCal: "",
+                        weeks: weeks,
+                        translations: {}
+                    }
+
+                    let intId = parseInt(nextCalID);
+                    let year = (intId - intId % 100) / 100;
+                    let nYear = (intId - intId % 100) / 100;
+                    let pYear = (intId - intId % 100) / 100;
+                    if (intId % 100 == 12) nYear++;
+                    if (intId % 100 == 1) pYear--;
+                    let month = fullMonth(intId % 100, l);
+                    let nMonth = fullMonth(intId % 100 + 1, l).toLowerCase();
+                    let pMonth = fullMonth(intId % 100 - 1, l).toLowerCase();
+                    let calsText = "";
+                    switch (l) {
+                        case "es":
+                            calsText = "calendario-astronomico";
+                            newC.title = "Calendario Astronómico de " + month + " " + year;
+                            break;
+                        case "en":
+                            calsText = "astronomic-calendar";
+                            newC.title = "Astronomic Calendar of " + month + " " + year;
+                            break;
+                    }
+                    newC.url = "https://sciencecookies.net/" + calsText + "/" + year + "/" + month.toLowerCase() + "/";
+                    newC.nextCal = "https://sciencecookies.net/" + calsText + "/" + nYear + "/" + nMonth + "/";
+                    newC.priorCal = "https://sciencecookies.net/" + calsText + "/" + pYear + "/" + pMonth + "/";
+
+                    promises.push(db.collection('calendars/langs/' + l).doc(Math.abs(nextCalID).toString()).set(newC));
+                });
+                return Promise.all(promises).then(() => {
+                    console.log('Success!');
+                }).catch(err => console.log(err));
+            }
+        });
+    });
+}
+
 exports.calendarsNewsletter = functions.region('us-east1').firestore.document('calendars/langs/es/{calendar}').onUpdate((change, context) => {
     let emails, mailOptions;
+    const before = change.before.data();
     const dat = change.after.data();
+    if (dat.finished && !before.finished) newCal();
     if (dat.sentMail || !dat.public) return;
     return db.collection('calendars/langs/es').doc(context.params.calendar).update({
         sentMail: true

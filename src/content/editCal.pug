@@ -29,9 +29,9 @@ block precontent
             #barPublish.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
         .modal-footer
           if LANG=="es"
-            button#btnCnfPublish.btn.btn-scckie.btn-block(type='button') Publicar
+            button#btnCnfPublish.btn.btn-science.btn-block(type='button') Publicar
           else if LANG=="en"
-            button#btnCnfPublish.btn.btn-scckie.btn-block(type='button') Publish
+            button#btnCnfPublish.btn.btn-science.btn-block(type='button') Publish
           button#btnCanPublish0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
 
   //- Event Info modal
@@ -43,9 +43,9 @@ block precontent
           button.close(type='button' data-dismiss='modal' aria-label='Close')
             span(aria-hidden='true') ×
         .row.px-4.py-2
-          button#btnPriorEve.btn.btn-scckie.mr-auto
+          button#btnPriorEve.btn.btn-science.mr-auto
             i.fas.fa-arrow-left
-          button#btnNextEve.btn.btn-scckie
+          button#btnNextEve.btn.btn-science
             i.fas.fa-arrow-right
         #eventInfoCont.overflow-auto
 
@@ -83,29 +83,29 @@ block precontent
               #barTranslate.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%')
           .modal-footer
             if LANG=="es"
-              button#btnCnfTranslate.btn.btn-scckie.btn-block(type='submit') Traducir
+              button#btnCnfTranslate.btn.btn-science.btn-block(type='submit') Traducir
             else if LANG=="en"
-              button#btnCnfTranslate.btn.btn-scckie.btn-block(type='submit') Translate
+              button#btnCnfTranslate.btn.btn-science.btn-block(type='submit') Translate
             button#btnCanTranslate0.btn.btn-secondary.btn-block(type='button' data-dismiss='modal') #{Buttons[LANG]["cancel"]}
 
   //- Side toolbar
   .tbar.tbar-right.btn-toolbar.mb-3(role='toolbar')
     .btn-group-vertical.mr-2.btn-group-lg(role='group')
-      button.btn.btn-scckie(data-toggle='modal' data-target='#mdlTranslate')
+      button.btn.btn-science(data-toggle='modal' data-target='#mdlTranslate')
         i.fas.fa-language
-      a#btnPrevCal.btn.btn-scckie(target="_blank")
+      a#btnPrevCal.btn.btn-science(target="_blank")
         i.fas.fa-eye
-      a#btnPrevMail.btn.btn-scckie(target="_blank")
+      a#btnPrevMail.btn.btn-science(target="_blank")
         i.fas.fa-envelope
-      button#btnAprove.btn.btn-scckie.d-none
+      button#btnAprove.btn.btn-science.d-none
         i.far.fa-check-square
-      button#btnPub.btn.btn-scckie.d-none(data-toggle='modal' data-target='#mdlPublish')
+      button#btnPub.btn.btn-science.d-none(data-toggle='modal' data-target='#mdlPublish')
         i.fas.fa-paper-plane
-      a#btnSrcCal.btn.btn-scckie.text-decoration-none(target="_blank")
+      a#btnSrcCal.btn.btn-science.text-decoration-none(target="_blank")
         i.fas.fa-calendar-day
-      a#btnSrcCal2.btn.btn-scckie.text-decoration-none(target="_blank")
+      a#btnSrcCal2.btn.btn-science.text-decoration-none(target="_blank")
         i.fas.fa-calendar-day
-      a#btnSrcCal3.btn.btn-scckie.text-decoration-none(target="_blank")
+      a#btnSrcCal3.btn.btn-science.text-decoration-none(target="_blank")
         i.fas.fa-calendar-day
 
 block content
@@ -125,7 +125,7 @@ block content
         img#prevMed.card-img.m-0(src='https://via.placeholder.com/200.webp' onerror="this.src='https://via.placeholder.com/200.webp'")
         .card-img-overlay.pt-0(style='padding-left: 0.9rem; padding-right: 0.9rem;')
           .row.mb-2.p-0
-            button#btnChgImg.btn.btn-light.btn-scckie.btn-sm.ml-auto
+            button#btnChgImg.btn.btn-light.btn-science.btn-sm.ml-auto
               i.fas.fa-exchange-alt(aria-hidden='true')
         br
         if LANG=="es"

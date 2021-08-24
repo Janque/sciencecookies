@@ -30,9 +30,9 @@ block precontent
           button.close(type='button' data-dismiss='modal' aria-label='Close')
             span(aria-hidden='true') ×
         .row.px-4.py-2
-          button#btnPriorEve.btn.btn-scckie.mr-auto
+          button#btnPriorEve.btn.btn-science.mr-auto
             i.fas.fa-arrow-left
-          button#btnNextEve.btn.btn-scckie
+          button#btnNextEve.btn.btn-science
             i.fas.fa-arrow-right
         .overflow-auto
           each eve in events 
@@ -60,9 +60,9 @@ block precontent
 block content
   div.container-fluid.mb-2.rounded-lg.p-3.bg-rebecca
     .row.px-4.py-2.mb-4
-      a#btnPriorEve.btn.btn-lg.btn-light.btn-link-scckie.mr-auto(href=priorCal)
+      a#btnPriorEve.btn.btn-lg.btn-light.btn-link-science.mr-auto(href=priorCal)
         i.fas.fa-arrow-left
-      a#btnNextEve.btn.btn-lg.btn-light.btn-link-scckie(href=nextCal)
+      a#btnNextEve.btn.btn-lg.btn-light.btn-link-science(href=nextCal)
         i.fas.fa-arrow-right
     h1.text-center !{title}
     figure.mx-auto.portImg

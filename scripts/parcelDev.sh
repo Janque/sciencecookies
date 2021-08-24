@@ -17,8 +17,11 @@ cp -r src/layouts/* functions/views/layouts
 if [ ! -d "public" ] 
 then
     mkdir public
+else
+    rm -r public/*
 fi
-rm -r public
 
+mkdir public/vendor/
+cp -r src/vendor/* public/vendor
 
-npx parcel src/*.pug src/localized/en_ALL/*.pug src/docs/*.pug src/styles/*.scss src/js/*.js src/img/scmed/* src/img/NLogoHalignT.svg src/img/logoT.svg src/img/wlogoT.svg src/publicidad/* --dist-dir public
+npx parcel $(cat scripts/toCompile) --dist-dir public
