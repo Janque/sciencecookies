@@ -50,8 +50,10 @@ async function translateSimple(text, from, target) {
     });
     return res.data;
 }
-
+var urlSrch;
 window.loaded = function loaded() {
+    urlSrch = new URLSearchParams(location.search);
+    
     allCats.forEach((cat, i) => {
         let fat = document.createElement('div');
         classes(fat, "form-group col-auto");

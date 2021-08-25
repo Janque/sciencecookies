@@ -33,7 +33,10 @@ var visible, vemail, vfl, rNews;
 var lvisible, lvemail, lvfl, lrNews, prefChanges = false;
 var fileForUp = null;
 
+var urlSrch;
 window.loaded = function loaded() {
+    urlSrch = new URLSearchParams(location.search);
+
     //Check auth
     onAuthStateChanged(AUTH, (user) => {
         if (user) {

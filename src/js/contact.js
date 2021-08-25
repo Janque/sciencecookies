@@ -22,7 +22,9 @@ else {
 import { getFirestore, addDoc, collection } from "firebase/firestore";
 const FSDB = getFirestore();
 
+var urlSrch;
 window.loaded = function loaded() {
+    urlSrch = new URLSearchParams(location.search);
     if (urlSrch.get('sub') == 'suger' || urlSrch.get('sub') == 'fallo' || urlSrch.get('sub') == 'tos' || urlSrch.get('sub') == 'priv' || urlSrch.get('sub') == 'otro') document.getElementById('inO' + urlSrch.get('sub')).selected = true;
 
     document.getElementById('inEmail').value = email;

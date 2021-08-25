@@ -25,7 +25,10 @@ const RTDB = getDatabase();
 import { getFirestore, doc as docRef, query, where, orderBy, limit, startAfter, getDocs, setDoc } from "firebase/firestore";
 const FSDB = getFirestore();
 
+var urlSrch;
 window.loaded = function loaded() {
+    urlSrch = new URLSearchParams(location.search);
+    
     initSrch(false);
     function newSrch() {
         let srchStr = '?k=';

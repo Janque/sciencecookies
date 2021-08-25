@@ -119,7 +119,10 @@ function fullMonth(n, l) {
     }
 }
 
+var urlSrch;
 window.loaded = function loaded() {
+    urlSrch = new URLSearchParams(location.search);
+
     getDoc(docRef(FSDB, 'config', 'calTypes')).then(doc => {
         calConfig = doc.data();
         calDocRef = docRef(calendarsFSColl, urlSrch.get('id'));

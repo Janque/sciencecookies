@@ -26,9 +26,11 @@ const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 var points, rank, gotFL = false;
 var favn, favl, likedn, likedl;
 var ppic, pname, pemail;
-var visible, vmail, vfl;
+var visible, vemail, vfl;
 
+var urlSrch;
 window.loaded = function loaded() {
+    urlSrch = new URLSearchParams(location.search);
     shwCrds(urlSrch.get('tab'), urlSrch.get('user'));
 }
 

@@ -273,7 +273,10 @@ function shwCalMain() {
     }).catch(err => { console.log(err) });
 }
 
+var urlSrch;
 window.loaded = function loaded() {
+    urlSrch = new URLSearchParams(location.search);
+
     catnmb = allCats.length;
     prepCatBtns();
     initSrch(false);

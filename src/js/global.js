@@ -36,7 +36,7 @@ document.cookie = "firebase-language-override=";
 window.cookiesFSColl = collection(FSDB, 'cookies/langs/' + lang);
 window.calendarsFSColl = collection(FSDB, 'calendars/langs/' + lang);
 
-window.urlSrch = '';
+var urlSrch = '';
 window.actSsn = false;
 window.mobile = false;
 
@@ -92,14 +92,15 @@ window.uid;
 window.author = "";
 window.mod = false;
 window.pubID;
+var notLoaded = true;
 onAuthStateChanged(AUTH, (user) => {
-    const modAuth = httpsCallable(FUNCTIONS, 'publish-modAuth');
     if (user) {
         displayName = user.displayName;
         email = user.email;
         photoURL = user.photoURL;
         uid = user.uid;
         actSsn = true;
+        const modAuth = httpsCallable(FUNCTIONS, 'publish-modAuth');
         modAuth(uid).then(res => {
             mod = res.data.mod;
             author = res.data.name;
@@ -109,8 +110,11 @@ onAuthStateChanged(AUTH, (user) => {
             shwSsnBtns(true);
         }).catch(err => console.log(err));
     } else {
-        if (site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal" || site == "mailPrev") {
+        if (site == "mailPrev") {
             window.location.href = 'https://sciencecookies.net';
+        }
+        if (site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal") {
+            $('#mdlRgstr').modal('show');
         }
         actSsn = false;
         mod = false;
@@ -119,6 +123,20 @@ onAuthStateChanged(AUTH, (user) => {
         photoURL = null;
         uid = null;
         shwSsnBtns(false);
+    }
+
+    if ((!(site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal") || actSsn) && notLoaded) {
+        notLoaded = false;
+        getDoc(docRef(FSDB, 'config', 'langs')).then(function (doc) {
+            window.langs = doc.data().langs;
+            return getDoc(docRef(FSDB, 'config', 'cats'));
+        }).then(doc => {
+            const data = doc.data();
+            window.allCats = data[lang].allCats;
+            window.textCats = data[lang].textCats;
+            window.catTranslations = data.catTranslations;
+            loaded();
+        }).catch(err => { console.log(err) });
     }
 });
 //Botones de sesion
@@ -233,21 +251,10 @@ window.addEventListener("load", function () {
     urlSrch = new URLSearchParams(location.search);
 
     if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
-
     if (urlSrch.get('mode') == 'select') $('#mdlRgstr').modal('show');
+
     shwRecom();
     shareBtns();
-
-    getDoc(docRef(FSDB, 'config', 'langs')).then(function (doc) {
-        window.langs = doc.data().langs;
-        return getDoc(docRef(FSDB, 'config', 'cats'));
-    }).then(doc => {
-        window.allCats = doc.data()[lang].allCats;
-        window.textCats = doc.data()[lang].textCats;
-        window.catTranslations = doc.data().catTranslations;
-
-        loaded();
-    }).catch(err => { console.log(err) });
 });
 
 function shwRecom() {
