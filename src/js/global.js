@@ -15,6 +15,9 @@ const firebaseApp = initializeApp(firebaseConfig);
 import { getAnalytics } from "firebase/analytics";
 const ANALYTICS = getAnalytics();
 
+import { getPerformance } from "firebase/performance";
+const PERFORMANCE = getPerformance(firebaseApp);
+
 import { getAuth, signOut, onAuthStateChanged, EmailAuthProvider, ProviderId } from "firebase/auth";
 const AUTH = getAuth();
 
