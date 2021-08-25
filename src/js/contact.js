@@ -19,23 +19,14 @@ else {
     firebaseApp = getApp();
 }
 
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-const AUTH = getAuth();
-
 import { getFirestore, addDoc, collection } from "firebase/firestore";
 const FSDB = getFirestore();
 
-//Check auth
-onAuthStateChanged(AUTH, (user) => {
-    if (user) {
-        document.getElementById('inEmail').value = email;
-    } else {
-        $('#mdlRgstr').modal('show');
-    }
-});
-
 window.loaded = function loaded() {
     if (urlSrch.get('sub') == 'suger' || urlSrch.get('sub') == 'fallo' || urlSrch.get('sub') == 'tos' || urlSrch.get('sub') == 'priv' || urlSrch.get('sub') == 'otro') document.getElementById('inO' + urlSrch.get('sub')).selected = true;
+
+    document.getElementById('inEmail').value = email;
+
     function send() {
         addDoc(collection(FSDB, 'messages'), {
             from: email,

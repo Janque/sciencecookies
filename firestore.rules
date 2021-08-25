@@ -22,7 +22,7 @@ service cloud.firestore {
       allow read: if true;
     }
     match /messages/{mess} {
-      allow create: if request.auth!=null;
+      allow create: if true;
     }
     match /reports/{rep}{
     	allow create: if request.auth!=null;
