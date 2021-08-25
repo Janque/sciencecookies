@@ -109,7 +109,7 @@ onAuthStateChanged(AUTH, (user) => {
             shwSsnBtns(true);
         }).catch(err => console.log(err));
     } else {
-        if (site == "profile" || site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal" || site == "mailPrev") {
+        if (site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal" || site == "mailPrev") {
             window.location.href = 'https://sciencecookies.net';
         }
         actSsn = false;

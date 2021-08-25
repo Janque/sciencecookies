@@ -29,13 +29,12 @@ const FSDB = getFirestore();
 var fav, liked, points, rank, gotFL = false;
 var favn, favl, likedn, likedl;
 var publicID;
-var visible, vmail, vfl, rNews;
+var visible, vemail, vfl, rNews;
 var lvisible, lvemail, lvfl, lrNews, prefChanges = false;
 var fileForUp = null;
 
 window.loaded = function loaded() {
     //Check auth
-
     onAuthStateChanged(AUTH, (user) => {
         if (user) {
             document.getElementById('picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
@@ -291,23 +290,24 @@ function shwPref() {
 function shwCrds(t) {
     if (gotFL == false) {
         getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
-            fav = doc.data().fav;
-            liked = doc.data().liked;
-            favn = doc.data().favn;
-            favl = doc.data().favl;
-            likedn = doc.data().likedn;
-            likedl = doc.data().likedl;
-            points = doc.data().points;
-            rank = doc.data().rank;
-            publicID = doc.data().publicID;
-            visible = doc.data().visible;
-            vemail = doc.data().vemail;
-            vfl = doc.data().vfl;
-            lvisible = doc.data().visible;
-            lvemail = doc.data().vmail;
-            lvfl = doc.data().vfl;
-            rNews = doc.data().rNews;
-            lrNews = doc.data().rNews;
+            const data = doc.data();
+            fav = data.fav;
+            liked = data.liked;
+            favn = data.favn;
+            favl = data.favl;
+            likedn = data.likedn;
+            likedl = data.likedl;
+            points = data.points;
+            rank = data.rank;
+            publicID = data.publicID;
+            visible = data.visible;
+            vemail = data.vemail;
+            vfl = data.vfl;
+            lvisible = data.visible;
+            lvemail = data.vemail;
+            lvfl = data.vfl;
+            rNews = data.rNews;
+            lrNews = data.rNews;
             shwCrds2(t);
         }).catch(function (err) { console.log(err) });
         gotFL = true;
