@@ -169,10 +169,18 @@ app.get('/cookies/:year/:tri', (req, res) => {
 
 function renderArch(req, res, lang) {
     function getYT(url) {
-        return {
-            year: url.substring(35, 39),
-            tri: url.substring(40, 48)
-        };
+        if(lang == "es"){
+            return {
+                year: url.substring(36, 40),
+                tri: url.substring(41, 49)
+            };
+        }
+        else if(lang == "en"){
+            return {
+                year: url.substring(35, 39),
+                tri: url.substring(40, 48)
+            };
+        }
     }
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
     db.collection('sitemap').doc('2').get().then(snap => {
