@@ -39,34 +39,29 @@ nav.navbar.sticky-top.navbar-expand-lg.navbar-dark.bg-science
             //- let expireLangCookie = new Date();
             //- expireLangCookie.setTime(expireLangCookie.getTime() + (30 * 24 * 60 * 60 * 1000));
             //- document.cookie = "firebase-language-override=es; path=/; expires='+expireLangCookie.toUTCString()+'";
+
+            - let lTxt = "Español";
+            - let otLang = "es";
+            if LANG=="es"
+                - lTxt="English"
+                - otLang = "en";
+            - let urlText=HOST+'/';
             if site=="index"
-                if LANG=="es"
-                    button#changeLang.btn.btn-link-science.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/en/"+location.search')
-                        | English 
-                        i.fas.fa-globe
-                else if LANG=="en"
-                    button#changeLang.btn.btn-link-science.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/es/"+location.search')
-                        | Español 
-                        i.fas.fa-globe
+                - urlText+=otlang+'/';
             else
-                //-if site!="cookie" && site!="cal" && site!="allCalsM" && site!="allCalsY" && site!="cook" && site!="cookTri"
-                if site!="cookie" && site!="cal"
-                    if LANG=="es"
-                        button#changeLang.btn.btn-link-science.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/'+NavLinks["en"][site]+'"+location.search')
-                            | English 
-                            i.fas.fa-globe
-                    else if LANG=="en"
-                        button#changeLang.btn.btn-link-science.text-light.text-decoration-none(onclick='window.location.href="'+HOST+'/'+NavLinks["es"][site]+'"+location.search')
-                            | Español 
-                            i.fas.fa-globe
+                if site=="cookie" || site=="cal"
+                    - urlText=transLink;
+                else if site=="allCalsY"
+                    - urlText+=NavLinks[otLang]["cal"];
+                else if site=="allCalsM"
+                    - urlText+=NavLinks[otLang]["cal"]+year+'/';
+                else if site=="cookTri"
+                    - urlText+=NavLinks[otLang]["cook"]+year+'/'+sTri+'/';
                 else
-                    if LANG=="es"
-                        - lTxt="English"
-                    else if LANG=="en"
-                        - lTxt="Español"
-                    button#changeLang.btn.btn-link-science.text-light.text-decoration-none(onclick='window.location.href="'+transLink+'"+location.search')
-                        | #{lTxt}
-                        i.fas.fa-globe
+                    - urlText+=NavLinks[otLang][site];
+            button#changeLang.btn.btn-link.text-light.text-decoration-none(onclick='window.location.href="'+urlText+'"+location.search')
+                | #{lTxt} 
+                i.fas.fa-globe
 
             .dropdown.mr-2.dropleft
                 button#usrDrpdwn.btn.btn-dark.dropdown-toggle.p-2(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')

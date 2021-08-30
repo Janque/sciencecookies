@@ -40,7 +40,7 @@ function renderCookie(req, res, lang) {
                 java += `window.cTitle = '${dat.title}';\n`;
                 java += `window.cRef = '${doc.id}/${dat.file}/';\n`;
 
-                otlang = 'es';
+                let otlang = 'es';
                 if (lang == 'es') otlang = 'en';
                 return res.render('galleta', {
                     "published": dat.published.toDate(),

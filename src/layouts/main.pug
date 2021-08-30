@@ -12,7 +12,8 @@ html(lang=LANG)
       link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"][site])
       link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"][site])
       link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"][site])
-      meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG][site])
+      meta(property="og:url" content=HOST+'/'+NavLinks[LANG][site])
+      link(rel="canonical" href=HOST+'/'+NavLinks[LANG][site])
 
       if site=="index"
         if LANG=="es" 

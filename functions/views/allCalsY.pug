@@ -14,7 +14,8 @@ block missHead
   link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cal"])
   link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cal"])
   link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"]["cal"])
-  meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG]["cal"])
+  meta(property="og:url" content=HOST+'/'+NavLinks[LANG]["cal"])
+  link(rel="canonical" href=HOST+'/'+NavLinks[LANG]["cal"])
 
   title Science Cookies - #{Buttons[LANG]["cal"]}
   meta(property="og:title" content='Science Cookies - '+Buttons[LANG]["cal"])
