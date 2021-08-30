@@ -1094,7 +1094,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
 
     saveDoc().then(() => {
         setprog('barPublish', 58);
-        admin.database().ref('calendarios/' + docId).set({
+        rtDb.ref('calendarios/' + docId).set({
             pop: 0
         }, err => {
             if (err) {
