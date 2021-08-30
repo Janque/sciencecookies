@@ -148,6 +148,19 @@ function renderTri(req, res, lang) {
                 months[month].push(cook);
             });
             console.log(lang);
+            if (tri == 'ene-mar') {
+                tri = 'jan-mar';
+            } else if (tri == 'abr-jun') {
+                tri = 'apr-jun';
+            } else if (tri == 'oct-dic') {
+                tri = 'oct-dec';
+            } else if (tri == 'jan-mar') {
+                tri = 'ene-mar';
+            } else if (tri == 'apr-jun') {
+                tri = 'abr-jun';
+            } else if (tri == 'oct-dec') {
+                tri = 'oct-dic';
+            }
             res.render('archTrim', {
                 year: year,
                 sTri: tri,
@@ -169,13 +182,13 @@ app.get('/cookies/:year/:tri', (req, res) => {
 
 function renderArch(req, res, lang) {
     function getYT(url) {
-        if(lang == "es"){
+        if (lang == "es") {
             return {
                 year: url.substring(36, 40),
                 tri: url.substring(41, 49)
             };
         }
-        else if(lang == "en"){
+        else if (lang == "en") {
             return {
                 year: url.substring(35, 39),
                 tri: url.substring(40, 48)

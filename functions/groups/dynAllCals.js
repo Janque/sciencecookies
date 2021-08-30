@@ -17,7 +17,7 @@ function renderAllCalsM(req, res, lang) {
     } else {
         let bDate = admin.firestore.Timestamp.fromDate(new Date(Date.parse(year + 'Jan 1')));
         let eDate = admin.firestore.Timestamp.fromDate(new Date(Date.parse(year + 'Dec 31')));
-        db.collection('calendars/langs/'+lang).where('public', '==', true).where('published', '>=', bDate).where('published', '<=', eDate).orderBy('published').get().then(snap => {
+        db.collection('calendars/langs/' + lang).where('public', '==', true).where('published', '>=', bDate).where('published', '<=', eDate).orderBy('published').get().then(snap => {
             if (snap.empty) {
                 console.log('snap.empty');
                 res.redirect('http://sciencecookies.net/404');
@@ -51,8 +51,8 @@ app.get('/astronomic-calendar/:year', (req, res) => {
 
 function renderAllCalsY(req, res, lang) {
     function getY(url) {
-        if(lang=="es")return url.substring(50, 54);
-        else if(lang=="en")return url.substring(47, 51);
+        if (lang == "es") return url.substring(50, 54);
+        else if (lang == "en") return url.substring(47, 51);
     }
     res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
     db.collection('sitemap').doc('2').get().then(snap => {
