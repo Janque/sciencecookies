@@ -10,7 +10,8 @@ block missHead
   link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cal"]+year+'/'+month+'/')
   link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cal"]+year+'/'+month+'/')
   link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"]["cal"]+year+'/'+month+'/')
-  meta(property="og:url" content=href=HOST+'/'+NavLinks[LANG]["cal"]+year+'/'+month+'/')
+  meta(property="og:url" content=HOST+'/'+NavLinks[LANG]["cal"]+year+'/'+month+'/')
+  link(rel="canonical" href=HOST+'/'+NavLinks[LANG]["cal"]+year+'/'+month+'/')
 
   link(rel="stylesheet" href=HOST+"/styles/cal.css")
 
