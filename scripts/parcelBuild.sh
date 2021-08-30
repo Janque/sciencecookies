@@ -24,4 +24,4 @@ fi
 mkdir public/vendor/
 cp -r src/vendor/* public/vendor
 
-npx parcel build $(cat scripts/toCompile) --dist-dir public
+npx parcel build $(cat scripts/toCompile) --dist-dir public --no-scope-hoist
