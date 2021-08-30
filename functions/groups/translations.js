@@ -69,6 +69,16 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
     const calConfDoc = await db.collection('config').doc('calTypes').get();
     const calConfig = calConfDoc.data();
 
+    const postTransDoc = await db.collection('config').doc('postTrans').get();
+    const postTrans = postTransDoc.data();
+    function postTranslate(str) {
+        for (const [word, rep] of Object.entries(postTrans.words)) {
+            const reg = new RegExp(word, 'g')
+            str = str.replace(reg, rep);
+        };
+        return str;
+    }
+
     const doc = await db.collection('calendars/langs/' + req.from).doc(req.docId).get();
     const data = doc.data();
     let translation = {
@@ -79,6 +89,12 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
         picAlt: await translateString(data.picAlt, req.from, req.target),
         picCapt: await translateString(data.picCapt, req.from, req.target),
         weeks: data.weeks.slice()
+    };
+    translation = {
+        description: postTranslate(translation.description),
+        descriptionShort: postTranslate(translation.descriptionShort),
+        picAlt: postTranslate(translation.picAlt),
+        picCapt: postTranslate(translation.picCapt)
     };
 
     for (const [key, event] of Object.entries(data.events)) {
@@ -95,6 +111,7 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
             } else {
                 if (option.translatable) {
                     event.vals[i].val = await translateString(event.vals[i].val, req.from, req.target)
+                    event.vals[i].val = postTranslate(event.vals[i].val);
                 }
                 event.vals[i].label = option.label;
             }
@@ -112,6 +129,7 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
                     } else {
                         if (opt.translatable) {
                             event.vals[i + "-" + j].val = await translateString(event.vals[i + "-" + j].val, req.from, req.target)
+                            event.vals[i + "-" + j].val = postTranslate(event.vals[i].val);
                         }
                         event.vals[i + "-" + j].label = opt.label;
                     }
@@ -121,7 +139,9 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
 
         event.visibilidad = calConfig.visOpts[req.target][calConfig.visOpts[req.from].indexOf(event.visibilidad)];
         for (let i = 0; i < event.horario.length; i++) {
-            event.horario.splice(i, 1, await translateString(event.horario[i], req.from, req.target));
+            let newStr = await translateString(event.horario[i], req.from, req.target);
+            newStr = postTranslate(newStr);
+            event.horario.splice(i, 1, newStr);
         }
 
         if (calConfig[req.target][event.typeIdx].multipleTxt) {
