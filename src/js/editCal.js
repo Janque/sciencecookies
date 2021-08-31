@@ -538,11 +538,18 @@ function render() {
             if ((!event.typeIdx && idx == 0) || idx == event.typeIdx) opt.setAttribute('selected', 'true');
             selTypeMain.appendChild(opt);
         });
+
+        let inVis;//Must be declared here
         selTypeMain.oninput = () => {
             changed = true;
             event.typeIdx = parseInt(selTypeMain.value);
             if (!event.typeIdx) event.typeIdx = 0;
             event.vals = {};
+            if (calConfig[lang][event.typeIdx].defaultVis != null && calConfig[lang][event.typeIdx].defaultVis != undefined) {
+                let newVisVal = calConfig[lang][event.typeIdx].defaultVis;
+                inVis.value = newVisVal;
+                inVisTakeInput();
+            }
             reloadForm();
         }
         fgType.appendChild(selTypeMain);
@@ -697,7 +704,7 @@ function render() {
         classes(fgVis, "form-group");
         fsec.appendChild(fgVis);
         fgVis.innerHTML = '<label>Visiblidad</label>';
-        let inVis = document.createElement('select');
+        inVis = document.createElement('select');
         inVis.id = "inVis" + key;
         classes(inVis, "form-control");
         calConfig.visOpts[lang].forEach((itm, idx) => {
@@ -721,10 +728,13 @@ function render() {
         if (inVis.value == 5) hideEl(fgTime);
         else showEl(fgTime);
 
-        inVis.oninput = () => {
+        function inVisTakeInput() {
             changed = true;
             if (inVis.value == 5) hideEl(fgTime);
             else showEl(fgTime);
+        }
+        inVis.oninput = () => {
+            inVisTakeInput();
         };
         inTime.onchange = () => {
             changed = true;

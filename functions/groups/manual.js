@@ -56,7 +56,8 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 "$1$ en conjunción solar",
                 "$1$ en conjunción solar superior",
                 "$1$ en conjunción solar inferior"
-            ]
+            ],
+            defaultVis: 5
         }, {
             label: "Conjunción / Acercamiento de dos cuerpos",
             val: 1,
@@ -567,7 +568,8 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 "$1$ at solar conjunction",
                 "$1$ at solar superior conjunction",
                 "$1$ at solar inferior conjunction"
-            ]
+            ],
+            defaultVis: 5
         }, {
             label: "Conjunction / Close aproach of two bodies",
             multipleTxt: true,
