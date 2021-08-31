@@ -19,7 +19,7 @@ else {
     firebaseApp = getApp();
 }
 
-import { getDatabase, ref, set, increment, onValue, runTransaction, child } from "firebase/database";
+import { getDatabase, ref as databaseRef, set, increment, onValue, runTransaction, child } from "firebase/database";
 const RTDB = getDatabase();
 
 import { getFunctions, httpsCallable } from "firebase/functions";
@@ -32,7 +32,7 @@ var cookRef;
 var replying = -1;
 
 window.loaded = function loaded() {
-    cookRef = ref(RTDB, 'galletas/' + id);
+    cookRef = databaseRef(RTDB, 'galletas/' + id);
 
     onValue(cookRef, (snap) => {
         const data = snap.val();
@@ -42,7 +42,7 @@ window.loaded = function loaded() {
         }
     });
     set(child(cookRef, 'pop'), increment(1));
-    set(ref(RTDB, 'uptCook/' + id), "true");
+    set(databaseRef(RTDB, 'uptCook/' + id), "true");
 
     function sendRep() {
         addDoc(collection(FSDB, 'reports'), {

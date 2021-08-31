@@ -19,7 +19,7 @@ else {
     firebaseApp = getApp();
 }
 
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref as databaseRef, set } from "firebase/database";
 const RTDB = getDatabase();
 
 import { getFunctions, httpsCallable } from "firebase/functions";
@@ -1023,7 +1023,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
 
     saveDoc().then(() => {
         setprog('barPublish', 58);
-        return set(ref(RTDB, 'calendarios/' + docId), {
+        return set(databaseRef(RTDB, 'calendarios/' + docId), {
             pop: 0
         });
     }).then(() => {

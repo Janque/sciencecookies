@@ -19,7 +19,7 @@ else {
     firebaseApp = getApp();
 }
 
-import { getDatabase, ref, set, get, increment } from "firebase/database";
+import { getDatabase, ref as databaseRef, set, get, increment } from "firebase/database";
 const RTDB = getDatabase();
 
 import { getFirestore, doc as docRef, query, where, orderBy, limit, startAfter, getDocs, setDoc } from "firebase/firestore";
@@ -64,14 +64,14 @@ window.loaded = function loaded() {
                 setprog('3');
 
                 let id;
-                get(ref(RTBD, 'tdaysID')).then((snap) => {
+                get(databaseRef(RTDB, 'tdaysID')).then((snap) => {
                     var today = snap.val();
                     today.last++;
                     id = today.today;
                     if (today.last < 10) id += '0';
                     id += today.last;
 
-                    set(ref(RTBD, 'tdaysID/last'), increment(1));
+                    set(databaseRef(RTDB, 'tdaysID/last'), increment(1));
                     setprog('52');
 
                     const promises = [];

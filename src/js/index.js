@@ -19,7 +19,7 @@ else {
     firebaseApp = getApp();
 }
 
-import { getDatabase, ref, set, increment } from "firebase/database";
+import { getDatabase, ref as databaseRef, set, increment } from "firebase/database";
 const RTDB = getDatabase();
 
 import { query, where, orderBy, limit, getDocs, startAfter } from "firebase/firestore";
@@ -98,7 +98,7 @@ function initSrch(stAf) {
     for (let i = 0; i < kywords.length; i++) {
         let itm = kywords[i];
         if (itm == '' || itm == ' ') continue;
-        set(ref(RTDB, 'searchQs/' + itm + '/count'), increment(1));
+        set(databaseRef(RTDB, 'searchQs/' + itm + '/count'), increment(1));
     }
 }
 function shwSrch() {

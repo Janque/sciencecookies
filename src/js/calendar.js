@@ -19,7 +19,7 @@ else {
     firebaseApp = getApp();
 }
 
-import { getDatabase, ref, set, increment } from "firebase/database";
+import { getDatabase, ref as databaseRef, set, increment } from "firebase/database";
 const RTDB = getDatabase();
 
 window.eventToShow = null;
@@ -52,5 +52,5 @@ document.getElementById('btnNextEve').onclick = () => {
 };
 
 window.loaded = function loaded() {
-    set(ref(RTDB, 'calendarios/' + globID + '/pop'), increment(1));
+    set(databaseRef(RTDB, 'calendarios/' + globID + '/pop'), increment(1));
 }

@@ -19,7 +19,7 @@ else {
     firebaseApp = getApp();
 }
 
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref as databaseRef, set } from "firebase/database";
 const RTDB = getDatabase();
 
 import { getFunctions, httpsCallable } from "firebase/functions";
@@ -1594,7 +1594,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
     }
 
     saveDoc().then(() => {
-        return set(ref(RTDB, 'galletas/' + docId), {
+        return set(databaseRef(RTDB, 'galletas/' + docId), {
             pop: docDat.pop,
             likes: docDat.likes,
             favs: docDat.favs
