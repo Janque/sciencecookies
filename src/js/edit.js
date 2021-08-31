@@ -411,7 +411,7 @@ function fillMed() {
         classes(btns0, "row mb-2 p-0");
         over0.appendChild(btns0);
         let medBtnDel = document.createElement('button');
-        classes(medBtnDel, "btn btn-light btn-scckie btn-sm");
+        classes(medBtnDel, "btn btn-light btn-science btn-sm");
         medBtnDel.innerHTML = '<i class="fas fa-trash-alt"></i>';
         medBtnDel.onclick = function () {
             if (toDelMed == idx) {
@@ -448,7 +448,7 @@ function fillMed() {
         let tooltip = document.createElement('div');
         classes(tooltip, "tooltipn ml-auto");
         let medBtnCopy = document.createElement('button');
-        classes(medBtnCopy, "btn btn-light btn-scckie btn-sm");
+        classes(medBtnCopy, "btn btn-light btn-science btn-sm");
         let tltipTxt = document.createElement('span');
         classes(tltipTxt, "tooltipTextn");
         tltipTxt.innerHTML = "Copiar";
@@ -473,7 +473,7 @@ function fillMed() {
         let medBtnUnstar = document.createElement('button');
         let medBtnStar = document.createElement('button');
         if (itm.medUrl == docDat.picUrl) {
-            classes(medBtnUnstar, "btn btn-light btn-scckie btn-sm ml-1");
+            classes(medBtnUnstar, "btn btn-light btn-science btn-sm ml-1");
             medBtnUnstar.innerHTML = '<i class="fas fa-star"></i>';
             medBtnUnstar.onclick = function () {
                 docDat.picUrl = "";
@@ -481,7 +481,7 @@ function fillMed() {
             };
             btns0.appendChild(medBtnUnstar);
         } else {
-            classes(medBtnStar, "btn btn-light btn-scckie btn-sm ml-1");
+            classes(medBtnStar, "btn btn-light btn-science btn-sm ml-1");
             medBtnStar.innerHTML = '<i class="far fa-star"></i>';
             medBtnStar.onclick = function () {
                 docDat.picUrl = itm.medUrl;
@@ -544,7 +544,7 @@ function render() {
 
         if (item.type != 'head' && item.type != 'ref') {
             btnDel = document.createElement('button');
-            classes(btnDel, 'btn btn-light btn-link-scckie ml-2');
+            classes(btnDel, 'btn btn-light btn-link-science ml-2');
             btnDel.innerHTML = '<i class="fas fa-trash-alt"></i>';
             btnDel.onclick = function () {
                 if (toDel == idx) {
@@ -587,7 +587,7 @@ function render() {
             selLangC.appendChild(selLang);
             act.appendChild(selLangC);
             btnTrans = document.createElement('button');
-            classes(btnTrans, 'btn btn-light btn-link-scckie');
+            classes(btnTrans, 'btn btn-light btn-link-science');
             btnTrans.innerHTML = '<i class="fas fa-language"></i>';
             btnTrans.onclick = function () {
                 getDoc(docRef(FSDB, 'cookies/langs/' + selLang.value, docId)).then(async function (doc) {
@@ -613,7 +613,7 @@ function render() {
             act.appendChild(btnTrans);
 
             btnEdit = document.createElement('button');
-            classes(btnEdit, 'btn btn-light btn-link-scckie ml-auto');
+            classes(btnEdit, 'btn btn-light btn-link-science ml-auto');
             btnEdit.innerHTML = '<i class="fas fa-edit"></i>';
             btnEdit.onclick = function () {
                 toggleEl(btnEdit);
@@ -629,7 +629,7 @@ function render() {
             }
             act.appendChild(btnEdit);
             btnCheck = document.createElement('button');
-            classes(btnCheck, 'btn btn-light btn-link-scckie ml-auto d-none');
+            classes(btnCheck, 'btn btn-light btn-link-science ml-auto d-none');
             btnCheck.innerHTML = '<i class="fas fa-check"></i>';
             btnCheck.onclick = function () {
                 toggleEl(btnEdit);
@@ -639,7 +639,7 @@ function render() {
             }
             act.appendChild(btnCheck);
             btnAdd = document.createElement('button');
-            classes(btnAdd, 'btn btn-light btn-link-scckie mx-2');
+            classes(btnAdd, 'btn btn-light btn-link-science mx-2');
             btnAdd.innerHTML = '<i class="fas fa-plus"></i>';
             btnAdd.setAttribute('data-toggle', "modal");
             btnAdd.setAttribute('data-target', "#mdlPlusSect");
@@ -911,7 +911,7 @@ function render() {
                 }
                 let rBtnEdit, rBtnCheck;
                 rBtnEdit = document.createElement('button');
-                classes(rBtnEdit, 'btn btn-light btn-link-scckie ml-auto');
+                classes(rBtnEdit, 'btn btn-light btn-link-science ml-auto');
                 rBtnEdit.innerHTML = '<i class="fas fa-edit"></i>';
                 rBtnEdit.onclick = function () {
                     toggleRef();
@@ -920,7 +920,7 @@ function render() {
                     }
                 };
                 rBtnCheck = document.createElement('button');
-                classes(rBtnCheck, 'btn btn-light btn-link-scckie ml-auto d-none');
+                classes(rBtnCheck, 'btn btn-light btn-link-science ml-auto d-none');
                 rBtnCheck.innerHTML = '<i class="fas fa-check"></i>';
                 rBtnCheck.onclick = function () {
                     toggleRef();
@@ -936,7 +936,7 @@ function render() {
                 cBtn.appendChild(rBtnEdit);
                 cBtn.appendChild(rBtnCheck);
                 let rBtnDel = document.createElement('button');
-                classes(rBtnDel, 'btn btn-light btn-link-scckie ml-2');
+                classes(rBtnDel, 'btn btn-light btn-link-science ml-2');
                 rBtnDel.innerHTML = '<i class="fas fa-trash-alt"></i>';
                 rBtnDel.onclick = function () {
                     docDat.cont[idx].ref.splice(refIdx, 1);
@@ -952,12 +952,12 @@ function render() {
                 }
             });
             let btnPlusRef0 = document.createElement('a');
-            classes(btnPlusRef0, "btn btn-light btn-scckie");
+            classes(btnPlusRef0, "btn btn-light btn-science");
             btnPlusRef0.onclick = function () { plusRef(); };
             btnPlusRef0.innerHTML = '<i class="fas fa-plus"></i>'
             h.appendChild(btnPlusRef0);
             let btnPlusRef1 = document.createElement('a');
-            classes(btnPlusRef1, "btn btn-light btn-scckie btn-lg btn-block border border-light");
+            classes(btnPlusRef1, "btn btn-light btn-science btn-lg btn-block border border-light");
             btnPlusRef1.onclick = function () { plusRef(); };
             btnPlusRef1.innerHTML = '<i class="fas fa-plus"></i>'
             subt.appendChild(btnPlusRef1);
@@ -1166,7 +1166,7 @@ function render() {
             classes(btns0, "row mb-2 p-0");
             over0.appendChild(btns0);
             let btnChange = document.createElement('button');
-            classes(btnChange, "btn btn-light btn-scckie btn-sm ml-auto");
+            classes(btnChange, "btn btn-light btn-science btn-sm ml-auto");
             btnChange.innerHTML = '<i class="fas fa-exchange-alt"></i>';
             btnChange.setAttribute('data-toggle', "modal")
             btnChange.setAttribute('data-target', "#mdlMedCho")

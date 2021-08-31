@@ -441,7 +441,7 @@ function createCom(comDat) {
     btns.appendChild(btn);
     btn=document.createElement('button');*/
     btn.classList.add('btn');
-    btn.classList.add('btn-scckie');
+    btn.classList.add('btn-science');
     btn.classList.add('mr-3');
     btn.setAttribute('onclick', 'reply(' + comDat.id + ')');
     btn.innerHTML = 'Responder';
@@ -449,7 +449,7 @@ function createCom(comDat) {
     if (comDat.reps.length > 0) {
         btn = document.createElement('button');
         btn.classList.add('btn');
-        btn.classList.add('btn-link-scckie');
+        btn.classList.add('btn-link-science');
         btn.setAttribute('onclick', 'document.getElementById("' + comDat.id + 'Reps").classList.toggle("d-none")');
         btn.innerHTML = 'Respuestas <i class="fas fa-caret-down"></i>';
         btns.appendChild(btn);

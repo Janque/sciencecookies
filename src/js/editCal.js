@@ -456,7 +456,7 @@ function render() {
                     events.appendChild(btnEvent);
                 });
                 let btnPlusEvent = document.createElement('button');
-                classes(btnPlusEvent, "btn btn-scckie btn-block btn-sm");
+                classes(btnPlusEvent, "btn btn-science btn-block btn-sm");
                 btnPlusEvent.innerHTML = '<i class="fas fa-plus"></i>';
                 btnPlusEvent.onclick = () => {
                     docDat.events[wIdx + daysOfWeek[i] + day.events.length] = {
@@ -753,7 +753,7 @@ function render() {
         selLang.setAttribute("name", "selTransLang");
         selLangC.appendChild(selLang);
         let btnTrans = document.createElement('button');
-        classes(btnTrans, 'btn btn-scckie mx-2');
+        classes(btnTrans, 'btn btn-science mx-2');
         btnTrans.innerHTML = '<i class="fas fa-language"></i>';
         btnTrans.onclick = function () {
             getDoc(docRef(FSDB, 'calendars/langs/' + selLang.value, docId)).then(async function (doc) {
@@ -884,7 +884,7 @@ function render() {
         };
         foot.appendChild(editBtn);
         //Declared before
-        classes(saveBtn, "btn btn-scckie d-none");
+        classes(saveBtn, "btn btn-science d-none");
         saveBtn.setAttribute("type", "button");
         disable(saveBtn);
         saveBtn.innerText = "Guardar";

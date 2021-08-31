@@ -122,9 +122,9 @@ window.loaded = function loaded() {
                             setprog('100');
                             document.getElementById('bar').classList.add('bg-success');
                             if (lang == "es") {
-                                alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-scckie" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
+                                alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-science" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
                             } else if (lang == "en") {
-                                alertTop(`Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-scckie" href="../edit?id=${id}">click here</a>.`, 1, 'alrtPlusContainer');
+                                alertTop(`Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-science" href="../edit?id=${id}">click here</a>.`, 1, 'alrtPlusContainer');
                             }
                         }, 1000);
                         setTimeout(function () {
