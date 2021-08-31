@@ -71,8 +71,12 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
 
     const postTransDoc = await db.collection('config').doc('postTrans').get();
     const postTrans = postTransDoc.data();
-    function postTranslate(str) {
-        for (const [word, rep] of Object.entries(postTrans.words)) {
+    function postTranslate(str, from = req.from, to = req.target) {
+        for (const [word, rep] of Object.entries(postTrans.words[from][to])) {
+            const reg = new RegExp(word, 'g')
+            str = str.replace(reg, rep);
+        };
+        for (const [word, rep] of Object.entries(postTrans.words.nolang)) {
             const reg = new RegExp(word, 'g')
             str = str.replace(reg, rep);
         };

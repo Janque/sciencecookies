@@ -1236,3 +1236,28 @@ exports.formatDBCtemp = functions.region('us-central1').https.onRequest((req, re
         return;
     });
 });
+
+exports.setupTranslationReplacements = functions.region('us-central1').https.onRequest((req, res) => {
+    db.collection('config').doc('postTrans').set({
+        words: {
+            es: {
+                en: {
+                    Aquarium: "Aquarius"
+                }
+            },
+            en: {
+                es: {
+
+                }
+            },
+            nolang: {
+                " / ": "/"
+            }
+        }
+    }).then(() => {
+        res.send('Successful');
+    }).catch(err => {
+        console.log(err);
+        res.send(err);
+    });
+});
