@@ -28,7 +28,8 @@ const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 import { getFirestore, getDoc, doc as docRef, getDocs, onSnapshot, updateDoc, query } from "firebase/firestore";
 const FSDB = getFirestore();
 
-var store = firebase.storage();
+import { getStorage, ref as storageRef, deleteObject, uploadBytes, getDownloadURL } from "firebase/storage";
+const STORAGE = getStorage();
 
 let docDat, docId, cookDocRef;
 let toDel = -1, toAdd = -1;
@@ -53,7 +54,7 @@ async function translateSimple(text, from, target) {
 var urlSrch;
 window.loaded = function loaded() {
     urlSrch = new URLSearchParams(location.search);
-    
+
     allCats.forEach((cat, i) => {
         let fat = document.createElement('div');
         classes(fat, "form-group col-auto");
@@ -191,16 +192,16 @@ window.loaded = function loaded() {
     }
 
     function addMed(atempt) {
-        let ref = store.ref('cookieMedia/' + docId + '/i' + atempt + newMedia.name);
-        ref.getDownloadURL().then(res => {
+        let ref = storageRef(STORAGE, 'cookieMedia/' + docId + '/i' + atempt + newMedia.name)
+        getDownloadURL(ref).then(res => {
             addMed(atempt + 1);
         }).catch(err => {
             if (err.code == 'storage/object-not-found') {
-                ref.put(newMedia).on('state_changed',
-                    function progress(snap) {
+                uploadBytes(ref, newMedia).on('state_changed',
+                    (snap) => {
                         setprog('barNewMed', (snap.bytesTransferred / snap.totalBytes) * 100);
                     },
-                    function error(err) {
+                    (err) => {
                         if (lang == "es") {
                             alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
                         } else if (lang == "en") {
@@ -209,8 +210,8 @@ window.loaded = function loaded() {
                         console.log(err);
                         $('#mdlAddMed').modal('hide');
                     },
-                    function complete() {
-                        ref.getDownloadURL().then(medUrl => {
+                    () => {
+                        getDownloadURL(ref).then(medUrl => {
                             docDat.media.push({
                                 medFile: 'i' + atempt + newMedia.name,
                                 medUrl: medUrl
@@ -372,7 +373,7 @@ function runprog(bar, b, e) {
 }
 
 function removeMedia(medFileName) {
-    return store.ref('cookieMedia/' + docId + '/' + medFileName).delete();
+    return deleteObject(storageRef(STORAGE, 'cookieMedia/' + docId + '/' + medFileName));
 }
 
 function fillMed() {

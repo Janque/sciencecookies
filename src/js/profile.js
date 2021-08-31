@@ -25,6 +25,9 @@ const AUTH = getAuth();
 import { getFirestore, getDoc, doc as docRef, updateDoc } from "firebase/firestore";
 const FSDB = getFirestore();
 
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+const STORAGE = getStorage();
+
 //Global
 var fav, liked, points, rank, gotFL = false;
 var favn, favl, likedn, likedl;
@@ -127,14 +130,14 @@ window.loaded = function loaded() {
         }
     });
     function uptPP(file) {
-        let ref = storage.ref('ppics/' + publicID + '/pp');
-        let task = ref.put(file);
+        let ref = storageRef(STORAGE, 'ppics/' + publicID + '/pp');
+        let task = uploadBytes(ref, file);
         task.on('state_changed',
-            function progress(snap) {
+            (snap) => {
                 let progPer = (snap.bytesTransferred / snap.totalBytes) * 100;
                 document.getElementById('prBarDis').style['width'] = progPer + '%';
             },
-            function error(err) {
+            (err) => {
                 resetFrm();
                 $('#mdlCngPP').modal('hide');
                 if (lang == "es") {
@@ -143,27 +146,29 @@ window.loaded = function loaded() {
                     alertTop("<strong>¡There has been an error!</strong> Check that your file meets the limits and is an image and try again.", 2);
                 }
             },
-            function complete() {
+            () => {
                 document.getElementById('picUsr').src = document.getElementById("preVIn").src;
                 document.getElementById('disPP').src = document.getElementById("preVIn").src;
                 resetFrm();
                 $('#mdlCngPP').modal('hide');
-                ref.getDownloadURL().then(url => {
+                getDownloadURL(ref).then(url => {
                     url = url.replace('pp?', 'pp_200x200?');
-                    updateProfile(AUTH.currentUser, {
+                    return updateProfile(AUTH.currentUser, {
                         photoURL: url
-                    }).then(() => {
-                        updateDoc(docRef(FSDB, "usersPublic", publicID), {
-                            pic: url,
-                            email: email,
-                            favn: favn,
-                            favl: favl,
-                            likedn: likedn,
-                            likedl: likedl,
-                            points: points,
-                            rank: rank
-                        }).then(() => { }).catch(err => { console.log(err) });
-                    }).catch(err => { console.log(err) });
+                    });
+                }).then(() => {
+                    return updateDoc(docRef(FSDB, "usersPublic", publicID), {
+                        pic: url,
+                        email: email,
+                        favn: favn,
+                        favl: favl,
+                        likedn: likedn,
+                        likedl: likedl,
+                        points: points,
+                        rank: rank
+                    });
+                }).then(() => {
+                    console.log("Pp updated");
                 }).catch(err => { console.log(err) });
             }
         );

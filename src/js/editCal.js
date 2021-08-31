@@ -25,10 +25,11 @@ const RTDB = getDatabase();
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
-import { getFirestore, getDoc, doc as docRef, onSnapshot, updateDoc, setDoc } from "firebase/firestore";
+import { getFirestore, getDoc, doc as docRef, onSnapshot, updateDoc } from "firebase/firestore";
 const FSDB = getFirestore();
 
-var store = firebase.storage();
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+const STORAGE = getStorage();
 
 let docDat, docId, calDocRef, calConfig;
 let lastSave = Date.now(), saved = false;
@@ -217,12 +218,12 @@ window.loaded = function loaded() {
     });
 
     function addMed() {
-        let ref = store.ref('calendarMedia/' + docId + '/pic');
-        ref.put(newMedia).on('state_changed',
-            function progress(snap) {
+        let ref = storageRef(STORAGE, 'calendarMedia/' + docId + '/pic');
+        uploadBytes(ref, newMedia).on('state_changed',
+            (snap) => {
                 setprog('barChgImg', (snap.bytesTransferred / snap.totalBytes) * 100);
             },
-            function error(err) {
+            (err) => {
                 if (lang == "es") {
                     alertTop("<strong>¡Ha ocurrido un error!</strong> " + err.code, 0);
                 } else if (lang == "en") {
@@ -231,8 +232,8 @@ window.loaded = function loaded() {
                 console.log(err);
                 $('#mdlAddMed').modal('hide');
             },
-            function complete() {
-                ref.getDownloadURL().then(medUrl => {
+            () => {
+                getDownloadURL(ref).then(medUrl => {
                     docDat.picUrl = medUrl;
                     normSave();
                     resetChgImg(true);
