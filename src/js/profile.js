@@ -97,7 +97,7 @@ window.loaded = function loaded() {
         setPrefBtns(false);
         uptPref();
     });
-    
+
     function uptPP(file) {
         let ref = storageRef(STORAGE, 'ppics/' + publicID + '/pp');
         let task = uploadBytes(ref, file);
@@ -155,7 +155,7 @@ window.loaded = function loaded() {
         prevImg(fileForUp);
     });
 }
-function resetFrm() {
+window.resetFrm = function resetFrm() {
     document.getElementById('inNewNck').value = '';
     document.getElementById('inNwPP').value = '';
     document.getElementById("preVIn").src = '';
@@ -239,7 +239,7 @@ function shwLike() {
     document.getElementById('cntLike').innerHTML = likedStr;
     document.getElementById('crdLike').classList.remove('d-none');
 }
-function shwPref() {
+window.shwPref = function shwPref() {
     document.getElementById('navBtnPref').classList.add('active');
     document.getElementById('inPubPrfl').checked = userData.visible;
     if (userData.visible) {
