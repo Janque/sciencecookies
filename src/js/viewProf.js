@@ -22,6 +22,9 @@ else {
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
+import { getStorage, ref as storageRef, getDownloadURL } from "firebase/storage";
+const STORAGE = getStorage();
+
 //Global
 var points, rank, gotFL = false;
 var favn, favl, likedn, likedl;
@@ -36,7 +39,7 @@ window.loaded = function loaded() {
 
 function shwPrfl() {
     document.getElementById('navBtnPrfl').classList.add('active');
-    firebase.storage().ref('ppics/' + urlSrch.get('u') + '/pp_200x200').getDownloadURL().then(url => {
+    getDownloadURL(storageRef(STORAGE, 'ppics/' + urlSrch.get('u') + '/pp_200x200')).then(url => {
         if (ppic != null) document.getElementById('disPP').setAttribute('onerror', "this.src='" + ppic + "'");
         else document.getElementById('disPP').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
         document.getElementById('disPP').src = url;
