@@ -1041,161 +1041,6 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
         return null;
     });
 });
-exports.formatDB = functions.region('us-central1').https.onRequest((req, res) => {
-    return db.collection('galletas').where('title', 'in', ['¿Cómo funcionan los rayos?', '¿Cómo traer asteroides a la Tierra?']).get().then(snap => {
-        const promises = [];
-        snap.forEach(doc => {
-            promises.push(db.collection('galletasCont').doc(doc.id).get().then(doc2 => {
-                let fixedCats = [];
-                let tCats = ['astronomia', 'biologia', 'curiosidades', 'fisica', 'tecnologia']
-                tCats.forEach(cat => {
-                    if (doc.data().cats.includes(cat)) fixedCats.push(cat);
-                })
-                return db.collection('cookies/langs/es').doc(doc.id).set({
-                    authors: doc2.data().authors,
-                    cont: doc2.data().cont,
-                    media: doc2.data().media,
-                    picUrl: doc2.data().picUrl,
-                    title: doc.data().title,
-                    description: doc2.data().description,
-                    file: doc2.data().file,
-                    owner: doc2.data().owner,
-                    java: doc2.data().java,
-                    revised: {},
-                    notify: false,
-                    public: doc2.data().public,
-                    beenPublic: doc2.data().beenPublic,
-                    dledit: false,
-                    created: doc2.data().created,
-                    ledit: doc2.data().ledit,
-                    published: doc2.data().published,
-                    pop: doc.data().pop,
-                    likes: doc.data().likes,
-                    favs: doc.data().favs,
-                    url: doc.data().url + '/',
-                    fixedCats: fixedCats,
-                    cats: doc.data().cats,
-                    translations: {
-                        es: doc.data().url + '/'
-                    },
-                    old: true
-                }).then(() => {
-                    return db.collection('cookies/langs/en').doc(doc.id).set({
-                        authors: doc2.data().authors,
-                        cont: [
-                            {
-                                type: "head",
-                                title: doc2.data().title,
-                                author: doc2.data().authors
-                            },
-                            {
-                                type: "ref",
-                                ref: []
-                            }
-                        ],
-                        media: doc2.data().media,
-                        picUrl: doc2.data().picUrl,
-                        title: doc.data().title,
-                        description: doc2.data().description,
-                        file: doc2.data().file,
-                        owner: doc2.data().owner,
-                        java: doc2.data().java,
-                        revised: {},
-                        notify: false,
-                        public: doc2.data().public,
-                        beenPublic: doc2.data().beenPublic,
-                        dledit: false,
-                        created: doc2.data().created,
-                        ledit: doc2.data().ledit,
-                        published: doc2.data().published,
-                        pop: doc.data().pop,
-                        likes: doc.data().likes,
-                        favs: doc.data().favs,
-                        url: doc.data().url.replace('galletas', 'cookies') + '/',
-                        fixedCats: fixedCats,
-                        cats: doc.data().cats,
-                        translations: {
-                            es: doc.data().url.replace('galletas', 'cookies') + '/'
-                        },
-                        old: true
-                    });
-                });//*/
-            }));
-        });
-        return Promise.all(promises);
-    }).then(() => {
-        console.log("Successful");
-        res.send('Successful');
-        return;
-    }).catch(err => {
-        console.log(err);
-        res.send(err);
-        return;
-    });
-});
-exports.formatDBC = functions.region('us-central1').https.onRequest((req, res) => {
-    return db.collection('calendarios').get().then(snap => {
-        const promises = [];
-        snap.forEach(doc => {
-            promises.push(db.collection('calendars/langs/es').doc(doc.id).set({
-                events: doc.data().events,
-                published: doc.data().date,
-                description: doc.data().description,
-                descriptionShort: doc.data().descriptionShort,
-                finished: doc.data().finished,
-                pastDue: doc.data().pastDue,
-                picUrl: doc.data().picUrl,
-                picAlt: doc.data().picAlt,
-                picCapt: doc.data().picCapt,
-                public: doc.data().public,
-                sentMail: doc.data().sentMail,
-                revised: doc.data().revised,
-                title: doc.data().title,
-                url: doc.data().url + '/',
-                nextCal: doc.data().nextCal + '/',
-                priorCal: doc.data().priorCal + '/',
-                weeks: doc.data().weeks,
-                translations: {
-                    es: doc.data().url + '/'
-                },
-                old: true
-            }).then(() => {
-                return db.collection('calendars/langs/en').doc(doc.id).set({
-                    events: doc.data().events,
-                    published: doc.data().date,
-                    description: doc.data().description,
-                    descriptionShort: doc.data().descriptionShort,
-                    finished: doc.data().finished,
-                    pastDue: doc.data().pastDue,
-                    picUrl: doc.data().picUrl,
-                    picAlt: doc.data().picAlt,
-                    picCapt: doc.data().picCapt,
-                    public: doc.data().public,
-                    sentMail: doc.data().sentMail,
-                    revised: doc.data().revised,
-                    title: doc.data().title,
-                    url: doc.data().url.replace('calendario-astronomico', 'astronomic-calendar') + '/',
-                    nextCal: doc.data().nextCal.replace('calendario-astronomico', 'astronomic-calendar') + '/',
-                    priorCal: doc.data().priorCal.replace('calendario-astronomico', 'astronomic-calendar') + '/',
-                    weeks: doc.data().weeks,
-                    translations: {
-                        es: doc.data().url + '/'
-                    },
-                    old: true
-                });
-            }));
-        });
-        return Promise.all(promises);
-    }).then(() => {
-        console.log("Successful");
-        res.send('Successful');
-        return;
-    }).catch(err => {
-        console.log(err);
-        res.send(err);
-        return;
-    });
-});
 
 exports.formatDBCtemp = functions.region('us-central1').https.onRequest((req, res) => {
     return db.collection('calendars/langs/es').doc("202107").get().then(doc => {
@@ -1261,5 +1106,32 @@ exports.setupTranslationReplacements = functions.region('us-central1').https.onR
     }).catch(err => {
         console.log(err);
         res.send(err);
+    });
+});
+
+exports.mergeUsers = functions.region('us-central1').https.onRequest((req, res) => {
+    return db.collection('users').get().then(snap => {
+        const promises = [];
+        snap.forEach(doc => {
+            promises.push(db.collection('usersPublic').doc(doc.data().publicID).get().then(doc2 => {
+                let data = doc2.data();
+                return db.collection('users').doc(doc.id).update({
+                    old: true,
+                    name: data.name,
+                    email: data.email,
+                    pic: data.pic,
+                    block: data.block
+                });
+            }));
+        });
+        return Promise.all(promises);
+    }).then(() => {
+        console.log("Successful");
+        res.send('Successful');
+        return;
+    }).catch(err => {
+        console.log(err);
+        res.send(err);
+        return;
     });
 });
