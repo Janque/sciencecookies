@@ -96,6 +96,17 @@ strong,
     }
 }
 
+#changeLang {
+    margin: auto 14px auto 5px;
+    display: inline-block;
+    color: $white;
+    text-align: center;
+    vertical-align: middle;
+    background-color: transparent;
+    font-size: 0.8rem;
+    width: 91px;
+}
+
 @media screen and (min-width: 768px) {
     h1 {
         font-size: 40px;
