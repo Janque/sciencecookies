@@ -29,11 +29,10 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "fire
 const STORAGE = getStorage();
 
 //Global
-var fav, liked, points, rank, gotFL = false;
-var favn, favl, likedn, likedl;
+var userData, localUserData;
+
+var gotFL = false;
 var publicID;
-var visible, vemail, vfl, rNews;
-var lvisible, lvemail, lvfl, lrNews, prefChanges = false;
 var fileForUp = null;
 
 var urlSrch;
@@ -50,28 +49,17 @@ window.loaded = function loaded() {
             $('#mdlRgstr').modal('show');
         }
     });
+
     function send() {
-        displayName = document.getElementById('inNewNck').value;
+        localUserData.name = displayName = document.getElementById('inNewNck').value;
         updateProfile(AUTH.currentUser, {
             displayName: displayName
         }).then(function () {
-            updateDoc(docRef(FSDB, "usersPublic", publicID), {
-                name: displayName,
-                pic: photoURL,
-                email: email,
-                favn: favn,
-                favl: favl,
-                likedn: likedn,
-                likedl: likedl,
-                points: points,
-                rank: rank,
-                visible: document.getElementById('inPubPrfl').checked,
-                vemail: document.getElementById('inPubEmail').checked,
-                vfl: document.getElementById('inPubFL').checked
-            }).then(() => {
-                resetFrm();
-                document.getElementById('disName').innerHTML = newNk;
-            }).catch(err => { console.log(err) });
+            return updateDoc(docRef(FSDB, 'users', uid), localUserData)
+        }).then(() => {
+            userData = localUserData;
+            resetFrm();
+            document.getElementById('disName').innerHTML = displayName;
         }).catch(function (err) { console.log(err) });
     }
     document.getElementById("frmChngNk").addEventListener("submit", function (event) {
@@ -79,16 +67,12 @@ window.loaded = function loaded() {
         send();
         $('#mdlCngNck').modal('hide');
     });
+
     function uptPref() {
-        updateDoc(docRef(FSDB, 'users', uid), {
-            visible: document.getElementById('inPubPrfl').checked,
-            vemail: document.getElementById('inPubEmail').checked,
-            vfl: document.getElementById('inPubFL').checked,
-            rNews: document.getElementById('inNews').checked,
-        }).then(() => {
-            if (rNews != lrNews) {
+        updateDoc(docRef(FSDB, 'users', uid), localUserData).then(() => {
+            if (userData.rNews != localUserData.rNews) {
                 let newsRef = docRef(FSDB, "newsletters", "base");
-                if (lrNews) {
+                if (userData.rNews) {
                     updateDoc(newsRef, {
                         emails: firebase.firestore.FieldValue.arrayUnion(email)
                     });
@@ -98,37 +82,22 @@ window.loaded = function loaded() {
                     });
                 }
             }
-            visible = lvisible;
-            vemail = lvemail;
-            vfl = lvfl;
-            rNews = lrNews;
-            updateDoc(docRef(FSDB, "usersPublic", publicID), {
-                name: displayName,
-                pic: photoURL,
-                email: email,
-                favn: favn,
-                favl: favl,
-                likedn: likedn,
-                likedl: likedl,
-                points: points,
-                rank: rank,
-                visible: document.getElementById('inPubPrfl').checked,
-                vemail: document.getElementById('inPubEmail').checked,
-                vfl: document.getElementById('inPubFL').checked,
-            }).then(() => { }).catch(err => { console.log(err) });
+            userData = localUserData;
+            setPrefBtns(false);
+            console.log('Profile updated');
+            if (lang == "es") {
+                alertTop("Se han guardado los cambios", 1);
+            } else if (lang == "en") {
+                alertTop("Changes have been saved", 1);
+            }
         }).catch(err => { console.log(err) });
     }
     document.getElementById("frmPref").addEventListener("submit", function (event) {
         event.preventDefault();
-        document.getElementById('btnCanPref').setAttribute('disabled', 'true');
-        document.getElementById('btnCnfPref').setAttribute('disabled', 'true');
+        setPrefBtns(false);
         uptPref();
-        if (lang == "es") {
-            alertTop("Se han guardado los cambios", 1);
-        } else if (lang == "en") {
-            alertTop("Changes have been saved", 1);
-        }
     });
+    
     function uptPP(file) {
         let ref = storageRef(STORAGE, 'ppics/' + publicID + '/pp');
         let task = uploadBytes(ref, file);
@@ -152,22 +121,14 @@ window.loaded = function loaded() {
                 resetFrm();
                 $('#mdlCngPP').modal('hide');
                 getDownloadURL(ref).then(url => {
-                    url = url.replace('pp?', 'pp_200x200?');
+                    localUserData.pic = photoURL = url.replace('pp?', 'pp_200x200?');
                     return updateProfile(AUTH.currentUser, {
-                        photoURL: url
+                        photoURL: photoURL
                     });
                 }).then(() => {
-                    return updateDoc(docRef(FSDB, "usersPublic", publicID), {
-                        pic: url,
-                        email: email,
-                        favn: favn,
-                        favl: favl,
-                        likedn: likedn,
-                        likedl: likedl,
-                        points: points,
-                        rank: rank
-                    });
+                    return updateDoc(docRef(FSDB, "users", uid), localUserData);
                 }).then(() => {
+                    userData = localUserData;
                     console.log("Pp updated");
                 }).catch(err => { console.log(err) });
             }
@@ -205,8 +166,9 @@ function resetFrm() {
     document.getElementById("btnCanNwPP").classList.remove('disabled');
 }
 
-function setPrefBtns() {
-    if (prefChanges) {
+//Preferences form toggle btns
+function setPrefBtns(disabled) {
+    if (!disabled) {
         document.getElementById('btnCanPref').disabled = false;
         document.getElementById('btnCnfPref').disabled = false;
     } else {
@@ -214,8 +176,9 @@ function setPrefBtns() {
         document.getElementById('btnCnfPref').setAttribute('disabled', 'true');
     }
 }
+//Preferences inputs
 document.getElementById('inPubPrfl').onclick = function () {
-    if (lvisible) {
+    if (localUserData.visible) {
         document.getElementById('inPubEmail').setAttribute('disabled', 'true');
         document.getElementById('inPubFL').setAttribute('disabled', 'true');
         document.getElementById('inPubEmail').checked = false;
@@ -223,27 +186,23 @@ document.getElementById('inPubPrfl').onclick = function () {
     } else {
         document.getElementById('inPubEmail').disabled = false;
         document.getElementById('inPubFL').disabled = false;
-        document.getElementById('inPubEmail').checked = lvemail;
-        document.getElementById('inPubFL').checked = lvfl;
+        document.getElementById('inPubEmail').checked = localUserData.vemail;
+        document.getElementById('inPubFL').checked = localUserData.vfl;
     }
-    lvisible = !lvisible;
-    prefChanges = !(document.getElementById('inPubPrfl').checked == visible && document.getElementById('inPubEmail').checked == vemail && document.getElementById('inPubFL').checked == vfl && document.getElementById('inNews').checked == rNews);
-    setPrefBtns();
+    localUserData.visible = !localUserData.visible;
+    setPrefBtns(!(localUserData == userData));
 };
 document.getElementById('inPubEmail').onclick = function () {
-    lvemail = !lvemail;
-    prefChanges = !(document.getElementById('inPubPrfl').checked == visible && document.getElementById('inPubEmail').checked == vemail && document.getElementById('inPubFL').checked == vfl && document.getElementById('inNews').checked == rNews);
-    setPrefBtns();
+    localUserData.vemail = !localUserData.vemail;
+    setPrefBtns(!(localUserData == userData));
 };
 document.getElementById('inPubFL').onclick = function () {
-    lvfl = !lvfl;
-    prefChanges = !(document.getElementById('inPubPrfl').checked == visible && document.getElementById('inPubEmail').checked == vemail && document.getElementById('inPubFL').checked == vfl && document.getElementById('inNews').checked == rNews);
-    setPrefBtns();
+    localUserData.vfl = !localUserData.vfl;
+    setPrefBtns(!(localUserData == userData));
 };
 document.getElementById('inNews').onclick = function () {
-    lrNews = !lrNews;
-    prefChanges = !(document.getElementById('inPubPrfl').checked == visible && document.getElementById('inPubEmail').checked == vemail && document.getElementById('inPubFL').checked == vfl && document.getElementById('inNews').checked == rNews);
-    setPrefBtns();
+    localUserData.rNews = !localUserData.rNews;
+    setPrefBtns(!(localUserData == userData));
 };
 
 function shwPrfl() {
@@ -257,8 +216,12 @@ function shwPrfl() {
 function shwFav() {
     document.getElementById('navBtnFav').classList.add('active');
     let favStr = '';
-    favn.forEach(function (itm, idx) {
-        favStr = favStr + '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="galletas/' + favl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+    userData.favn.forEach(function (itm, idx) {
+        if (userData.favl[idx][0] == '2') {
+            favStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="galletas/' + userData.favl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+        } else {
+            favStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + userData.favl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+        }
     });
     document.getElementById('cntFav').innerHTML = favStr;
     document.getElementById('crdFav').classList.remove('d-none');
@@ -266,56 +229,39 @@ function shwFav() {
 function shwLike() {
     document.getElementById('navBtnLike').classList.add('active');
     let likedStr = '';
-    likedn.forEach(function (itm, idx) {
-        likedStr = likedStr + '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="galletas/' + likedl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+    userData.likedn.forEach(function (itm, idx) {
+        if (userData.likedl[idx][0] == '2') {
+            likedStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="galletas/' + userData.likedl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+        } else {
+            likedStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + userData.likedl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+        }
     });
     document.getElementById('cntLike').innerHTML = likedStr;
     document.getElementById('crdLike').classList.remove('d-none');
 }
 function shwPref() {
     document.getElementById('navBtnPref').classList.add('active');
-    document.getElementById('inPubPrfl').checked = visible;
-    if (visible) {
+    document.getElementById('inPubPrfl').checked = userData.visible;
+    if (userData.visible) {
         document.getElementById('inPubEmail').disabled = false;
         document.getElementById('inPubFL').disabled = false;
-        document.getElementById('inPubEmail').checked = vemail;
-        document.getElementById('inPubFL').checked = vfl;
+        document.getElementById('inPubEmail').checked = userData.vemail;
+        document.getElementById('inPubFL').checked = userData.vfl;
     } else {
         document.getElementById('inPubEmail').setAttribute('disabled', 'true');
         document.getElementById('inPubFL').setAttribute('disabled', 'true');
         document.getElementById('inPubEmail').checked = false;
         document.getElementById('inPubFL').checked = false;
     }
-    document.getElementById('inNews').checked = rNews;
-    lvisible = visible;
-    lvemail = vemail;
-    lvfl = vfl;
-    lrNews = rNews;
-    prefChanges = false;
-    setPrefBtns();
+    document.getElementById('inNews').checked = userData.rNews;
+    localUserData = userData;
+    setPrefBtns(false);
     document.getElementById('crdPref').classList.remove('d-none');
 }
-function shwCrds(t) {
+window.shwCrds = function shwCrds(t) {
     if (gotFL == false) {
         getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
-            const data = doc.data();
-            fav = data.fav;
-            liked = data.liked;
-            favn = data.favn;
-            favl = data.favl;
-            likedn = data.likedn;
-            likedl = data.likedl;
-            points = data.points;
-            rank = data.rank;
-            publicID = data.publicID;
-            visible = data.visible;
-            vemail = data.vemail;
-            vfl = data.vfl;
-            lvisible = data.visible;
-            lvemail = data.vemail;
-            lvfl = data.vfl;
-            rNews = data.rNews;
-            lrNews = data.rNews;
+            localUserData = userData = doc.data();
             shwCrds2(t);
         }).catch(function (err) { console.log(err) });
         gotFL = true;
@@ -323,6 +269,7 @@ function shwCrds(t) {
         shwCrds2(t);
     }
 }
+
 function shwCrds2(t) {
     if (t == 'pref') {
         document.getElementById('crdFav').classList.add('d-none');

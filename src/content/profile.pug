@@ -88,23 +88,23 @@ block content
   ul.nav.nav-tabs
     if LANG=="es"
       li.nav-item.mx-lg-1.mx-0
-        a#navBtnPrfl.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(1);') Mi perfíl
+        a#navBtnPrfl.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds("prof");') Mi perfíl
       li.nav-item.mx-lg-1.mx-0
-        a#navBtnFav.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(2);') Mis favoritos
+        a#navBtnFav.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds("favs");') Mis favoritos
       li.nav-item.ml-lg-1.mr-lg-auto.mx-0
-        a#navBtnLike.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(3);') Mis me gusta
+        a#navBtnLike.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds("likes");') Mis me gusta
       li.nav-item.mx-lg-1.mx-0
-        a#navBtnPref.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(0);')
+        a#navBtnPref.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds("pref");')
           i.fas.fa-user-cog
     else if LANG=="en"
       li.nav-item.mx-lg-1.mx-0
-        a#navBtnPrfl.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(1);') My profile
+        a#navBtnPrfl.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds("prof");') My profile
       li.nav-item.mx-lg-1.mx-0
-        a#navBtnFav.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(2);') My favorites
+        a#navBtnFav.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds("favs");') My favorites
       li.nav-item.ml-lg-1.mr-lg-auto.mx-0
-        a#navBtnLike.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(3);') My likes
+        a#navBtnLike.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds("likes");') My likes
       li.nav-item.mx-lg-1.mx-0
-        a#navBtnPref.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds(0);')
+        a#navBtnPref.nav-link.text-decoration-none.btn-outline-light(onclick='shwCrds("pref");')
           i.fas.fa-user-cog
   .container-fluid.px-2
     #crdPrfl.card.text-light.border-light.bg-transparent.mt-2.d-none
