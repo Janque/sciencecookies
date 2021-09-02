@@ -5,7 +5,7 @@ const db = admin.firestore();
 //Comment in a Cookie
 exports.addComment = functions.region('us-east1').https.onCall((data) => {
     let comCount, comList, comFrm;
-    return db.collection('usersPublic').doc(data.authKey).get().then(doc => {
+    return db.collection('users').doc(data.shortID).get().then(doc => {
         let block = doc.data().block;
         if (block - admin.firestore.Timestamp.now() > 0) {
             return {
@@ -28,10 +28,10 @@ exports.addComment = functions.region('us-east1').https.onCall((data) => {
         comFrm = {
             from: data.from,
             pic: data.pic,
-            authKey: data.authKey,
+            shortID: data.shortID,
             id: 0,
             likes: 0,
-            text: data.text,
+            text: data.text
         };
         if (data.to == -1) {
             comFrm.reps = [];
