@@ -139,23 +139,18 @@ window.loaded = function loaded() {
 
 document.getElementById('btnFav').onclick = function () {
     if (actSsn) {
-        let fav, favn, favl, liked, likedn, likedl, ifav, iliked, npop, nlik, nfav;
+        let userData, ifav, iliked, npop, nlik, nfav;
         getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
-            fav = doc.data().fav;
-            favn = doc.data().favn;
-            favl = doc.data().favn;
-            liked = doc.data().liked;
-            likedn = doc.data().likedn;
-            likedl = doc.data().likedl;
-            ifav = fav.indexOf(id);
-            iliked = liked.indexOf(id);
+            userData = doc.data();
+            ifav = userData.fav.indexOf(id);
+            iliked = userData.liked.indexOf(id);
             npop = 0;
             nlik = 0;
             nfav = 0;
             if (ifav != -1) {
-                fav.splice(ifav, 1);
-                favn.splice(favn.indexOf(cTitle), 1);
-                favl.splice(favl.indexOf(cRef), 1);
+                userData.fav.splice(ifav, 1);
+                userData.favn.splice(ifav, 1);
+                userData.favl.splice(ifav, 1);
                 let langTxt = "Añadir a favoritos";
                 if (lang == "en") {
                     langTxt = "Add to favorites";
@@ -167,13 +162,13 @@ document.getElementById('btnFav').onclick = function () {
                 nfav = -1;
             }
             else {
-                fav.push(id);
-                favn.push(cTitle);
-                favl.push(cRef);
+                userData.fav.push(id);
+                userData.favn.push(cTitle);
+                userData.favl.push(cRef);
                 if (iliked == -1) {
-                    liked.push(id);
-                    likedn.push(cTitle);
-                    likedl.push(cRef);
+                    userData.liked.push(id);
+                    userData.likedn.push(cTitle);
+                    userData.likedl.push(cRef);
                     npop = 30;
                     nlik = 1;
                     let langTxt = "Me gusta";
@@ -194,33 +189,11 @@ document.getElementById('btnFav').onclick = function () {
                 document.getElementById('btnFav').classList.remove('btn-outline-light');
                 document.getElementById('btnFav').classList.add('btn-light');
             }
-            return updateDoc(docRef(FSDB, 'users', uid), {
-                fav: fav,
-                liked: liked,
-                favn: favn,
-                favl: favl,
-                likedn: likedn,
-                likedl: likedl,
-            });
+            return updateDoc(docRef(FSDB, 'users', uid), userData);
         }).then(() => {
-            return updateDoc(docRef(FSDB, 'usersPublic', pubID), {
-                name: displayName,
-                pic: photoURL,
-                email: email,
-                favn: favn,
-                favl: favl,
-                likedn: likedn,
-                likedl: likedl,
-            });
-        }).then(() => {
-            runTransaction(cookRef, (cook) => {
-                if (cook) {
-                    cook.pop += npop;
-                    cook.likes += nlik;
-                    cook.favs += nfav;
-                }
-                return cook;
-            });
+            set(child(cookRef, 'pop'), increment(npop));
+            set(child(cookRef, 'likes'), increment(nlik));
+            set(child(cookRef, 'favs'), increment(nfav));
         }).catch(function (err) { console.log('err') });
     } else {
         document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
@@ -229,23 +202,18 @@ document.getElementById('btnFav').onclick = function () {
 };
 document.getElementById('btnLike').onclick = function () {
     if (actSsn) {
-        let fav, favn, favl, liked, likedn, likedl, ifav, iliked, npop, nlik, nfav;
+        let userData, ifav, iliked, npop, nlik, nfav;
         getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
-            fav = doc.data().fav;
-            favn = doc.data().favn;
-            favl = doc.data().favn;
-            liked = doc.data().liked;
-            likedn = doc.data().likedn;
-            likedl = doc.data().likedl;
-            ifav = fav.indexOf(id);
-            iliked = liked.indexOf(id);
+            userData = doc.data();
+            ifav = userData.fav.indexOf(id);
+            iliked = userData.liked.indexOf(id);
             npop = 0;
             nlik = 0;
             nfav = 0;
             if (iliked == -1) {
-                liked.push(id);
-                likedn.push(cTitle);
-                likedl.push(cRef);
+                userData.liked.push(id);
+                userData.likedn.push(cTitle);
+                userData.likedl.push(cRef);
                 npop = 10;
                 nlik = 1;
                 let langTxt = "Me gusta";
@@ -257,14 +225,14 @@ document.getElementById('btnLike').onclick = function () {
                 document.getElementById('btnLike').classList.add('btn-light');
             }
             else {
-                liked.splice(iliked, 1);
-                likedn.splice(likedn.indexOf(cTitle), 1);
-                likedl.splice(likedl.indexOf(cRef), 1);
+                userData.liked.splice(iliked, 1);
+                userData.likedn.splice(iliked, 1);
+                userData.likedl.splice(iliked, 1);
                 if (ifav == -1) npop = -10;
                 else {
-                    fav.splice(ifav, 1);
-                    favn.splice(favn.indexOf(cTitle), 1);
-                    favl.splice(favl.indexOf(cRef), 1);
+                    userData.fav.splice(ifav, 1);
+                    userData.favn.splice(ifav, 1);
+                    userData.favl.splice(ifav, 1);
                     npop = -30;
                     nfav = -1;
                     let langTxt = "Añadir a favoritos";
@@ -285,24 +253,7 @@ document.getElementById('btnLike').onclick = function () {
                 document.getElementById('btnLike').classList.add('btn-outline-light');
             }
         }).then(() => {
-            return updateDoc(docRef(FSDB, 'users', uid), {
-                fav: fav,
-                liked: liked,
-                favn: favn,
-                favl: favl,
-                likedn: likedn,
-                likedl: likedl,
-            });
-        }).then(() => {
-            return updateDoc(docRef(FSDB, 'usersPublic', pubID), {
-                name: displayName,
-                pic: photoURL,
-                email: email,
-                favn: favn,
-                favl: favl,
-                likedn: likedn,
-                likedl: likedl,
-            });
+            return updateDoc(docRef(FSDB, 'users', uid), userData);
         }).then(() => {
             set(child(cookRef, 'pop'), increment(npop));
             set(child(cookRef, 'likes'), increment(nlik));

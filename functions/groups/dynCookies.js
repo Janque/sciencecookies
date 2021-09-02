@@ -38,7 +38,7 @@ function renderCookie(req, res, lang) {
                 let java = dat.java;
                 java += `window.id = '${doc.id}';\n`;
                 java += `window.cTitle = '${dat.title}';\n`;
-                java += `window.cRef = '${doc.id}/${dat.file}/';\n`;
+                java += `window.cRef = '${dat.url}';\n`;
 
                 let otlang = 'es';
                 if (lang == 'es') otlang = 'en';
