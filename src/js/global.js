@@ -162,7 +162,7 @@ function shwSsnBtns(ac) {
             getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
                 let fav = doc.data().fav;
                 let liked = doc.data().liked;
-                pubID = doc.data().publicID;
+                pubID = doc.data().shortID;
                 if (fav.indexOf(id) != -1) {
                     document.getElementById('btnFav').innerHTML = ('En mis favoritos <i class="fas fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
                     document.getElementById('btnFav').classList.remove('btn-outline-light');

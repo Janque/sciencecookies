@@ -32,7 +32,7 @@ const STORAGE = getStorage();
 var userData, localUserData;
 
 var gotFL = false;
-var publicID;
+var shortID;
 var fileForUp = null;
 
 var urlSrch;
@@ -99,7 +99,7 @@ window.loaded = function loaded() {
     });
 
     function uptPP(file) {
-        let ref = storageRef(STORAGE, 'ppics/' + publicID + '/pp');
+        let ref = storageRef(STORAGE, 'ppics/' + shortID + '/pp');
         let task = uploadBytes(ref, file);
         task.on('state_changed',
             (snap) => {
