@@ -74,7 +74,7 @@ function shwLike() {
     document.getElementById('cntLike').innerHTML = likedStr;
     document.getElementById('crdLike').classList.remove('d-none');
 }
-function shwCrds(t, u) {
+window.shwCrds = function shwCrds(t, u) {
     if ((u == null || u == '') && !gotFL) {
         window.location.href = 'https://sciencecookies.net';
     }
