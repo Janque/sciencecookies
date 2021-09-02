@@ -7,20 +7,6 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, update, delete: if request.auth!=null&&request.auth.uid==userId;
     }
-    match /usersPublic/{publicID}{
-    	allow update: if request.auth!=null&&get(/databases/$(database)/documents/users/$(request.auth.uid)).data.publicID==publicID;
-    }
-    match /galletas/{galleta} {
-      allow read: if true;
-      allow update: if true;
-      match /coms/{com}{
-      	allow read:if true;
-        allow update:if request.auth!=null;
-      }
-    }
-    match /calendarios/{calendario} {
-      allow read: if true;
-    }
     match /messages/{mess} {
       allow create: if true;
     }
@@ -30,8 +16,14 @@ service cloud.firestore {
     match /newsletters/base{
       allow update: if request.auth!=null;
     }
-    match /cookies/langs/{lang}/{cookie}{
-      allow read: if true;
+    match /cookies{
+      match /langs/{lang}/{cookie} {
+        allow read: if true;
+      }
+      match /comments/{coookie}/{comment} {
+      	allow read: if true;
+        allow create, update: if request.auth!=null;
+      }
     }
     match /calendars/langs/{lang}/{cal}{
       allow read: if true;
