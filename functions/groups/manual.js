@@ -2,6 +2,9 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore();
 
+const ShortUniqueId = require('short-unique-id');
+const uid = new ShortUniqueId({ length: 8 });
+
 exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res) => {
     db.collection('config').doc('calTypes').set({
         visOpts: {
@@ -1113,15 +1116,8 @@ exports.mergeUsers = functions.region('us-central1').https.onRequest((req, res) 
     return db.collection('users').get().then(snap => {
         const promises = [];
         snap.forEach(doc => {
-            promises.push(db.collection('usersPublic').doc(doc.data().publicID).get().then(doc2 => {
-                let data = doc2.data();
-                return db.collection('users').doc(doc.id).update({
-                    old: true,
-                    name: data.name,
-                    email: data.email,
-                    pic: data.pic,
-                    block: data.block
-                });
+            promises.push(db.collection('users').doc(doc.id).update({
+                shortID: uid()
             }));
         });
         return Promise.all(promises);

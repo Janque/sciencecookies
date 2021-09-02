@@ -21,7 +21,8 @@
     "firebase-functions-test": "^0.2.3",
     "lodash": "^4.17.21",
     "nodemailer": "^6.6.1",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "short-unique-id": "^4.3.8"
   },
   "private": true
 }
