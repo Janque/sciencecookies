@@ -19,7 +19,7 @@ else {
     firebaseApp = getApp();
 }
 
-import { getDatabase, ref as databaseRef, set, increment, onValue, runTransaction, child } from "firebase/database";
+import { getDatabase, ref as databaseRef, set, increment, onValue, child } from "firebase/database";
 const RTDB = getDatabase();
 
 import { getFunctions, httpsCallable } from "firebase/functions";
@@ -279,7 +279,7 @@ document.getElementById('inNwCom').onfocus = function () {
 
 var comList = [], comNum = 5, comCount = 0;
 var reporting = null;
-function report(r) {
+window.report = function report(r) {
     if (actSsn) {
         reporting = r;
         $('#mdlRprt').modal('show');
@@ -288,7 +288,7 @@ function report(r) {
         $('#mdlRgstr').modal('show');
     }
 }
-function reply(r) {
+window.reply = function reply(r) {
     replying = r;
     document.getElementById('btnsFL').scroll({ behavior: 'smooth' });
     document.getElementById('inNwCom').setAttribute('placeholder', 'Nueva respuesta');

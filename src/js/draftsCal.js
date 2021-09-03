@@ -28,7 +28,6 @@ window.loaded = function loaded() {
 const previewLim = 21;
 //Get search params
 var nxtp = false, paglast = [null], page = 1;
-var allChk = false;
 function initSrch(stAf) {
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         srchQuery = query(calendarsFSColl, orderBy('published', 'desc'), startAfter(paglast[page - 1]), limit(previewLim));

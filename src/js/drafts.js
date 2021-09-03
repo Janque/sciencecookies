@@ -157,7 +157,6 @@ const previewLim = 21;
 //Get search params
 var kywords, srtOrd, desc, srchQuery;
 var nxtp = false, paglast = [null], page = 1;
-var allChk = false;
 function initSrch(stAf) {
     kywords = "";
     if (urlSrch.get('k') != null) {
@@ -345,11 +344,6 @@ function shwSrch() {
             if (doc.data().public) {
                 drpitm2.classList.add('dropdown-item');
                 drpitm2.onclick = function () {
-                    let month = d.getFullYear().toString();
-                    if (d.getMonth() < 9) {
-                        month += '0';
-                    }
-                    month += (d.getMonth() + 1);
                     window.open(doc.data().url, '_blank').focus();
                 };
                 drpitm2.innerHTML = 'Ver artículo <i class="fas fa-eye"></i>';

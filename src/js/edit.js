@@ -31,11 +31,13 @@ const FSDB = getFirestore();
 import { getStorage, ref as storageRef, deleteObject, uploadBytes, getDownloadURL } from "firebase/storage";
 const STORAGE = getStorage();
 
-let docDat, docId, cookDocRef;
-let toDel = -1, toAdd = -1;
+window.docDat;
+let docId, cookDocRef;
+let toDel = -1;
+window.toAdd = -1;
 let lastSave = Date.now(), saved = false;
 
-let addFrom = -1;
+window.addFrom = -1;
 let toDelMed = -1, toAddMed = -1;
 let newMedia = null;
 let newMedSrc = null;
