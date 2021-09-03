@@ -7,26 +7,23 @@ const config = functions.config();
 const RTDB = admin.database();
 
 //Auth for moderators
-exports.modAuth = functions.region('us-east1').https.onCall((uid) => {
+exports.modAuth = functions.region('us-east1').https.onCall(async (uid) => {
     console.log(uid);
     let data = {
         mod: false,
         name: ''
     };
-    switch (uid) {
-        case config.admins.jav:
+    const doc = await db.collection('users').doc(uid).get();
+    const dat = doc.data();
+    switch (dat.role) {
+        case 'admin':
             data.mod = true;
-            data.name = ' Javier Pantoja';
             break;
-        case config.admins.pav:
+        case 'mod':
             data.mod = true;
-            data.name = ' Paulina Vargas';
-            break;
-        case config.admins.and:
-            data.mod = true;
-            data.name = ' Andrea Garma';
             break;
     }
+    data.name = ' ' + dat.name;
     return data;
 });
 
