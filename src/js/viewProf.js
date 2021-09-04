@@ -59,7 +59,11 @@ function shwFav() {
     document.getElementById('navBtnFav').classList.add('active');
     let favStr = '';
     userPublic.favn.forEach(function (itm, idx) {
-        favStr = favStr + '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="galletas/' + userPublic.favl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+        if (userData.favl[idx][0] == '2') {
+            favStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="galletas/' + useruserPublic.favl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+        } else {
+            favStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + useruserPublic.favl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+        }
     });
     document.getElementById('cntFav').innerHTML = favStr;
     document.getElementById('crdFav').classList.remove('d-none');
@@ -69,7 +73,11 @@ function shwLike() {
     document.getElementById('navBtnLike').classList.add('active');
     let likedStr = '';
     userPublic.likedn.forEach(function (itm, idx) {
-        likedStr = likedStr + '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="galletas/' + userPublic.likedl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+        if (userData.likedl[idx][0] == '2') {
+            likedStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="galletas/' + userPublic.likedl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+        } else {
+            likedStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + userPublic.likedl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
+        }
     });
     document.getElementById('cntLike').innerHTML = likedStr;
     document.getElementById('crdLike').classList.remove('d-none');
