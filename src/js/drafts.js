@@ -28,7 +28,7 @@ const FSDB = getFirestore();
 var urlSrch;
 window.loaded = function loaded() {
     urlSrch = new URLSearchParams(location.search);
-    
+
     initSrch(false);
     function newSrch() {
         let srchStr = '?k=';
@@ -284,7 +284,11 @@ function shwSrch() {
                 let badge = document.createElement('span');
                 badge.classList.add('badge');
                 badge.classList.add('badge-warning');
-                badge.innerText = 'Draft';
+                if (lang == "es") {
+                    badge.innerText = 'Borrador';
+                } else if (lang == "en") {
+                    badge.innerText = 'Draft';
+                }
                 col0.appendChild(badge);
                 row.appendChild(col0);
             }
@@ -337,7 +341,11 @@ function shwSrch() {
             drpitm1.onclick = function () {
                 window.open('../vista-email/' + doc.data().file, '_blank').focus();
             };
-            drpitm1.innerHTML = 'Vista correo <i class="fas fa-envelope"></i>';
+            if (lang == "es") {
+                drpitm1.innerHTML = 'Vista correo <i class="fas fa-envelope"></i>';
+            } else if (lang == "en") {
+                drpitm1.innerHTML = 'Mail preview <i class="fas fa-envelope"></i>';
+            }
             drpmenu.appendChild(drpitm1);
             let drpitm2 = document.createElement('button');
             let d = doc.data().created.toDate();
@@ -346,7 +354,11 @@ function shwSrch() {
                 drpitm2.onclick = function () {
                     window.open(doc.data().url, '_blank').focus();
                 };
-                drpitm2.innerHTML = 'Ver artículo <i class="fas fa-eye"></i>';
+                if (lang == "es") {
+                    drpitm2.innerHTML = 'Ver Galleta <i class="fas fa-eye"></i>';
+                } else if (lang == "en") {
+                    drpitm2.innerHTML = 'View Cookie <i class="fas fa-eye"></i>';
+                }
                 drpmenu.appendChild(drpitm2);
             }
             drp.appendChild(drpmenu);

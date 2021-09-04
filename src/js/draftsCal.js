@@ -68,7 +68,11 @@ function shwSrch() {
                 let badge = document.createElement('span');
                 classes(badge, 'badge');
                 classes(badge, 'badge-warning');
-                badge.innerText = 'Pendiente';
+                if (lang == "es") {
+                    badge.innerText = 'Pendiente';
+                } else if (lang == "en") {
+                    badge.innerText = 'Pending';
+                }
                 col0.appendChild(badge);
                 row.appendChild(col0);
             }
@@ -110,14 +114,22 @@ function shwSrch() {
                     window.location.href = '../edit-calendar?id=' + doc.id;
                 }
             };
-            drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
+            if (lang == "es") {
+                drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
+            } else if (lang == "en") {
+                drpitm0.innerHTML = 'Edit <i class="fas fa-edit"></i>';
+            }
             drpmenu.appendChild(drpitm0);
             let drpitm1 = document.createElement('button');
             classes(drpitm1, 'dropdown-item');
             drpitm1.onclick = function () {
                 window.open('../vista-email-calendario/' + doc.id, '_blank').focus();
             };
-            drpitm1.innerHTML = 'Vista correo <i class="fas fa-envelope"></i>';
+            if (lang == "es") {
+                drpitm1.innerHTML = 'Vista correo <i class="fas fa-envelope"></i>';
+            } else if (lang == "en") {
+                drpitm1.innerHTML = 'Mail preview <i class="fas fa-envelope"></i>';
+            }
             drpmenu.appendChild(drpitm1);
             let drpitm2 = document.createElement('button');
             if (dat.public) {
@@ -125,7 +137,11 @@ function shwSrch() {
                 drpitm2.onclick = function () {
                     window.open(dat.url, '_blank').focus();
                 };
-                drpitm2.innerHTML = 'Ver calendario <i class="fas fa-eye"></i>';
+                if (lang == "es") {
+                    drpitm2.innerHTML = 'Ver Galleta <i class="fas fa-eye"></i>';
+                } else if (lang == "en") {
+                    drpitm2.innerHTML = 'View Cookie <i class="fas fa-eye"></i>';
+                }
                 drpmenu.appendChild(drpitm2);
             }
             drp.appendChild(drpmenu);

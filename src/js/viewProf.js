@@ -89,7 +89,11 @@ window.shwCrds = function shwCrds(t, u) {
                 document.getElementById('navBtnPrfl').classList.add('disabled');
                 document.getElementById('contEmail').classList.add('d-none');
                 document.getElementById('contPic').classList.add('d-none');
-                document.getElementById('contNull').innerHTML = '<div class="col"><strong>Este perfíl no existe o es privado</strong></div>';
+                if (lang == "es") {
+                    document.getElementById('contNull').innerHTML = '<div class="col"><strong>Este perfíl no existe o es privado</strong></div>';
+                } else if (lang == "en") {
+                    document.getElementById('contNull').innerHTML = '<div class="col"><strong>This profile does not exist or it is private.</strong></div>';
+                }
                 document.getElementById('crdPrfl').classList.remove('d-none');
             } else {
                 if (userPublic.favn == null) {

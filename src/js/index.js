@@ -113,7 +113,11 @@ function shwSrch() {
             classes(med, "media mb-3");
             let bod = document.createElement('div');
             classes(bod, "media-body");
-            bod.innerHTML = '<h5 class="mt-0 text-center">No se han encontrado resultados</h5>';
+            if (lang == "es") {
+                bod.innerHTML = '<h5 class="mt-0 text-center">No se han encontrado resultados</h5>';
+            } else if (lang == "en") {
+                bod.innerHTML = '<h5 class="mt-0 text-center">No results found</h5>';
+            }
             a.appendChild(med);
             med.appendChild(bod);
             document.getElementById('cookiesCont').appendChild(a);
@@ -147,15 +151,27 @@ function shwSrch() {
             classes(dates, "my-0");
             if (doc.data().dledit) {
                 let dl = doc.data().ledit.toDate();
-                dates.innerText = 'Actualizado: ' + dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear();
+                if (lang == "es") {
+                    dates.innerText = 'Actualizado: ' + dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear();
+                } else if (lang == "en") {
+                    dates.innerText = 'Updated: ' + dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear();
+                }
             } else {
                 let d = doc.data().published.toDate();
-                dates.innerText = 'Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+                if (lang == "es") {
+                    dates.innerText = 'Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+                } else if (lang == "en") {
+                    dates.innerText = 'Published: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+                }
             }
             bod.appendChild(dates);
             let auhtTxt = document.createElement('p');
             classes(auhtTxt, "mt-0");
-            auhtTxt.innerText = ' Autor(es):' + doc.data().authors;
+            if (lang == "es") {
+                auhtTxt.innerText = ' Autor(es):' + doc.data().authors;
+            } else if (lang == "en") {
+                auhtTxt.innerText = ' Author(s):' + doc.data().authors;
+            }
             bod.appendChild(auhtTxt);
             a.appendChild(med);
             med.appendChild(img);

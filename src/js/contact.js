@@ -35,9 +35,17 @@ window.loaded = function loaded() {
             subject: document.getElementById('inSubj').value,
             mess: document.getElementById('inText').value,
         }).then(res => {
-            alertTop("Gracias por tu mensaje, se ha enviado correctamente.", 1);
+            if (lang == "es") {
+                alertTop("Gracias por tu mensaje, se ha enviado correctamente.", 1);
+            } else if (lang == "en") {
+                alertTop("Thank you for your message, it was sent successfully.", 1);
+            }
         }).catch(function (err) {
-            alertTop("Ha ocurrido un error, por favor intenta nuevamente.", 0);
+            if (lang == "es") {
+                alertTop("Ha ocurrido un error, por favor intenta nuevamente.", 0);
+            } else if (lang == "en") {
+                alertTop("There has been an error, please try again.", 0);
+            }
         })
     }
     document.getElementById("frmCont").addEventListener("submit", function (event) {

@@ -159,7 +159,11 @@ window.resetFrm = function resetFrm() {
     document.getElementById('inNewNck').value = '';
     document.getElementById('inNwPP').value = '';
     document.getElementById("preVIn").src = '';
-    document.getElementById('inNwPPL').innerHTML = 'Elige una imagen';
+    if (lang == "es") {
+        document.getElementById('inNwPPL').innerHTML = 'Elige una imagen';
+    } else if (lang == "en") {
+        document.getElementById('inNwPPL').innerHTML = 'Choose an image';
+    }
     document.getElementById("prBar").classList.add('d-none');
     document.getElementById("frmChngPP").classList.remove('d-none');
     document.getElementById("btnCnfNwPP").classList.remove('disabled');

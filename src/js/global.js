@@ -164,22 +164,38 @@ function shwSsnBtns(ac) {
                 let liked = doc.data().liked;
                 pubID = doc.data().shortID;
                 if (fav.indexOf(id) != -1) {
-                    document.getElementById('btnFav').innerHTML = ('En mis favoritos <i class="fas fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                    if (lang == "es") {
+                        document.getElementById('btnFav').innerHTML = ('En mis favoritos <i class="fas fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                    } else if (lang == "en") {
+                        document.getElementById('btnFav').innerHTML = ('In my favorites <i class="fas fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                    }
                     document.getElementById('btnFav').classList.remove('btn-outline-light');
                     document.getElementById('btnFav').classList.add('btn-light');
                 }
                 else {
-                    document.getElementById('btnFav').innerHTML = ('Añadir a favoritos <i class="far fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                    if (lang == "es") {
+                        document.getElementById('btnFav').innerHTML = ('Añadir a favoritos <i class="far fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                    } else if (lang == "en") {
+                        document.getElementById('btnFav').innerHTML = ('Add to favorites <i class="far fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                    }
                     document.getElementById('btnFav').classList.remove('btn-light');
                     document.getElementById('btnFav').classList.add('btn-outline-light');
                 }
                 if (liked.indexOf(id) != -1) {
-                    document.getElementById('btnLike').innerHTML = ('Me gusta <i class="fas fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                    if (lang == "es") {
+                        document.getElementById('btnLike').innerHTML = ('Me gusta <i class="fas fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                    } else if (lang == "en") {
+                        document.getElementById('btnLike').innerHTML = ('Liked <i class="fas fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                    }
                     document.getElementById('btnLike').classList.remove('btn-outline-light');
                     document.getElementById('btnLike').classList.add('btn-light');
                 }
                 else {
-                    document.getElementById('btnLike').innerHTML = ('Dar me gusta <i class="far fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                    if (lang == "es") {
+                        document.getElementById('btnLike').innerHTML = ('Dar me gusta <i class="far fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                    } else if (lang == "en") {
+                        document.getElementById('btnLike').innerHTML = ('Like <i class="far fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                    }
                     document.getElementById('btnLike').classList.remove('btn-light');
                     document.getElementById('btnLike').classList.add('btn-outline-light');
                 }

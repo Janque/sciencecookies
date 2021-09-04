@@ -119,8 +119,13 @@ window.loaded = function loaded() {
             }
             replying = -1;
             document.getElementById('frmNwComBtns').classList.add('d-none');
-            document.getElementById('inNwCom').setAttribute('placeholder', 'Nuevo comentario');
-            document.getElementById('btnAddCom').innerHTML = 'Comentar';
+            if (lang == "es") {
+                document.getElementById('inNwCom').setAttribute('placeholder', 'Nuevo comentario');
+                document.getElementById('btnAddCom').innerHTML = 'Comentar';
+            } else if (lang == "en") {
+                document.getElementById('inNwCom').setAttribute('placeholder', 'New comment');
+                document.getElementById('btnAddCom').innerHTML = 'Comment';
+            }
             document.getElementById('btnCanCom').classList.remove('disabled');
             document.getElementById('btnAddCom').classList.remove('disabled');
             document.getElementById('inNwCom').value = '';
@@ -196,7 +201,11 @@ document.getElementById('btnFav').onclick = function () {
             set(child(cookRef, 'favs'), increment(nfav));
         }).catch(function (err) { console.log('err') });
     } else {
-        document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+        if (lang == "es") {
+            document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+        } else if (lang == "en") {
+            document.getElementById('mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+        }
         $('#mdlRgstr').modal('show');
     }
 };
@@ -260,19 +269,31 @@ document.getElementById('btnLike').onclick = function () {
             set(child(cookRef, 'favs'), increment(nfav));
         }).catch(function (err) { console.log(err) });
     } else {
-        document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+        if (lang == "es") {
+            document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+        } else if (lang == "en") {
+            document.getElementById('mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+        }
         $('#mdlRgstr').modal('show');
     }
 };
 $('#mdlRgstr').on('hidden.bs.modal', function (e) {
-    document.getElementById('mdlRgsL').innerHTML = 'Inicia sesión o regístrate';
+    if (lang == "es") {
+        document.getElementById('mdlRgsL').innerHTML = 'Inicia sesión o regístrate';
+    } else if (lang == "en") {
+        document.getElementById('mdlRgsL').innerHTML = 'Log in or sign in';
+    }
 });
 
 document.getElementById('inNwCom').onfocus = function () {
     if (actSsn) {
         document.getElementById('frmNwComBtns').classList.remove('d-none');
     } else {
-        document.getElementById('mdlRgsL').innerHTML = 'Inicia sesión o regístrate para continuar';
+        if (lang == "es") {
+            document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+        } else if (lang == "en") {
+            document.getElementById('mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+        }
         $('#mdlRgstr').modal('show');
     }
 };
@@ -284,14 +305,22 @@ window.report = function report(r) {
         reporting = r;
         $('#mdlRprt').modal('show');
     } else {
-        document.getElementById('mdlRgsL').innerHTML = 'Inicia sesión o regístrate para continuar';
+        if (lang == "es") {
+            document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+        } else if (lang == "en") {
+            document.getElementById('mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+        }
         $('#mdlRgstr').modal('show');
     }
 }
 window.reply = function reply(r) {
     replying = r;
     document.getElementById('btnsFL').scroll({ behavior: 'smooth' });
-    document.getElementById('inNwCom').setAttribute('placeholder', 'Nueva respuesta');
+    if (lang == "es") {
+        document.getElementById('inNwCom').setAttribute('placeholder', 'Nueva respuesta');
+    } else if (lang == "en") {
+        document.getElementById('inNwCom').setAttribute('placeholder', 'New reply');
+    }
     document.getElementById('inNwCom').focus();
 }
 /*function likeCom(p,s){
@@ -319,8 +348,14 @@ document.getElementById('btnLdComs').onclick = function () {
 
 function drwComs(num) {
     document.getElementById('btnLdMrComs').classList.add('d-none');
+    let comTxt;
+    if (lang == "es") {
+        comTxt = 'comentario';
+    } else if (lang == "en") {
+        comTxt = 'comment';
+    }
     document.getElementById('cntComs2').innerHTML = '';
-    document.getElementById('comCount').innerHTML = comCount + ' comentario';
+    document.getElementById('comCount').innerHTML = comCount + ' ' + comTxt;
     if (comCount != 1) document.getElementById('comCount').innerHTML += 's';
     for (let i = 1; i <= num; i++) {
         if (i > comList.length) break;
@@ -368,7 +403,11 @@ function createCom(comDat) {
     drpRprt.classList.add('border-0');
     let aux = id + 'c' + comDat.id;
     aux = ("'").concat(aux).concat("'");
-    drpRprt.innerHTML = '<button class="dropdown-item" onclick="report(' + aux + ');"><i class="fas fa-flag"></i> Reportar</button>';
+    let reportTxt = "";
+    if (lang == "es") {
+        reportTxt = 'ar';
+    }
+    drpRprt.innerHTML = '<button class="dropdown-item" onclick="report(' + aux + ');"><i class="fas fa-flag"></i> Report' + reportTxt + '</button>';
     rprt.appendChild(drpRprt);
     head.appendChild(rprt);
     let bod = document.createElement('div');
@@ -395,14 +434,22 @@ function createCom(comDat) {
     btn.classList.add('btn-science');
     btn.classList.add('mr-3');
     btn.setAttribute('onclick', 'reply(' + comDat.id + ')');
-    btn.innerHTML = 'Responder';
+    if (lang == "es") {
+        btn.innerHTML = 'Responder';
+    } else if (lang == "en") {
+        btn.innerHTML = 'Reply';
+    }
     btns.appendChild(btn);
     if (comDat.reps.length > 0) {
         btn = document.createElement('button');
         btn.classList.add('btn');
         btn.classList.add('btn-link-science');
         btn.setAttribute('onclick', 'document.getElementById("' + comDat.id + 'Reps").classList.toggle("d-none")');
-        btn.innerHTML = 'Respuestas <i class="fas fa-caret-down"></i>';
+        if (lang == "es") {
+            btn.innerHTML = 'Respuestas <i class="fas fa-caret-down"></i>';
+        } else if (lang == "en") {
+            btn.innerHTML = 'Replies <i class="fas fa-caret-down"></i>';
+        }
         btns.appendChild(btn);
     }
     foot.appendChild(btns);
@@ -452,7 +499,11 @@ function createCom(comDat) {
         rdrpRprt.classList.add('border-0');
         let raux = id + 'c' + comDat.id + 'r' + comDat.reps[i].id;
         raux = ("'").concat(raux).concat("'");
-        rdrpRprt.innerHTML = '<button class="dropdown-item" onclick="report(' + raux + ');"><i class="fas fa-flag"></i> Reportar</button>';
+        let reportTxt = "";
+        if (lang == "es") {
+            reportTxt = 'ar';
+        }
+        rdrpRprt.innerHTML = '<button class="dropdown-item" onclick="report(' + raux + ');"><i class="fas fa-flag"></i> Report' + reportTxt + '</button>';
         rrprt.appendChild(rdrpRprt);
         rHd.appendChild(rrprt);
         let rbod = document.createElement('div');

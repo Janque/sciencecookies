@@ -298,21 +298,53 @@ function saveDoc() {
         return updateDoc(calDocRef, docDat);
     });
 }
+
+function setSavedTime() {
+    let minutes = Math.floor((Date.now() - lastSave) / 60000);
+    if (minutes > 0) {
+        if (minutes > 59) {
+            if (lang == "es") {
+                document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
+            } else if (lang == "en") {
+                document.getElementById('tagLstSave').innerText = "Saved " + Math.floor(minutes / 60) + " hours ago";
+            }
+        }
+        else {
+            if (lang == "es") {
+                document.getElementById('tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
+            } else if (lang == "en") {
+                document.getElementById('tagLstSave').innerText = "Saved " + minutes + " minutes ago";
+            }
+        }
+    } else {
+        if (lang == "es") {
+            document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor((Date.now() - lastSave) / 1000) + " segundos";
+        } else if (lang == "en") {
+            document.getElementById('tagLstSave').innerText = "Saved " + Math.floor((Date.now() - lastSave) / 1000) + " seconds ago";
+        }
+    }
+}
 function normSave() {
     saveDoc().then(() => {
         if (eventToShow) showEvent();//IMPORTANT
         if (saved) clearInterval(savedInterval);
         saved = true;
         savedInterval = setInterval(() => {
-            let minutes = Math.floor((Date.now() - lastSave) / 60000);
-            if (minutes < 60) document.getElementById('tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
-            else document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
+            setSavedTime();
         }, 300010);
-        document.getElementById('tagLstSave').innerText = "Se han guardado los cambios";
+        if (lang == "es") {
+            document.getElementById('tagLstSave').innerText = "Se han guardado todos los cambios";
+        } else if (lang == "en") {
+            document.getElementById('tagLstSave').innerText = "All changes have been saved";
+        }
         lastSave = Date.now();
         console.log('Saved!');
     }).catch(err => {
-        document.getElementById('tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
+        if (lang == "es") {
+            document.getElementById('tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
+        } else if (lang == "en") {
+            document.getElementById('tagLstSave').innerText = "Error, changes not saved: " + err.code;
+        }
         console.log(err);
     });
 }
@@ -703,7 +735,11 @@ function render() {
         let fgVis = document.createElement('div');
         classes(fgVis, "form-group");
         fsec.appendChild(fgVis);
-        fgVis.innerHTML = '<label>Visiblidad</label>';
+        if (lang == "es") {
+            fgVis.innerHTML = '<label>Visibilidad</label>';
+        } else if (lang == "en") {
+            fgVis.innerHTML = '<label>Visibility</label>';
+        }
         inVis = document.createElement('select');
         inVis.id = "inVis" + key;
         classes(inVis, "form-control");
@@ -719,7 +755,11 @@ function render() {
         let fgTime = document.createElement('div');
         classes(fgTime, "form-group");
         fsec.appendChild(fgTime);
-        fgTime.innerHTML = '<label>Horario</label>';
+        if (lang == "es") {
+            fgTime.innerHTML = '<label>Horario</label>';
+        } else if (lang == "en") {
+            fgTime.innerHTML = '<label>Observing time</label>';
+        }
         let inTime = document.createElement('textarea');
         classes(inTime, "form-control");
         inTime.id = "inTime" + key;
@@ -822,11 +862,20 @@ function render() {
         eveDesc.innerHTML = event.description;
         tsec.appendChild(eveDesc);
         let eveVis = document.createElement('p');
-        eveVis.innerHTML = "Visibilidad: " + event.visibilidad;
+        if (lang == "es") {
+            eveVis.innerHTML = "Visibilidad: ";
+        } else if (lang == "en") {
+            eveVis.innerHTML = "Visibility: ";
+        }
+        eveVis.innerHTML += event.visibilidad;
         tsec.appendChild(eveVis);
         let eveTime = document.createElement('p');
         classes(eveTime, "mb-0");
-        eveTime.innerHTML = "Horario: ";
+        if (lang == "es") {
+            eveTime.innerHTML = "Horario: ";
+        } else if (lang == "en") {
+            eveTime.innerHTML = "Observing time: ";
+        }
         tsec.appendChild(eveTime);
         let eveTimeLst = document.createElement('ul');
         tsec.appendChild(eveTimeLst);
@@ -852,7 +901,11 @@ function render() {
         let delBtn = document.createElement('button');
         classes(delBtn, "btn btn-danger mr-auto")
         delBtn.setAttribute("type", "button");
-        delBtn.innerText = "Borrar";
+        if (lang == "es") {
+            delBtn.innerText = "Borrar";
+        } else if (lang == "en") {
+            delBtn.innerText = "Delete";
+        }
         delBtn.onclick = () => {
             for (let i = Number(key.substr(4)) + 1; i < docDat.weeks[Number(key[0])][key.substr(1, 3)].events.length; i++) {
                 docDat.events[key.substr(0, 4) + (i - 1)] = docDat.events[key.substr(0, 4) + i]
@@ -867,7 +920,11 @@ function render() {
         let editBtn = document.createElement('button');
         classes(editBtn, "btn btn-info");
         editBtn.setAttribute("type", "button");
-        editBtn.innerText = "Editar";
+        if (lang == "es") {
+            editBtn.innerText = "Editar";
+        } else if (lang == "en") {
+            editBtn.innerText = "Edit";
+        }
         editBtn.onclick = () => {
             inVis.value = calConfig.visOpts[lang].indexOf(event.visibilidad);
             if (inVis.value == 5) hideEl(fgTime);
@@ -887,7 +944,11 @@ function render() {
         classes(saveBtn, "btn btn-science d-none");
         saveBtn.setAttribute("type", "button");
         disable(saveBtn);
-        saveBtn.innerText = "Guardar";
+        if (lang == "es") {
+            saveBtn.innerText = "Guardar";
+        } else if (lang == "en") {
+            saveBtn.innerText = "Save";
+        }
         saveBtn.onclick = () => {
             disable(saveBtn);
             if (changed) {
@@ -1016,10 +1077,18 @@ document.getElementById('btnAprove').onclick = function () {
 $('#mdlPublish').on('show.bs.modal', e => {
     if (validateRevision()) {
         showEl(document.getElementById('btnCnfPublish'));
-        document.getElementById('mdlPublishTxt').innerText = "El calendario está listo para publicar";
+        if (lang == "es") {
+            document.getElementById('mdlPublishTxt').innerText = "El calendario está listo para publicar";
+        } else if (lang == "en") {
+            document.getElementById('mdlPublishTxt').innerText = "The calendar is ready to publish";
+        }
     } else {
         hideEl(document.getElementById('btnCnfPublish'));
-        document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
+        if (lang == "es") {
+            document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
+        } else if (lang == "en") {
+            document.getElementById('mdlPublishTxt').innerText = "At least two people must aprove before publishing.";
+        }
     }
 });
 

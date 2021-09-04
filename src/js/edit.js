@@ -311,14 +311,20 @@ function normSave() {
         if (saved) clearInterval(savedInterval);
         saved = true;
         savedInterval = setInterval(() => {
-            let minutes = Math.floor((Date.now() - lastSave) / 60000);
-            if (minutes < 60) document.getElementById('tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
-            else document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
+            setSavedTime();
         }, 300010);
-        document.getElementById('tagLstSave').innerText = "Se han guardado todos los cambios";
+        if (lang == "es") {
+            document.getElementById('tagLstSave').innerText = "Se han guardado todos los cambios";
+        } else if (lang == "en") {
+            document.getElementById('tagLstSave').innerText = "All changes have been saved";
+        }
         lastSave = Date.now();
     }).catch(err => {
-        document.getElementById('tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
+        if (lang == "es") {
+            document.getElementById('tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
+        } else if (lang == "en") {
+            document.getElementById('tagLstSave').innerText = "Error, changes not saved: " + err.code;
+        }
         console.log(err);
     });
 }
@@ -453,7 +459,11 @@ function fillMed() {
         classes(medBtnCopy, "btn btn-light btn-science btn-sm");
         let tltipTxt = document.createElement('span');
         classes(tltipTxt, "tooltipTextn");
-        tltipTxt.innerHTML = "Copiar";
+        if (lang == "es") {
+            tltipTxt.innerHTML = "Copiar";
+        } else if (lang == "en") {
+            tltipTxt.innerHTML = "Copy";
+        }
         medBtnCopy.appendChild(tltipTxt);
         medBtnCopy.innerHTML += '<i class="fas fa-link"></i>';
         medBtnCopy.onclick = function () {
@@ -464,11 +474,18 @@ function fillMed() {
             document.execCommand("copy");
             //classes(copyText, "d-none");*/
             window.open(itm.medUrl).focus();
-
-            tltipTxt.innerHTML = "URL copiado";
+            if (lang == "es") {
+                tltipTxt.innerHTML = "URL copiado";
+            } else if (lang == "en") {
+                tltipTxt.innerHTML = "Copied URL";
+            }
         };
         medBtnCopy.onmouseout = function () {
-            tltipTxt.innerHTML = "Copiar";
+            if (lang == "es") {
+                tltipTxt.innerHTML = "Copiar";
+            } else if (lang == "en") {
+                tltipTxt.innerHTML = "Copy";
+            }
         }
         tooltip.appendChild(medBtnCopy);
         btns0.appendChild(tooltip);
@@ -517,6 +534,32 @@ function fillMed() {
 
         document.getElementById('contMedCho').appendChild(col1);
     });
+}
+
+function setSavedTime() {
+    let minutes = Math.floor((Date.now() - lastSave) / 60000);
+    if (minutes > 0) {
+        if (minutes > 59) {
+            if (lang == "es") {
+                document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
+            } else if (lang == "en") {
+                document.getElementById('tagLstSave').innerText = "Saved " + Math.floor(minutes / 60) + " hours ago";
+            }
+        }
+        else {
+            if (lang == "es") {
+                document.getElementById('tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
+            } else if (lang == "en") {
+                document.getElementById('tagLstSave').innerText = "Saved " + minutes + " minutes ago";
+            }
+        }
+    } else {
+        if (lang == "es") {
+            document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor((Date.now() - lastSave) / 1000) + " segundos";
+        } else if (lang == "en") {
+            document.getElementById('tagLstSave').innerText = "Saved " + Math.floor((Date.now() - lastSave) / 1000) + " seconds ago";
+        }
+    }
 }
 
 function render() {
@@ -621,12 +664,8 @@ function render() {
                 toggleEl(btnEdit);
                 toggleEl(btnCheck);
                 toggleEl(subf);
-                if (document.getElementById('tagLstSave').innerText == "Se han guardado todos los cambios") {
-                    let minutes = Math.floor((Date.now() - lastSave) / 60000);
-                    if (minutes > 0) {
-                        if (minutes > 59) document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
-                        else document.getElementById('tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
-                    } else document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor((Date.now() - lastSave) / 1000) + " segundos";
+                if (document.getElementById('tagLstSave').innerText == "Se han guardado todos los cambios" || document.getElementById('tagLstSave').innerText == "All changes have been saved") {
+                    setSavedTime();
                 }
             }
             act.appendChild(btnEdit);
@@ -803,7 +842,11 @@ function render() {
                 if (arr.empty) arr.push(' Anónimo');
                 docDat.cont[0].author = arr.slice();
                 docDat.authors = arr.slice();
-                pAuth.innerText = "Autor(es):" + docDat.cont[0].author;
+                if (lang == "es") {
+                    pAuth.innerText = "Autor(es):" + docDat.cont[0].author;
+                } else if (lang == "en") {
+                    pAuth.innerText = "Author(s):" + docDat.cont[0].author;
+                }
             }
             inAu0.onclick = function () {
                 uptAuthors(inAu0.checked, inAu1.checked, inAu2.checked);
@@ -896,7 +939,11 @@ function render() {
                 let inOpt1 = document.createElement('option');
                 if (ref.type == 'cite') inOpt1.setAttribute('selected', 'true');
                 inOpt1.value = "cite";
-                inOpt1.innerText = 'Otro';
+                if (lang == "es") {
+                    inOpt1.innerText = 'Otro';
+                } else if (lang == "en") {
+                    inOpt1.innerText = 'Other';
+                }
                 in1.appendChild(inOpt1);
                 in1.onchange = function () { changeRef(); }
                 fc0.appendChild(in0);
@@ -917,8 +964,8 @@ function render() {
                 rBtnEdit.innerHTML = '<i class="fas fa-edit"></i>';
                 rBtnEdit.onclick = function () {
                     toggleRef();
-                    if (document.getElementById('tagLstSave').innerText == "Se han guardado todos los cambios") {
-                        document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor((Date.now() - lastSave) / 60000) + " minutos";
+                    if (document.getElementById('tagLstSave').innerText == "Se han guardado todos los cambios" || document.getElementById('tagLstSave').innerText == "All changes have been saved") {
+                        setSavedTime();
                     }
                 };
                 rBtnCheck = document.createElement('button');
@@ -994,7 +1041,11 @@ function render() {
             in0.setAttribute('type', 'text');
             if (Number(item.title) > 0) {
                 in0.value = item.titleTxt;
-                in0.setAttribute('placeholder', 'Subtítulo');
+                if (lang == "es") {
+                    in0.setAttribute('placeholder', 'Subtítulo');
+                } else if (lang == "en") {
+                    in0.setAttribute('placeholder', 'Subtitle');
+                }
                 in0.removeAttribute('readonly');
             } else {
                 in0.value = "";
@@ -1015,7 +1066,11 @@ function render() {
             in1.oninput = function () {
                 docDat.cont[idx].title = in1.value;
                 if (Number(in1.value) > 0) {
-                    in0.setAttribute('placeholder', 'Subtítulo');
+                    if (lang == "es") {
+                        in0.setAttribute('placeholder', 'Subtítulo');
+                    } else if (lang == "en") {
+                        in0.setAttribute('placeholder', 'Subtitle');
+                    }
                     in0.removeAttribute('readonly');
                     if (Number(item.title) == 2) subt.innerHTML = '<br>';
                     else subt.innerHTML = "";
@@ -1117,7 +1172,11 @@ function render() {
             }
             let help0 = document.createElement('small');
             classes(help0, "text-muted");
-            help0.innerText = "aaaaaaaaaaa o https://youtu.be/aaaaaaaaaaa o https://www.youtube.com/watch?v=aaaaaaaaaaa";
+            if (lang == "es") {
+                help0.innerText = "aaaaaaaaaaa o https://youtu.be/aaaaaaaaaaa o https://www.youtube.com/watch?v=aaaaaaaaaaa";
+            } else if (lang == "en") {
+                help0.innerText = "aaaaaaaaaaa or https://youtu.be/aaaaaaaaaaa or https://www.youtube.com/watch?v=aaaaaaaaaaa";
+            }
             let in1L = document.createElement('label');
             in1L.innerText = "Ratio";
             let in1 = document.createElement('select');
@@ -1189,7 +1248,11 @@ function render() {
             let rcont = document.createElement('div');
             classes(rcont, "form-group mb-2");
             let rnL = document.createElement('label');
-            rnL.innerText = "Tamaño";
+            if (lang == "es") {
+                rnL.innerText = "Tamaño";
+            } else if (lang == "en") {
+                rnL.innerText = "Size";
+            }
             let ranR = document.createElement('div');
             classes(ranR, "row");
             let ranRC0 = document.createElement('div');
@@ -1224,7 +1287,11 @@ function render() {
             let fc1 = document.createElement('div');
             classes(fc1, "col-auto");
             let in0L = document.createElement('label');
-            in0L.innerText = "Pie de foto";
+            if (lang == "es") {
+                in0L.innerText = "Pie de foto";
+            } else if (lang == "en") {
+                in0L.innerText = "Caption";
+            }
             let in0 = document.createElement('input');
             classes(in0, "form-control");
             in0.setAttribute('type', 'text');
@@ -1237,7 +1304,11 @@ function render() {
             let inOpt0 = document.createElement('option');
             inOpt0.value = "true";
             if (item.hasCapt == "true") inOpt0.setAttribute('selected', 'true');
-            inOpt0.innerText = "Sí";
+            if (lang == "es") {
+                inOpt0.innerText = "Sí";
+            } else if (lang == "en") {
+                inOpt0.innerText = "Yes";
+            }
             in1.appendChild(inOpt0);
             let inOpt1 = document.createElement('option');
             inOpt1.value = "false";
@@ -1328,7 +1399,11 @@ function fillTrans() {
 
 $('#mdlAddMed').on('hidden.bs.modal', e => {
     document.getElementById("prevNewMed").src = '';
-    document.getElementById('inNewMedL').innerHTML = 'Elige una imagen';
+    if (lang == "es") {
+        document.getElementById('inNewMedL').innerHTML = 'Elige una imagen';
+    } else if (lang == "en") {
+        document.getElementById('inNewMedL').innerHTML = 'Choose an image';
+    }
     document.getElementById('inNewMedUrl').value = "";
     document.getElementById('inNewMed').removeAttribute('required');
     document.getElementById('inNewMedUrl').removeAttribute('required');
@@ -1425,11 +1500,19 @@ $('#mdlPublish').on('show.bs.modal', e => {
     });
     if (revLangs < langs.length) {
         classes(document.getElementById('btnCnfPublish'), "d-none");
-        document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
+        if (lang == "es") {
+            document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
+        } else if (lang == "en") {
+            document.getElementById('mdlPublishTxt').innerText = "At least two people must aprove before publishing.";
+        }
         document.getElementById('frmPublish').classList.add('d-none');
     } else {
         document.getElementById('btnCnfPublish').classList.remove("d-none");
-        document.getElementById('mdlPublishTxt').innerText = "La galleta está lista para publicar";
+        if (lang == "es") {
+            document.getElementById('mdlPublishTxt').innerText = "La Galleta está lista para publicar";
+        } else if (lang == "en") {
+            document.getElementById('mdlPublishTxt').innerText = "The Cookie is ready to publish";
+        }
         document.getElementById('frmPublish').classList.remove('d-none');
         if (docDat.beenPublic) document.getElementById('sendUptCont').classList.remove('d-none');
     }
