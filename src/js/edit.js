@@ -134,12 +134,16 @@ window.loaded = function loaded() {
         translateFrm().then(res => {
             runprog('barTranslate', 73, 90);
             if (res) {
+                document.getElementById('inFile').value = ultraClean(document.getElementById('inFile').value, '-');
+                docDat.file = file;
+                setprog('barTranslate', 96);
+                normSave();
                 setprog('barTranslate', 100);
                 $('#mdlTranslate').modal('hide');
                 document.getElementById('btnCnfTranslate').classList.remove("disabled");
                 document.getElementById('btnCanTranslate0').classList.remove("disabled");
                 document.getElementById('btnCanTranslate1').classList.remove("disabled");
-                hideEl(document.getElementById('barTranslateCont'))
+                hideEl(document.getElementById('barTranslateCont'));
             } else {
                 if (lang == "es") {
                     alertTop("<strong>¡Ha ocurrido un error!</strong>", 0);
@@ -187,7 +191,7 @@ window.loaded = function loaded() {
             let file = doc.data().file;
             let desc = doc.data().description;
             document.getElementById('inFile').value = await translateSimple(file, ori, lang);
-            document.getElementById('inFile').value = document.getElementById('inFile').value.trim().toLowerCase().replaceAll(' ', '-');
+            document.getElementById('inFile').value = ultraClean(document.getElementById('inFile').value, '-');
             document.getElementById('inDesc').value = await translateSimple(desc, ori, lang);
             fileFrm();
         }).catch(err => console.log(err));
