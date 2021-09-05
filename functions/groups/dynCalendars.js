@@ -15,31 +15,43 @@ function renderCal(req, res, lang) {
         res.redirect('http://sciencecookies.net/404');
         return;
     } else {
-        let monthNum;
+        let monthNum, monthTxt;
         if (req.params.month == "enero" || req.params.month == "january") {
             monthNum = "01";
+            monthTxt = lang == "es" ? "enero" : "january";
         } else if (req.params.month == "febrero" || req.params.month == "february") {
             monthNum = "02";
+            monthTxt = lang == "es" ? "febrero" : "february";
         } else if (req.params.month == "marzo" || req.params.month == "march") {
             monthNum = "03";
+            monthTxt = lang == "es" ? "marzo" : "march";
         } else if (req.params.month == "abril" || req.params.month == "april") {
             monthNum = "04";
+            monthTxt = lang == "es" ? "abril" : "april";
         } else if (req.params.month == "mayo" || req.params.month == "may") {
             monthNum = "05";
+            monthTxt = lang == "es" ? "mayo" : "may";
         } else if (req.params.month == "junio" || req.params.month == "june") {
             monthNum = "06";
+            monthTxt = lang == "es" ? "junio" : "june";
         } else if (req.params.month == "julio" || req.params.month == "july") {
             monthNum = "07";
+            monthTxt = lang == "es" ? "julio" : "july";
         } else if (req.params.month == "agosto" || req.params.month == "august") {
             monthNum = "08";
+            monthTxt = lang == "es" ? "agosto" : "august";
         } else if (req.params.month == "septiembre" || req.params.month == "september") {
             monthNum = "09";
+            monthTxt = lang == "es" ? "septiembre" : "september";
         } else if (req.params.month == "octubre" || req.params.month == "october") {
             monthNum = "10";
+            monthTxt = lang == "es" ? "octubre" : "october";
         } else if (req.params.month == "noviembre" || req.params.month == "november") {
             monthNum = "11";
+            monthTxt = lang == "es" ? "noviembre" : "november";
         } else if (req.params.month == "diciembre" || req.params.month == "december") {
-            monthNum = "11";
+            monthNum = "12";
+            monthTxt = lang == "es" ? "diciembre" : "december";
         } else {
             monthNum = "00";
         }
@@ -124,13 +136,13 @@ function renderCal(req, res, lang) {
             java += '};\n';
             java += `window.globID="${doc.id}"\n`;
 
-            otlang = 'es';
-            if (lang == 'es') otlang = 'en';
+            let otLang = 'es';
+            if (lang == 'es') otLang = 'en';
             res.render('calendario', {
                 "descriptionShort": dat.descriptionShort,
                 "description": dat.description,
                 "year": req.params.year,
-                "month": req.params.month,
+                "month": monthTxt,
                 "monthNum": monthNum,
                 "title": dat.title,
                 "picUrl": dat.picUrl,
@@ -142,7 +154,7 @@ function renderCal(req, res, lang) {
                 "priorCal": dat.priorCal,
                 "java": java,
                 "setLang": lang,
-                "transLink": dat.translations[otlang]
+                "transLink": dat.translations[otLang]
             });
             return;
         }).catch(err => console.log(err));
