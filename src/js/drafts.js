@@ -484,13 +484,11 @@ document.getElementById('btnCanPlus1').onclick = function () {
 document.getElementById('inTitle').onfocus = function () {
     document.getElementById('alrtPlusContainer').innerHTML = '';
 };
-document.getElementById('inTitle').onchange = function () {
+document.getElementById('inTitle').oninput = function () {
     document.getElementById('inTitle').value = document.getElementById('inTitle').value.trim();
     if (inFileChanged) return;
-    let title = document.getElementById('inTitle').value;
-    title = rmDiacs(title);
-    title = title.toLowerCase();
-    document.getElementById('inFile').value = title.replaceAll(' ', '-');
+    document.getElementById('inFile').value = document.getElementById('inTitle').value
+    document.getElementById('inFile').value = ultraClean(document.getElementById('inFile').value, '-');
 };
 document.getElementById('inFile').onfocus = function () {
     inFileChanged = true;
