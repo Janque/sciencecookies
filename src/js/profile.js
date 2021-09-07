@@ -22,7 +22,7 @@ else {
 import { getAuth, onAuthStateChanged, updateProfile } from "firebase/auth";
 const AUTH = getAuth();
 
-import { getFirestore, getDoc, doc as docRef, updateDoc } from "firebase/firestore";
+import { getFirestore, getDoc, doc as docRef, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 const FSDB = getFirestore();
 
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -74,11 +74,11 @@ window.loaded = function loaded() {
                 let newsRef = docRef(FSDB, "newsletters", "base");
                 if (userData.rNews) {
                     updateDoc(newsRef, {
-                        emails: firebase.firestore.FieldValue.arrayUnion(email)
+                        emails: arrayUnion(email)
                     });
                 } else {
                     updateDoc(newsRef, {
-                        emails: firebase.firestore.FieldValue.arrayRemove(email)
+                        emails: arrayRemove(email)
                     });
                 }
             }

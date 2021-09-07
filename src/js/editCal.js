@@ -25,7 +25,7 @@ const RTDB = getDatabase();
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
-import { getFirestore, getDoc, doc as docRef, onSnapshot, updateDoc } from "firebase/firestore";
+import { getFirestore, getDoc, doc as docRef, onSnapshot, updateDoc,Timestamp } from "firebase/firestore";
 const FSDB = getFirestore();
 
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -1039,11 +1039,11 @@ document.getElementById('inMedSrc1').onclick = function () {
 }
 
 document.getElementById('btnPrevCal').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
+    docDat.timePrev = Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 document.getElementById('btnPrevMail').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
+    docDat.timePrev = Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 

@@ -22,7 +22,7 @@ else {
 import { getDatabase, ref as databaseRef, set, get, increment } from "firebase/database";
 const RTDB = getDatabase();
 
-import { getFirestore, doc as docRef, query, where, orderBy, limit, startAfter, getDocs, setDoc } from "firebase/firestore";
+import { getFirestore, doc as docRef, query, where, orderBy, limit, startAfter, getDocs, setDoc, Timestamp } from "firebase/firestore";
 const FSDB = getFirestore();
 
 var urlSrch;
@@ -102,9 +102,9 @@ window.loaded = function loaded() {
                             public: false,
                             beenPublic: false,
                             dledit: false,
-                            created: new firebase.firestore.Timestamp.now(),
-                            ledit: new firebase.firestore.Timestamp.now(),
-                            published: new firebase.firestore.Timestamp.now(),
+                            created: Timestamp.now(),
+                            ledit: Timestamp.now(),
+                            published: Timestamp.now(),
                             pop: 0,
                             likes: 0,
                             favs: 0,

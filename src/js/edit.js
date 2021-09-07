@@ -25,7 +25,7 @@ const RTDB = getDatabase();
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
-import { getFirestore, getDoc, doc as docRef, getDocs, onSnapshot, updateDoc, query } from "firebase/firestore";
+import { getFirestore, getDoc, doc as docRef, getDocs, onSnapshot, updateDoc, query, Timestamp } from "firebase/firestore";
 const FSDB = getFirestore();
 
 import { getStorage, ref as storageRef, deleteObject, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -572,7 +572,7 @@ function render() {
     if (docDat.beenPublic) {
         publishDate = docDat.published;
     } else {
-        docDat.published = publishDate = new firebase.firestore.Timestamp.now();
+        docDat.published = publishDate = Timestamp.now();
     }
     docDat.cont.forEach((item, idx) => {
         let sect = document.createElement('div');
@@ -1461,11 +1461,11 @@ document.getElementById('inSendUpt').onclick = function () {
 }
 
 document.getElementById('btnPrevCook').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
+    docDat.timePrev = Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 document.getElementById('btnPrevMail').onclick = function () {
-    docDat.timePrev = new firebase.firestore.Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
+    docDat.timePrev = Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
 
@@ -1661,13 +1661,13 @@ document.getElementById('btnCnfPublish').onclick = function () {
     showEl(document.getElementById("barPublishCont"));
 
     docDat.public = true;
-    docDat.ledit = new firebase.firestore.Timestamp.now();
+    docDat.ledit = Timestamp.now();
     docDat.revised = {};
     setprog('barPublish', 31);
 
     if (!docDat.beenPublic) {
         docDat.notify = true;
-        docDat.published = new firebase.firestore.Timestamp.now();
+        docDat.published = Timestamp.now();
         setprog('barPublish', 62);
     } else {
         docDat.dledit = docDat.notify = document.getElementById('inSendUpt').checked;
