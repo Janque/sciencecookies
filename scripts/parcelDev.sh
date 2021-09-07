@@ -24,4 +24,6 @@ fi
 mkdir public/vendor/
 cp -r src/vendor/* public/vendor
 
+cp -r src/favicon/* public
+
 npx parcel $(cat scripts/toCompile) --dist-dir public
