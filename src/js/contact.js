@@ -19,7 +19,7 @@ else {
     firebaseApp = getApp();
 }
 
-import { getFirestore, addDoc, collection } from "firebase/firestore";
+import { getFirestore, addDoc, collection } from "firebase/firestore/lite";
 const FSDB = getFirestore();
 
 var urlSrch;

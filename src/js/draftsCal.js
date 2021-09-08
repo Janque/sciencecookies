@@ -19,7 +19,7 @@ else {
     firebaseApp = getApp();
 }
 
-import { query, orderBy, limit, startAfter, getDocs } from "firebase/firestore";
+import { query, orderBy, limit, startAfter, getDocs } from "firebase/firestore/lite";
 
 window.loaded = function loaded() {
     initSrch(false);

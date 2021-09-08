@@ -22,7 +22,7 @@ else {
 import { getDatabase, ref as databaseRef, set, increment } from "firebase/database";
 const RTDB = getDatabase();
 
-import { query, where, orderBy, limit, getDocs, startAfter } from "firebase/firestore";
+import { query, where, orderBy, limit, getDocs, startAfter } from "firebase/firestore/lite";
 
 var catnmb;
 const previewLim = 20;

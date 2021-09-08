@@ -22,7 +22,7 @@ else {
 import { getAuth, onAuthStateChanged, updateProfile } from "firebase/auth";
 const AUTH = getAuth();
 
-import { getFirestore, getDoc, doc as docRef, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { getFirestore, getDoc, doc as docRef, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore/lite";
 const FSDB = getFirestore();
 
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";

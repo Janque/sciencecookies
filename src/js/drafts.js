@@ -22,7 +22,7 @@ else {
 import { getDatabase, ref as databaseRef, set, get, increment } from "firebase/database";
 const RTDB = getDatabase();
 
-import { getFirestore, doc as docRef, query, where, orderBy, limit, startAfter, getDocs, setDoc, Timestamp } from "firebase/firestore";
+import { getFirestore, doc as docRef, query, where, orderBy, limit, startAfter, getDocs, setDoc, Timestamp } from "firebase/firestore/lite";
 const FSDB = getFirestore();
 
 var urlSrch;

@@ -21,7 +21,7 @@ const PERFORMANCE = getPerformance(firebaseApp);
 import { getAuth, signOut, onAuthStateChanged, EmailAuthProvider, ProviderId } from "firebase/auth";
 const AUTH = getAuth();
 
-import { getFirestore, collection, getDoc, doc as docRef, query, where, orderBy, limit, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDoc, doc as docRef, query, where, orderBy, limit, getDocs } from "firebase/firestore/lite";
 const FSDB = getFirestore();
 
 import { getFunctions, httpsCallable } from "firebase/functions";

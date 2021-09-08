@@ -25,7 +25,7 @@ const RTDB = getDatabase();
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
-import { getFirestore, collection, getDoc, doc as docRef, addDoc, updateDoc } from "firebase/firestore";
+import { getFirestore, collection, getDoc, doc as docRef, addDoc, updateDoc } from "firebase/firestore/lite";
 const FSDB = getFirestore();
 
 var cookRef;
