@@ -28,8 +28,6 @@ const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 import { getFirestore, collection, getDoc, doc as docRef, addDoc, updateDoc } from "firebase/firestore/lite";
 const FSDB = getFirestore();
 
-import { actSsn, alertTop, displayName, email, photoURL, uid, pubID } from "./global.js";
-
 var cookRef;
 var replying = -1;
 

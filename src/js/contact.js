@@ -22,8 +22,6 @@ else {
 import { getFirestore, addDoc, collection } from "firebase/firestore/lite";
 const FSDB = getFirestore();
 
-import { alertTop, email } from "./global.js";
-
 var urlSrch;
 window.loaded = function loaded() {
     urlSrch = new URLSearchParams(location.search);

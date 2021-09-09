@@ -25,8 +25,6 @@ const RTDB = getDatabase();
 import { getFirestore, doc as docRef, query, where, orderBy, limit, startAfter, getDocs, setDoc, Timestamp } from "firebase/firestore/lite";
 const FSDB = getFirestore();
 
-import { cookiesFSColl, alertTop, uid, author, langs, rmDiacs, ultraClean } from "./global.js";
-
 var urlSrch;
 window.loaded = function loaded() {
     urlSrch = new URLSearchParams(location.search);

@@ -26,4 +26,4 @@ cp -r src/vendor/* public/vendor
 
 cp -r src/favicon/* public
 
-npx parcel build $(cat scripts/toCompile) --dist-dir public --no-scope-hoist
+npx parcel build $(cat scripts/toCompile) --dist-dir public --no-scope-hoist --no-cache

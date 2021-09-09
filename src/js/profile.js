@@ -28,8 +28,6 @@ const FSDB = getFirestore();
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 const STORAGE = getStorage();
 
-import { alertTop, displayName, email, photoURL, uid } from "./global.js";
-
 //Global
 var userData, localUserData;
 

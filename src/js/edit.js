@@ -31,8 +31,6 @@ const FSDB = getFirestore();
 import { getStorage, ref as storageRef, deleteObject, uploadBytes, getDownloadURL } from "firebase/storage";
 const STORAGE = getStorage();
 
-import { cookiesFSColl, classes, hideEl, showEl, toggleEl, alertTop, uid, langs, allCats, textCats, catTranslations, ultraClean } from "./global.js";
-
 window.docDat;
 let docId, cookDocRef;
 let toDel = -1;

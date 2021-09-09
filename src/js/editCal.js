@@ -31,8 +31,6 @@ const FSDB = getFirestore();
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 const STORAGE = getStorage();
 
-import { calendarsFSColl, classes, hideEl, showEl, toggleEl, enable, disable, alertTop, uid, langs, ultraClean } from "./global.js";
-
 let docDat, docId, calDocRef, calConfig;
 let lastSave = Date.now(), saved = false;
 
