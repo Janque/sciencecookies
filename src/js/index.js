@@ -24,6 +24,8 @@ const RTDB = getDatabase();
 
 import { query, where, orderBy, limit, getDocs, startAfter } from "firebase/firestore/lite";
 
+import { cookiesFSColl, calendarsFSColl, classes, showEl, allCats, rmDiacs } from "./global.js";
+
 var catnmb;
 const previewLim = 20;
 

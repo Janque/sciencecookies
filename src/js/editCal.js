@@ -25,11 +25,13 @@ const RTDB = getDatabase();
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
-import { getFirestore, getDoc, doc as docRef, onSnapshot, updateDoc,Timestamp } from "firebase/firestore";
+import { getFirestore, getDoc, doc as docRef, onSnapshot, updateDoc, Timestamp } from "firebase/firestore";
 const FSDB = getFirestore();
 
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 const STORAGE = getStorage();
+
+import { calendarsFSColl, classes, hideEl, showEl, toggleEl, enable, disable, alertTop, uid, langs, ultraClean } from "./global.js";
 
 let docDat, docId, calDocRef, calConfig;
 let lastSave = Date.now(), saved = false;

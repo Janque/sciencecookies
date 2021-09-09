@@ -21,6 +21,8 @@ else {
 
 import { query, orderBy, limit, startAfter, getDocs } from "firebase/firestore/lite";
 
+import { calendarsFSColl, classes } from "./global.js";
+
 window.loaded = function loaded() {
     initSrch(false);
 }

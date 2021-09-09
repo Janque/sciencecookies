@@ -29,41 +29,41 @@ const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
 var firebaseui = require('firebaseui');
 
-if (!lang) window.lang = "es";
+if (!lang) lang = "es";
 //console.log(lang);
 document.cookie = "firebase-language-override=";
 
-window.cookiesFSColl = collection(FSDB, 'cookies/langs/' + lang);
-window.calendarsFSColl = collection(FSDB, 'calendars/langs/' + lang);
+export var cookiesFSColl = collection(FSDB, 'cookies/langs/' + lang);
+export var calendarsFSColl = collection(FSDB, 'calendars/langs/' + lang);
 
 var urlSrch = '';
-window.actSsn = false;
-window.mobile = false;
+export var actSsn = false;
+export var mobile = false;
 
-window.classes = function classes(elm, cls) {
+export function classes(elm, cls) {
     cls = cls.split(' ');
     cls.forEach(itm => {
         elm.classList.add(itm);
     });
 }
-window.hideEl = function hideEl(elm) {
+export function hideEl(elm) {
     elm.classList.add('d-none');
 }
-window.showEl = function showEl(elm) {
+export function showEl(elm) {
     elm.classList.remove('d-none');
 }
-window.toggleEl = function toggleEl(elm) {
+export function toggleEl(elm) {
     elm.classList.toggle('d-none');
 }
-window.enable = function enable(btn) {
+export function enable(btn) {
     btn.classList.remove('disabled');
     btn.removeAttribute('disabled');
 }
-window.disable = function disable(btn) {
+export function disable(btn) {
     classes(btn, "disabled");
     btn.setAttribute("disabled", "true");
 }
-window.alertTop = function alertTop(msg, alert, alrtId = "alrtClsSsn") {
+export function alertTop(msg, alert, alrtId = "alrtClsSsn") {
     switch (alert) {
         case 0:
             alert = "danger";
@@ -84,14 +84,20 @@ window.alertTop = function alertTop(msg, alert, alrtId = "alrtClsSsn") {
     });
 }
 
+//Config from DB
+export var langs;
+export var allCats;
+export var textCats;
+export var catTranslations;
+
 //Check auth
-window.displayName;
-window.email = "";
-window.photoURL;
-window.uid;
-window.author = "";
-window.mod = false;
-window.pubID;
+export var displayName;
+export var email = "";
+export var photoURL;
+export var uid;
+export var author = "";
+export var mod = false;
+export var pubID;
 var notLoaded = true;
 onAuthStateChanged(AUTH, (user) => {
     if (user) {
@@ -128,13 +134,13 @@ onAuthStateChanged(AUTH, (user) => {
     if ((!(site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal") || actSsn) && notLoaded) {
         notLoaded = false;
         getDoc(docRef(FSDB, 'config', 'langs')).then(function (doc) {
-            window.langs = doc.data().langs;
+            langs = doc.data().langs;
             return getDoc(docRef(FSDB, 'config', 'cats'));
         }).then(doc => {
             const data = doc.data();
-            window.allCats = data[lang].allCats;
-            window.textCats = data[lang].textCats;
-            window.catTranslations = data.catTranslations;
+            allCats = data[lang].allCats;
+            textCats = data[lang].textCats;
+            catTranslations = data.catTranslations;
             loaded();
         }).catch(err => { console.log(err) });
     }
@@ -527,13 +533,12 @@ for (var i = 0; i < defDiacs.length; i++) {
         diacs[lt[j]] = defDiacs[i].corr;
     }
 }
-window.rmDiacs = function rmDiacs(s) {
+export function rmDiacs(s) {
     return s.replace(/[^\u0000-\u007E]/g, function (a) {
         return diacs[a] || a;
     });
 }
-
-window.ultraClean = function ultraClean(str, rep) {
+export function ultraClean(str, rep) {
     str = rmDiacs(str.trim().toLowerCase());
     let banChars = ",.^*!¡'?¿#@[]-:;ªº$%&()=/+{} ";
     banChars.split('').forEach(c => {

@@ -22,6 +22,9 @@ else {
 import { getDatabase, ref as databaseRef, set, increment } from "firebase/database";
 const RTDB = getDatabase();
 
+import { hideEl, showEl, enable, disable } from "./global.js";
+
+
 window.eventToShow = null;
 window.showEvent = function showEvent() {
     eventKeys.forEach(key => {
