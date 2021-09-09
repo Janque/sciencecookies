@@ -6,7 +6,7 @@ block lang
 block missHead
   meta(name='description' content= description)
   meta(property="og:description" content= description)
-  
+
   link(rel="alternate" hreflang="es" href=HOST+'/'+NavLinks["es"]["cook"]+month+'/'+file+'/')
   link(rel="alternate" hreflang="en" href=HOST+'/'+NavLinks["en"]["cook"]+month+'/'+file+'/')
   link(rel="alternate" hreflang="x-default" href=HOST+'/'+NavLinks["es"]["cook"]+month+'/'+file+'/')
@@ -146,28 +146,23 @@ block content
 
   //- Like&Fav
   #btnsFL.row.justify-content-start.mb-2
+    - let favTxt, likTxt;
     if LANG=="es"
-      .col-auto
-        button#btnFav.btn.btn-outline-light.p-1.disabled.mt-2.mx-2
-          | Añadir a favoritos 
-          i#btnFavTxt.far.fa-heart
-          span#favCount.badge.badge-dark.ml-w
-      .col-auto
-        button#btnLike.btn.btn-outline-light.p-1.disabled.m-2
-          | Dar me gusta 
-          i#btnLikeTxt.far.fa-thumbs-up
-          span#likeCount.badge.badge-dark.m-2
+      - favTxt = "Añadir a favoritos ";
+      - likTxt = "Dar me gusta ";
     else if LANG=="en"
-      .col-auto
-        button#btnFav.btn.btn-outline-light.p-1.disabled.mt-2.mx-2
-          | Add to favorites 
-          i#btnFavTxt.far.fa-heart
-          span#favCount.badge.badge-dark.ml-w
-      .col-auto
-        button#btnLike.btn.btn-outline-light.p-1.disabled.m-2
-          | Like 
-          i#btnLikeTxt.far.fa-thumbs-up
-          span#likeCount.badge.badge-dark.m-2
+      - favTxt = "Add to favorites ";
+      - likTxt = "Like ";
+    .col-auto
+      button#btnFav.btn.btn-outline-light.p-1.disabled.mt-2.mx-2
+        | #{favTxt}
+        i#btnFavTxt.far.fa-heart
+        span#favCount.badge.badge-dark.ml-2
+    .col-auto
+      button#btnLike.btn.btn-outline-light.p-1.disabled.m-2
+        | #{likTxt}
+        i#btnLikeTxt.far.fa-thumbs-up
+        span#likeCount.badge.badge-dark.ml-2
 
   //- Comentarios
   .row

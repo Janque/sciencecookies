@@ -162,7 +162,7 @@ document.getElementById('btnFav').onclick = function () {
                 if (lang == "en") {
                     langTxt = "Add to favorites";
                 }
-                document.getElementById('btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-w" id="favCount"></span>';
+                document.getElementById('btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
                 document.getElementById('btnFav').classList.remove('btn-light');
                 document.getElementById('btnFav').classList.add('btn-outline-light');
                 npop = -20;
@@ -182,7 +182,7 @@ document.getElementById('btnFav').onclick = function () {
                     if (lang == "en") {
                         langTxt = "I like it";
                     }
-                    document.getElementById('btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark m-2" id="likeCount"></span>';
+                    document.getElementById('btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
                     document.getElementById('btnLike').classList.remove('btn-outline-light');
                     document.getElementById('btnLike').classList.add('btn-light');
                 }
@@ -192,7 +192,7 @@ document.getElementById('btnFav').onclick = function () {
                 if (lang == "en") {
                     langTxt = "In my favorites";
                 }
-                document.getElementById('btnFav').innerHTML = langTxt + '  <i class="fas fa-heart"></i> <span class="badge badge-dark ml-w" id="favCount"></span>';
+                document.getElementById('btnFav').innerHTML = langTxt + '  <i class="fas fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
                 document.getElementById('btnFav').classList.remove('btn-outline-light');
                 document.getElementById('btnFav').classList.add('btn-light');
             }
@@ -231,7 +231,7 @@ document.getElementById('btnLike').onclick = function () {
                 if (lang == "en") {
                     langTxt = "I like it";
                 }
-                document.getElementById('btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark m-2" id="likeCount"></span>';
+                document.getElementById('btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
                 document.getElementById('btnLike').classList.remove('btn-outline-light');
                 document.getElementById('btnLike').classList.add('btn-light');
             }
@@ -250,7 +250,7 @@ document.getElementById('btnLike').onclick = function () {
                     if (lang == "en") {
                         langTxt = "Add to favorites";
                     }
-                    document.getElementById('btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-w" id="favCount"></span>';
+                    document.getElementById('btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
                     document.getElementById('btnFav').classList.remove('btn-light');
                     document.getElementById('btnFav').classList.add('btn-outline-light');
                 }
@@ -259,7 +259,7 @@ document.getElementById('btnLike').onclick = function () {
                     langTxt = "Like";
                 }
                 nlik = -1;
-                document.getElementById('btnLike').innerHTML = langTxt + ' <i class="far fa-thumbs-up"></i> <span class="badge badge-dark m-2" id="likeCount"></span>';
+                document.getElementById('btnLike').innerHTML = langTxt + ' <i class="far fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
                 document.getElementById('btnLike').classList.remove('btn-light');
                 document.getElementById('btnLike').classList.add('btn-outline-light');
             }
