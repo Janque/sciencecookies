@@ -5,7 +5,8 @@
     "dev": "./scripts/parcelDev.sh",
     "build": "./scripts/parcelBuild.sh",
     "syncFSDB": "./scripts/syncFSDB.sh",
-    "fireStart": "./scripts/fireStart.sh"
+    "fireStart": "./scripts/fireStart.sh",
+    "getFuncConf":"firebase functions:config:get > .runtimeconfig.json"
   },
   "devDependencies": {
     "@parcel/resolver-glob": "^2.0.0-rc.0",
