@@ -277,6 +277,7 @@ function saveDoc() {
             break;
     }
     docDat.url = 'https://sciencecookies.net/' + galletasText + '/' + month + '/' + docDat.file + '/';
+    docDat.ledit = Timestamp.now();
     fillKW();
     const promises = [];
     langs.forEach(l => {
@@ -1661,7 +1662,6 @@ document.getElementById('btnCnfPublish').onclick = function () {
     showEl(document.getElementById("barPublishCont"));
 
     docDat.public = true;
-    docDat.ledit = Timestamp.now();
     docDat.revised = {};
     setprog('barPublish', 31);
 
