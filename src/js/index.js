@@ -40,7 +40,7 @@ function initSrch(stAf) {
     }
     if (urlSrch.get('k') != null) {
         kywords = urlSrch.get('k').split('+');
-        document.getElementById('srcBox').value = urlSrch.get('k').replace('+', ' ');
+        $('#srcBox').value = urlSrch.get('k').replace('+', ' ');
     };
     kywords = cats.concat(kywords);
     kywords.forEach(function (itm, idx) {
@@ -50,32 +50,32 @@ function initSrch(stAf) {
     });
     let all = true;
     for (let i = 0; i < catnmb; i++) {
-        if (kywords.indexOf(document.getElementById('cat' + i).value) != -1) {
-            document.getElementById('cat' + i).checked = true;
+        if (kywords.indexOf($('#cat' + i).value) != -1) {
+            $('#cat' + i).checked = true;
         } else all = false;
     }
     if (all) {
         allChk = true;
-        document.getElementById('catA').checked = true;
+        $('#catA').checked = true;
     }
-    document.getElementById("inSrchOrd1").selected = false;
-    document.getElementById("inSrchOrd2").selected = false;
-    document.getElementById("inSrchOrd3").selected = false;
+    $("#inSrchOrd1").selected = false;
+    $("#inSrchOrd2").selected = false;
+    $("#inSrchOrd3").selected = false;
     srtOrd = urlSrch.get('o');
     if (srtOrd != null) {
         if (srtOrd == 'new') {
             srtOrd = 'ledit';
             desc = true;
-            document.getElementById("inSrchOrd1").selected = true;
+            $("#inSrchOrd1").selected = true;
         }
         if (srtOrd == 'old') {
             srtOrd = 'ledit';
             desc = false;
-            document.getElementById("inSrchOrd2").selected = true;
+            $("#inSrchOrd2").selected = true;
         }
         if (srtOrd == 'pop') {
             desc = true;
-            document.getElementById("inSrchOrd3").selected = true;
+            $("#inSrchOrd3").selected = true;
         }
     } else {
         srtOrd = 'ledit';
@@ -102,16 +102,16 @@ function initSrch(stAf) {
     }
 }
 function shwSrch() {
-    document.getElementById('cookiesCont').innerHTML = "";
+    $('#cookiesCont').innerHTML = "";
     getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
         if (docs.length == 0) {
-            let a = document.createElement('a');
+            let a = $('<a></a>');
             classes(a, "text-decoration-none text-light");
-            let med = document.createElement('div');
+            let med = $('<div></div>');
             classes(med, "media mb-3");
-            let bod = document.createElement('div');
+            let bod = $('<div></div>');
             classes(bod, "media-body");
             if (lang == "es") {
                 bod.innerHTML = '<h5 class="mt-0 text-center">No se han encontrado resultados</h5>';
@@ -120,34 +120,34 @@ function shwSrch() {
             }
             a.appendChild(med);
             med.appendChild(bod);
-            document.getElementById('cookiesCont').appendChild(a);
+            $('#cookiesCont').appendChild(a);
         }
         docs.forEach((doc, idx) => {
             if (idx != 0) {
-                let divi = document.createElement('div');
+                let divi = $('<div></div>');
                 classes(divi, "dropdown-divider d-md-none");
-                document.getElementById('cookiesCont').appendChild(divi);
+                $('#cookiesCont').appendChild(divi);
             }
-            let a = document.createElement('a');
+            let a = $('<a></a>');
             classes(a, "text-decoration-none text-light");
             a.href = doc.data().url;
-            let med = document.createElement('div');
+            let med = $('<div></div>');
             classes(med, "media mb-3");
-            let img = document.createElement('img');
+            let img = $('<img/>');
             classes(img, "align-self-center mr-3");
             img.style.width = "64px";
             img.style.height = "64px";
             img.src = doc.data().picUrl;
-            let bod = document.createElement('div');
+            let bod = $('<div></div>');
             classes(bod, "media-body");
-            let tit = document.createElement('h5');
+            let tit = $('<h5></h5>');
             classes(tit, "mt-0");
             tit.innerHTML = doc.data().title;
             bod.appendChild(tit);
-            let descr = document.createElement('p');
+            let descr = $('<p></p>');
             descr.innerHTML = doc.data().description;
             bod.appendChild(descr);
-            let dates = document.createElement('p');
+            let dates = $('<p></p>');
             classes(dates, "my-0");
             if (doc.data().dledit) {
                 let dl = doc.data().ledit.toDate();
@@ -165,7 +165,7 @@ function shwSrch() {
                 }
             }
             bod.appendChild(dates);
-            let auhtTxt = document.createElement('p');
+            let auhtTxt = $('<p></p>');
             classes(auhtTxt, "mt-0");
             if (lang == "es") {
                 auhtTxt.innerText = ' Autor(es):' + doc.data().authors;
@@ -176,7 +176,7 @@ function shwSrch() {
             a.appendChild(med);
             med.appendChild(img);
             med.appendChild(bod);
-            document.getElementById('cookiesCont').appendChild(a);
+            $('#cookiesCont').appendChild(a);
             if (idx == previewLim - 1) {
                 if (paglast[page] == undefined || paglast[page] == null) {
                     paglast.push(docs[docs.length - 1]);
@@ -184,72 +184,72 @@ function shwSrch() {
                     paglast.splice(page, 1, docs[docs.length - 1]);
                 }
                 nxtp = true;
-                document.getElementById("pgNavT").classList.remove('d-none');
-                document.getElementById("pgNavB").classList.remove('d-none');
+                $("#pgNavT").show();
+                $("#pgNavB").show();
             }
         });
         if (!nxtp) {
-            document.getElementById("pgTNxt").setAttribute('disabled', 'true');
-            document.getElementById("pgBNxt").setAttribute('disabled', 'true');
+            $("#pgTNxt").setAttribute('disabled', 'true');
+            $("#pgBNxt").setAttribute('disabled', 'true');
         } else {
-            document.getElementById("pgTNxt").removeAttribute('disabled');
-            document.getElementById("pgBNxt").removeAttribute('disabled');
+            $("#pgTNxt").removeAttribute('disabled');
+            $("#pgBNxt").removeAttribute('disabled');
         }
         if (page == 1) {
-            document.getElementById("pgTPrv").setAttribute('disabled', 'true');
-            document.getElementById("pgBPrv").setAttribute('disabled', 'true');
+            $("#pgTPrv").setAttribute('disabled', 'true');
+            $("#pgBPrv").setAttribute('disabled', 'true');
         } else {
-            document.getElementById("pgTPrv").removeAttribute('disabled');
-            document.getElementById("pgBPrv").removeAttribute('disabled');
+            $("#pgTPrv").removeAttribute('disabled');
+            $("#pgBPrv").removeAttribute('disabled');
         }
     }).catch(err => { console.log(err) });
 }
 
-document.getElementById("pgTPrv").onclick = function () { reSrch(-1); };
-document.getElementById("pgBPrv").onclick = function () { reSrch(-1); };
-document.getElementById("pgTNxt").onclick = function () { reSrch(1); };
-document.getElementById("pgBNxt").onclick = function () { reSrch(1); };
+$("#pgTPrv").onclick = function () { reSrch(-1); };
+$("#pgBPrv").onclick = function () { reSrch(-1); };
+$("#pgTNxt").onclick = function () { reSrch(1); };
+$("#pgBNxt").onclick = function () { reSrch(1); };
 function reSrch(np) {
     if (page < 1 && np == -1) return;
     if (!nxtp && np == 1) return;
     page += np;
-    document.getElementById('disPgT').innerText = page;
-    document.getElementById('disPgB').innerText = page;
+    $('#disPgT').innerText = page;
+    $('#disPgB').innerText = page;
     initSrch(true);
-    document.getElementById("cookCnt").scrollIntoView();
+    $("#cookCnt").scrollIntoView();
 }
 
 function prepCatBtns() {
     //Submit search
-    document.getElementById('catA').onclick = function () {
+    $('#catA').onclick = function () {
         if (!allChk) {
             for (let i = 0; i < catnmb; i++) {
-                document.getElementById('cat' + i).checked = true;
+                $('#cat' + i).checked = true;
             }
         } else {
             for (let i = 0; i < catnmb; i++) {
-                document.getElementById('cat' + i).checked = false;
+                $('#cat' + i).checked = false;
             }
         }
         allChk = !allChk;
     };
     for (let i = 0; i < catnmb; i++) {
-        document.getElementById('cat' + i).onclick = function () {
+        $('#cat' + i).onclick = function () {
             if (allChk) {
-                document.getElementById('catA').checked = false;
+                $('#catA').checked = false;
                 allChk = false;
             }
             else {
                 let all = true;
                 for (let i = 0; i < catnmb; i++) {
-                    if (document.getElementById('cat' + i).checked == false) {
+                    if ($('#cat' + i).checked == false) {
                         all = false;
                         break;
                     }
                 }
                 if (all) {
                     allChk = true;
-                    document.getElementById('catA').checked = true;
+                    $('#catA').checked = true;
                 }
             }
         };
@@ -259,32 +259,32 @@ function shwCalMain() {
     getDocs(query(calendarsFSColl, where("public", "==", true), orderBy('published', 'desc'), limit(1))).then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
-            let a = document.createElement('a');
+            let a = $('<a></a>');
             classes(a, "text-decoration-none text-light");
             a.href = doc.data().url;
-            let med = document.createElement('div');
+            let med = $('<div></div>');
             classes(med, "media mb-3");
-            let img = document.createElement('img');
+            let img = $('<img/>');
             classes(img, "align-self-center mr-3");
             img.style.width = "64px";
             img.style.height = "64px";
             img.src = doc.data().picUrl;
-            let bod = document.createElement('div');
+            let bod = $('<div></div>');
             classes(bod, "media-body");
-            let tit = document.createElement('h5');
+            let tit = $('<h5></h5>');
             classes(tit, "mt-0");
             tit.innerHTML = doc.data().title;
             bod.appendChild(tit);
-            let descr = document.createElement('p');
+            let descr = $('<p></p>');
             descr.innerHTML = doc.data().descriptionShort;
             bod.appendChild(descr);
-            let dates = document.createElement('p');
+            let dates = $('<p></p>');
             classes(dates, "my-0");
             a.appendChild(med);
             med.appendChild(img);
             med.appendChild(bod);
-            document.getElementById('calMain').appendChild(a);
-            showEl(document.getElementById('calMain'));
+            $('#calMain').appendChild(a);
+            $('#calMain').show();
         });
     }).catch(err => { console.log(err) });
 }
@@ -299,22 +299,22 @@ window.loaded = function loaded() {
     shwCalMain();
     function send() {
         let srchStr = '?c=';
-        if (document.getElementById('cat0').checked) srchStr = srchStr + document.getElementById('cat0').value;
+        if ($('#cat0').checked) srchStr = srchStr + $('#cat0').value;
         for (let i = 1; i < catnmb; i++) {
-            if (document.getElementById('cat' + i).checked) {
-                srchStr = srchStr + '+' + document.getElementById('cat' + i).value;
+            if ($('#cat' + i).checked) {
+                srchStr = srchStr + '+' + $('#cat' + i).value;
             }
         }
         srchStr = srchStr + '&k=';
-        let wordArr = document.getElementById('srcBox').value.split(' ');
+        let wordArr = $('#srcBox').value.split(' ');
         srchStr = srchStr + wordArr[0];
         for (let i = 1; i < wordArr.length; i++) {
             srchStr = srchStr + '+' + wordArr[i];
         }
-        srchStr = srchStr + '&o=' + document.getElementById('inOrd').value;
+        srchStr = srchStr + '&o=' + $('#inOrd').value;
         window.location.href = srchStr;
     }
-    document.getElementById("frmSrch").addEventListener("submit", function (event) {
+    $("#frmSrch").addEventListener("submit", function (event) {
         event.preventDefault();
         send();
     });

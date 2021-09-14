@@ -134,49 +134,49 @@ window.loaded = function loaded() {
             }
             docDat = doc.data();
             docId = doc.id;
-            document.getElementById('title').innerHTML = docDat.title;
-            document.getElementById('prevMed').src = docDat.picUrl;
-            document.getElementById('inPicCapt').value = docDat.picCapt;
-            document.getElementById('inPicAlt').value = docDat.picAlt;
-            document.getElementById('inDesc').value = docDat.description;
-            document.getElementById('inDescShort').value = docDat.descriptionShort;
+            $('#title').innerHTML = docDat.title;
+            $('#prevMed').src = docDat.picUrl;
+            $('#inPicCapt').value = docDat.picCapt;
+            $('#inPicAlt').value = docDat.picAlt;
+            $('#inDesc').value = docDat.description;
+            $('#inDescShort').value = docDat.descriptionShort;
             render();
             if (docDat.public) {
-                hideEl(document.getElementById('btnAprove'));
-                hideEl(document.getElementById('btnPub'));
+                $('#btnAprove').hide();
+                $('#btnPub').hide();
             } else {
-                showEl(document.getElementById('btnAprove'));
-                if (docDat.pastDue) showEl(document.getElementById('btnPub'));
+                $('#btnAprove').show();
+                if (docDat.pastDue) $('#btnPub').show();
             }
             if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
-                document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
+                $('#btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
             } else {
-                document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
+                $('#btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
             }
-            document.getElementById('btnPrevCal').href = docDat.url;
-            document.getElementById('btnPrevMail').href = '/vista-email-calendario/' + docId;
-            document.getElementById('btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
-            document.getElementById('btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1170&reg1=3688685&reg2=9609540&town=3688689`;
-            document.getElementById('btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1724&reg1=3117732&reg2=6355233&town=3117735`;
+            $('#btnPrevCal').href = docDat.url;
+            $('#btnPrevMail').href = '/vista-email-calendario/' + docId;
+            $('#btnSrcCal').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1484&reg1=3527646&reg2=8379372&town=3530597`;
+            $('#btnSrcCal2').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1170&reg1=3688685&reg2=9609540&town=3688689`;
+            $('#btnSrcCal3').href = `https://in-the-sky.org/newscal.php?month=${urlSrch.get('id').substr(5, 6)}&year=${urlSrch.get('id').substr(0, 4)}&maxdiff=7&country=1724&reg1=3117732&reg2=6355233&town=3117735`;
         }, err => console.log(err))
     }).catch(err => console.log(err));
 
     function descFrm() {
-        docDat.description = document.getElementById('inDesc').value.trim();
-        docDat.descriptionShort = document.getElementById('inDescShort').value.trim();
+        docDat.description = $('#inDesc').value.trim();
+        docDat.descriptionShort = $('#inDescShort').value.trim();
         normSave();
     }
-    document.getElementById("frmText").addEventListener("submit", function (event) {
+    $("#frmText").addEventListener("submit", function (event) {
         event.preventDefault();
         descFrm();
     });
-    document.getElementById('btnFileTrans').onclick = function () {
-        let ori = document.getElementById('selFileTrans').value
+    $('#btnFileTrans').onclick = function () {
+        let ori = $('#selFileTrans').value
         getDoc(docRef(FSDB, 'calendars/langs/' + ori, docId)).then(async function (doc) {
-            docDat.picCapt = document.getElementById('inPicCapt').value = await translateSimple(doc.data().picCapt, ori, lang);
-            docDat.picAlt = document.getElementById('inPicAlt').value = await translateSimple(doc.data().picAlt, ori, lang);
-            docDat.description = document.getElementById('inDesc').value = await translateSimple(doc.data().description, ori, lang);
-            docDat.descriptionShort = document.getElementById('inDescShort').value = await translateSimple(doc.data().descriptionShort, ori, lang);
+            docDat.picCapt = $('#inPicCapt').value = await translateSimple(doc.data().picCapt, ori, lang);
+            docDat.picAlt = $('#inPicAlt').value = await translateSimple(doc.data().picAlt, ori, lang);
+            docDat.description = $('#inDesc').value = await translateSimple(doc.data().description, ori, lang);
+            docDat.descriptionShort = $('#inDescShort').value = await translateSimple(doc.data().descriptionShort, ori, lang);
             descFrm();
         }).catch(err => console.log(err));
     }
@@ -185,27 +185,27 @@ window.loaded = function loaded() {
         const translate = httpsCallable(FUNCTIONS, 'translations-translateFullCalendar');
         return translate({
             docId: docId,
-            from: document.getElementById('inTransFrom').value,
+            from: $('#inTransFrom').value,
             target: lang
         });
     }
-    document.getElementById("frmTranslate").addEventListener("submit", function (event) {
+    $("#frmTranslate").addEventListener("submit", function (event) {
         event.preventDefault();
-        classes(document.getElementById('btnCnfTranslate'), "disabled")
-        classes(document.getElementById('btnCanTranslate0'), "disabled")
-        classes(document.getElementById('btnCanTranslate1'), "disabled")
+        classes($('#btnCnfTranslate'), "disabled")
+        classes($('#btnCanTranslate0'), "disabled")
+        classes($('#btnCanTranslate1'), "disabled")
         setprog('barTranslate', 0);
-        showEl(document.getElementById('barTranslateCont'));
+        $('#barTranslateCont').show();
         runprog('barTranslate', 0, 73);
         translateFrm().then(res => {
             runprog('barTranslate', 73, 90);
             if (res) {
                 setprog('barTranslate', 100);
                 $('#mdlTranslate').modal('hide');
-                document.getElementById('btnCnfTranslate').classList.remove("disabled");
-                document.getElementById('btnCanTranslate0').classList.remove("disabled");
-                document.getElementById('btnCanTranslate1').classList.remove("disabled");
-                hideEl(document.getElementById('barTranslateCont'))
+                $('#btnCnfTranslate').removeClass("disabled");
+                $('#btnCanTranslate0').removeClass("disabled");
+                $('#btnCanTranslate1').removeClass("disabled");
+                $('#barTranslateCont').hide();
             } else {
                 if (lang == "es") {
                     alertTop("<strong>¡Ha ocurrido un error!</strong>", 0);
@@ -237,40 +237,40 @@ window.loaded = function loaded() {
                     docDat.picUrl = medUrl;
                     normSave();
                     resetChgImg(true);
-                    hideEl(document.getElementById("frmChgImg"));
+                    $("#frmChgImg").hide();
                 }).catch(err => { console.log(err) });
             }
         );
     }
     function addExtMed() {
-        docDat.picUrl = document.getElementById('inChgImgUrl').value;
+        docDat.picUrl = $('#inChgImgUrl').value;
         normSave();
         resetChgImg(true);
-        hideEl(document.getElementById("frmChgImg"));
+        $("#frmChgImg").hide();
     }
-    document.getElementById("frmChgImg").addEventListener("submit", function (event) {
+    $("#frmChgImg").addEventListener("submit", function (event) {
         event.preventDefault();
         setprog('barChgImg', 0);
-        showEl(document.getElementById("barChgImgCont"));
-        hideEl(document.getElementById("frmChgImg"));
-        document.getElementById("btnCnfChgImg").setAttribute('disabled', 'true');
-        document.getElementById("btnCanChgImg").setAttribute('disabled', 'true');
+        $("#barChgImgCont").show();
+        $("#frmChgImg").hide();
+        $("#btnCnfChgImg").setAttribute('disabled', 'true');
+        $("#btnCanChgImg").setAttribute('disabled', 'true');
         if (newMedSrc == "home") addMed();
         else addExtMed();
     });
 }
 
-document.getElementById('inPicCapt').onchange = () => {
-    docDat.picCapt = document.getElementById('inPicCapt').value.trim();
+$('#inPicCapt').onchange = () => {
+    docDat.picCapt = $('#inPicCapt').value.trim();
 }
-document.getElementById('inPicAlt').onchange = () => {
-    docDat.picAlt = document.getElementById('inPicAlt').value.trim();
+$('#inPicAlt').onchange = () => {
+    docDat.picAlt = $('#inPicAlt').value.trim();
 }
-document.getElementById('inDesc').onchange = () => {
-    docDat.picDesc = document.getElementById('inDesc').value.trim();
+$('#inDesc').onchange = () => {
+    docDat.picDesc = $('#inDesc').value.trim();
 }
-document.getElementById('inDescShort').onchange = () => {
-    docDat.picDescShort = document.getElementById('inDescShort').value.trim();
+$('#inDescShort').onchange = () => {
+    docDat.picDescShort = $('#inDescShort').value.trim();
 }
 
 let savedInterval;
@@ -304,23 +304,23 @@ function setSavedTime() {
     if (minutes > 0) {
         if (minutes > 59) {
             if (lang == "es") {
-                document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
+                $('#tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
             } else if (lang == "en") {
-                document.getElementById('tagLstSave').innerText = "Saved " + Math.floor(minutes / 60) + " hours ago";
+                $('#tagLstSave').innerText = "Saved " + Math.floor(minutes / 60) + " hours ago";
             }
         }
         else {
             if (lang == "es") {
-                document.getElementById('tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
+                $('#tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
             } else if (lang == "en") {
-                document.getElementById('tagLstSave').innerText = "Saved " + minutes + " minutes ago";
+                $('#tagLstSave').innerText = "Saved " + minutes + " minutes ago";
             }
         }
     } else {
         if (lang == "es") {
-            document.getElementById('tagLstSave').innerText = "Guardado hace " + Math.floor((Date.now() - lastSave) / 1000) + " segundos";
+            $('#tagLstSave').innerText = "Guardado hace " + Math.floor((Date.now() - lastSave) / 1000) + " segundos";
         } else if (lang == "en") {
-            document.getElementById('tagLstSave').innerText = "Saved " + Math.floor((Date.now() - lastSave) / 1000) + " seconds ago";
+            $('#tagLstSave').innerText = "Saved " + Math.floor((Date.now() - lastSave) / 1000) + " seconds ago";
         }
     }
 }
@@ -333,17 +333,17 @@ function normSave() {
             setSavedTime();
         }, 300010);
         if (lang == "es") {
-            document.getElementById('tagLstSave').innerText = "Se han guardado todos los cambios";
+            $('#tagLstSave').innerText = "Se han guardado todos los cambios";
         } else if (lang == "en") {
-            document.getElementById('tagLstSave').innerText = "All changes have been saved";
+            $('#tagLstSave').innerText = "All changes have been saved";
         }
         lastSave = Date.now();
         console.log('Saved!');
     }).catch(err => {
         if (lang == "es") {
-            document.getElementById('tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
+            $('#tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
         } else if (lang == "en") {
-            document.getElementById('tagLstSave').innerText = "Error, changes not saved: " + err.code;
+            $('#tagLstSave').innerText = "Error, changes not saved: " + err.code;
         }
         console.log(err);
     });
@@ -368,14 +368,14 @@ function runprog(bar, b, e) {
 
 function showEvent() {
     Object.keys(docDat.events).forEach(key => {
-        hideEl(document.getElementById(key));
+        $('#' + key).hide();
     });
-    document.getElementById('mdlEventInfoL').innerHTML = docDat.events[eventToShow].date[lang];
-    showEl(document.getElementById(eventToShow));
-    enable(document.getElementById('btnPriorEve'));
-    enable(document.getElementById('btnNextEve'));
+    $('#mdlEventInfoL').innerHTML = docDat.events[eventToShow].date[lang];
+   $('#'+eventToShow).show();
+    enable($('#btnPriorEve'));
+    enable($('#btnNextEve'));
 }
-document.getElementById('btnPriorEve').onclick = () => {
+$('#btnPriorEve').onclick = () => {
     let orderedKeys = Object.keys(docDat.events).slice().sort((a, b) => {
         if (Number(a[0]) == Number(b[0])) {
             if (a.substring(1, 4) == b.substring(1, 4)) {
@@ -410,10 +410,10 @@ document.getElementById('btnPriorEve').onclick = () => {
         eventToShow = orderedKeys[n];
         showEvent();
     } else {
-        disable(document.getElementById('btnPriorEve'));
+        disable($('#btnPriorEve'));
     }
 };
-document.getElementById('btnNextEve').onclick = () => {
+$('#btnNextEve').onclick = () => {
     let orderedKeys = Object.keys(docDat.events).slice().sort((a, b) => {
         if (Number(a[0]) == Number(b[0])) {
             if (a.substring(1, 4) == b.substring(1, 4)) {
@@ -448,33 +448,33 @@ document.getElementById('btnNextEve').onclick = () => {
         eventToShow = orderedKeys[n];
         showEvent();
     } else {
-        disable(document.getElementById('btnNextEve'));
+        disable($('#btnNextEve'));
     }
 };
 
 function render() {
-    document.getElementById('weeksCont').innerHTML = "";
+    $('#weeksCont').innerHTML = "";
     docDat.weeks.forEach((week, wIdx) => {
-        let weekRow = document.createElement('tr');
+        let weekRow = $('<tr></tr>');
         weekRow.style.height = '10rem';
-        document.getElementById('weeksCont').appendChild(weekRow);
+        $('#weeksCont').appendChild(weekRow);
         for (let i = 0; i < 7; i++) {
             let day = week[daysOfWeek[i]]
-            let dayCell = document.createElement('td');
+            let dayCell = $('<td></td>');
             classes(dayCell, "p-0");
             weekRow.appendChild(dayCell);
             if (day) {
-                let num = document.createElement('p');
+                let num = $('<p></p>');
                 classes(num, "m-0 p-1");
                 num.style.fontSize = 'x-large';
                 num.innerHTML = '<b>' + day.date + '</b>';
                 dayCell.appendChild(num);
 
-                let events = document.createElement('div');
+                let events = $('<div></div>');
                 classes(events, "autoOverflow");
                 events.style.maxHeight = '7rem';
                 day.events.forEach((event, idx) => {
-                    let btnEvent = document.createElement('button');
+                    let btnEvent = $('<button></button>');
                     btnEvent.setAttribute("data-toggle", "modal");
                     btnEvent.setAttribute("data-target", "#mdlEventInfo");
                     classes(btnEvent, "btn text-left p-1 mb-1 w-100");
@@ -487,7 +487,7 @@ function render() {
                     }
                     events.appendChild(btnEvent);
                 });
-                let btnPlusEvent = document.createElement('button');
+                let btnPlusEvent = $('<button></button>');
                 classes(btnPlusEvent, "btn btn-science btn-block btn-sm");
                 btnPlusEvent.innerHTML = '<i class="fas fa-plus"></i>';
                 btnPlusEvent.onclick = () => {
@@ -516,7 +516,7 @@ function render() {
             }
         }
     });
-    document.getElementById('eventInfoCont').innerHTML = "";
+    $('#eventInfoCont').innerHTML = "";
     for (const [key, event] of Object.entries(docDat.events)) {
         let changed = false;
 
@@ -539,32 +539,32 @@ function render() {
         }
         //End migration
 
-        let form = document.createElement('div');
+        let form = $('<div></div>');
         form.id = key;
         classes(form, "d-none overflow-auto");
-        let bod = document.createElement('div');
+        let bod = $('<div></div>');
         classes(bod, "modal-body");
         form.appendChild(bod);
 
-        let fsec = document.createElement('div');
+        let fsec = $('<div></div>');
         classes(fsec, "d-none");
         bod.appendChild(fsec);
-        let fgType = document.createElement('div');
+        let fgType = $('<div></div>');
         classes(fgType, "form-group");
         fsec.appendChild(fgType);
 
-        let selTypeMainL = document.createElement('label');
+        let selTypeMainL = $('<label></label>');
         if (lang == "es") {
             selTypeMainL.innerText = "Tipo de evento";
         } else if (lang == "en") {
             selTypeMainL.innerText = "Event type";
         }
         fgType.appendChild(selTypeMainL);
-        let selTypeMain = document.createElement('select');
+        let selTypeMain = $('<select></select>');
         classes(selTypeMain, "form-control");
         selTypeMain.setAttribute('multiple', 'true');
         calConfig[lang].forEach((itm, idx) => {
-            let opt = document.createElement('option');
+            let opt = $('<option></option>');
             opt.value = idx;
             opt.innerText = itm.label;
             if ((!event.typeIdx && idx == 0) || idx == event.typeIdx) opt.setAttribute('selected', 'true');
@@ -586,35 +586,35 @@ function render() {
         }
         fgType.appendChild(selTypeMain);
 
-        let inTitleHid = document.createElement('input');
+        let inTitleHid = $('<input></input>');
         inTitleHid.setAttribute("type", "text");
         inTitleHid.id = "inEveTitle" + key;
-        let inDescHid = document.createElement('textarea');
+        let inDescHid = $('<textarea></textarea>');
         inDescHid.id = "inEveDesc" + key;
 
-        let fRow = document.createElement('div');
+        let fRow = $('<div></div>');
         classes(fRow, "form-row");
         fsec.insertBefore(fRow, fgType.nextSibling);
 
         //Must be declared here
-        let sfRow = document.createElement('div');
+        let sfRow = $('<div></div>');
         classes(sfRow, "form-row d-none");
         fsec.insertBefore(sfRow, fRow.nextSibling);
 
         function reloadForm() {
             fRow.innerHTML = "";
             calConfig[lang][event.typeIdx].options.forEach((option, idx) => {
-                let fCol = document.createElement('div');
+                let fCol = $('<div></div>');
                 classes(fCol, "col-auto form-group");
-                let label = document.createElement('label');
+                let label = $('<label></label>');
                 label.innerText = option.label;
                 fCol.appendChild(label);
                 let inp;
                 switch (option.type) {
                     case "select":
-                        inp = document.createElement('select');
+                        inp = $('<select></select>');
                         option.options.forEach((itm, i) => {
-                            let opt = document.createElement('option');
+                            let opt = $('<option></option>');
                             opt.value = itm.val;
                             opt.innerHTML = itm.label;
                             if ((i == 0 && (!event.vals || !event.vals[idx])) || (event.vals && event.vals[idx] && event.vals[idx].val == itm.val)) {
@@ -623,19 +623,19 @@ function render() {
                                     label: itm.label,
                                     val: itm.val,
                                 }
-                                if (option.valForSub == itm.val) showEl(sfRow);
-                                else hideEl(sfRow);
+                                if (option.valForSub == itm.val) sfRow.show();
+                                else sfRow.hide();
                             }
                             inp.appendChild(opt);
                         });
                         break;
                     case "textarea":
-                        inp = document.createElement('textarea');
+                        inp = $('<textarea></textarea>');
                         inp.setAttribute("rows", "3");
                         if (event.vals[idx] && event.vals[idx].val) inp.value = event.vals[idx].val;
                         break;
                     default:
-                        inp = document.createElement('input');
+                        inp = $('<input></input>');
                         inp.setAttribute("type", option.type);
                         if (event.vals[idx] && event.vals[idx].val) inp.value = event.vals[idx].val;
                 }
@@ -647,17 +647,17 @@ function render() {
                 //sfRow declared before
                 if (option.valForSub) {
                     option.sub.forEach((soption, sidx) => {
-                        let sfCol = document.createElement('div');
+                        let sfCol = $('<div></div>');
                         classes(sfCol, "col-auto form-group");
-                        let slabel = document.createElement('label');
+                        let slabel = $('<label></label>');
                         slabel.innerText = soption.label;
                         sfCol.appendChild(slabel);
                         let sinp;
                         switch (soption.type) {
                             case "select":
-                                sinp = document.createElement('select');
+                                sinp = $('<select></select>');
                                 soption.options.forEach((itm, i) => {
-                                    let opt = document.createElement('option');
+                                    let opt = $('<option></option>');
                                     opt.value = itm.val;
                                     opt.innerHTML = itm.label;
                                     if ((i == 0 && (!event.vals || !event.vals[idx + '-' + sidx])) || (event.vals && event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val == itm.val)) {
@@ -671,12 +671,12 @@ function render() {
                                 });
                                 break;
                             case "textarea":
-                                sinp = document.createElement('textarea');
+                                sinp = $('<textarea></textarea>');
                                 sinp.setAttribute("rows", "3");
                                 if (event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val) sinp.value = event.vals[idx + '-' + sidx].val;
                                 break;
                             default:
-                                sinp = document.createElement('input');
+                                sinp = $('<input></input>');
                                 sinp.setAttribute("type", soption.type);
                                 if (event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val) sinp.value = event.vals[idx + '-' + sidx].val;
                         }
@@ -703,8 +703,8 @@ function render() {
                     if (option.type == "select") event.vals[idx].label = inp.innerText;
                     else event.vals[idx].label = option.label;
                     if (option.valForSub) {
-                        if (option.valForSub == inp.value) showEl(sfRow);
-                        else hideEl(sfRow);
+                        if (option.valForSub == inp.value) sfRow.show();
+                        else sfRow.hide();
                     }
                     regenTxt();
                 }
@@ -732,7 +732,7 @@ function render() {
         }
         regenTxt();
 
-        let fgVis = document.createElement('div');
+        let fgVis = $('<div></div>');
         classes(fgVis, "form-group");
         fsec.appendChild(fgVis);
         if (lang == "es") {
@@ -740,11 +740,11 @@ function render() {
         } else if (lang == "en") {
             fgVis.innerHTML = '<label>Visibility</label>';
         }
-        inVis = document.createElement('select');
+        inVis = $('<select></select>');
         inVis.id = "inVis" + key;
         classes(inVis, "form-control");
         calConfig.visOpts[lang].forEach((itm, idx) => {
-            let opt = document.createElement('option');
+            let opt = $('<option></option>');
             opt.value = idx;
             opt.innerHTML = itm;
             if (itm == event.visibilidad) opt.setAttribute('selected', "true");
@@ -752,7 +752,7 @@ function render() {
         });
         fgVis.appendChild(inVis);
 
-        let fgTime = document.createElement('div');
+        let fgTime = $('<div></div>');
         classes(fgTime, "form-group");
         fsec.appendChild(fgTime);
         if (lang == "es") {
@@ -760,18 +760,18 @@ function render() {
         } else if (lang == "en") {
             fgTime.innerHTML = '<label>Observing time</label>';
         }
-        let inTime = document.createElement('textarea');
+        let inTime = $('<textarea></textarea>');
         classes(inTime, "form-control");
         inTime.id = "inTime" + key;
         inTime.setAttribute("rows", "4");
         fgTime.appendChild(inTime);
-        if (inVis.value == 5) hideEl(fgTime);
-        else showEl(fgTime);
+        if (inVis.value == 5) fgTime.hide();
+        else fgTime.show();
 
         function inVisTakeInput() {
             changed = true;
-            if (inVis.value == 5) hideEl(fgTime);
-            else showEl(fgTime);
+            if (inVis.value == 5) fgTime.hide();
+            else fgTime.show();
         }
         inVis.oninput = () => {
             inVisTakeInput();
@@ -781,18 +781,18 @@ function render() {
         };
 
         //Must be declared here
-        let saveBtn = document.createElement('button');
+        let saveBtn = $('<button></button>');
 
-        let selLangCC = document.createElement('div');
+        let selLangCC = $('<div></div>');
         classes(selLangCC, "row");
-        let selLangC = document.createElement('div');
+        let selLangC = $('<div></div>');
         classes(selLangC, "col-auto");
         selLangCC.appendChild(selLangC);
-        let selLang = document.createElement('select');
+        let selLang = $('<select></select>');
         classes(selLang, "form-control ml-auto h-100");
         selLang.setAttribute("name", "selTransLang");
         selLangC.appendChild(selLang);
-        let btnTrans = document.createElement('button');
+        let btnTrans = $('<button></button>');
         classes(btnTrans, 'btn btn-science mx-2');
         btnTrans.innerHTML = '<i class="fas fa-language"></i>';
         btnTrans.onclick = function () {
@@ -853,15 +853,15 @@ function render() {
         selLangCC.appendChild(btnTrans);
         fsec.appendChild(selLangCC);
 
-        let tsec = document.createElement('div');
+        let tsec = $('<div></div>');
         bod.appendChild(tsec);
-        let eveTit = document.createElement('h3');
+        let eveTit = $('<h3></h3>');
         eveTit.innerHTML = event.name;
         tsec.appendChild(eveTit);
-        let eveDesc = document.createElement('p');
+        let eveDesc = $('<p></p>');
         eveDesc.innerHTML = event.description;
         tsec.appendChild(eveDesc);
-        let eveVis = document.createElement('p');
+        let eveVis = $('<p></p>');
         if (lang == "es") {
             eveVis.innerHTML = "Visibilidad: ";
         } else if (lang == "en") {
@@ -869,7 +869,7 @@ function render() {
         }
         eveVis.innerHTML += event.visibilidad;
         tsec.appendChild(eveVis);
-        let eveTime = document.createElement('p');
+        let eveTime = $('<p></p>');
         classes(eveTime, "mb-0");
         if (lang == "es") {
             eveTime.innerHTML = "Horario: ";
@@ -877,28 +877,28 @@ function render() {
             eveTime.innerHTML = "Observing time: ";
         }
         tsec.appendChild(eveTime);
-        let eveTimeLst = document.createElement('ul');
+        let eveTimeLst = $('<ul></ul>');
         tsec.appendChild(eveTimeLst);
         event.horario.forEach(time => {
-            let li = document.createElement('li');
+            let li = $('<li></li>');
             li.innerHTML = time;
             eveTimeLst.appendChild(li);
         });
         if (event.visibilidad == calConfig.visOpts[lang][5]) {
-            hideEl(eveTime);
-            hideEl(eveTimeLst);
+            eveTime.hide();
+            eveTimeLst.hide();
         }
         else {
-            showEl(eveTime);
-            showEl(eveTimeLst);
+            eveTime.show();
+            eveTimeLst.show();
         }
 
 
-        let foot = document.createElement('div');
+        let foot = $('<div></div>');
         classes(foot, "modal-footer");
         form.appendChild(foot);
 
-        let delBtn = document.createElement('button');
+        let delBtn = $('<button></button>');
         classes(delBtn, "btn btn-danger mr-auto")
         delBtn.setAttribute("type", "button");
         if (lang == "es") {
@@ -917,7 +917,7 @@ function render() {
             normSave();
         };
         foot.appendChild(delBtn);
-        let editBtn = document.createElement('button');
+        let editBtn = $('<button></button>');
         classes(editBtn, "btn btn-info");
         editBtn.setAttribute("type", "button");
         if (lang == "es") {
@@ -927,17 +927,17 @@ function render() {
         }
         editBtn.onclick = () => {
             inVis.value = calConfig.visOpts[lang].indexOf(event.visibilidad);
-            if (inVis.value == 5) hideEl(fgTime);
-            else showEl(fgTime);
+            if (inVis.value == 5) fgTime.hide();
+            else fgTime.show();
             inTime.innerHTML = "";
             event.horario.forEach(time => {
                 inTime.innerHTML += time + "\n";
             });
-            hideEl(tsec);
-            showEl(fsec);
-            showEl(saveBtn);
+            tsec.hide();
+            fsec.show();
+            saveBtn.show();
             enable(saveBtn);
-            hideEl(editBtn);
+            editBtn.hide();
         };
         foot.appendChild(editBtn);
         //Declared before
@@ -961,14 +961,14 @@ function render() {
                 });
                 normSave();
             }
-            hideEl(fsec);
-            showEl(tsec);
-            hideEl(saveBtn);
-            showEl(editBtn);
+            fsec.hide();
+            tsec.show();
+            saveBtn.hide();
+            editBtn.show();
         };
         foot.appendChild(saveBtn);
 
-        document.getElementById('eventInfoCont').appendChild(form);
+        $('#eventInfoCont').appendChild(form);
     }
 
     document.getElementsByName('selTransLang').forEach(itm => {
@@ -976,7 +976,7 @@ function render() {
     });
     langs.forEach((l, i) => {
         if (l != lang) {
-            let opt = document.createElement('option');
+            let opt = $('<option></option>');
             if (i == 0) {
                 opt.setAttribute('selected', 'true');
             }
@@ -990,59 +990,59 @@ function render() {
 
 
 function resetChgImg(uncheck) {
-    document.getElementById('prevMed').src = docDat.picUrl;
+    $('#prevMed').src = docDat.picUrl;
     if (uncheck) {
-        document.getElementById('inMedSrc0').checked = false;
-        document.getElementById('inMedSrc1').checked = false;
+        $('#inMedSrc0').checked = false;
+        $('#inMedSrc1').checked = false;
     }
-    document.getElementById('inChgImg').value = "";
-    document.getElementById('inChgImgUrl').value = "";
-    document.getElementById('inChgImg').removeAttribute('required');
-    document.getElementById('inChgImgUrl').removeAttribute('required');
-    hideEl(document.getElementById("barChgImgCont"));
-    hideEl(document.getElementById("inChgImgFileCont"));
-    hideEl(document.getElementById("inChgImgUrlCont"));
-    document.getElementById("btnCnfChgImg").removeAttribute('disabled');
-    document.getElementById("btnCanChgImg").removeAttribute('disabled');
+    $('#inChgImg').value = "";
+    $('#inChgImgUrl').value = "";
+    $('#inChgImg').removeAttribute('required');
+    $('#inChgImgUrl').removeAttribute('required');
+    $("#barChgImgCont").hide();
+    $("#inChgImgFileCont").hide();
+    $("#inChgImgUrlCont").hide();
+    $("#btnCnfChgImg").removeAttribute('disabled');
+    $("#btnCanChgImg").removeAttribute('disabled');
 }
-document.getElementById('btnChgImg').onclick = () => {
+$('#btnChgImg').onclick = () => {
     resetChgImg(true);
-    toggleEl(document.getElementById("frmChgImg"));
+    $("#frmChgImg").toggle();
 };
-document.getElementById('inChgImg').addEventListener('change', e => {
+$('#inChgImg').addEventListener('change', e => {
     newMedia = e.target.files[0];
     function prevMed() {
         var read = new FileReader();
         read.readAsDataURL(newMedia);
         read.onload = function (e2) {
-            document.getElementById("prevMed").src = e2.target.result;
+            $("#prevMed").src = e2.target.result;
         };
     };
     newMedia.name = ultraClean(newMedia.name, '');
-    document.getElementById('inChgImgL').innerHTML = newMedia.name;
+    $('#inChgImgL').innerHTML = newMedia.name;
     prevMed(newMedia);
 });
-document.getElementById('inChgImgUrl').onchange = function () {
-    document.getElementById("prevMed").src = document.getElementById('inChgImgUrl').value;
+$('#inChgImgUrl').onchange = function () {
+    $("#prevMed").src = $('#inChgImgUrl').value;
 };
-document.getElementById('inMedSrc0').onclick = function () {
+$('#inMedSrc0').onclick = function () {
     newMedSrc = "home";
     resetChgImg(false);
-    document.getElementById('inChgImg').setAttribute('required', 'true');
-    showEl(document.getElementById("inChgImgFileCont"));
+    $('#inChgImg').setAttribute('required', 'true');
+    $("#inChgImgFileCont").show();
 }
-document.getElementById('inMedSrc1').onclick = function () {
+$('#inMedSrc1').onclick = function () {
     newMedSrc = "out";
     resetChgImg(false);
-    document.getElementById('inChgImgUrl').setAttribute('required', 'true');
-    showEl(document.getElementById("inChgImgUrlCont"));
+    $('#inChgImgUrl').setAttribute('required', 'true');
+    $("#inChgImgUrlCont").show();
 }
 
-document.getElementById('btnPrevCal').onclick = function () {
+$('#btnPrevCal').onclick = function () {
     docDat.timePrev = Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
-document.getElementById('btnPrevMail').onclick = function () {
+$('#btnPrevMail').onclick = function () {
     docDat.timePrev = Timestamp.fromMillis((new Date(Date.now())).getTime() + 10 * 60000);
     normSave();
 };
@@ -1057,14 +1057,14 @@ function validateRevision() {
     return revLangs == langs.length;
 }
 
-document.getElementById('btnAprove').onclick = function () {
+$('#btnAprove').onclick = function () {
     if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
         docDat.revised[lang].splice(docDat.revised[lang].indexOf(uid), 1);
-        document.getElementById('btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
+        $('#btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
     } else {
         if (!docDat.revised[lang]) docDat.revised[lang] = [];
         docDat.revised[lang].push(uid);
-        document.getElementById('btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
+        $('#btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
     }
     if (validateRevision()) {
         docDat.finished = true;
@@ -1076,26 +1076,26 @@ document.getElementById('btnAprove').onclick = function () {
 
 $('#mdlPublish').on('show.bs.modal', e => {
     if (validateRevision()) {
-        showEl(document.getElementById('btnCnfPublish'));
+        $('#btnCnfPublish').show();
         if (lang == "es") {
-            document.getElementById('mdlPublishTxt').innerText = "El calendario está listo para publicar";
+            $('#mdlPublishTxt').innerText = "El calendario está listo para publicar";
         } else if (lang == "en") {
-            document.getElementById('mdlPublishTxt').innerText = "The calendar is ready to publish";
+            $('#mdlPublishTxt').innerText = "The calendar is ready to publish";
         }
     } else {
-        hideEl(document.getElementById('btnCnfPublish'));
+        $('#btnCnfPublish').hide();
         if (lang == "es") {
-            document.getElementById('mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
+            $('#mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
         } else if (lang == "en") {
-            document.getElementById('mdlPublishTxt').innerText = "At least two people must aprove before publishing.";
+            $('#mdlPublishTxt').innerText = "At least two people must aprove before publishing.";
         }
     }
 });
 
-document.getElementById('btnCnfPublish').onclick = function () {
+$('#btnCnfPublish').onclick = function () {
     if (docDat.public) return;
     setprog('barPublish', 0);
-    showEl(document.getElementById('barPublishCont'));
+    $('#barPublishCont').show();
 
     docDat.public = true;
     setprog('barPublish', 25);
@@ -1107,7 +1107,7 @@ document.getElementById('btnCnfPublish').onclick = function () {
         });
     }).then(() => {
         setprog('barPublish', 100);
-        classes(document.getElementById('barPublish'), 'bg-success');
+        classes($('#barPublish'), 'bg-success');
         if (lang == "es") {
             alertTop("Publicado correctamente", 1);
         } else if (lang == "en") {

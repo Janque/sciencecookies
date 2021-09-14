@@ -37,18 +37,17 @@ function initSrch(stAf) {
     shwSrch();
 }
 function shwSrch() {
-    document.getElementById('crdContainer').innerHTML = "";
+    $('#crdContainer').innerHTML = "";
     getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
         docs.forEach((doc, idx) => {
             let dat = doc.data();
 
-            let col = document.createElement('col');
-            classes(col, 'col');
-            classes(col, 'mb-4');
+            let col = $('<div></div>');
+            classes(col, 'col mb-4');
 
-            let card = document.createElement('div');
+            let card = $('<div></div>');
             classes(card, "card text-dark bg-light h-100 cardBorder");
             if (dat.public) {
                 classes(card, 'border-success');
@@ -56,18 +55,15 @@ function shwSrch() {
                 classes(card, 'border-secondary');
             }
 
-            let h = document.createElement('div');
+            let h = $('<div></div>');
             classes(h, "card-header bg-light m-0 py-0 text-right")
-            let row = document.createElement('div');
-            classes(row, 'row');
-            classes(row, 'justify-content-between');
+            let row = $('<div></div>');
+            classes(row, 'row justify-content-between');
             if (!dat.public) {
-                let col0 = document.createElement('div');
-                classes(col0, 'col-auto');
-                classes(col0, 'p-0');
-                let badge = document.createElement('span');
-                classes(badge, 'badge');
-                classes(badge, 'badge-warning');
+                let col0 = $('<div></div>');
+                classes(col0, 'col-auto p-0');
+                let badge = $('<span></span>');
+                classes(badge, 'badge badge-warning');
                 if (lang == "es") {
                     badge.innerText = 'Pendiente';
                 } else if (lang == "en") {
@@ -76,22 +72,19 @@ function shwSrch() {
                 col0.appendChild(badge);
                 row.appendChild(col0);
             }
-            let col1 = document.createElement('div');
-            classes(col1, 'col-auto');
-            classes(col1, 'p-0');
-            classes(col1, 'ml-auto');
-            let drp = document.createElement('div');
+            let col1 = $('<div></div>');
+            classes(col1, 'col-auto p-0 ml-auto');
+            let drp = $('<div></div>');
             classes(drp, 'dropdown');
-            let btndrp = document.createElement('button');
-            classes(btndrp, 'btn');
-            classes(btndrp, 'btn-light');
+            let btndrp = $('<button></button>');
+            classes(btndrp, 'btn btn-light');
             btndrp.setAttribute('type', 'button');
             btndrp.setAttribute('data-toogle', 'dropdown');
             btndrp.setAttribute('aria-haspopup', "true");
             btndrp.setAttribute('aria-expanded', "false");
             btndrp.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
             btndrp.onclick = function () {
-                if (document.getElementById("drpMenu" + doc.id).classList.contains('show')) {
+                if ($("#drpMenu" + doc.id).classList.contains('show')) {
                     $("#drpMenu" + doc.id).dropdown('hide');
                 } else {
                     $("#drpMenu" + doc.id).dropdown('show');
@@ -101,11 +94,10 @@ function shwSrch() {
                 }
             };
             drp.appendChild(btndrp);
-            let drpmenu = document.createElement('div');
-            classes(drpmenu, 'dropdown-menu');
-            classes(drpmenu, 'dropdown-menu-right');
+            let drpmenu = $('<div></div>');
+            classes(drpmenu, 'dropdown-menu dropdown-menu-right');
             drpmenu.setAttribute('id', "drpMenu" + doc.id);
-            let drpitm0 = document.createElement('button');
+            let drpitm0 = $('<button></button>');
             classes(drpitm0, 'dropdown-item');
             drpitm0.onclick = function () {
                 if (lang == "es") {
@@ -120,7 +112,7 @@ function shwSrch() {
                 drpitm0.innerHTML = 'Edit <i class="fas fa-edit"></i>';
             }
             drpmenu.appendChild(drpitm0);
-            let drpitm1 = document.createElement('button');
+            let drpitm1 = $('<button></button>');
             classes(drpitm1, 'dropdown-item');
             drpitm1.onclick = function () {
                 window.open('../vista-email-calendario/' + doc.id, '_blank').focus();
@@ -131,7 +123,7 @@ function shwSrch() {
                 drpitm1.innerHTML = 'Mail preview <i class="fas fa-envelope"></i>';
             }
             drpmenu.appendChild(drpitm1);
-            let drpitm2 = document.createElement('button');
+            let drpitm2 = $('<button></button>');
             if (dat.public) {
                 classes(drpitm2, 'dropdown-item');
                 drpitm2.onclick = function () {
@@ -157,27 +149,26 @@ function shwSrch() {
                 noImgTxt = "No image";
             }
 
-            let a = document.createElement('a');
+            let a = $('<a></a>');
             if (lang == "es") {
                 a.href = '../editar-calendario?id=' + doc.id;
             } else if (lang == "en") {
                 a.href = '../edit-calendar?id=' + doc.id;
             }
-            classes(a, 'text-decoration-none');
-            classes(a, 'text-dark');
-            let img = document.createElement('img');
+            classes(a, 'text-decoration-none text-dark');
+            let img = $('<img/>');
             img.src = dat.picUrl;
             classes(img, 'card-img-top');
             img.alt = noImgTxt;
             a.appendChild(img);
-            let cbody = document.createElement('div');
+            let cbody = $('<div></div>');
             classes(cbody, 'card-body');
             cbody.innerHTML = '<h3 class="card-title">' + dat.title + '</h3>\n<p class="card-text">' + dat.description + '</p>\n'
             a.appendChild(cbody);
             card.appendChild(a);
 
             col.appendChild(card);
-            document.getElementById('crdContainer').appendChild(col);
+            $('#crdContainer').appendChild(col);
             if (idx == previewLim - 1) {
                 if (paglast[page] == undefined || paglast[page] == null) {
                     paglast.push(docs[docs.length - 1]);
@@ -185,37 +176,37 @@ function shwSrch() {
                     paglast.splice(page, 1, docs[docs.length - 1]);
                 }
                 nxtp = true;
-                document.getElementById("pgNavT").classList.remove('d-none');
-                document.getElementById("pgNavB").classList.remove('d-none');
+                $("#pgNavT").show();
+                $("#pgNavB").show();
             }
         });
         if (!nxtp) {
-            document.getElementById("pgTNxt").setAttribute('disabled', 'true');
-            document.getElementById("pgBNxt").setAttribute('disabled', 'true');
+            $("#pgTNxt").setAttribute('disabled', 'true');
+            $("#pgBNxt").setAttribute('disabled', 'true');
         } else {
-            document.getElementById("pgTNxt").removeAttribute('disabled');
-            document.getElementById("pgBNxt").removeAttribute('disabled');
+            $("#pgTNxt").removeAttribute('disabled');
+            $("#pgBNxt").removeAttribute('disabled');
         }
         if (page == 1) {
-            document.getElementById("pgTPrv").setAttribute('disabled', 'true');
-            document.getElementById("pgBPrv").setAttribute('disabled', 'true');
+            $("#pgTPrv").setAttribute('disabled', 'true');
+            $("#pgBPrv").setAttribute('disabled', 'true');
         } else {
-            document.getElementById("pgTPrv").removeAttribute('disabled');
-            document.getElementById("pgBPrv").removeAttribute('disabled');
+            $("#pgTPrv").removeAttribute('disabled');
+            $("#pgBPrv").removeAttribute('disabled');
         }
     }).catch(err => { console.log(err) });
 }
 
-document.getElementById("pgTPrv").onclick = function () { reSrch(-1); };
-document.getElementById("pgBPrv").onclick = function () { reSrch(-1); };
-document.getElementById("pgTNxt").onclick = function () { reSrch(1); };
-document.getElementById("pgBNxt").onclick = function () { reSrch(1); };
+$("#pgTPrv").onclick = function () { reSrch(-1); };
+$("#pgBPrv").onclick = function () { reSrch(-1); };
+$("#pgTNxt").onclick = function () { reSrch(1); };
+$("#pgBNxt").onclick = function () { reSrch(1); };
 function reSrch(np) {
     if (page < 1 && np == -1) return;
     if (!nxtp && np == 1) return;
     page += np;
-    document.getElementById('disPgT').innerText = page;
-    document.getElementById('disPgB').innerText = page;
+    $('#disPgT').innerText = page;
+    $('#disPgB').innerText = page;
     initSrch(true);
-    document.getElementById("cookCnt").scrollIntoView();
+    $("#cookCnt").scrollIntoView();
 }

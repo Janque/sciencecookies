@@ -35,28 +35,28 @@ window.loaded = function loaded() {
 }
 
 function shwPrfl() {
-    document.getElementById('navBtnPrfl').classList.add('active');
+    $('#navBtnPrfl').addClass('active');
     getDownloadURL(storageRef(STORAGE, 'ppics/' + urlSrch.get('u') + '/pp_200x200')).then(url => {
-        if (userPublic.ppic != null) document.getElementById('disPP').setAttribute('onerror', "this.src='" + userPublic.ppic + "'");
-        else document.getElementById('disPP').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
-        document.getElementById('disPP').src = url;
-        if (userPublic.pemail != null) document.getElementById('contEmail').classList.remove('d-none');
-        document.getElementById('disMail').innerHTML = userPublic.pemail;
-        document.getElementById('disName').innerHTML = userPublic.pname;
-        document.getElementById('crdPrfl').classList.remove('d-none');
+        if (userPublic.ppic != null) $('#disPP').setAttribute('onerror', "this.src='" + userPublic.ppic + "'");
+        else $('#disPP').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
+        $('#disPP').src = url;
+        if (userPublic.pemail != null) $('#contEmail').show();
+        $('#disMail').innerHTML = userPublic.pemail;
+        $('#disName').innerHTML = userPublic.pname;
+        $('#crdPrfl').show();
     }).catch(err => {
-        if (userPublic.ppic != null) document.getElementById('disPP').setAttribute('onerror', "this.src='" + userPublic.ppic + "'");
-        else document.getElementById('disPP').setAttribute('onerror', "https://via.placeholder.com/20.webp'");
-        document.getElementById('disPP').src = '';
-        if (userPublic.pemail != null) document.getElementById('contEmail').classList.remove('d-none');
-        document.getElementById('disMail').innerHTML = userPublic.pemail;
-        document.getElementById('disName').innerHTML = userPublic.pname;
-        document.getElementById('crdPrfl').classList.remove('d-none');
+        if (userPublic.ppic != null) $('#disPP').setAttribute('onerror', "this.src='" + userPublic.ppic + "'");
+        else $('#disPP').setAttribute('onerror', "https://via.placeholder.com/20.webp'");
+        $('#disPP').src = '';
+        if (userPublic.pemail != null) $('#contEmail').show();
+        $('#disMail').innerHTML = userPublic.pemail;
+        $('#disName').innerHTML = userPublic.pname;
+        $('#crdPrfl').show();
     });
 }
 function shwFav() {
     if (userPublic.favn == null) return;
-    document.getElementById('navBtnFav').classList.add('active');
+    $('#navBtnFav').addClass('active');
     let favStr = '';
     userPublic.favn.forEach(function (itm, idx) {
         if (userData.favl[idx][0] == '2') {
@@ -65,12 +65,12 @@ function shwFav() {
             favStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + useruserPublic.favl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
         }
     });
-    document.getElementById('cntFav').innerHTML = favStr;
-    document.getElementById('crdFav').classList.remove('d-none');
+    $('#cntFav').innerHTML = favStr;
+    $('#crdFav').show();
 }
 function shwLike() {
     if (userPublic.likedn == null) return;
-    document.getElementById('navBtnLike').classList.add('active');
+    $('#navBtnLike').addClass('active');
     let likedStr = '';
     userPublic.likedn.forEach(function (itm, idx) {
         if (userData.likedl[idx][0] == '2') {
@@ -79,8 +79,8 @@ function shwLike() {
             likedStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + userPublic.likedl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
         }
     });
-    document.getElementById('cntLike').innerHTML = likedStr;
-    document.getElementById('crdLike').classList.remove('d-none');
+    $('#cntLike').innerHTML = likedStr;
+    $('#crdLike').show();
 }
 window.shwCrds = function shwCrds(t, u) {
     if ((u == null || u == '') && !gotFL) {
@@ -92,21 +92,21 @@ window.shwCrds = function shwCrds(t, u) {
         getUserPublic(u).then(res => {
             userPublic = res.data;
             if (userPublic == null) {
-                document.getElementById('navBtnFav').classList.add('disabled');
-                document.getElementById('navBtnLike').classList.add('disabled');
-                document.getElementById('navBtnPrfl').classList.add('disabled');
-                document.getElementById('contEmail').classList.add('d-none');
-                document.getElementById('contPic').classList.add('d-none');
+                $('#navBtnFav').addClass('disabled');
+                $('#navBtnLike').addClass('disabled');
+                $('#navBtnPrfl').addClass('disabled');
+                $('#contEmail').hide();
+                $('#contPic').hide();
                 if (lang == "es") {
-                    document.getElementById('contNull').innerHTML = '<div class="col"><strong>Este perfíl no existe o es privado</strong></div>';
+                    $('#contNull').innerHTML = '<div class="col"><strong>Este perfíl no existe o es privado</strong></div>';
                 } else if (lang == "en") {
-                    document.getElementById('contNull').innerHTML = '<div class="col"><strong>This profile does not exist or it is private.</strong></div>';
+                    $('#contNull').innerHTML = '<div class="col"><strong>This profile does not exist or it is private.</strong></div>';
                 }
-                document.getElementById('crdPrfl').classList.remove('d-none');
+                $('#crdPrfl').show();
             } else {
                 if (userPublic.favn == null) {
-                    document.getElementById('navBtnFav').classList.add('disabled');
-                    document.getElementById('navBtnLike').classList.add('disabled');
+                    $('#navBtnFav').addClass('disabled');
+                    $('#navBtnLike').addClass('disabled');
                 }
                 shwCrds2(t);
             }
@@ -119,24 +119,24 @@ window.shwCrds = function shwCrds(t, u) {
 function shwCrds2(t) {
     if (t == 'favs') {
         if (userPublic.favn == null) return;
-        document.getElementById('crdPrfl').classList.add('d-none');
-        document.getElementById('navBtnPrfl').classList.remove('active');
-        document.getElementById('crdLike').classList.add('d-none');
-        document.getElementById('navBtnLike').classList.remove('active');
+        $('#crdPrfl').hide();
+        $('#navBtnPrfl').removeClass('active');
+        $('#crdLike').hide();
+        $('#navBtnLike').removeClass('active');
         shwFav();
     } else {
         if (t == 'likes') {
             if (userPublic.likedn == null) return;
-            document.getElementById('crdFav').classList.add('d-none');
-            document.getElementById('navBtnFav').classList.remove('active');
-            document.getElementById('crdPrfl').classList.add('d-none');
-            document.getElementById('navBtnPrfl').classList.remove('active');
+            $('#crdFav').hide();
+            $('#navBtnFav').removeClass('active');
+            $('#crdPrfl').hide();
+            $('#navBtnPrfl').removeClass('active');
             shwLike();
         } else {
-            document.getElementById('crdFav').classList.add('d-none');
-            document.getElementById('navBtnFav').classList.remove('active');
-            document.getElementById('crdLike').classList.add('d-none');
-            document.getElementById('navBtnLike').classList.remove('active');
+            $('#crdFav').hide();
+            $('#navBtnFav').removeClass('active');
+            $('#crdLike').hide();
+            $('#navBtnLike').removeClass('active');
             shwPrfl();
         }
     }

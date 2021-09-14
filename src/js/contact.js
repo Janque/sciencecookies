@@ -25,15 +25,15 @@ const FSDB = getFirestore();
 var urlSrch;
 window.loaded = function loaded() {
     urlSrch = new URLSearchParams(location.search);
-    if (urlSrch.get('sub') == 'suger' || urlSrch.get('sub') == 'fallo' || urlSrch.get('sub') == 'tos' || urlSrch.get('sub') == 'priv' || urlSrch.get('sub') == 'otro') document.getElementById('inO' + urlSrch.get('sub')).selected = true;
+    if (urlSrch.get('sub') == 'suger' || urlSrch.get('sub') == 'fallo' || urlSrch.get('sub') == 'tos' || urlSrch.get('sub') == 'priv' || urlSrch.get('sub') == 'otro') $('#inO' + urlSrch.get('sub')).selected = true;
 
-    document.getElementById('inEmail').value = email;
+    $('#inEmail').value = email;
 
     function send() {
         addDoc(collection(FSDB, 'messages'), {
             from: email,
-            subject: document.getElementById('inSubj').value,
-            mess: document.getElementById('inText').value,
+            subject: $('#inSubj').value,
+            mess: $('#inText').value,
         }).then(res => {
             if (lang == "es") {
                 alertTop("Gracias por tu mensaje, se ha enviado correctamente.", 1);
@@ -48,7 +48,7 @@ window.loaded = function loaded() {
             }
         })
     }
-    document.getElementById("frmCont").addEventListener("submit", function (event) {
+    $("#frmCont").addEventListener("submit", function (event) {
         event.preventDefault();
         send();
     });

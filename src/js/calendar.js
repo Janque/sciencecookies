@@ -26,29 +26,29 @@ const RTDB = getDatabase();
 window.eventToShow = null;
 window.showEvent = function showEvent() {
     eventKeys.forEach(key => {
-        hideEl(document.getElementById(key));
+        $('#' + key).hide();
     });
-    document.getElementById('mdlEventInfoL').innerHTML = eventTitles[eventToShow];
-    showEl(document.getElementById(eventToShow));
-    enable(document.getElementById('btnPriorEve'));
-    enable(document.getElementById('btnNextEve'));
+    $('#mdlEventInfoL').innerHTML = eventTitles[eventToShow];
+    $('#' + eventToShow).show();
+    enable($('#btnPriorEve'));
+    enable($('#btnNextEve'));
 }
-document.getElementById('btnPriorEve').onclick = () => {
+$('#btnPriorEve').onclick = () => {
     let n = eventKeys.indexOf(eventToShow) - 1;
     if (n >= 0) {
         eventToShow = eventKeys[n];
         showEvent();
     } else {
-        disable(document.getElementById('btnPriorEve'));
+        disable($('#btnPriorEve'));
     }
 };
-document.getElementById('btnNextEve').onclick = () => {
+$('#btnNextEve').onclick = () => {
     let n = eventKeys.indexOf(eventToShow) + 1;
     if (n < eventKeys.length) {
         eventToShow = eventKeys[n];
         showEvent();
     } else {
-        disable(document.getElementById('btnNextEve'));
+        disable($('#btnNextEve'));
     }
 };
 

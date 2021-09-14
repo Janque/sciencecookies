@@ -43,20 +43,11 @@ window.mobile = false;
 window.classes = function classes(elm, cls) {
     cls = cls.split(' ');
     cls.forEach(itm => {
-        elm.classList.add(itm);
+        elm.addClass(itm);
     });
 }
-window.hideEl = function hideEl(elm) {
-    elm.classList.add('d-none');
-}
-window.showEl = function showEl(elm) {
-    elm.classList.remove('d-none');
-}
-window.toggleEl = function toggleEl(elm) {
-    elm.classList.toggle('d-none');
-}
 window.enable = function enable(btn) {
-    btn.classList.remove('disabled');
+    btn.removeClass('disabled');
     btn.removeAttribute('disabled');
 }
 window.disable = function disable(btn) {
@@ -77,7 +68,7 @@ window.alertTop = function alertTop(msg, alert, alrtId = "alrtClsSsn") {
     }
     document.getElementById(alrtId).innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-${alert} alert-dismissible fade show fixed-bottom" role="alert">${msg}<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
     setTimeout(function () {
-        document.getElementById("btnAlrtClsSsn").click();
+        $("#btnAlrtClsSsn").click();
     }, 3000);
     $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
         document.getElementById(alrtId).innerHTML = '';
@@ -142,22 +133,22 @@ onAuthStateChanged(AUTH, (user) => {
 //Botones de sesion
 function shwSsnBtns(ac) {
     if (ac) {
-        document.getElementById('icnUsr').classList.remove('fa-user-slash');
-        document.getElementById('icnUsr').classList.add('fa-user');
-        document.getElementById('picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
-        document.getElementById('picUsr').src = photoURL;
-        if (document.getElementById('ppCom')) {
-            document.getElementById('ppCom').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
-            document.getElementById('ppCom').src = photoURL;
+        $('#icnUsr').removeClass('fa-user-slash');
+        $('#icnUsr').addClass('fa-user');
+        $('#picUsr').attr('onerror', "this.src='https://via.placeholder.com/20.webp'");
+        $('#picUsr').attr('src', photoURL);
+        if ($('#ppCom')) {
+            $('#ppCom').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
+            $('#ppCom').attr('src', photoURL);
         }
-        document.getElementById('btnPrfl').classList.remove('d-none');
-        document.getElementById('btnPref').classList.remove('d-none');
+        $('#btnPrfl').show();
+        $('#btnPref').show();
         if (mod) {
-            document.getElementById('btnDraft').classList.remove('d-none');
-            document.getElementById('btnCals').classList.remove('d-none');
+            $('#btnDraft').show();
+            $('#btnCals').show();
         }
-        document.getElementById('btnLgO').classList.remove('d-none');
-        if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.add('d-none');
+        $('#btnLgO').show();
+        if ($('#btnLgI')) $('#btnLgI').hide();
         if (site == "cookie") {
             getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
                 let fav = doc.data().fav;
@@ -165,63 +156,63 @@ function shwSsnBtns(ac) {
                 pubID = doc.data().shortID;
                 if (fav.indexOf(id) != -1) {
                     if (lang == "es") {
-                        document.getElementById('btnFav').innerHTML = ('En mis favoritos <i class="fas fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                        $('#btnFav').innerHTML = ('En mis favoritos <i class="fas fa-heart"></i>').concat(' ', $('#btnFav').innerHTML.substr($('#btnFav').innerHTML.search('<sp')));
                     } else if (lang == "en") {
-                        document.getElementById('btnFav').innerHTML = ('In my favorites <i class="fas fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                        $('#btnFav').innerHTML = ('In my favorites <i class="fas fa-heart"></i>').concat(' ', $('#btnFav').innerHTML.substr($('#btnFav').innerHTML.search('<sp')));
                     }
-                    document.getElementById('btnFav').classList.remove('btn-outline-light');
-                    document.getElementById('btnFav').classList.add('btn-light');
+                    $('#btnFav').removeClass('btn-outline-light');
+                    $('#btnFav').addClass('btn-light');
                 }
                 else {
                     if (lang == "es") {
-                        document.getElementById('btnFav').innerHTML = ('Añadir a favoritos <i class="far fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                        $('#btnFav').innerHTML = ('Añadir a favoritos <i class="far fa-heart"></i>').concat(' ', $('#btnFav').innerHTML.substr($('#btnFav').innerHTML.search('<sp')));
                     } else if (lang == "en") {
-                        document.getElementById('btnFav').innerHTML = ('Add to favorites <i class="far fa-heart"></i>').concat(' ', document.getElementById('btnFav').innerHTML.substr(document.getElementById('btnFav').innerHTML.search('<sp')));
+                        $('#btnFav').innerHTML = ('Add to favorites <i class="far fa-heart"></i>').concat(' ', $('#btnFav').innerHTML.substr($('#btnFav').innerHTML.search('<sp')));
                     }
-                    document.getElementById('btnFav').classList.remove('btn-light');
-                    document.getElementById('btnFav').classList.add('btn-outline-light');
+                    $('#btnFav').removeClass('btn-light');
+                    $('#btnFav').addClass('btn-outline-light');
                 }
                 if (liked.indexOf(id) != -1) {
                     if (lang == "es") {
-                        document.getElementById('btnLike').innerHTML = ('Me gusta <i class="fas fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                        $('#btnLike').innerHTML = ('Me gusta <i class="fas fa-thumbs-up"></i>').concat(' ', $('#btnLike').innerHTML.substr($('#btnLike').innerHTML.search('<sp')));
                     } else if (lang == "en") {
-                        document.getElementById('btnLike').innerHTML = ('Liked <i class="fas fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                        $('#btnLike').innerHTML = ('Liked <i class="fas fa-thumbs-up"></i>').concat(' ', $('#btnLike').innerHTML.substr($('#btnLike').innerHTML.search('<sp')));
                     }
-                    document.getElementById('btnLike').classList.remove('btn-outline-light');
-                    document.getElementById('btnLike').classList.add('btn-light');
+                    $('#btnLike').removeClass('btn-outline-light');
+                    $('#btnLike').addClass('btn-light');
                 }
                 else {
                     if (lang == "es") {
-                        document.getElementById('btnLike').innerHTML = ('Dar me gusta <i class="far fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                        $('#btnLike').innerHTML = ('Dar me gusta <i class="far fa-thumbs-up"></i>').concat(' ', $('#btnLike').innerHTML.substr($('#btnLike').innerHTML.search('<sp')));
                     } else if (lang == "en") {
-                        document.getElementById('btnLike').innerHTML = ('Like <i class="far fa-thumbs-up"></i>').concat(' ', document.getElementById('btnLike').innerHTML.substr(document.getElementById('btnLike').innerHTML.search('<sp')));
+                        $('#btnLike').innerHTML = ('Like <i class="far fa-thumbs-up"></i>').concat(' ', $('#btnLike').innerHTML.substr($('#btnLike').innerHTML.search('<sp')));
                     }
-                    document.getElementById('btnLike').classList.remove('btn-light');
-                    document.getElementById('btnLike').classList.add('btn-outline-light');
+                    $('#btnLike').removeClass('btn-light');
+                    $('#btnLike').addClass('btn-outline-light');
                 }
             }).catch(function (err) { console.log(err) });
         }
     } else {
-        document.getElementById('icnUsr').classList.remove('fa-user');
-        document.getElementById('icnUsr').classList.add('fa-user-slash');
-        document.getElementById('picUsr').setAttribute('onerror', "");
-        document.getElementById('picUsr').src = '';
-        document.getElementById('btnPrfl').classList.add('d-none');
-        document.getElementById('btnPref').classList.add('d-none');
-        document.getElementById('btnDraft').classList.add('d-none');
-        document.getElementById('btnCals').classList.add('d-none');
-        document.getElementById('btnLgO').classList.add('d-none');
-        if (document.getElementById('btnLgI')) document.getElementById('btnLgI').classList.remove('d-none');
+        $('#icnUsr').removeClass('fa-user');
+        $('#icnUsr').addClass('fa-user-slash');
+        $('#picUsr').setAttribute('onerror', "");
+        $('#picUsr').src = '';
+        $('#btnPrfl').hide();
+        $('#btnPref').hide();
+        $('#btnDraft').hide();
+        $('#btnCals').hide();
+        $('#btnLgO').hide();
+        if ($('#btnLgI')) $('#btnLgI').show();
     }
     if (site == "cookie") {
-        document.getElementById('btnFav').classList.remove('disabled');
-        document.getElementById('btnLike').classList.remove('disabled');
-        document.getElementById('btnLdComs').classList.remove('disabled');
-        document.getElementById('btnLdMrComs').classList.remove('disabled');
+        $('#btnFav').removeClass('disabled');
+        $('#btnLike').removeClass('disabled');
+        $('#btnLdComs').removeClass('disabled');
+        $('#btnLdMrComs').removeClass('disabled');
     }
 }
 //Log Out
-document.getElementById("btnLgO").onclick = function () {
+$("#btnLgO").onclick = function () {
     signOut(AUTH).then(function () {
         if (lang == "es") {
             alertTop("Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>", 2);
@@ -278,156 +269,156 @@ function shwRecom() {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();
-            let a0 = document.createElement('a');
+            let a0 = $('<a></a>');
             classes(a0, "text-decoration-none text-dark d-none d-md-inline");
             a0.href = dat.url;
-            let card = document.createElement('div');
+            let card = $('<div></div>');
             classes(card, "card mb-2");
             a0.appendChild(card);
-            let img0 = document.createElement('img');
+            let img0 = $('<img/>');
             classes(img0, "card-img-top");
             img0.src = dat.picUrl;
             img0.alt = dat.title;
             card.appendChild(img0);
-            let bod0 = document.createElement('div');
+            let bod0 = $('<div></div>');
             classes(bod0, "card-body");
             let d = dat.published.toDate();
             bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
                 <p class="card-text">` + dat.description + `</p>
                 <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             card.appendChild(bod0);
-            document.getElementById("newCook").appendChild(a0);
+            $("#newCook").appendChild(a0);
 
-            let a1 = document.createElement('a');
+            let a1 = $('<a></a>');
             classes(a1, "text-decoration-none text-dark d-md-none");
             a1.href = dat.url;
-            let med = document.createElement('div');
+            let med = $('<div></div>');
             classes(med, "media mb-3");
             a1.appendChild(med);
-            let img1 = document.createElement('img');
+            let img1 = $('<img/>');
             classes(img1, "align-self-center mr-3");
             img1.style.width = "64px"
             img1.style.height = "64px";
             img1.src = dat.picUrl;
             img1.alt = dat.title;
             med.appendChild(img1);
-            let bod1 = document.createElement('div');
+            let bod1 = $('<div></div>');
             classes(bod1, "media-body");
             bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
                 <p class="card-text">` + dat.description + `</p>
                 <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             med.appendChild(bod1);
-            document.getElementById("newCook").appendChild(a1);
+            $("#newCook").appendChild(a1);
         })
     }).catch(err => console.log(err));
     getDocs(query(cookiesFSColl, where('public', '==', true), orderBy('pop', 'desc'), limit(3))).then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();
-            let a0 = document.createElement('a');
+            let a0 = $('<a></a>');
             classes(a0, "text-decoration-none text-dark d-none d-md-inline");
             a0.href = dat.url;
-            let card = document.createElement('div');
+            let card = $('<div></div>');
             classes(card, "card mb-2");
             a0.appendChild(card);
-            let img0 = document.createElement('img');
+            let img0 = $('<img/>');
             classes(img0, "card-img-top");
             img0.src = dat.picUrl;
             img0.alt = dat.title;
             card.appendChild(img0);
-            let bod0 = document.createElement('div');
+            let bod0 = $('<div></div>');
             classes(bod0, "card-body");
             let d = dat.published.toDate();
             bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
                 <p class="card-text">` + dat.description + `</p>
                 <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             card.appendChild(bod0);
-            document.getElementById("popCook").appendChild(a0);
+            $("#popCook").appendChild(a0);
 
-            let a1 = document.createElement('a');
+            let a1 = $('<a></a>');
             classes(a1, "text-decoration-none text-dark d-md-none");
             a1.href = dat.url;
-            let med = document.createElement('div');
+            let med = $('<div></div>');
             classes(med, "media mb-3");
             a1.appendChild(med);
-            let img1 = document.createElement('img');
+            let img1 = $('<img/>');
             classes(img1, "align-self-center mr-3");
             img1.style.width = "64px"
             img1.style.height = "64px";
             img1.src = dat.picUrl;
             img1.alt = dat.title;
             med.appendChild(img1);
-            let bod1 = document.createElement('div');
+            let bod1 = $('<div></div>');
             classes(bod1, "media-body");
             bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
                 <p class="card-text">` + dat.description + `</p>
                 <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
             med.appendChild(bod1);
-            document.getElementById("popCook").appendChild(a1);
+            $("#popCook").appendChild(a1);
 
-            let divider = document.createElement('div');
+            let divider = $('<div></div>');
             classes(divider, "dropdown-divider d-md-none");
-            document.getElementById("popCook").appendChild(divider);
+            $("#popCook").appendChild(divider);
         });
     }).catch(err => console.log(err));
     getDocs(query(calendarsFSColl, where('public', '==', true), orderBy('published', 'desc'), limit(1))).then(snap => {
         let docs = snap.docs;
         docs.forEach(doc => {
             let dat = doc.data();
-            let a0 = document.createElement('a');
+            let a0 = $('<a></a>');
             classes(a0, "text-decoration-none text-dark d-none d-md-inline");
             a0.href = dat.url;
-            let card = document.createElement('div');
+            let card = $('<div></div>');
             classes(card, "card mb-2");
             a0.appendChild(card);
-            let img0 = document.createElement('img');
+            let img0 = $('<img/>');
             classes(img0, "card-img-top");
             img0.src = dat.picUrl;
             img0.alt = dat.title;
             card.appendChild(img0);
-            let bod0 = document.createElement('div');
+            let bod0 = $('<div></div>');
             classes(bod0, "card-body");
             bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
                 <p class="card-text">` + dat.descriptionShort + `</p>`;
             card.appendChild(bod0);
-            document.getElementById("calCnt").appendChild(a0);
+            $("#calCnt").appendChild(a0);
 
-            let a1 = document.createElement('a');
+            let a1 = $('<a></a>');
             classes(a1, "text-decoration-none text-dark d-md-none");
             a1.href = dat.url;
-            let med = document.createElement('div');
+            let med = $('<div></div>');
             classes(med, "media mb-3");
             a1.appendChild(med);
-            let img1 = document.createElement('img');
+            let img1 = $('<img/>');
             classes(img1, "align-self-center mr-3");
             img1.style.width = "64px"
             img1.style.height = "64px";
             img1.src = dat.picUrl;
             img1.alt = dat.title;
             med.appendChild(img1);
-            let bod1 = document.createElement('div');
+            let bod1 = $('<div></div>');
             classes(bod1, "media-body");
             bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
                 <p class="card-text">` + dat.descriptionShort + `</p>`;
             med.appendChild(bod1);
-            document.getElementById("calCnt").appendChild(a1);
+            $("#calCnt").appendChild(a1);
 
-            let divider = document.createElement('div');
+            let divider = $('<div></div>');
             classes(divider, "dropdown-divider d-md-none");
-            document.getElementById("calCnt").appendChild(divider);
-            showEl(document.getElementById("calRecom"));
+            $("#calCnt").appendChild(divider);
+            $("#calRecom").show();
         });
     }).catch(err => { console.log(err) });
 }
 
 //Prepare share btns
 function shareBtns() {
-    document.getElementById("ttShare").href = 'https://twitter.com/intent/tweet?text=' + window.location.href;
-    document.getElementById("fbShare").href = 'https://www.facebook.com/sharer/sharer.php?u=' + window.location.href;
+    $("#ttShare").href = 'https://twitter.com/intent/tweet?text=' + window.location.href;
+    $("#fbShare").href = 'https://www.facebook.com/sharer/sharer.php?u=' + window.location.href;
     if (mobile) {
-        document.getElementById("waShare").href = 'whatsapp://send?text=' + window.location.href;
+        $("#waShare").href = 'whatsapp://send?text=' + window.location.href;
     } else {
-        document.getElementById("waShare").href = 'https://web.whatsapp.com/send?text=' + window.location.href;
+        $("#waShare").href = 'https://web.whatsapp.com/send?text=' + window.location.href;
     }
 }
 

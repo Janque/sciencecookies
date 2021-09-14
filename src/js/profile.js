@@ -42,8 +42,8 @@ window.loaded = function loaded() {
     //Check auth
     onAuthStateChanged(AUTH, (user) => {
         if (user) {
-            document.getElementById('picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
-            document.getElementById('picUsr').src = photoURL;
+            $('#picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
+            $('#picUsr').src = photoURL;
             shwCrds(urlSrch.get('tab'));
         } else {
             $('#mdlRgstr').modal('show');
@@ -51,7 +51,7 @@ window.loaded = function loaded() {
     });
 
     function send() {
-        localUserData.name = displayName = document.getElementById('inNewNck').value;
+        localUserData.name = displayName = $('#inNewNck').value;
         updateProfile(AUTH.currentUser, {
             displayName: displayName
         }).then(function () {
@@ -59,10 +59,10 @@ window.loaded = function loaded() {
         }).then(() => {
             userData = localUserData;
             resetFrm();
-            document.getElementById('disName').innerHTML = displayName;
+            $('#disName').innerHTML = displayName;
         }).catch(function (err) { console.log(err) });
     }
-    document.getElementById("frmChngNk").addEventListener("submit", function (event) {
+    $("#frmChngNk").addEventListener("submit", function (event) {
         event.preventDefault();
         send();
         $('#mdlCngNck').modal('hide');
@@ -92,7 +92,7 @@ window.loaded = function loaded() {
             }
         }).catch(err => { console.log(err) });
     }
-    document.getElementById("frmPref").addEventListener("submit", function (event) {
+    $("#frmPref").addEventListener("submit", function (event) {
         event.preventDefault();
         setPrefBtns(false);
         uptPref();
@@ -104,7 +104,7 @@ window.loaded = function loaded() {
         task.on('state_changed',
             (snap) => {
                 let progPer = (snap.bytesTransferred / snap.totalBytes) * 100;
-                document.getElementById('prBarDis').style['width'] = progPer + '%';
+                $('#prBarDis').style['width'] = progPer + '%';
             },
             (err) => {
                 resetFrm();
@@ -116,8 +116,8 @@ window.loaded = function loaded() {
                 }
             },
             () => {
-                document.getElementById('picUsr').src = document.getElementById("preVIn").src;
-                document.getElementById('disPP').src = document.getElementById("preVIn").src;
+                $('#picUsr').src = $("#preVIn").src;
+                $('#disPP').src = $("#preVIn").src;
                 resetFrm();
                 $('#mdlCngPP').modal('hide');
                 getDownloadURL(ref).then(url => {
@@ -134,91 +134,91 @@ window.loaded = function loaded() {
             }
         );
     }
-    document.getElementById("frmChngPP").addEventListener("submit", function (event) {
+    $("#frmChngPP").addEventListener("submit", function (event) {
         event.preventDefault();
-        document.getElementById("prBar").classList.remove('d-none');
-        document.getElementById("frmChngPP").classList.add('d-none');
-        document.getElementById("btnCnfNwPP").classList.add('disabled');
-        document.getElementById("btnCanNwPP").classList.add('disabled');
+        $("#prBar").show();
+        $("#frmChngPP").hide();
+        $("#btnCnfNwPP").addClass('disabled');
+        $("#btnCanNwPP").addClass('disabled');
         uptPP(fileForUp);
     });
-    document.getElementById('inNwPP').addEventListener('change', function (e) {
+    $('#inNwPP').addEventListener('change', function (e) {
         fileForUp = e.target.files[0];
         function prevImg() {
             var read = new FileReader();
             read.readAsDataURL(fileForUp);
             read.onload = function (e2) {
-                document.getElementById("preVIn").src = e2.target.result;
+                $("#preVIn").src = e2.target.result;
             };
         };
-        document.getElementById('inNwPPL').innerHTML = fileForUp.name;
+        $('#inNwPPL').innerHTML = fileForUp.name;
         prevImg(fileForUp);
     });
 }
 window.resetFrm = function resetFrm() {
-    document.getElementById('inNewNck').value = '';
-    document.getElementById('inNwPP').value = '';
-    document.getElementById("preVIn").src = '';
+    $('#inNewNck').value = '';
+    $('#inNwPP').value = '';
+    $("#preVIn").src = '';
     if (lang == "es") {
-        document.getElementById('inNwPPL').innerHTML = 'Elige una imagen';
+        $('#inNwPPL').innerHTML = 'Elige una imagen';
     } else if (lang == "en") {
-        document.getElementById('inNwPPL').innerHTML = 'Choose an image';
+        $('#inNwPPL').innerHTML = 'Choose an image';
     }
-    document.getElementById("prBar").classList.add('d-none');
-    document.getElementById("frmChngPP").classList.remove('d-none');
-    document.getElementById("btnCnfNwPP").classList.remove('disabled');
-    document.getElementById("btnCanNwPP").classList.remove('disabled');
+    $("#prBar").hide();
+    $("#frmChngPP").show();
+    $("#btnCnfNwPP").removeClass('disabled');
+    $("#btnCanNwPP").removeClass('disabled');
 }
 
 //Preferences form toggle btns
 function setPrefBtns(disabled) {
     if (!disabled) {
-        document.getElementById('btnCanPref').disabled = false;
-        document.getElementById('btnCnfPref').disabled = false;
+        $('#btnCanPref').disabled = false;
+        $('#btnCnfPref').disabled = false;
     } else {
-        document.getElementById('btnCanPref').setAttribute('disabled', 'true');
-        document.getElementById('btnCnfPref').setAttribute('disabled', 'true');
+        $('#btnCanPref').setAttribute('disabled', 'true');
+        $('#btnCnfPref').setAttribute('disabled', 'true');
     }
 }
 //Preferences inputs
-document.getElementById('inPubPrfl').onclick = function () {
+$('#inPubPrfl').onclick = function () {
     if (localUserData.visible) {
-        document.getElementById('inPubEmail').setAttribute('disabled', 'true');
-        document.getElementById('inPubFL').setAttribute('disabled', 'true');
-        document.getElementById('inPubEmail').checked = false;
-        document.getElementById('inPubFL').checked = false;
+        $('#inPubEmail').setAttribute('disabled', 'true');
+        $('#inPubFL').setAttribute('disabled', 'true');
+        $('#inPubEmail').checked = false;
+        $('#inPubFL').checked = false;
     } else {
-        document.getElementById('inPubEmail').disabled = false;
-        document.getElementById('inPubFL').disabled = false;
-        document.getElementById('inPubEmail').checked = localUserData.vemail;
-        document.getElementById('inPubFL').checked = localUserData.vfl;
+        $('#inPubEmail').disabled = false;
+        $('#inPubFL').disabled = false;
+        $('#inPubEmail').checked = localUserData.vemail;
+        $('#inPubFL').checked = localUserData.vfl;
     }
     localUserData.visible = !localUserData.visible;
     setPrefBtns(!(localUserData == userData));
 };
-document.getElementById('inPubEmail').onclick = function () {
+$('#inPubEmail').onclick = function () {
     localUserData.vemail = !localUserData.vemail;
     setPrefBtns(!(localUserData == userData));
 };
-document.getElementById('inPubFL').onclick = function () {
+$('#inPubFL').onclick = function () {
     localUserData.vfl = !localUserData.vfl;
     setPrefBtns(!(localUserData == userData));
 };
-document.getElementById('inNews').onclick = function () {
+$('#inNews').onclick = function () {
     localUserData.rNews = !localUserData.rNews;
     setPrefBtns(!(localUserData == userData));
 };
 
 function shwPrfl() {
-    document.getElementById('navBtnPrfl').classList.add('active');
-    document.getElementById('disPP').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
-    document.getElementById('disPP').src = photoURL;
-    document.getElementById('disMail').innerHTML = email;
-    document.getElementById('disName').innerHTML = displayName;
-    document.getElementById('crdPrfl').classList.remove('d-none');
+    $('#navBtnPrfl').addClass('active');
+    $('#disPP').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
+    $('#disPP').src = photoURL;
+    $('#disMail').innerHTML = email;
+    $('#disName').innerHTML = displayName;
+    $('#crdPrfl').show();
 }
 function shwFav() {
-    document.getElementById('navBtnFav').classList.add('active');
+    $('#navBtnFav').addClass('active');
     let favStr = '';
     userData.favn.forEach(function (itm, idx) {
         if (userData.favl[idx][0] == '2') {
@@ -227,11 +227,11 @@ function shwFav() {
             favStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + userData.favl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
         }
     });
-    document.getElementById('cntFav').innerHTML = favStr;
-    document.getElementById('crdFav').classList.remove('d-none');
+    $('#cntFav').innerHTML = favStr;
+    $('#crdFav').show();
 }
 function shwLike() {
-    document.getElementById('navBtnLike').classList.add('active');
+    $('#navBtnLike').addClass('active');
     let likedStr = '';
     userData.likedn.forEach(function (itm, idx) {
         if (userData.likedl[idx][0] == '2') {
@@ -240,27 +240,27 @@ function shwLike() {
             likedStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + userData.likedl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
         }
     });
-    document.getElementById('cntLike').innerHTML = likedStr;
-    document.getElementById('crdLike').classList.remove('d-none');
+    $('#cntLike').innerHTML = likedStr;
+    $('#crdLike').show();
 }
 window.shwPref = function shwPref() {
-    document.getElementById('navBtnPref').classList.add('active');
-    document.getElementById('inPubPrfl').checked = userData.visible;
+    $('#navBtnPref').addClass('active');
+    $('#inPubPrfl').checked = userData.visible;
     if (userData.visible) {
-        document.getElementById('inPubEmail').disabled = false;
-        document.getElementById('inPubFL').disabled = false;
-        document.getElementById('inPubEmail').checked = userData.vemail;
-        document.getElementById('inPubFL').checked = userData.vfl;
+        $('#inPubEmail').disabled = false;
+        $('#inPubFL').disabled = false;
+        $('#inPubEmail').checked = userData.vemail;
+        $('#inPubFL').checked = userData.vfl;
     } else {
-        document.getElementById('inPubEmail').setAttribute('disabled', 'true');
-        document.getElementById('inPubFL').setAttribute('disabled', 'true');
-        document.getElementById('inPubEmail').checked = false;
-        document.getElementById('inPubFL').checked = false;
+        $('#inPubEmail').setAttribute('disabled', 'true');
+        $('#inPubFL').setAttribute('disabled', 'true');
+        $('#inPubEmail').checked = false;
+        $('#inPubFL').checked = false;
     }
-    document.getElementById('inNews').checked = userData.rNews;
+    $('#inNews').checked = userData.rNews;
     localUserData = userData;
     setPrefBtns(false);
-    document.getElementById('crdPref').classList.remove('d-none');
+    $('#crdPref').show();
 }
 window.shwCrds = function shwCrds(t) {
     if (gotFL == false) {
@@ -276,41 +276,41 @@ window.shwCrds = function shwCrds(t) {
 
 function shwCrds2(t) {
     if (t == 'pref') {
-        document.getElementById('crdFav').classList.add('d-none');
-        document.getElementById('navBtnFav').classList.remove('active');
-        document.getElementById('crdLike').classList.add('d-none');
-        document.getElementById('navBtnLike').classList.remove('active');
-        document.getElementById('crdPrfl').classList.add('d-none');
-        document.getElementById('navBtnPrfl').classList.remove('active');
+        $('#crdFav').hide();
+        $('#navBtnFav').removeClass('active');
+        $('#crdLike').hide();
+        $('#navBtnLike').removeClass('active');
+        $('#crdPrfl').hide();
+        $('#navBtnPrfl').removeClass('active');
         shwPref();
     } else {
         if (t == 'favs') {
-            document.getElementById('crdPrfl').classList.add('d-none');
-            document.getElementById('navBtnPrfl').classList.remove('active');
-            document.getElementById('crdLike').classList.add('d-none');
-            document.getElementById('navBtnLike').classList.remove('active');
-            document.getElementById('crdPref').classList.add('d-none');
-            document.getElementById('navBtnPref').classList.remove('active');
+            $('#crdPrfl').hide();
+            $('#navBtnPrfl').removeClass('active');
+            $('#crdLike').hide();
+            $('#navBtnLike').removeClass('active');
+            $('#crdPref').hide();
+            $('#navBtnPref').removeClass('active');
             shwFav();
         } else {
             if (t == 'likes') {
-                document.getElementById('crdFav').classList.add('d-none');
-                document.getElementById('navBtnFav').classList.remove('active');
-                document.getElementById('crdPrfl').classList.add('d-none');
-                document.getElementById('navBtnPrfl').classList.remove('active');
-                document.getElementById('crdPref').classList.add('d-none');
-                document.getElementById('navBtnPref').classList.remove('active');
+                $('#crdFav').hide();
+                $('#navBtnFav').removeClass('active');
+                $('#crdPrfl').hide();
+                $('#navBtnPrfl').removeClass('active');
+                $('#crdPref').hide();
+                $('#navBtnPref').removeClass('active');
                 shwLike();
             } else {
                 /*if(t=='notif'){
                     @#NOTIFICACIONES
                 }*/
-                document.getElementById('crdFav').classList.add('d-none');
-                document.getElementById('navBtnFav').classList.remove('active');
-                document.getElementById('crdLike').classList.add('d-none');
-                document.getElementById('navBtnLike').classList.remove('active');
-                document.getElementById('crdPref').classList.add('d-none');
-                document.getElementById('navBtnPref').classList.remove('active');
+                $('#crdFav').hide();
+                $('#navBtnFav').removeClass('active');
+                $('#crdLike').hide();
+                $('#navBtnLike').removeClass('active');
+                $('#crdPref').hide();
+                $('#navBtnPref').removeClass('active');
                 shwPrfl();
                 //}
             }

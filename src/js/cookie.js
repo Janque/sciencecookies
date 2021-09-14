@@ -37,8 +37,8 @@ window.loaded = function loaded() {
     onValue(cookRef, (snap) => {
         const data = snap.val();
         if (data) {
-            document.getElementById('favCount').innerText = data.favs;
-            document.getElementById('likeCount').innerText = data.likes;
+            $('#favCount').innerText = data.favs;
+            $('#likeCount').innerText = data.likes;
         }
     });
     set(child(cookRef, 'pop'), increment(1));
@@ -47,9 +47,9 @@ window.loaded = function loaded() {
     function sendRep() {
         addDoc(collection(FSDB, 'reports'), {
             from: email,
-            reason: document.getElementById('inReas').value,
+            reason: $('#inReas').value,
             comm: reporting,
-            mess: document.getElementById('inText').value,
+            mess: $('#inText').value,
         }).then(function () {
             if (lang == "es") {
                 alertTop("Gracias por tu reporte, lo revisaremos lo antes posible.", 2);
@@ -67,7 +67,7 @@ window.loaded = function loaded() {
             $('#mdlRprt').modal('hide');
         })
     }
-    document.getElementById("frmRprt").addEventListener("submit", function (event) {
+    $("#frmRprt").addEventListener("submit", function (event) {
         event.preventDefault();
         if (actSsn) sendRep();
     });
@@ -79,7 +79,7 @@ window.loaded = function loaded() {
             pic: photoURL,
             shortID: pubID,
             to: replying,
-            text: document.getElementById('inNwCom').value,
+            text: $('#inNwCom').value,
         };
         addComment(comFrm).then(comres => {
             if (comres.data.res == -1) {
@@ -118,31 +118,31 @@ window.loaded = function loaded() {
                 }
             }
             replying = -1;
-            document.getElementById('frmNwComBtns').classList.add('d-none');
+            $('#frmNwComBtns').hide();
             if (lang == "es") {
-                document.getElementById('inNwCom').setAttribute('placeholder', 'Nuevo comentario');
-                document.getElementById('btnAddCom').innerHTML = 'Comentar';
+                $('#inNwCom').setAttribute('placeholder', 'Nuevo comentario');
+                $('#btnAddCom').innerHTML = 'Comentar';
             } else if (lang == "en") {
-                document.getElementById('inNwCom').setAttribute('placeholder', 'New comment');
-                document.getElementById('btnAddCom').innerHTML = 'Comment';
+                $('#inNwCom').setAttribute('placeholder', 'New comment');
+                $('#btnAddCom').innerHTML = 'Comment';
             }
-            document.getElementById('btnCanCom').classList.remove('disabled');
-            document.getElementById('btnAddCom').classList.remove('disabled');
-            document.getElementById('inNwCom').value = '';
+            $('#btnCanCom').removeClass('disabled');
+            $('#btnAddCom').removeClass('disabled');
+            $('#inNwCom').value = '';
         }).catch(err => { console.log('err') });
     }
-    document.getElementById("frmNwCom").addEventListener("submit", function (event) {
+    $("#frmNwCom").addEventListener("submit", function (event) {
         event.preventDefault();
         if (actSsn) {
-            document.getElementById('btnAddCom').classList.add('disabled');
-            document.getElementById('btnCanCom').classList.add('disabled');
-            document.getElementById('btnAddCom').innerHTML = '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>';
+            $('#btnAddCom').addClass('disabled');
+            $('#btnCanCom').addClass('disabled');
+            $('#btnAddCom').innerHTML = '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>';
             sendNwCom();
         }
     });
 }
 
-document.getElementById('btnFav').onclick = function () {
+$('#btnFav').onclick = function () {
     if (actSsn) {
         let userData, ifav, iliked, npop, nlik, nfav;
         getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
@@ -160,9 +160,9 @@ document.getElementById('btnFav').onclick = function () {
                 if (lang == "en") {
                     langTxt = "Add to favorites";
                 }
-                document.getElementById('btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
-                document.getElementById('btnFav').classList.remove('btn-light');
-                document.getElementById('btnFav').classList.add('btn-outline-light');
+                $('#btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
+                $('#btnFav').removeClass('btn-light');
+                $('#btnFav').addClass('btn-outline-light');
                 npop = -20;
                 nfav = -1;
             }
@@ -180,9 +180,9 @@ document.getElementById('btnFav').onclick = function () {
                     if (lang == "en") {
                         langTxt = "I like it";
                     }
-                    document.getElementById('btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
-                    document.getElementById('btnLike').classList.remove('btn-outline-light');
-                    document.getElementById('btnLike').classList.add('btn-light');
+                    $('#btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
+                    $('#btnLike').removeClass('btn-outline-light');
+                    $('#btnLike').addClass('btn-light');
                 }
                 else npop = 20;
                 nfav = 1;
@@ -190,9 +190,9 @@ document.getElementById('btnFav').onclick = function () {
                 if (lang == "en") {
                     langTxt = "In my favorites";
                 }
-                document.getElementById('btnFav').innerHTML = langTxt + '  <i class="fas fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
-                document.getElementById('btnFav').classList.remove('btn-outline-light');
-                document.getElementById('btnFav').classList.add('btn-light');
+                $('#btnFav').innerHTML = langTxt + '  <i class="fas fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
+                $('#btnFav').removeClass('btn-outline-light');
+                $('#btnFav').addClass('btn-light');
             }
             return updateDoc(docRef(FSDB, 'users', uid), userData);
         }).then(() => {
@@ -202,14 +202,14 @@ document.getElementById('btnFav').onclick = function () {
         }).catch(function (err) { console.log('err') });
     } else {
         if (lang == "es") {
-            document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+            $('#mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
         } else if (lang == "en") {
-            document.getElementById('mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+            $('#mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
         }
         $('#mdlRgstr').modal('show');
     }
 };
-document.getElementById('btnLike').onclick = function () {
+$('#btnLike').onclick = function () {
     if (actSsn) {
         let userData, ifav, iliked, npop, nlik, nfav;
         getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
@@ -229,9 +229,9 @@ document.getElementById('btnLike').onclick = function () {
                 if (lang == "en") {
                     langTxt = "I like it";
                 }
-                document.getElementById('btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
-                document.getElementById('btnLike').classList.remove('btn-outline-light');
-                document.getElementById('btnLike').classList.add('btn-light');
+                $('#btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
+                $('#btnLike').removeClass('btn-outline-light');
+                $('#btnLike').addClass('btn-light');
             }
             else {
                 userData.liked.splice(iliked, 1);
@@ -248,18 +248,18 @@ document.getElementById('btnLike').onclick = function () {
                     if (lang == "en") {
                         langTxt = "Add to favorites";
                     }
-                    document.getElementById('btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
-                    document.getElementById('btnFav').classList.remove('btn-light');
-                    document.getElementById('btnFav').classList.add('btn-outline-light');
+                    $('#btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
+                    $('#btnFav').removeClass('btn-light');
+                    $('#btnFav').addClass('btn-outline-light');
                 }
                 let langTxt = "Dar me gusta";
                 if (lang == "en") {
                     langTxt = "Like";
                 }
                 nlik = -1;
-                document.getElementById('btnLike').innerHTML = langTxt + ' <i class="far fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
-                document.getElementById('btnLike').classList.remove('btn-light');
-                document.getElementById('btnLike').classList.add('btn-outline-light');
+                $('#btnLike').innerHTML = langTxt + ' <i class="far fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
+                $('#btnLike').removeClass('btn-light');
+                $('#btnLike').addClass('btn-outline-light');
             }
         }).then(() => {
             return updateDoc(docRef(FSDB, 'users', uid), userData);
@@ -270,29 +270,29 @@ document.getElementById('btnLike').onclick = function () {
         }).catch(function (err) { console.log(err) });
     } else {
         if (lang == "es") {
-            document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+            $('#mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
         } else if (lang == "en") {
-            document.getElementById('mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+            $('#mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
         }
         $('#mdlRgstr').modal('show');
     }
 };
 $('#mdlRgstr').on('hidden.bs.modal', function (e) {
     if (lang == "es") {
-        document.getElementById('mdlRgsL').innerHTML = 'Inicia sesión o regístrate';
+        $('#mdlRgsL').innerHTML = 'Inicia sesión o regístrate';
     } else if (lang == "en") {
-        document.getElementById('mdlRgsL').innerHTML = 'Log in or sign in';
+        $('#mdlRgsL').innerHTML = 'Log in or sign in';
     }
 });
 
-document.getElementById('inNwCom').onfocus = function () {
+$('#inNwCom').onfocus = function () {
     if (actSsn) {
-        document.getElementById('frmNwComBtns').classList.remove('d-none');
+        $('#frmNwComBtns').show();
     } else {
         if (lang == "es") {
-            document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+            $('#mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
         } else if (lang == "en") {
-            document.getElementById('mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+            $('#mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
         }
         $('#mdlRgstr').modal('show');
     }
@@ -306,22 +306,22 @@ window.report = function report(r) {
         $('#mdlRprt').modal('show');
     } else {
         if (lang == "es") {
-            document.getElementById('mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+            $('#mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
         } else if (lang == "en") {
-            document.getElementById('mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+            $('#mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
         }
         $('#mdlRgstr').modal('show');
     }
 }
 window.reply = function reply(r) {
     replying = r;
-    document.getElementById('btnsFL').scroll({ behavior: 'smooth' });
+    $('#btnsFL').scroll({ behavior: 'smooth' });
     if (lang == "es") {
-        document.getElementById('inNwCom').setAttribute('placeholder', 'Nueva respuesta');
+        $('#inNwCom').setAttribute('placeholder', 'Nueva respuesta');
     } else if (lang == "en") {
-        document.getElementById('inNwCom').setAttribute('placeholder', 'New reply');
+        $('#inNwCom').setAttribute('placeholder', 'New reply');
     }
-    document.getElementById('inNwCom').focus();
+    $('#inNwCom').focus();
 }
 /*function likeCom(p,s){
     if(s==null){
@@ -330,77 +330,77 @@ window.reply = function reply(r) {
     }
 }*/
 
-document.getElementById('btnLdComs').onclick = function () {
-    document.getElementById('btnLdComs').classList.add('d-none');
-    document.getElementById('spnCom').classList.remove('d-none');
+$('#btnLdComs').onclick = function () {
+    $('#btnLdComs').hide();
+    $('#spnCom').show();
     getDoc(collection(FSDB, 'cookies/comments/' + id), '1').then(doc => {
         if (doc.exists) {
             comList = doc.data().coms;
             comCount = doc.data().comCount;
             drwComs(comNum);
         } else {
-            document.getElementById('spnCom').classList.add('d-none');
-            document.getElementById('cntComs').classList.remove('d-none');
-            document.getElementById('cntComs2').classList.remove('d-none');
+            $('#spnCom').hide();
+            $('#cntComs').show();
+            $('#cntComs2').show();
         }
     }).catch(err => { console.log('err') });
 };
 
 function drwComs(num) {
-    document.getElementById('btnLdMrComs').classList.add('d-none');
+    $('#btnLdMrComs').hide();
     let comTxt;
     if (lang == "es") {
         comTxt = 'comentario';
     } else if (lang == "en") {
         comTxt = 'comment';
     }
-    document.getElementById('cntComs2').innerHTML = '';
-    document.getElementById('comCount').innerHTML = comCount + ' ' + comTxt;
-    if (comCount != 1) document.getElementById('comCount').innerHTML += 's';
+    $('#cntComs2').innerHTML = '';
+    $('#comCount').innerHTML = comCount + ' ' + comTxt;
+    if (comCount != 1) $('#comCount').innerHTML += 's';
     for (let i = 1; i <= num; i++) {
         if (i > comList.length) break;
         if (comList[comList.length - i] == null) continue;
-        document.getElementById('cntComs2').appendChild(createCom(comList[comList.length - i]));
+        $('#cntComs2').appendChild(createCom(comList[comList.length - i]));
     }
-    if (comList.length > num) document.getElementById('btnLdMrComs').classList.remove('d-none');
-    document.getElementById('spnCom').classList.add('d-none');
-    document.getElementById('cntComs').classList.remove('d-none');
-    document.getElementById('cntComs2').classList.remove('d-none');
+    if (comList.length > num) $('#btnLdMrComs').show();
+    $('#spnCom').hide();
+    $('#cntComs').show();
+    $('#cntComs2').show();
 }
 
 function createCom(comDat) {
-    let cont = document.createElement('div');
-    cont.classList.add('container-fluid');
-    cont.classList.add('bg-light');
-    cont.classList.add('rounded-lg');
-    cont.classList.add('p-2');
-    cont.classList.add('mb-1');
-    let head = document.createElement('div');
-    head.classList.add('row');
-    head.classList.add('justify-content-between');
-    let usr = document.createElement('div');
-    usr.classList.add('col-auto');
-    let a = document.createElement('a');
-    a.classList.add('text-decoration-none');
-    a.classList.add('text-dark');
+    let cont = $('<div></div>');
+    cont.addClass('container-fluid');
+    cont.addClass('bg-light');
+    cont.addClass('rounded-lg');
+    cont.addClass('p-2');
+    cont.addClass('mb-1');
+    let head = $('<div></div>');
+    head.addClass('row');
+    head.addClass('justify-content-between');
+    let usr = $('<div></div>');
+    usr.addClass('col-auto');
+    let a = $('<a></a>');
+    a.addClass('text-decoration-none');
+    a.addClass('text-dark');
     a.href = '../../ver-perfil?user=' + comDat.shortID;
     a.innerHTML = '<img src="' + comDat.pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`https://via.placeholder.com/20.webp`">' + comDat.from;
     usr.appendChild(a);
     head.appendChild(usr);
-    let rprt = document.createElement('div');
-    rprt.classList.add('col-auto');
-    rprt.classList.add('dropleft');
-    let btnRprt = document.createElement('button');
-    btnRprt.classList.add('btn');
-    btnRprt.classList.add('btn-light');
+    let rprt = $('<div></div>');
+    rprt.addClass('col-auto');
+    rprt.addClass('dropleft');
+    let btnRprt = $('<button></button>');
+    btnRprt.addClass('btn');
+    btnRprt.addClass('btn-light');
     btnRprt.setAttribute('data-toggle', 'dropdown');
     btnRprt.setAttribute('aria-haspopup', 'true');
     btnRprt.setAttribute('aria-expanded', 'false');
     btnRprt.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
     rprt.appendChild(btnRprt);
-    let drpRprt = document.createElement('div');
-    drpRprt.classList.add('dropdown-menu');
-    drpRprt.classList.add('border-0');
+    let drpRprt = $('<div></div>');
+    drpRprt.addClass('dropdown-menu');
+    drpRprt.addClass('border-0');
     let aux = id + 'c' + comDat.id;
     aux = ("'").concat(aux).concat("'");
     let reportTxt = "";
@@ -410,29 +410,29 @@ function createCom(comDat) {
     drpRprt.innerHTML = '<button class="dropdown-item" onclick="report(' + aux + ');"><i class="fas fa-flag"></i> Report' + reportTxt + '</button>';
     rprt.appendChild(drpRprt);
     head.appendChild(rprt);
-    let bod = document.createElement('div');
-    bod.classList.add('row');
-    bod.classList.add('pl-3');
-    bod.classList.add('pr-2');
-    let p = document.createElement('p');
+    let bod = $('<div></div>');
+    bod.addClass('row');
+    bod.addClass('pl-3');
+    bod.addClass('pr-2');
+    let p = $('<p></p>');
     p.innerText = comDat.text;
     bod.appendChild(p);
-    let foot = document.createElement('div');
-    foot.classList.add('row');
-    let btns = document.createElement('div');
-    btns.classList.add('col-auto');
-    let btn = document.createElement('button');
-    /*@#btn.classList.add('btn');
-    btn.classList.add('btn-light');
-    btn.classList.add('mr-3');
+    let foot = $('<div></div>');
+    foot.addClass('row');
+    let btns = $('<div></div>');
+    btns.addClass('col-auto');
+    let btn = $('<button></button>');
+    /*@#btn.addClass('btn');
+    btn.addClass('btn-light');
+    btn.addClass('mr-3');
     btn.innerHTML='<i class="far fa-thumbs-up"></i> '+comDat.likes;
     btn.setAttribute('id',comDat.id);
     btn.setAttribute('onclick','likeCom('+comDat.id+')');
     btns.appendChild(btn);
-    btn=document.createElement('button');*/
-    btn.classList.add('btn');
-    btn.classList.add('btn-science');
-    btn.classList.add('mr-3');
+    btn=$('<button></button>');*/
+    btn.addClass('btn');
+    btn.addClass('btn-science');
+    btn.addClass('mr-3');
     btn.setAttribute('onclick', 'reply(' + comDat.id + ')');
     if (lang == "es") {
         btn.innerHTML = 'Responder';
@@ -441,10 +441,10 @@ function createCom(comDat) {
     }
     btns.appendChild(btn);
     if (comDat.reps.length > 0) {
-        btn = document.createElement('button');
-        btn.classList.add('btn');
-        btn.classList.add('btn-link-science');
-        btn.setAttribute('onclick', 'document.getElementById("' + comDat.id + 'Reps").classList.toggle("d-none")');
+        btn = $('<button></button>');
+        btn.addClass('btn');
+        btn.addClass('btn-link-science');
+        btn.setAttribute('onclick', '$("#' + comDat.id + 'Reps").classList.toggle("d-none")');
         if (lang == "es") {
             btn.innerHTML = 'Respuestas <i class="fas fa-caret-down"></i>';
         } else if (lang == "en") {
@@ -456,47 +456,47 @@ function createCom(comDat) {
     cont.appendChild(head);
     cont.appendChild(bod);
     cont.appendChild(foot);
-    let reps = document.createElement('div');
-    reps.classList.add('row');
-    reps.classList.add('pl-4');
-    reps.classList.add('pt-2');
-    reps.classList.add('d-none');
+    let reps = $('<div></div>');
+    reps.addClass('row');
+    reps.addClass('pl-4');
+    reps.addClass('pt-2');
+    reps.hide();
     reps.setAttribute('id', comDat.id + 'Reps');
     for (let i = 0; i < comDat.reps.length; i++) {
-        let rep = document.createElement('div');
-        rep.classList.add('col-11');
-        rep.classList.add('p-2');
-        rep.classList.add('rounded-lg');
-        rep.classList.add('mb-1');
-        rep.classList.add('ml-auto');
-        rep.classList.add('mr-2');
-        rep.classList.add('border');
-        let rHd = document.createElement('div');
-        rHd.classList.add('row');
-        rHd.classList.add('justify-content-between');
-        let rusr = document.createElement('div');
-        rusr.classList.add('col-auto');
-        let ra = document.createElement('a');
-        ra.classList.add('text-decoration-none');
-        ra.classList.add('text-dark');
+        let rep = $('<div></div>');
+        rep.addClass('col-11');
+        rep.addClass('p-2');
+        rep.addClass('rounded-lg');
+        rep.addClass('mb-1');
+        rep.addClass('ml-auto');
+        rep.addClass('mr-2');
+        rep.addClass('border');
+        let rHd = $('<div></div>');
+        rHd.addClass('row');
+        rHd.addClass('justify-content-between');
+        let rusr = $('<div></div>');
+        rusr.addClass('col-auto');
+        let ra = $('<a></a>');
+        ra.addClass('text-decoration-none');
+        ra.addClass('text-dark');
         ra.href = '../../ver-perfil?user=' + comDat.reps[i].shortID;
         ra.innerHTML = '<img src="' + comDat.reps[i].pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`https://via.placeholder.com/20.webp`">' + comDat.reps[i].from;
         rusr.appendChild(ra);
         rHd.appendChild(rusr);
-        let rrprt = document.createElement('div');
-        rrprt.classList.add('col-auto');
-        rrprt.classList.add('dropleft');
-        let rbtnRprt = document.createElement('button');
-        rbtnRprt.classList.add('btn');
-        rbtnRprt.classList.add('btn-light');
+        let rrprt = $('<div></div>');
+        rrprt.addClass('col-auto');
+        rrprt.addClass('dropleft');
+        let rbtnRprt = $('<button></button>');
+        rbtnRprt.addClass('btn');
+        rbtnRprt.addClass('btn-light');
         rbtnRprt.setAttribute('data-toggle', 'dropdown');
         rbtnRprt.setAttribute('aria-haspopup', 'true');
         rbtnRprt.setAttribute('aria-expanded', 'false');
         rbtnRprt.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
         rrprt.appendChild(rbtnRprt);
-        let rdrpRprt = document.createElement('div');
-        rdrpRprt.classList.add('dropdown-menu');
-        rdrpRprt.classList.add('border-0');
+        let rdrpRprt = $('<div></div>');
+        rdrpRprt.addClass('dropdown-menu');
+        rdrpRprt.addClass('border-0');
         let raux = id + 'c' + comDat.id + 'r' + comDat.reps[i].id;
         raux = ("'").concat(raux).concat("'");
         let reportTxt = "";
@@ -506,21 +506,21 @@ function createCom(comDat) {
         rdrpRprt.innerHTML = '<button class="dropdown-item" onclick="report(' + raux + ');"><i class="fas fa-flag"></i> Report' + reportTxt + '</button>';
         rrprt.appendChild(rdrpRprt);
         rHd.appendChild(rrprt);
-        let rbod = document.createElement('div');
-        rbod.classList.add('row');
-        rbod.classList.add('pl-3');
-        rbod.classList.add('pr-2');
-        let rp = document.createElement('p');
+        let rbod = $('<div></div>');
+        rbod.addClass('row');
+        rbod.addClass('pl-3');
+        rbod.addClass('pr-2');
+        let rp = $('<p></p>');
         rp.innerText = comDat.reps[i].text;
         rbod.appendChild(rp);
-        /*@#let rfoot=document.createElement('div');
-        rfoot.classList.add('row');
-        let rbtns=document.createElement('div');
-        rbtns.classList.add('col-auto');
-        let rbtn=document.createElement('button');
-        rbtn.classList.add('btn');
-        rbtn.classList.add('btn-light');
-        rbtn.classList.add('mr-3');
+        /*@#let rfoot=$('<div></div>');
+        rfoot.addClass('row');
+        let rbtns=$('<div></div>');
+        rbtns.addClass('col-auto');
+        let rbtn=$('<button></button>');
+        rbtn.addClass('btn');
+        rbtn.addClass('btn-light');
+        rbtn.addClass('mr-3');
         rbtn.innerHTML='<i class="far fa-thumbs-up"></i> '+comDat.reps[i].likes;
         rbtn.setAttribute('id',comDat.id+'r'+comDat.reps[i].id);
         rbtn.setAttribute('onclick','likeCom('+comDat.id+','+comDat.reps[i].id+')');

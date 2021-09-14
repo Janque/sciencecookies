@@ -32,23 +32,23 @@ window.loaded = function loaded() {
     initSrch(false);
     function newSrch() {
         let srchStr = '?k=';
-        let wordArr = document.getElementById('srcBox').value.split(' ');
+        let wordArr = $('#srcBox').value.split(' ');
         srchStr = srchStr + wordArr[0];
         for (let i = 1; i < wordArr.length; i++) {
             srchStr = srchStr + '+' + wordArr[i];
         }
-        srchStr = srchStr + '&o=' + document.getElementById('inOrd').value;
-        srchStr = srchStr + '&d=' + document.getElementById('inDir').value;
+        srchStr = srchStr + '&o=' + $('#inOrd').value;
+        srchStr = srchStr + '&d=' + $('#inDir').value;
         window.location.href = srchStr;
     }
-    document.getElementById("frmSrch").addEventListener("submit", e => {
+    $("#frmSrch").addEventListener("submit", e => {
         e.preventDefault();
         newSrch();
     });
 
     function plusCookie() {
-        let title = document.getElementById('inTitle').value.trim();
-        let file = document.getElementById('inFile').value;
+        let title = $('#inTitle').value.trim();
+        let file = $('#inFile').value;
         getDocs(query(cookiesFSColl, where('file', '==', file), limit(1))).then(snap => {
             if (!snap.empty) {
                 if (lang == "es") {
@@ -57,10 +57,10 @@ window.loaded = function loaded() {
                     alertTop("That file name is already in use.", 0, 'alrtPlusContainer');
                 }
             } else {
-                document.getElementById('btnPlusConf').classList.add('d-none');
-                document.getElementById('btnCanPlus0').setAttribute('disabled', 'true');
-                document.getElementById('btnCanPlus1').setAttribute('disabled', 'true');
-                document.getElementById('barCont').classList.remove('d-none');
+                $('#btnPlusConf').hide();
+                $('#btnCanPlus0').setAttribute('disabled', 'true');
+                $('#btnCanPlus1').setAttribute('disabled', 'true');
+                $('#barCont').show();
                 setprog('3');
 
                 let id;
@@ -120,7 +120,7 @@ window.loaded = function loaded() {
                         setprog('90');
                         setTimeout(function () {
                             setprog('100');
-                            document.getElementById('bar').classList.add('bg-success');
+                            $('#bar').addClass('bg-success');
                             if (lang == "es") {
                                 alertTop(`Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-science" href="../editar?id=${id}">click aqui</a>.`, 1, 'alrtPlusContainer');
                             } else if (lang == "en") {
@@ -147,7 +147,7 @@ window.loaded = function loaded() {
             }
         }).catch(err => console.log(err));
     }
-    document.getElementById("frmPlus").addEventListener("submit", e => {
+    $("#frmPlus").addEventListener("submit", e => {
         e.preventDefault();
         plusCookie();
     });
@@ -161,39 +161,39 @@ function initSrch(stAf) {
     kywords = "";
     if (urlSrch.get('k') != null) {
         kywords = urlSrch.get('k').replace('+', ' ');
-        document.getElementById('srcBox').value = kywords;
+        $('#srcBox').value = kywords;
     };
-    document.getElementById("inSrchOrd0").selected = false;
-    document.getElementById("inSrchOrd1").selected = false;
-    document.getElementById("inSrchOrd2").selected = false;
-    document.getElementById("inSrchOrd3").selected = false;
+    $("#inSrchOrd0").selected = false;
+    $("#inSrchOrd1").selected = false;
+    $("#inSrchOrd2").selected = false;
+    $("#inSrchOrd3").selected = false;
     srtOrd = urlSrch.get('o');
     switch (srtOrd) {
         case 'created':
-            document.getElementById("inSrchOrd0").selected = true;
+            $("#inSrchOrd0").selected = true;
             break;
         case 'published':
-            document.getElementById("inSrchOrd1").selected = true;
+            $("#inSrchOrd1").selected = true;
             break;
         case 'ledit':
-            document.getElementById("inSrchOrd2").selected = true;
+            $("#inSrchOrd2").selected = true;
             break;
         case 'pop':
-            document.getElementById("inSrchOrd3").selected = true;
+            $("#inSrchOrd3").selected = true;
             break;
         default:
             srtOrd = 'created';
             break;
     }
-    document.getElementById("inSrchDir0").selected = false;
-    document.getElementById("inSrchDir1").selected = false;
+    $("#inSrchDir0").selected = false;
+    $("#inSrchDir1").selected = false;
     desc = urlSrch.get('d');
     if (desc == 'asc') {
         desc = false;
-        document.getElementById("inSrchDir1").selected = true;
+        $("#inSrchDir1").selected = true;
     } else {
         desc = true;
-        document.getElementById("inSrchDir0").selected = true;
+        $("#inSrchDir0").selected = true;
     }
     if (page > 1 && stAf && paglast[page - 1] != null && paglast[page - 1] != undefined) {
         if (kywords == undefined || kywords == null || kywords == "") {
@@ -228,7 +228,7 @@ function initSrch(stAf) {
 }
 function shwSrch() {
     if ((kywords == undefined || kywords == null || kywords == "") && page == 1) {
-        document.getElementById('crdContainer').innerHTML = `<div class="col mb-4">
+        $('#crdContainer').innerHTML = `<div class="col mb-4">
             <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
                 <a type="button" data-toggle="modal" data-target="#mdlPlus" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center">
                     <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
@@ -236,14 +236,14 @@ function shwSrch() {
             </div>
         </div>`;
     } else {
-        document.getElementById('crdContainer').innerHTML = "";
+        $('#crdContainer').innerHTML = "";
     }
     getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
         let idx = 0;
         if (docs.length < 1) {
-            document.getElementById('crdContainer').innerHTML = `<h5 class="mt-0 text-center">No se han encontrado resultados</h5><div class="col mb-4">
+            $('#crdContainer').innerHTML = `<h5 class="mt-0 text-center">No se han encontrado resultados</h5><div class="col mb-4">
             <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
                 <a type="button" data-toggle="modal" data-target="#mdlPlus" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center">
                     <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
@@ -252,38 +252,38 @@ function shwSrch() {
         </div>`;
         }
         docs.forEach(function (doc) {
-            let col = document.createElement('col');
-            col.classList.add('col');
-            col.classList.add('mb-4');
+            let col = $('<div></div>');
+            col.addClass('col');
+            col.addClass('mb-4');
 
-            let card = document.createElement('div');
+            let card = $('<div></div>');
             let helpStr = "card text-dark bg-light h-100 cardBorder";
             helpStr = helpStr.split(' ');
             helpStr.forEach(clas => {
-                card.classList.add(clas);
+                card.addClass(clas);
             });
             if (doc.data().owner == uid) {
-                card.classList.add('border-success');
+                card.addClass('border-success');
             } else {
-                card.classList.add('border-secondary');
+                card.addClass('border-secondary');
             }
 
-            let h = document.createElement('div');
+            let h = $('<div></div>');
             helpStr = "card-header bg-light m-0 py-0 text-right";
             helpStr = helpStr.split(' ');
             helpStr.forEach(clas => {
-                h.classList.add(clas);
+                h.addClass(clas);
             });
-            let row = document.createElement('div');
-            row.classList.add('row');
-            row.classList.add('justify-content-between');
+            let row = $('<div></div>');
+            row.addClass('row');
+            row.addClass('justify-content-between');
             if (!doc.data().public) {
-                let col0 = document.createElement('div');
-                col0.classList.add('col-auto');
-                col0.classList.add('p-0');
-                let badge = document.createElement('span');
-                badge.classList.add('badge');
-                badge.classList.add('badge-warning');
+                let col0 = $('<div></div>');
+                col0.addClass('col-auto');
+                col0.addClass('p-0');
+                let badge = $('<span></span>');
+                badge.addClass('badge');
+                badge.addClass('badge-warning');
                 if (lang == "es") {
                     badge.innerText = 'Borrador';
                 } else if (lang == "en") {
@@ -292,22 +292,22 @@ function shwSrch() {
                 col0.appendChild(badge);
                 row.appendChild(col0);
             }
-            let col1 = document.createElement('div');
-            col1.classList.add('col-auto');
-            col1.classList.add('p-0');
-            col1.classList.add('ml-auto');
-            let drp = document.createElement('div');
-            drp.classList.add('dropdown');
-            let btndrp = document.createElement('button');
-            btndrp.classList.add('btn');
-            btndrp.classList.add('btn-light');
+            let col1 = $('<div></div>');
+            col1.addClass('col-auto');
+            col1.addClass('p-0');
+            col1.addClass('ml-auto');
+            let drp = $('<div></div>');
+            drp.addClass('dropdown');
+            let btndrp = $('<button></button>');
+            btndrp.addClass('btn');
+            btndrp.addClass('btn-light');
             btndrp.setAttribute('type', 'button');
             btndrp.setAttribute('data-toogle', 'dropdown');
             btndrp.setAttribute('aria-haspopup', "true");
             btndrp.setAttribute('aria-expanded', "false");
             btndrp.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
             btndrp.onclick = function () {
-                if (document.getElementById("drpMenu" + doc.id).classList.contains('show')) {
+                if ($("#drpMenu" + doc.id).classList.contains('show')) {
                     $("#drpMenu" + doc.id).dropdown('hide');
                 } else {
                     $("#drpMenu" + doc.id).dropdown('show');
@@ -317,12 +317,12 @@ function shwSrch() {
                 }
             };
             drp.appendChild(btndrp);
-            let drpmenu = document.createElement('div');
-            drpmenu.classList.add('dropdown-menu');
-            drpmenu.classList.add('dropdown-menu-right');
+            let drpmenu = $('<div></div>');
+            drpmenu.addClass('dropdown-menu');
+            drpmenu.addClass('dropdown-menu-right');
             drpmenu.setAttribute('id', "drpMenu" + doc.id);
-            let drpitm0 = document.createElement('button');
-            drpitm0.classList.add('dropdown-item');
+            let drpitm0 = $('<button></button>');
+            drpitm0.addClass('dropdown-item');
             drpitm0.onclick = function () {
                 if (lang == "es") {
                     window.location.href = '../editar?id=' + doc.id;
@@ -336,8 +336,8 @@ function shwSrch() {
                 drpitm0.innerHTML = 'Edit <i class="fas fa-edit"></i>';
             }
             drpmenu.appendChild(drpitm0);
-            let drpitm1 = document.createElement('button');
-            drpitm1.classList.add('dropdown-item');
+            let drpitm1 = $('<button></button>');
+            drpitm1.addClass('dropdown-item');
             drpitm1.onclick = function () {
                 window.open('../vista-email/' + doc.data().file, '_blank').focus();
             };
@@ -347,10 +347,10 @@ function shwSrch() {
                 drpitm1.innerHTML = 'Mail preview <i class="fas fa-envelope"></i>';
             }
             drpmenu.appendChild(drpitm1);
-            let drpitm2 = document.createElement('button');
+            let drpitm2 = $('<button></button>');
             let d = doc.data().created.toDate();
             if (doc.data().public) {
-                drpitm2.classList.add('dropdown-item');
+                drpitm2.addClass('dropdown-item');
                 drpitm2.onclick = function () {
                     window.open(doc.data().url, '_blank').focus();
                 };
@@ -385,26 +385,26 @@ function shwSrch() {
                 pubTxt = "Published: ";
             }
 
-            let a = document.createElement('a');
+            let a = $('<a></a>');
             if (lang == "es") {
                 a.href = '../editar?id=' + doc.id;
             } else if (lang == "en") {
                 a.href = '../edit?id=' + doc.id;
             }
-            a.classList.add('text-decoration-none');
-            a.classList.add('text-dark');
-            let img = document.createElement('img');
+            a.addClass('text-decoration-none');
+            a.addClass('text-dark');
+            let img = $('<img/>');
             img.src = doc.data().picUrl;
-            img.classList.add('card-img-top');
+            img.addClass('card-img-top');
             img.alt = noImgTxt;
             a.appendChild(img);
-            let cbody = document.createElement('div');
-            cbody.classList.add('card-body');
+            let cbody = $('<div></div>');
+            cbody.addClass('card-body');
             cbody.innerHTML = '<h3 class="card-title">' + doc.data().title + '</h3>\n<p>' + authTxt + ':' + doc.data().authors + '</p>\n<p class="card-text">' + doc.data().description + '</p>\n'
             a.appendChild(cbody);
-            let f = document.createElement('div');
-            f.classList.add('card-footer');
-            f.classList.add('text-muted');
+            let f = $('<div></div>');
+            f.addClass('card-footer');
+            f.addClass('text-muted');
             f.innerHTML = '<p>' + creatTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             d = doc.data().ledit.toDate();
             f.innerHTML += '<p>' + uptTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
@@ -418,7 +418,7 @@ function shwSrch() {
             card.appendChild(a);
 
             col.appendChild(card);
-            document.getElementById('crdContainer').appendChild(col);
+            $('#crdContainer').appendChild(col);
             if (idx == previewLim - 1) {
                 if (paglast[page] == undefined || paglast[page] == null) {
                     paglast.push(docs[docs.length - 1]);
@@ -426,83 +426,83 @@ function shwSrch() {
                     paglast.splice(page, 1, docs[docs.length - 1]);
                 }
                 nxtp = true;
-                document.getElementById("pgNavT").classList.remove('d-none');
-                document.getElementById("pgNavB").classList.remove('d-none');
+                $("#pgNavT").show();
+                $("#pgNavB").show();
             }
             idx++;
         });
         if (!nxtp) {
-            document.getElementById("pgTNxt").setAttribute('disabled', 'true');
-            document.getElementById("pgBNxt").setAttribute('disabled', 'true');
+            $("#pgTNxt").setAttribute('disabled', 'true');
+            $("#pgBNxt").setAttribute('disabled', 'true');
         } else {
-            document.getElementById("pgTNxt").removeAttribute('disabled');
-            document.getElementById("pgBNxt").removeAttribute('disabled');
+            $("#pgTNxt").removeAttribute('disabled');
+            $("#pgBNxt").removeAttribute('disabled');
         }
         if (page == 1) {
-            document.getElementById("pgTPrv").setAttribute('disabled', 'true');
-            document.getElementById("pgBPrv").setAttribute('disabled', 'true');
+            $("#pgTPrv").setAttribute('disabled', 'true');
+            $("#pgBPrv").setAttribute('disabled', 'true');
         } else {
-            document.getElementById("pgTPrv").removeAttribute('disabled');
-            document.getElementById("pgBPrv").removeAttribute('disabled');
+            $("#pgTPrv").removeAttribute('disabled');
+            $("#pgBPrv").removeAttribute('disabled');
         }
     }).catch(err => { console.log(err) });
 }
 
-document.getElementById("pgTPrv").onclick = function () { reSrch(-1); };
-document.getElementById("pgBPrv").onclick = function () { reSrch(-1); };
-document.getElementById("pgTNxt").onclick = function () { reSrch(1); };
-document.getElementById("pgBNxt").onclick = function () { reSrch(1); };
+$("#pgTPrv").onclick = function () { reSrch(-1); };
+$("#pgBPrv").onclick = function () { reSrch(-1); };
+$("#pgTNxt").onclick = function () { reSrch(1); };
+$("#pgBNxt").onclick = function () { reSrch(1); };
 function reSrch(np) {
     if (page < 1 && np == -1) return;
     if (!nxtp && np == 1) return;
     page += np;
-    document.getElementById('disPgT').innerText = page;
-    document.getElementById('disPgB').innerText = page;
+    $('#disPgT').innerText = page;
+    $('#disPgB').innerText = page;
     initSrch(true);
-    document.getElementById("cookCnt").scrollIntoView();
+    $("#cookCnt").scrollIntoView();
 }
 
-document.getElementById('btnPlus').onclick = function () {
+$('#btnPlus').onclick = function () {
     $('#mdlPlus').modal('show');
 };
 
 var inFileChanged = false;
 
 function cancelPlus() {
-    document.getElementById('inTitle').value = "";
-    document.getElementById('inFile').value = "";
-    document.getElementById('alrtPlusContainer').innerHTML = '';
+    $('#inTitle').value = "";
+    $('#inFile').value = "";
+    $('#alrtPlusContainer').innerHTML = '';
     inFileChanged = false;
 }
-document.getElementById('btnCanPlus0').onclick = function () {
+$('#btnCanPlus0').onclick = function () {
     cancelPlus();
 };
-document.getElementById('btnCanPlus1').onclick = function () {
+$('#btnCanPlus1').onclick = function () {
     cancelPlus();
 };
 
-document.getElementById('inTitle').onfocus = function () {
-    document.getElementById('alrtPlusContainer').innerHTML = '';
+$('#inTitle').onfocus = function () {
+    $('#alrtPlusContainer').innerHTML = '';
 };
-document.getElementById('inTitle').oninput = function () {
-    document.getElementById('inTitle').value = document.getElementById('inTitle').value.trim();
+$('#inTitle').oninput = function () {
+    $('#inTitle').value = $('#inTitle').value.trim();
     if (inFileChanged) return;
-    document.getElementById('inFile').value = document.getElementById('inTitle').value
-    document.getElementById('inFile').value = ultraClean(document.getElementById('inFile').value, '-');
+    $('#inFile').value = $('#inTitle').value
+    $('#inFile').value = ultraClean($('#inFile').value, '-');
 };
-document.getElementById('inFile').onfocus = function () {
+$('#inFile').onfocus = function () {
     inFileChanged = true;
 };
-document.getElementById('inFile').onchange = function () {
-    document.getElementById('alrtPlusContainer').innerHTML = '';
+$('#inFile').onchange = function () {
+    $('#alrtPlusContainer').innerHTML = '';
 };
 
 function setprog(n) {
-    document.getElementById('bar').setAttribute('aria-valuenow', n);
-    document.getElementById('bar').style.width = n + '%';
-    document.getElementById('bar').innerText = n + '%';
+    $('#bar').setAttribute('aria-valuenow', n);
+    $('#bar').style.width = n + '%';
+    $('#bar').innerText = n + '%';
 }
 
-document.getElementById('inFile').oninput = function () {
-    document.getElementById('inFile').value = rmDiacs(document.getElementById('inFile').value.trim().replaceAll(' ', '-'));
+$('#inFile').oninput = function () {
+    $('#inFile').value = rmDiacs($('#inFile').value.trim().replaceAll(' ', '-'));
 }
