@@ -66,7 +66,7 @@ window.loaded = function loaded() {
         inp.id = "cat" + i;
         classes(inp, "form-check-input");
         inp.value = cat;
-        inp.setAttribute('type', 'checkbox');
+        inp.attr('type', 'checkbox');
         inp.onclick = function () {
             if (inp.checked == true) {
                 docDat.fixedCats.push(this.value);
@@ -76,7 +76,7 @@ window.loaded = function loaded() {
         }
         div.appendChild(inp);
         let lab = $('<label></label>');
-        lab.setAttribute('for', 'cat' + i);
+        lab.attr('for', 'cat' + i);
         classes(lab, "form-check-label")
         lab.innerText = textCats[i];
         div.appendChild(lab);
@@ -179,7 +179,7 @@ window.loaded = function loaded() {
         if (l != lang) {
             let opt = $('<option></option>');
             if (i == 0) {
-                opt.setAttribute('selected', 'true');
+                opt.attr('selected', 'true');
             }
             opt.value = opt.innerText = l;
             $('#selFileTrans').appendChild(opt);
@@ -371,7 +371,7 @@ window.plusSect = function plusSect(type) {
 function setprog(bar, n) {
     bar = document.getElementById(bar);
     n = Math.floor(n);
-    bar.setAttribute('aria-valuenow', n);
+    bar.attr('aria-valuenow', n);
     bar.style.width = n + '%';
     bar.innerText = n + '%';
 }
@@ -521,13 +521,13 @@ function fillMed() {
         classes(col1, "col mb-4");
         let btnA1 = $('<a></a>');
         classes(btnA1, 'text-decoration-none');
-        btnA1.setAttribute('type', 'button');
+        btnA1.attr('type', 'button');
         btnA1.onclick = function () {
             if (toAddMed == -1) return;
             docDat.cont[toAddMed].medUrl = itm.medUrl;
             normSave();
         };
-        btnA1.setAttribute("data-dismiss", "modal");
+        btnA1.attr("data-dismiss", "modal");
         col1.appendChild(btnA1);
         let card1 = $('<div></div>');
         classes(card1, "card text-light bg-dark");
@@ -626,7 +626,7 @@ function render() {
             if (l != lang) {
                 let opt = $('<option></option>');
                 if (i == 0) {
-                    opt.setAttribute('selected', 'true');
+                    opt.attr('selected', 'true');
                 }
                 opt.value = opt.innerText = l;
                 selLang.appendChild(opt);
@@ -687,8 +687,8 @@ function render() {
             btnAdd = $('<button></button>');
             classes(btnAdd, 'btn btn-light btn-link-science mx-2');
             btnAdd.innerHTML = '<i class="fas fa-plus"></i>';
-            btnAdd.setAttribute('data-toggle', "modal");
-            btnAdd.setAttribute('data-target', "#mdlPlusSect");
+            btnAdd.attr('data-toggle', "modal");
+            btnAdd.attr('data-target', "#mdlPlusSect");
             btnAdd.onclick = function () {
                 toAdd = idx + 1;
             }
@@ -734,8 +734,8 @@ function render() {
             classes(fc0, "col col-lg-6");
             let in0 = $('<input></input>');
             classes(in0, "form-control form-control-lg text-center");
-            in0.setAttribute('type', 'text');
-            in0.setAttribute('placeholder', docDat.cont[0].title);
+            in0.attr('type', 'text');
+            in0.attr('placeholder', docDat.cont[0].title);
             in0.value = docDat.cont[0].title;
             fc0.appendChild(in0);
             fd0.appendChild(fc0);
@@ -754,8 +754,8 @@ function render() {
             classes(fc1, "col");
             let in1 = $('<input></input>');
             classes(in1, "form-control");
-            in1.setAttribute('type', 'text');
-            in1.setAttribute('readonly', 'true');
+            in1.attr('type', 'text');
+            in1.attr('readonly', 'true');
             in1.value = d;
             fc1.appendChild(in1);
             fd1.appendChild(fl1);
@@ -772,8 +772,8 @@ function render() {
                 fl2.innerText = lstUptTxt;
                 classes(fc2, "col");
                 classes(in2, "form-control");
-                in2.setAttribute('type', 'text');
-                in2.setAttribute('readonly', 'true');
+                in2.attr('type', 'text');
+                in2.attr('readonly', 'true');
                 in2.value = ld;
                 fc2.appendChild(in2);
                 fd2.appendChild(fl2);
@@ -795,12 +795,12 @@ function render() {
             f3c0.appendChild(f3f0);
             let inAu0 = $('<input></input>');
             classes(inAu0, "form-check-input");
-            inAu0.setAttribute('type', 'checkbox');
-            if (docDat.cont[0].author.includes(' Andrea Garma')) inAu0.setAttribute('checked', 'true');
+            inAu0.attr('type', 'checkbox');
+            if (docDat.cont[0].author.includes(' Andrea Garma')) inAu0.attr('checked', 'true');
             inAu0.value = ' Andrea Garma';
             let inAuL0 = $('<label></label>');
             classes(inAuL0, "form-check-label");
-            inAu0.setAttribute('for', 'authr0');
+            inAu0.attr('for', 'authr0');
             inAuL0.innerText = "Andrea Garma";
             f3f0.appendChild(inAu0);
             f3f0.appendChild(inAuL0);
@@ -812,12 +812,12 @@ function render() {
             f3c1.appendChild(f3f1);
             let inAu1 = $('<input></input>');
             classes(inAu1, "form-check-input");
-            inAu1.setAttribute('type', 'checkbox');
-            if (docDat.cont[0].author.includes(' Javier Pantoja')) inAu1.setAttribute('checked', 'true');
+            inAu1.attr('type', 'checkbox');
+            if (docDat.cont[0].author.includes(' Javier Pantoja')) inAu1.attr('checked', 'true');
             inAu1.value = ' Javier Pantoja';
             let inAuL1 = $('<label></label>');
             classes(inAuL1, "form-check-label");
-            inAu1.setAttribute('for', 'authr1');
+            inAu1.attr('for', 'authr1');
             inAuL1.innerText = "Javier Pantoja";
             f3f1.appendChild(inAu1);
             f3f1.appendChild(inAuL1);
@@ -829,12 +829,12 @@ function render() {
             f3c2.appendChild(f3f2);
             let inAu2 = $('<input></input>');
             classes(inAu2, "form-check-input");
-            inAu2.setAttribute('type', 'checkbox');
-            if (docDat.cont[0].author.includes(' Paulina Vargas')) inAu2.setAttribute('checked', 'true');
+            inAu2.attr('type', 'checkbox');
+            if (docDat.cont[0].author.includes(' Paulina Vargas')) inAu2.attr('checked', 'true');
             inAu2.value = ' Paulina Vargas';
             let inAuL2 = $('<label></label>');
             classes(inAuL2, "form-check-label");
-            inAu2.setAttribute('for', 'authr2');
+            inAu2.attr('for', 'authr2');
             inAuL2.innerText = "Paulina Vargas";
             f3f2.appendChild(inAu2);
             f3f2.appendChild(inAuL2);
@@ -898,8 +898,8 @@ function render() {
                     aRef = $('<a></a>');
                     classes(aRef, "text-warning text-break")
                     aRef.href = text;
-                    aRef.setAttribute('target', '_blank');
-                    aRef.setAttribute('rel', 'nofollow');
+                    aRef.attr('target', '_blank');
+                    aRef.attr('rel', 'nofollow');
                     aRef.innerHTML = text + ' <i class="fas fa-external-link-alt"></i>'
                     pRef.appendChild(aRef);
                 }
@@ -915,10 +915,10 @@ function render() {
                     docDat.cont[idx].ref[refIdx].type = in1.value;
                     if (ref.type == 'web') {
                         makeRefWeb(ref.link);
-                        in0.setAttribute('placeholder', 'https://google.com');
+                        in0.attr('placeholder', 'https://google.com');
                     } else if (ref.type == 'cite') {
                         makeRefCite(ref.link);
-                        in0.setAttribute('placeholder', 'Ref');
+                        in0.attr('placeholder', 'Ref');
                     }
                 }
                 let fr0 = $('<div></div>');
@@ -930,19 +930,19 @@ function render() {
                 let in0 = $('<input></input>');
                 let in1 = $('<select></select>');
                 classes(in0, "form-control");
-                in0.setAttribute('type', 'text');
+                in0.attr('type', 'text');
                 in0.value = ref.link;
-                if (ref.type == 'web') in0.setAttribute('placeholder', 'https://google.com');
-                if (ref.type == 'cite') in0.setAttribute('placeholder', 'Ref');
+                if (ref.type == 'web') in0.attr('placeholder', 'https://google.com');
+                if (ref.type == 'cite') in0.attr('placeholder', 'Ref');
                 in0.onchange = function () { changeRef(); }
                 classes(in1, "form-control form-control-sm");
                 let inOpt0 = $('<option></option>');
                 inOpt0.value = "web";
-                if (ref.type == 'web') inOpt0.setAttribute('selected', 'true');
+                if (ref.type == 'web') inOpt0.attr('selected', 'true');
                 inOpt0.innerText = 'Web';
                 in1.appendChild(inOpt0);
                 let inOpt1 = $('<option></option>');
-                if (ref.type == 'cite') inOpt1.setAttribute('selected', 'true');
+                if (ref.type == 'cite') inOpt1.attr('selected', 'true');
                 inOpt1.value = "cite";
                 if (lang == "es") {
                     inOpt1.innerText = 'Otro';
@@ -1043,19 +1043,19 @@ function render() {
             let in0 = $('<input></input>');
             let in1 = $('<select></select>');
             classes(in0, "form-control");
-            in0.setAttribute('type', 'text');
+            in0.attr('type', 'text');
             if (Number(item.title) > 0) {
                 in0.value = item.titleTxt;
                 if (lang == "es") {
-                    in0.setAttribute('placeholder', 'Subtítulo');
+                    in0.attr('placeholder', 'Subtítulo');
                 } else if (lang == "en") {
-                    in0.setAttribute('placeholder', 'Subtitle');
+                    in0.attr('placeholder', 'Subtitle');
                 }
                 in0.removeAttribute('readonly');
             } else {
                 in0.value = "";
-                in0.setAttribute('placeholder', '');
-                in0.setAttribute('readonly', 'true');
+                in0.attr('placeholder', '');
+                in0.attr('readonly', 'true');
             }
             in0.oninput = function () {
                 docDat.cont[idx].titleTxt = h.innerHTML = in0.value;
@@ -1064,7 +1064,7 @@ function render() {
             for (let i = 0; i < 7; i++) {
                 let inOpt = $('<option></option>');
                 inOpt.value = i;
-                if (item.title == i) inOpt.setAttribute('selected', 'true');
+                if (item.title == i) inOpt.attr('selected', 'true');
                 inOpt.innerText = i;
                 in1.appendChild(inOpt);
             }
@@ -1072,9 +1072,9 @@ function render() {
                 docDat.cont[idx].title = in1.value;
                 if (Number(in1.value) > 0) {
                     if (lang == "es") {
-                        in0.setAttribute('placeholder', 'Subtítulo');
+                        in0.attr('placeholder', 'Subtítulo');
                     } else if (lang == "en") {
-                        in0.setAttribute('placeholder', 'Subtitle');
+                        in0.attr('placeholder', 'Subtitle');
                     }
                     in0.removeAttribute('readonly');
                     if (Number(item.title) == 2) subt.innerHTML = '<br>';
@@ -1085,8 +1085,8 @@ function render() {
                     subt.appendChild(p);
                 } else {
                     in0.value = "";
-                    in0.setAttribute('placeholder', '');
-                    in0.setAttribute('readonly', 'true');
+                    in0.attr('placeholder', '');
+                    in0.attr('readonly', 'true');
                     docDat.cont[idx].titleTxt = in0.value;
                     subt.innerHTML = "";
                     subt.appendChild(p);
@@ -1104,7 +1104,7 @@ function render() {
             classes(fc0, "col");
             let in2 = $('<textarea></textarea>');
             classes(in2, "form-control");
-            in2.setAttribute('rows', '8');
+            in2.attr('rows', '8');
             in2.value = item.text;
             in2.oninput = function () {
                 docDat.cont[idx].text = p.innerHTML = in2.value.trim();
@@ -1127,7 +1127,7 @@ function render() {
             classes(fc0, "col");
             let in0 = $('<textarea></textarea>');
             classes(in0, "form-control");
-            in0.setAttribute('rows', '8');
+            in0.attr('rows', '8');
             in0.value = item.html;
             in0.onchange = function () {
                 docDat.cont[idx].html = html.innerHTML = in0.value.trim();
@@ -1144,9 +1144,9 @@ function render() {
             classes(yt, "embed-responsive embed-responsive-" + item.ratio);
             let iframe = $('<iframe></iframe>');
             iframe.src = item.vidUrl;
-            iframe.setAttribute('frameborder', "0");
-            iframe.setAttribute('allow', "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
-            iframe.setAttribute('allowfullscreen', "true");
+            iframe.attr('frameborder', "0");
+            iframe.attr('allow', "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
+            iframe.attr('allowfullscreen', "true");
             yt.appendChild(iframe);
             subt.appendChild(yt);
 
@@ -1160,7 +1160,7 @@ function render() {
             in0L.innerText = "URL";
             let in0 = $('<input></input>');
             classes(in0, "form-control");
-            in0.setAttribute('type', 'text');
+            in0.attr('type', 'text');
             in0.value = item.vidUrl;
             in0.onchange = function () {
                 let convUrl = in0.value.trim();
@@ -1190,7 +1190,7 @@ function render() {
             for (let i = 0; i < 4; i++) {
                 let inOpt = $('<option></option>');
                 inOpt.value = ratios[i];
-                if (item.ratio == ratios[i]) inOpt.setAttribute('selected', 'true');
+                if (item.ratio == ratios[i]) inOpt.attr('selected', 'true');
                 inOpt.innerText = ratios[i].replaceAll('by', ':');
                 in1.appendChild(inOpt);
             }
@@ -1220,7 +1220,7 @@ function render() {
             fig.style.position = "relative";
             fig.style.borderRadius = ".25rem";
             let img0 = $('<img/>');
-            img0.setAttribute('alt', item.alt);
+            img0.attr('alt', item.alt);
             img0.src = item.medUrl;
             classes(img0, "w-100");
             fig.appendChild(img0);
@@ -1234,8 +1234,8 @@ function render() {
             let btnChange = $('<button></button>');
             classes(btnChange, "btn btn-light btn-science btn-sm ml-auto");
             btnChange.innerHTML = '<i class="fas fa-exchange-alt"></i>';
-            btnChange.setAttribute('data-toggle', "modal")
-            btnChange.setAttribute('data-target', "#mdlMedCho")
+            btnChange.attr('data-toggle', "modal")
+            btnChange.attr('data-target', "#mdlMedCho")
             btnChange.onclick = function () {
                 toAddMed = idx;
             };
@@ -1263,10 +1263,10 @@ function render() {
             let ranRC0 = $('<div></div>');
             classes(ranRC0, "col align-center d-flex pr-0");
             let in3 = $('<input></input>');
-            in3.setAttribute('type', 'range');
-            in3.setAttribute('max', '100');
-            in3.setAttribute('min', '0');
-            in3.setAttribute('step', '1');
+            in3.attr('type', 'range');
+            in3.attr('max', '100');
+            in3.attr('min', '0');
+            in3.attr('step', '1');
             in3.value = '75';
             classes(in3, "form-control-range");
             in3.oninput = function () {
@@ -1299,7 +1299,7 @@ function render() {
             }
             let in0 = $('<input></input>');
             classes(in0, "form-control");
-            in0.setAttribute('type', 'text');
+            in0.attr('type', 'text');
             in0.value = item.caption;
             in0.oninput = function () {
                 capt.innerHTML = docDat.cont[idx].caption = in0.value.trim();
@@ -1308,7 +1308,7 @@ function render() {
             classes(in1, "form-control form-control-sm");
             let inOpt0 = $('<option></option>');
             inOpt0.value = "true";
-            if (item.hasCapt == "true") inOpt0.setAttribute('selected', 'true');
+            if (item.hasCapt == "true") inOpt0.attr('selected', 'true');
             if (lang == "es") {
                 inOpt0.innerText = "Sí";
             } else if (lang == "en") {
@@ -1317,7 +1317,7 @@ function render() {
             in1.appendChild(inOpt0);
             let inOpt1 = $('<option></option>');
             inOpt1.value = "false";
-            if (item.hasCapt == "false") inOpt1.setAttribute('selected', 'true');
+            if (item.hasCapt == "false") inOpt1.attr('selected', 'true');
             inOpt1.innerText = "No";
             in1.appendChild(inOpt1);
             in1.oninput = function () {
@@ -1328,7 +1328,7 @@ function render() {
                     fig.appendChild(capt);
                 } else {
                     in0.value = docDat.cont[idx].caption = "";
-                    in0.setAttribute('readonly', 'true');
+                    in0.attr('readonly', 'true');
                     capt.innerHTML = "";
                     fig.innerHTML = "";
                     fig.appendChild(img0);
@@ -1350,11 +1350,11 @@ function render() {
             in2L.innerText = "Alt";
             let in2 = $('<input></input>');
             classes(in2, "form-control");
-            in2.setAttribute('type', 'text');
+            in2.attr('type', 'text');
             in2.value = item.alt;
             in2.oninput = function () {
                 docDat.cont[idx].alt = in2.value.trim();
-                img0.setAttribute('alt', in2.value.trim());
+                img0.attr('alt', in2.value.trim());
             }
             f1c0.appendChild(in2L);
             f1c0.appendChild(in2);
@@ -1388,7 +1388,7 @@ $('#btnEditJs').onclick = function () {
 $('#btnCheckJs').onclick = function () {
     $('#btnEditJs').toggle();
     $('#btnCheckJs').toggle();
-    $('#inJava').setAttribute('readonly', 'true');
+    $('#inJava').attr('readonly', 'true');
     normSave();
 };
 
@@ -1438,7 +1438,7 @@ $('#inNewMedUrl').onchange = function () {
 };
 $('#inMedSrc0').onclick = function () {
     newMedSrc = "home";
-    $('#inNewMed').setAttribute('required', 'true');
+    $('#inNewMed').attr('required', 'true');
     $('#inNewMedUrl').removeAttribute('required');
     $("#inNewMedFileCont").show();
     $("#inNewMedUrlCont").hide();
@@ -1446,7 +1446,7 @@ $('#inMedSrc0').onclick = function () {
 $('#inMedSrc1').onclick = function () {
     newMedSrc = "out";
     $('#inNewMed').removeAttribute('required');
-    $('#inNewMedUrl').setAttribute('required', 'true');
+    $('#inNewMedUrl').attr('required', 'true');
     $("#inNewMedFileCont").hide();
     $("#inNewMedUrlCont").show();
 }
@@ -1454,7 +1454,7 @@ $('#inMedSrc1').onclick = function () {
 $('#inSendUpt').onclick = function () {
     if ($('#inSendUpt').checked) {
         $('#uptDescCont').show();
-        $('#inUptDesc').setAttribute('required', 'true');
+        $('#inUptDesc').attr('required', 'true');
     } else {
         $('#uptDescCont').hide();
         $('#inUptDesc').removeAttribute('required');
@@ -1488,8 +1488,8 @@ $('#btnAprove').onclick = function () {
 };
 
 $('#mdlAddMed').on('hiden.bs.modal', e => {
-    $('#inMedSrc0').setAttribute('checked', 'false');
-    $('#inMedSrc1').setAttribute('checked', 'false');
+    $('#inMedSrc0').attr('checked', 'false');
+    $('#inMedSrc1').attr('checked', 'false');
     $('#inNewMed').removeAttribute('required');
     $('#inNewMedUrl').removeAttribute('required');
     $("#inNewMedFileCont").hide();

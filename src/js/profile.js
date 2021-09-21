@@ -42,7 +42,7 @@ window.loaded = function loaded() {
     //Check auth
     onAuthStateChanged(AUTH, (user) => {
         if (user) {
-            $('#picUsr').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
+            $('#picUsr').attr('onerror', "this.src='https://via.placeholder.com/20.webp'");
             $('#picUsr').src = photoURL;
             shwCrds(urlSrch.get('tab'));
         } else {
@@ -211,7 +211,7 @@ $('#inNews').onclick = function () {
 
 function shwPrfl() {
     $('#navBtnPrfl').addClass('active');
-    $('#disPP').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
+    $('#disPP').attr('onerror', "this.src='https://via.placeholder.com/20.webp'");
     $('#disPP').src = photoURL;
     $('#disMail').innerHTML = email;
     $('#disName').innerHTML = displayName;

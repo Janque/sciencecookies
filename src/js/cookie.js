@@ -120,10 +120,10 @@ window.loaded = function loaded() {
             replying = -1;
             $('#frmNwComBtns').hide();
             if (lang == "es") {
-                $('#inNwCom').setAttribute('placeholder', 'Nuevo comentario');
+                $('#inNwCom').attr('placeholder', 'Nuevo comentario');
                 $('#btnAddCom').innerHTML = 'Comentar';
             } else if (lang == "en") {
-                $('#inNwCom').setAttribute('placeholder', 'New comment');
+                $('#inNwCom').attr('placeholder', 'New comment');
                 $('#btnAddCom').innerHTML = 'Comment';
             }
             enableBtn($('#btnCanCom'));
@@ -317,9 +317,9 @@ window.reply = function reply(r) {
     replying = r;
     $('#btnsFL').scroll({ behavior: 'smooth' });
     if (lang == "es") {
-        $('#inNwCom').setAttribute('placeholder', 'Nueva respuesta');
+        $('#inNwCom').attr('placeholder', 'Nueva respuesta');
     } else if (lang == "en") {
-        $('#inNwCom').setAttribute('placeholder', 'New reply');
+        $('#inNwCom').attr('placeholder', 'New reply');
     }
     $('#inNwCom').focus();
 }
@@ -393,9 +393,9 @@ function createCom(comDat) {
     let btnRprt = $('<button></button>');
     btnRprt.addClass('btn');
     btnRprt.addClass('btn-light');
-    btnRprt.setAttribute('data-toggle', 'dropdown');
-    btnRprt.setAttribute('aria-haspopup', 'true');
-    btnRprt.setAttribute('aria-expanded', 'false');
+    btnRprt.attr('data-toggle', 'dropdown');
+    btnRprt.attr('aria-haspopup', 'true');
+    btnRprt.attr('aria-expanded', 'false');
     btnRprt.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
     rprt.appendChild(btnRprt);
     let drpRprt = $('<div></div>');
@@ -426,14 +426,14 @@ function createCom(comDat) {
     btn.addClass('btn-light');
     btn.addClass('mr-3');
     btn.innerHTML='<i class="far fa-thumbs-up"></i> '+comDat.likes;
-    btn.setAttribute('id',comDat.id);
-    btn.setAttribute('onclick','likeCom('+comDat.id+')');
+    btn.attr('id',comDat.id);
+    btn.attr('onclick','likeCom('+comDat.id+')');
     btns.appendChild(btn);
     btn=$('<button></button>');*/
     btn.addClass('btn');
     btn.addClass('btn-science');
     btn.addClass('mr-3');
-    btn.setAttribute('onclick', 'reply(' + comDat.id + ')');
+    btn.attr('onclick', 'reply(' + comDat.id + ')');
     if (lang == "es") {
         btn.innerHTML = 'Responder';
     } else if (lang == "en") {
@@ -444,7 +444,7 @@ function createCom(comDat) {
         btn = $('<button></button>');
         btn.addClass('btn');
         btn.addClass('btn-link-science');
-        btn.setAttribute('onclick', '$("#' + comDat.id + 'Reps").classList.toggle("d-none")');
+        btn.attr('onclick', '$("#' + comDat.id + 'Reps").classList.toggle("d-none")');
         if (lang == "es") {
             btn.innerHTML = 'Respuestas <i class="fas fa-caret-down"></i>';
         } else if (lang == "en") {
@@ -461,7 +461,7 @@ function createCom(comDat) {
     reps.addClass('pl-4');
     reps.addClass('pt-2');
     reps.hide();
-    reps.setAttribute('id', comDat.id + 'Reps');
+    reps.attr('id', comDat.id + 'Reps');
     for (let i = 0; i < comDat.reps.length; i++) {
         let rep = $('<div></div>');
         rep.addClass('col-11');
@@ -489,9 +489,9 @@ function createCom(comDat) {
         let rbtnRprt = $('<button></button>');
         rbtnRprt.addClass('btn');
         rbtnRprt.addClass('btn-light');
-        rbtnRprt.setAttribute('data-toggle', 'dropdown');
-        rbtnRprt.setAttribute('aria-haspopup', 'true');
-        rbtnRprt.setAttribute('aria-expanded', 'false');
+        rbtnRprt.attr('data-toggle', 'dropdown');
+        rbtnRprt.attr('aria-haspopup', 'true');
+        rbtnRprt.attr('aria-expanded', 'false');
         rbtnRprt.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
         rrprt.appendChild(rbtnRprt);
         let rdrpRprt = $('<div></div>');
@@ -522,8 +522,8 @@ function createCom(comDat) {
         rbtn.addClass('btn-light');
         rbtn.addClass('mr-3');
         rbtn.innerHTML='<i class="far fa-thumbs-up"></i> '+comDat.reps[i].likes;
-        rbtn.setAttribute('id',comDat.id+'r'+comDat.reps[i].id);
-        rbtn.setAttribute('onclick','likeCom('+comDat.id+','+comDat.reps[i].id+')');
+        rbtn.attr('id',comDat.id+'r'+comDat.reps[i].id);
+        rbtn.attr('onclick','likeCom('+comDat.id+','+comDat.reps[i].id+')');
         rbtns.appendChild(rbtn);
         rfoot.appendChild(rbtns);*/
         rep.appendChild(rHd);

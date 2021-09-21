@@ -301,10 +301,10 @@ function shwSrch() {
             let btndrp = $('<button></button>');
             btndrp.addClass('btn');
             btndrp.addClass('btn-light');
-            btndrp.setAttribute('type', 'button');
-            btndrp.setAttribute('data-toogle', 'dropdown');
-            btndrp.setAttribute('aria-haspopup', "true");
-            btndrp.setAttribute('aria-expanded', "false");
+            btndrp.attr('type', 'button');
+            btndrp.attr('data-toogle', 'dropdown');
+            btndrp.attr('aria-haspopup', "true");
+            btndrp.attr('aria-expanded', "false");
             btndrp.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
             btndrp.onclick = function () {
                 if ($("#drpMenu" + doc.id).classList.contains('show')) {
@@ -320,7 +320,7 @@ function shwSrch() {
             let drpmenu = $('<div></div>');
             drpmenu.addClass('dropdown-menu');
             drpmenu.addClass('dropdown-menu-right');
-            drpmenu.setAttribute('id', "drpMenu" + doc.id);
+            drpmenu.attr('id', "drpMenu" + doc.id);
             let drpitm0 = $('<button></button>');
             drpitm0.addClass('dropdown-item');
             drpitm0.onclick = function () {
@@ -498,7 +498,7 @@ $('#inFile').onchange = function () {
 };
 
 function setprog(n) {
-    $('#bar').setAttribute('aria-valuenow', n);
+    $('#bar').attr('aria-valuenow', n);
     $('#bar').style.width = n + '%';
     $('#bar').innerText = n + '%';
 }

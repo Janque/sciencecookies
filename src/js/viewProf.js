@@ -37,16 +37,16 @@ window.loaded = function loaded() {
 function shwPrfl() {
     $('#navBtnPrfl').addClass('active');
     getDownloadURL(storageRef(STORAGE, 'ppics/' + urlSrch.get('u') + '/pp_200x200')).then(url => {
-        if (userPublic.ppic != null) $('#disPP').setAttribute('onerror', "this.src='" + userPublic.ppic + "'");
-        else $('#disPP').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
+        if (userPublic.ppic != null) $('#disPP').attr('onerror', "this.src='" + userPublic.ppic + "'");
+        else $('#disPP').attr('onerror', "this.src='https://via.placeholder.com/20.webp'");
         $('#disPP').src = url;
         if (userPublic.pemail != null) $('#contEmail').show();
         $('#disMail').innerHTML = userPublic.pemail;
         $('#disName').innerHTML = userPublic.pname;
         $('#crdPrfl').show();
     }).catch(err => {
-        if (userPublic.ppic != null) $('#disPP').setAttribute('onerror', "this.src='" + userPublic.ppic + "'");
-        else $('#disPP').setAttribute('onerror', "https://via.placeholder.com/20.webp'");
+        if (userPublic.ppic != null) $('#disPP').attr('onerror', "this.src='" + userPublic.ppic + "'");
+        else $('#disPP').attr('onerror', "https://via.placeholder.com/20.webp'");
         $('#disPP').src = '';
         if (userPublic.pemail != null) $('#contEmail').show();
         $('#disMail').innerHTML = userPublic.pemail;

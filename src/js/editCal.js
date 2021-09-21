@@ -352,7 +352,7 @@ function normSave() {
 function setprog(bar, n) {
     bar = document.getElementById(bar);
     n = Math.floor(n);
-    bar.setAttribute('aria-valuenow', n);
+    bar.attr('aria-valuenow', n);
     bar.style.width = n + '%';
     bar.innerText = n + '%';
 }
@@ -475,8 +475,8 @@ function render() {
                 events.style.maxHeight = '7rem';
                 day.events.forEach((event, idx) => {
                     let btnEvent = $('<button></button>');
-                    btnEvent.setAttribute("data-toggle", "modal");
-                    btnEvent.setAttribute("data-target", "#mdlEventInfo");
+                    btnEvent.attr("data-toggle", "modal");
+                    btnEvent.attr("data-target", "#mdlEventInfo");
                     classes(btnEvent, "btn text-left p-1 mb-1 w-100");
                     btnEvent.style.backgroundColor = "#c3e6cb";
                     btnEvent.style.borderColor = "#8fd19e";
@@ -562,12 +562,12 @@ function render() {
         fgType.appendChild(selTypeMainL);
         let selTypeMain = $('<select></select>');
         classes(selTypeMain, "form-control");
-        selTypeMain.setAttribute('multiple', 'true');
+        selTypeMain.attr('multiple', 'true');
         calConfig[lang].forEach((itm, idx) => {
             let opt = $('<option></option>');
             opt.value = idx;
             opt.innerText = itm.label;
-            if ((!event.typeIdx && idx == 0) || idx == event.typeIdx) opt.setAttribute('selected', 'true');
+            if ((!event.typeIdx && idx == 0) || idx == event.typeIdx) opt.attr('selected', 'true');
             selTypeMain.appendChild(opt);
         });
 
@@ -587,7 +587,7 @@ function render() {
         fgType.appendChild(selTypeMain);
 
         let inTitleHid = $('<input></input>');
-        inTitleHid.setAttribute("type", "text");
+        inTitleHid.attr("type", "text");
         inTitleHid.id = "inEveTitle" + key;
         let inDescHid = $('<textarea></textarea>');
         inDescHid.id = "inEveDesc" + key;
@@ -631,12 +631,12 @@ function render() {
                         break;
                     case "textarea":
                         inp = $('<textarea></textarea>');
-                        inp.setAttribute("rows", "3");
+                        inp.attr("rows", "3");
                         if (event.vals[idx] && event.vals[idx].val) inp.value = event.vals[idx].val;
                         break;
                     default:
                         inp = $('<input></input>');
-                        inp.setAttribute("type", option.type);
+                        inp.attr("type", option.type);
                         if (event.vals[idx] && event.vals[idx].val) inp.value = event.vals[idx].val;
                 }
                 if (option.placeholder) inp.placeholder = option.placeholder;
@@ -672,12 +672,12 @@ function render() {
                                 break;
                             case "textarea":
                                 sinp = $('<textarea></textarea>');
-                                sinp.setAttribute("rows", "3");
+                                sinp.attr("rows", "3");
                                 if (event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val) sinp.value = event.vals[idx + '-' + sidx].val;
                                 break;
                             default:
                                 sinp = $('<input></input>');
-                                sinp.setAttribute("type", soption.type);
+                                sinp.attr("type", soption.type);
                                 if (event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val) sinp.value = event.vals[idx + '-' + sidx].val;
                         }
                         if (soption.placeholder) sinp.placeholder = soption.placeholder;
@@ -747,7 +747,7 @@ function render() {
             let opt = $('<option></option>');
             opt.value = idx;
             opt.innerHTML = itm;
-            if (itm == event.visibilidad) opt.setAttribute('selected', "true");
+            if (itm == event.visibilidad) opt.attr('selected', "true");
             inVis.appendChild(opt);
         });
         fgVis.appendChild(inVis);
@@ -763,7 +763,7 @@ function render() {
         let inTime = $('<textarea></textarea>');
         classes(inTime, "form-control");
         inTime.id = "inTime" + key;
-        inTime.setAttribute("rows", "4");
+        inTime.attr("rows", "4");
         fgTime.appendChild(inTime);
         if (inVis.value == 5) fgTime.hide();
         else fgTime.show();
@@ -790,7 +790,7 @@ function render() {
         selLangCC.appendChild(selLangC);
         let selLang = $('<select></select>');
         classes(selLang, "form-control ml-auto h-100");
-        selLang.setAttribute("name", "selTransLang");
+        selLang.attr("name", "selTransLang");
         selLangC.appendChild(selLang);
         let btnTrans = $('<button></button>');
         classes(btnTrans, 'btn btn-science mx-2');
@@ -900,7 +900,7 @@ function render() {
 
         let delBtn = $('<button></button>');
         classes(delBtn, "btn btn-danger mr-auto")
-        delBtn.setAttribute("type", "button");
+        delBtn.attr("type", "button");
         if (lang == "es") {
             delBtn.innerText = "Borrar";
         } else if (lang == "en") {
@@ -919,7 +919,7 @@ function render() {
         foot.appendChild(delBtn);
         let editBtn = $('<button></button>');
         classes(editBtn, "btn btn-info");
-        editBtn.setAttribute("type", "button");
+        editBtn.attr("type", "button");
         if (lang == "es") {
             editBtn.innerText = "Editar";
         } else if (lang == "en") {
@@ -942,7 +942,7 @@ function render() {
         foot.appendChild(editBtn);
         //Declared before
         classes(saveBtn, "btn btn-science d-none");
-        saveBtn.setAttribute("type", "button");
+        saveBtn.attr("type", "button");
         disableBtn(saveBtn);
         if (lang == "es") {
             saveBtn.innerText = "Guardar";
@@ -978,7 +978,7 @@ function render() {
         if (l != lang) {
             let opt = $('<option></option>');
             if (i == 0) {
-                opt.setAttribute('selected', 'true');
+                opt.attr('selected', 'true');
             }
             opt.value = opt.innerText = l;
             document.getElementsByName('selTransLang').forEach(itm => {
@@ -1028,13 +1028,13 @@ $('#inChgImgUrl').onchange = function () {
 $('#inMedSrc0').onclick = function () {
     newMedSrc = "home";
     resetChgImg(false);
-    $('#inChgImg').setAttribute('required', 'true');
+    $('#inChgImg').attr('required', 'true');
     $("#inChgImgFileCont").show();
 }
 $('#inMedSrc1').onclick = function () {
     newMedSrc = "out";
     resetChgImg(false);
-    $('#inChgImgUrl').setAttribute('required', 'true');
+    $('#inChgImgUrl').attr('required', 'true');
     $("#inChgImgUrlCont").show();
 }
 

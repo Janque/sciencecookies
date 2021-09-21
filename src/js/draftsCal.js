@@ -78,10 +78,10 @@ function shwSrch() {
             classes(drp, 'dropdown');
             let btndrp = $('<button></button>');
             classes(btndrp, 'btn btn-light');
-            btndrp.setAttribute('type', 'button');
-            btndrp.setAttribute('data-toogle', 'dropdown');
-            btndrp.setAttribute('aria-haspopup', "true");
-            btndrp.setAttribute('aria-expanded', "false");
+            btndrp.attr('type', 'button');
+            btndrp.attr('data-toogle', 'dropdown');
+            btndrp.attr('aria-haspopup', "true");
+            btndrp.attr('aria-expanded', "false");
             btndrp.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
             btndrp.onclick = function () {
                 if ($("#drpMenu" + doc.id).classList.contains('show')) {
@@ -96,7 +96,7 @@ function shwSrch() {
             drp.appendChild(btndrp);
             let drpmenu = $('<div></div>');
             classes(drpmenu, 'dropdown-menu dropdown-menu-right');
-            drpmenu.setAttribute('id', "drpMenu" + doc.id);
+            drpmenu.attr('id', "drpMenu" + doc.id);
             let drpitm0 = $('<button></button>');
             classes(drpitm0, 'dropdown-item');
             drpitm0.onclick = function () {

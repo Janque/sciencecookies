@@ -138,7 +138,7 @@ function shwSsnBtns(ac) {
         $('#picUsr').attr('onerror', "this.src='https://via.placeholder.com/20.webp'");
         $('#picUsr').attr('src', photoURL);
         if ($('#ppCom')) {
-            $('#ppCom').setAttribute('onerror', "this.src='https://via.placeholder.com/20.webp'");
+            $('#ppCom').attr('onerror', "this.src='https://via.placeholder.com/20.webp'");
             $('#ppCom').attr('src', photoURL);
         }
         $('#btnPrfl').show();
@@ -195,7 +195,7 @@ function shwSsnBtns(ac) {
     } else {
         $('#icnUsr').removeClass('fa-user');
         $('#icnUsr').addClass('fa-user-slash');
-        $('#picUsr').setAttribute('onerror', "");
+        $('#picUsr').attr('onerror', "");
         $('#picUsr').src = '';
         $('#btnPrfl').hide();
         $('#btnPref').hide();
