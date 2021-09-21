@@ -126,16 +126,16 @@ window.loaded = function loaded() {
                 $('#inNwCom').setAttribute('placeholder', 'New comment');
                 $('#btnAddCom').innerHTML = 'Comment';
             }
-            $('#btnCanCom').removeClass('disabled');
-            $('#btnAddCom').removeClass('disabled');
+            enableBtn($('#btnCanCom'));
+            enableBtn($('#btnAddCom'));
             $('#inNwCom').value = '';
         }).catch(err => { console.log('err') });
     }
     $("#frmNwCom").addEventListener("submit", function (event) {
         event.preventDefault();
         if (actSsn) {
-            $('#btnAddCom').addClass('disabled');
-            $('#btnCanCom').addClass('disabled');
+            disableBtn($('#btnAddCom'));
+            disableBtn($('#btnCanCom'));
             $('#btnAddCom').innerHTML = '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>';
             sendNwCom();
         }

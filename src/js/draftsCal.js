@@ -181,18 +181,18 @@ function shwSrch() {
             }
         });
         if (!nxtp) {
-            $("#pgTNxt").setAttribute('disabled', 'true');
-            $("#pgBNxt").setAttribute('disabled', 'true');
+            disableBtn($("#pgTNxt"));
+            disableBtn($("#pgBNxt"));
         } else {
-            $("#pgTNxt").removeAttribute('disabled');
-            $("#pgBNxt").removeAttribute('disabled');
+            enableBtn($("#pgTNxt"));
+            enableBtn($("#pgBNxt"));
         }
         if (page == 1) {
-            $("#pgTPrv").setAttribute('disabled', 'true');
-            $("#pgBPrv").setAttribute('disabled', 'true');
+            disableBtn($("#pgTNxt"));
+            disableBtn($("#pgBNxt"));
         } else {
-            $("#pgTPrv").removeAttribute('disabled');
-            $("#pgBPrv").removeAttribute('disabled');
+            enableBtn($("#pgTNxt"));
+            enableBtn($("#pgBNxt"));
         }
     }).catch(err => { console.log(err) });
 }

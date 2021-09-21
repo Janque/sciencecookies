@@ -92,9 +92,9 @@ window.shwCrds = function shwCrds(t, u) {
         getUserPublic(u).then(res => {
             userPublic = res.data;
             if (userPublic == null) {
-                $('#navBtnFav').addClass('disabled');
-                $('#navBtnLike').addClass('disabled');
-                $('#navBtnPrfl').addClass('disabled');
+                disableBtn($('#navBtnFav'));
+                disableBtn($('#navBtnLike'));
+                disableBtn($('#navBtnPrfl'));
                 $('#contEmail').hide();
                 $('#contPic').hide();
                 if (lang == "es") {
@@ -105,8 +105,8 @@ window.shwCrds = function shwCrds(t, u) {
                 $('#crdPrfl').show();
             } else {
                 if (userPublic.favn == null) {
-                    $('#navBtnFav').addClass('disabled');
-                    $('#navBtnLike').addClass('disabled');
+                    disableBtn($('#navBtnFav'));
+                    disableBtn($('#navBtnLike'));
                 }
                 shwCrds2(t);
             }

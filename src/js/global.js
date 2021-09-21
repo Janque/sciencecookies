@@ -46,13 +46,13 @@ window.classes = function classes(elm, cls) {
         elm.addClass(itm);
     });
 }
-window.enable = function enable(btn) {
+window.enableBtn = function enableBtn(btn) {
     btn.removeClass('disabled');
-    btn.removeAttribute('disabled');
+    btn.removeAttr('disabled');
 }
-window.disable = function disable(btn) {
-    classes(btn, "disabled");
-    btn.setAttribute("disabled", "true");
+window.disableBtn = function disableBtn(btn) {
+    btn.addClass("disabled");
+    btn.attr("disabled", "true");
 }
 window.alertTop = function alertTop(msg, alert, alrtId = "alrtClsSsn") {
     switch (alert) {
@@ -205,10 +205,10 @@ function shwSsnBtns(ac) {
         if ($('#btnLgI')) $('#btnLgI').show();
     }
     if (site == "cookie") {
-        $('#btnFav').removeClass('disabled');
-        $('#btnLike').removeClass('disabled');
-        $('#btnLdComs').removeClass('disabled');
-        $('#btnLdMrComs').removeClass('disabled');
+        enableBtn($('#btnFav'));
+        enableBtn($('#btnLike'));
+        enableBtn($('#btnLdComs'));
+        enableBtn($('#btnLdMrComs'));
     }
 }
 //Log Out

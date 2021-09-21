@@ -58,8 +58,8 @@ window.loaded = function loaded() {
                 }
             } else {
                 $('#btnPlusConf').hide();
-                $('#btnCanPlus0').setAttribute('disabled', 'true');
-                $('#btnCanPlus1').setAttribute('disabled', 'true');
+                disableBtn($("#btnCanPlus0"));
+                disableBtn($("#btnCanPlus1"));
                 $('#barCont').show();
                 setprog('3');
 
@@ -432,18 +432,18 @@ function shwSrch() {
             idx++;
         });
         if (!nxtp) {
-            $("#pgTNxt").setAttribute('disabled', 'true');
-            $("#pgBNxt").setAttribute('disabled', 'true');
+            disableBtn($("#pgTNxt"));
+            disableBtn($("#pgBNxt"));
         } else {
-            $("#pgTNxt").removeAttribute('disabled');
-            $("#pgBNxt").removeAttribute('disabled');
+            enableBtn($("#pgTNxt"));
+            enableBtn($("#pgBNxt"));
         }
         if (page == 1) {
-            $("#pgTPrv").setAttribute('disabled', 'true');
-            $("#pgBPrv").setAttribute('disabled', 'true');
+            disableBtn($("#pgTNxt"));
+            disableBtn($("#pgBNxt"));
         } else {
-            $("#pgTPrv").removeAttribute('disabled');
-            $("#pgBPrv").removeAttribute('disabled');
+            enableBtn($("#pgTNxt"));
+            enableBtn($("#pgBNxt"));
         }
     }).catch(err => { console.log(err) });
 }

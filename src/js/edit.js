@@ -125,9 +125,9 @@ window.loaded = function loaded() {
     }
     $("#frmTranslate").addEventListener("submit", function (event) {
         event.preventDefault();
-        classes($('#btnCnfTranslate'), "disabled")
-        classes($('#btnCanTranslate0'), "disabled")
-        classes($('#btnCanTranslate1'), "disabled")
+        disableBtn($('#btnCnfTranslate'));
+        disableBtn($('#btnCanTranslate0'));
+        disableBtn($('#btnCanTranslate1'));
         setprog('barTranslate', 0);
         $('#barTranslateCont').show();
         runprog('barTranslate', 0, 73);
@@ -140,9 +140,9 @@ window.loaded = function loaded() {
                 normSave();
                 setprog('barTranslate', 100);
                 $('#mdlTranslate').modal('hide');
-                $('#btnCnfTranslate').removeClass("disabled");
-                $('#btnCanTranslate0').removeClass("disabled");
-                $('#btnCanTranslate1').removeClass("disabled");
+                enableBtn($('#btnCnfTranslate'));
+                enableBtn($('#btnCanTranslate0'));
+                enableBtn($('#btnCanTranslate1'));
                 $('#barTranslateCont').hide();
             } else {
                 if (lang == "es") {
@@ -250,9 +250,9 @@ window.loaded = function loaded() {
         setprog('barNewMed', 0);
         $("#barNewMedCont").show();
         $("#frmAddMed").hide();
-        $("#btnCnfNewMed").setAttribute('disabled', 'true');
-        $("#btnCanNewMed0").setAttribute('disabled', 'true');
-        $("#btnCanNewMed1").setAttribute('disabled', 'true');
+        disableBtn($("#btnCnfNewMed"));
+        disableBtn($("#btnCanNewMed0"));
+        disableBtn($("#btnCanNewMed1"));
         if (newMedSrc == "home") addMed(0);
         else addExtMed();
     });
@@ -1416,9 +1416,9 @@ $('#mdlAddMed').on('hidden.bs.modal', e => {
     $("#inNewMedFileCont").hide();
     $("#inNewMedUrlCont").hide();
     $("#frmAddMed").show();
-    $("#btnCnfNewMed").removeAttribute('disabled');
-    $("#btnCanNewMed0").removeAttribute('disabled');
-    $("#btnCanNewMed1").removeAttribute('disabled');
+    enableBtn($("#btnCnfNewMed"));
+    enableBtn($("#btnCanNewMed0"));
+    enableBtn($("#btnCanNewMed1"));
 })
 $('#inNewMed').addEventListener('change', e => {
     newMedia = e.target.files[0];

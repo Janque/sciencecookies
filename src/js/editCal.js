@@ -191,9 +191,9 @@ window.loaded = function loaded() {
     }
     $("#frmTranslate").addEventListener("submit", function (event) {
         event.preventDefault();
-        classes($('#btnCnfTranslate'), "disabled")
-        classes($('#btnCanTranslate0'), "disabled")
-        classes($('#btnCanTranslate1'), "disabled")
+        disableBtn($('#btnCnfTranslate'));
+        disableBtn($('#btnCanTranslate0'));
+        disableBtn($('#btnCanTranslate1'));
         setprog('barTranslate', 0);
         $('#barTranslateCont').show();
         runprog('barTranslate', 0, 73);
@@ -202,9 +202,9 @@ window.loaded = function loaded() {
             if (res) {
                 setprog('barTranslate', 100);
                 $('#mdlTranslate').modal('hide');
-                $('#btnCnfTranslate').removeClass("disabled");
-                $('#btnCanTranslate0').removeClass("disabled");
-                $('#btnCanTranslate1').removeClass("disabled");
+                enableBtn($('#btnCnfTranslate'));
+                enableBtn($('#btnCanTranslate0'));
+                enableBtn($('#btnCanTranslate1'));
                 $('#barTranslateCont').hide();
             } else {
                 if (lang == "es") {
@@ -253,8 +253,8 @@ window.loaded = function loaded() {
         setprog('barChgImg', 0);
         $("#barChgImgCont").show();
         $("#frmChgImg").hide();
-        $("#btnCnfChgImg").setAttribute('disabled', 'true');
-        $("#btnCanChgImg").setAttribute('disabled', 'true');
+        disableBtn($("#btnCnfChgImg"));
+        disableBtn($("#btnCanChgImg"));
         if (newMedSrc == "home") addMed();
         else addExtMed();
     });
@@ -371,9 +371,9 @@ function showEvent() {
         $('#' + key).hide();
     });
     $('#mdlEventInfoL').innerHTML = docDat.events[eventToShow].date[lang];
-   $('#'+eventToShow).show();
-    enable($('#btnPriorEve'));
-    enable($('#btnNextEve'));
+    $('#' + eventToShow).show();
+    enableBtn($('#btnPriorEve'));
+    enableBtn($('#btnNextEve'));
 }
 $('#btnPriorEve').onclick = () => {
     let orderedKeys = Object.keys(docDat.events).slice().sort((a, b) => {
@@ -410,7 +410,7 @@ $('#btnPriorEve').onclick = () => {
         eventToShow = orderedKeys[n];
         showEvent();
     } else {
-        disable($('#btnPriorEve'));
+        disableBtn($('#btnPriorEve'));
     }
 };
 $('#btnNextEve').onclick = () => {
@@ -448,7 +448,7 @@ $('#btnNextEve').onclick = () => {
         eventToShow = orderedKeys[n];
         showEvent();
     } else {
-        disable($('#btnNextEve'));
+        disableBtn($('#btnNextEve'));
     }
 };
 
@@ -936,21 +936,21 @@ function render() {
             tsec.hide();
             fsec.show();
             saveBtn.show();
-            enable(saveBtn);
+            enableBtn(saveBtn);
             editBtn.hide();
         };
         foot.appendChild(editBtn);
         //Declared before
         classes(saveBtn, "btn btn-science d-none");
         saveBtn.setAttribute("type", "button");
-        disable(saveBtn);
+        disableBtn(saveBtn);
         if (lang == "es") {
             saveBtn.innerText = "Guardar";
         } else if (lang == "en") {
             saveBtn.innerText = "Save";
         }
         saveBtn.onclick = () => {
-            disable(saveBtn);
+            disableBtn(saveBtn);
             if (changed) {
                 regenTxt();
                 docDat.weeks[Number(key[0])][key.substr(1, 3)].events[key[4]].name = event.name;
@@ -1002,8 +1002,8 @@ function resetChgImg(uncheck) {
     $("#barChgImgCont").hide();
     $("#inChgImgFileCont").hide();
     $("#inChgImgUrlCont").hide();
-    $("#btnCnfChgImg").removeAttribute('disabled');
-    $("#btnCanChgImg").removeAttribute('disabled');
+    enableBtn($("#btnCnfChgImg"));
+    enableBtn($("#btnCanChgImg"));
 }
 $('#btnChgImg').onclick = () => {
     resetChgImg(true);

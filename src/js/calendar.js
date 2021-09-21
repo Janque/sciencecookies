@@ -30,8 +30,8 @@ window.showEvent = function showEvent() {
     });
     $('#mdlEventInfoL').innerHTML = eventTitles[eventToShow];
     $('#' + eventToShow).show();
-    enable($('#btnPriorEve'));
-    enable($('#btnNextEve'));
+    enableBtn($('#btnPriorEve'));
+    enableBtn($('#btnNextEve'));
 }
 $('#btnPriorEve').onclick = () => {
     let n = eventKeys.indexOf(eventToShow) - 1;
@@ -39,7 +39,7 @@ $('#btnPriorEve').onclick = () => {
         eventToShow = eventKeys[n];
         showEvent();
     } else {
-        disable($('#btnPriorEve'));
+        disableBtn($('#btnPriorEve'));
     }
 };
 $('#btnNextEve').onclick = () => {
@@ -48,7 +48,7 @@ $('#btnNextEve').onclick = () => {
         eventToShow = eventKeys[n];
         showEvent();
     } else {
-        disable($('#btnNextEve'));
+        disableBtn($('#btnNextEve'));
     }
 };
 

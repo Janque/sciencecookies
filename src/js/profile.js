@@ -138,8 +138,8 @@ window.loaded = function loaded() {
         event.preventDefault();
         $("#prBar").show();
         $("#frmChngPP").hide();
-        $("#btnCnfNwPP").addClass('disabled');
-        $("#btnCanNwPP").addClass('disabled');
+        disableBtn($("#btnCnfNwPP"));
+        disableBtn($("#btnCanNwPP"));
         uptPP(fileForUp);
     });
     $('#inNwPP').addEventListener('change', function (e) {
@@ -166,30 +166,30 @@ window.resetFrm = function resetFrm() {
     }
     $("#prBar").hide();
     $("#frmChngPP").show();
-    $("#btnCnfNwPP").removeClass('disabled');
-    $("#btnCanNwPP").removeClass('disabled');
+    enableBtn($("#btnCnfNwPP"));
+    enableBtn($("#btnCanNwPP"));
 }
 
 //Preferences form toggle btns
 function setPrefBtns(disabled) {
     if (!disabled) {
-        $('#btnCanPref').disabled = false;
-        $('#btnCnfPref').disabled = false;
+        enableBtn($('#btnCanPref'));
+        enableBtn($('#btnCnfPref'));
     } else {
-        $('#btnCanPref').setAttribute('disabled', 'true');
-        $('#btnCnfPref').setAttribute('disabled', 'true');
+        disableBtn($('#btnCanPref'));
+        disableBtn($('#btnCnfPref'));
     }
 }
 //Preferences inputs
 $('#inPubPrfl').onclick = function () {
     if (localUserData.visible) {
-        $('#inPubEmail').setAttribute('disabled', 'true');
-        $('#inPubFL').setAttribute('disabled', 'true');
+        disableBtn($('#inPubEmail'));
+        disableBtn($('#inPubFL'));
         $('#inPubEmail').checked = false;
         $('#inPubFL').checked = false;
     } else {
-        $('#inPubEmail').disabled = false;
-        $('#inPubFL').disabled = false;
+        enableBtn($('#inPubEmail'));
+        enableBtn($('#inPubFL'));
         $('#inPubEmail').checked = localUserData.vemail;
         $('#inPubFL').checked = localUserData.vfl;
     }
@@ -247,13 +247,13 @@ window.shwPref = function shwPref() {
     $('#navBtnPref').addClass('active');
     $('#inPubPrfl').checked = userData.visible;
     if (userData.visible) {
-        $('#inPubEmail').disabled = false;
-        $('#inPubFL').disabled = false;
+        enableBtn($('#inPubEmail'));
+        enableBtn($('#inPubFL'));
         $('#inPubEmail').checked = userData.vemail;
         $('#inPubFL').checked = userData.vfl;
     } else {
-        $('#inPubEmail').setAttribute('disabled', 'true');
-        $('#inPubFL').setAttribute('disabled', 'true');
+        disableBtn($('#inPubEmail'));
+        disableBtn($('#inPubFL'));
         $('#inPubEmail').checked = false;
         $('#inPubFL').checked = false;
     }
