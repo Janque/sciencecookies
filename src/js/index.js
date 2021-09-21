@@ -102,7 +102,7 @@ function initSrch(stAf) {
     }
 }
 function shwSrch() {
-    $('#cookiesCont').innerHTML = "";
+    $('#cookiesCont').html("");
     getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
@@ -114,9 +114,9 @@ function shwSrch() {
             let bod = $('<div></div>');
             classes(bod, "media-body");
             if (lang == "es") {
-                bod.innerHTML = '<h5 class="mt-0 text-center">No se han encontrado resultados</h5>';
+                bod.html('<h5 class="mt-0 text-center">No se han encontrado resultados</h5>');
             } else if (lang == "en") {
-                bod.innerHTML = '<h5 class="mt-0 text-center">No results found</h5>';
+                bod.html('<h5 class="mt-0 text-center">No results found</h5>');
             }
             a.appendChild(med);
             med.appendChild(bod);
@@ -142,35 +142,35 @@ function shwSrch() {
             classes(bod, "media-body");
             let tit = $('<h5></h5>');
             classes(tit, "mt-0");
-            tit.innerHTML = doc.data().title;
+            tit.html(doc.data().title);
             bod.appendChild(tit);
             let descr = $('<p></p>');
-            descr.innerHTML = doc.data().description;
+            descr.html(doc.data().description);
             bod.appendChild(descr);
             let dates = $('<p></p>');
             classes(dates, "my-0");
             if (doc.data().dledit) {
                 let dl = doc.data().ledit.toDate();
                 if (lang == "es") {
-                    dates.innerText = 'Actualizado: ' + dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear();
+                    dates.text('Actualizado: ' + dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear());
                 } else if (lang == "en") {
-                    dates.innerText = 'Updated: ' + dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear();
+                    dates.text('Updated: ' + dl.getDate() + '/' + (dl.getMonth() + 1) + '/' + dl.getFullYear());
                 }
             } else {
                 let d = doc.data().published.toDate();
                 if (lang == "es") {
-                    dates.innerText = 'Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+                    dates.text('Publicado: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear());
                 } else if (lang == "en") {
-                    dates.innerText = 'Published: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+                    dates.text('Published: ' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear());
                 }
             }
             bod.appendChild(dates);
             let auhtTxt = $('<p></p>');
             classes(auhtTxt, "mt-0");
             if (lang == "es") {
-                auhtTxt.innerText = ' Autor(es):' + doc.data().authors;
+                auhtTxt.text(' Autor(es):' + doc.data().authors);
             } else if (lang == "en") {
-                auhtTxt.innerText = ' Author(s):' + doc.data().authors;
+                auhtTxt.text(' Author(s):' + doc.data().authors);
             }
             bod.appendChild(auhtTxt);
             a.appendChild(med);
@@ -213,8 +213,8 @@ function reSrch(np) {
     if (page < 1 && np == -1) return;
     if (!nxtp && np == 1) return;
     page += np;
-    $('#disPgT').innerText = page;
-    $('#disPgB').innerText = page;
+    $('#disPgT').text(page);
+    $('#disPgB').text(page);
     initSrch(true);
     $("#cookCnt").scrollIntoView();
 }
@@ -273,10 +273,10 @@ function shwCalMain() {
             classes(bod, "media-body");
             let tit = $('<h5></h5>');
             classes(tit, "mt-0");
-            tit.innerHTML = doc.data().title;
+            tit.html(doc.data().title);
             bod.appendChild(tit);
             let descr = $('<p></p>');
-            descr.innerHTML = doc.data().descriptionShort;
+            descr.html(doc.data().descriptionShort);
             bod.appendChild(descr);
             let dates = $('<p></p>');
             classes(dates, "my-0");

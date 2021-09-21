@@ -134,7 +134,7 @@ window.loaded = function loaded() {
             }
             docDat = doc.data();
             docId = doc.id;
-            $('#title').innerHTML = docDat.title;
+            $('#title').html(docDat.title);
             $('#prevMed').src = docDat.picUrl;
             $('#inPicCapt').value = docDat.picCapt;
             $('#inPicAlt').value = docDat.picAlt;
@@ -149,9 +149,9 @@ window.loaded = function loaded() {
                 if (docDat.pastDue) $('#btnPub').show();
             }
             if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
-                $('#btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
+                $('#btnAprove').html('<i class="fas fa-check-square"></i>');
             } else {
-                $('#btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
+                $('#btnAprove').html('<i class="far fa-check-square"></i>');
             }
             $('#btnPrevCal').href = docDat.url;
             $('#btnPrevMail').href = '/vista-email-calendario/' + docId;
@@ -304,23 +304,23 @@ function setSavedTime() {
     if (minutes > 0) {
         if (minutes > 59) {
             if (lang == "es") {
-                $('#tagLstSave').innerText = "Guardado hace " + Math.floor(minutes / 60) + " horas";
+                $('#tagLstSave').text("Guardado hace " + Math.floor(minutes / 60) + " horas");
             } else if (lang == "en") {
-                $('#tagLstSave').innerText = "Saved " + Math.floor(minutes / 60) + " hours ago";
+                $('#tagLstSave').text("Saved " + Math.floor(minutes / 60) + " hours ago");
             }
         }
         else {
             if (lang == "es") {
-                $('#tagLstSave').innerText = "Guardado hace " + minutes + " minutos";
+                $('#tagLstSave').text("Guardado hace " + minutes + " minutos");
             } else if (lang == "en") {
-                $('#tagLstSave').innerText = "Saved " + minutes + " minutes ago";
+                $('#tagLstSave').text("Saved " + minutes + " minutes ago");
             }
         }
     } else {
         if (lang == "es") {
-            $('#tagLstSave').innerText = "Guardado hace " + Math.floor((Date.now() - lastSave) / 1000) + " segundos";
+            $('#tagLstSave').text("Guardado hace " + Math.floor((Date.now() - lastSave) / 1000) + " segundos");
         } else if (lang == "en") {
-            $('#tagLstSave').innerText = "Saved " + Math.floor((Date.now() - lastSave) / 1000) + " seconds ago";
+            $('#tagLstSave').text("Saved " + Math.floor((Date.now() - lastSave) / 1000) + " seconds ago");
         }
     }
 }
@@ -333,17 +333,17 @@ function normSave() {
             setSavedTime();
         }, 300010);
         if (lang == "es") {
-            $('#tagLstSave').innerText = "Se han guardado todos los cambios";
+            $('#tagLstSave').text("Se han guardado todos los cambios");
         } else if (lang == "en") {
-            $('#tagLstSave').innerText = "All changes have been saved";
+            $('#tagLstSave').text("All changes have been saved");
         }
         lastSave = Date.now();
         console.log('Saved!');
     }).catch(err => {
         if (lang == "es") {
-            $('#tagLstSave').innerText = "Error, no se han guardado todos los cambios: " + err.code;
+            $('#tagLstSave').text("Error, no se han guardado todos los cambios: " + err.code);
         } else if (lang == "en") {
-            $('#tagLstSave').innerText = "Error, changes not saved: " + err.code;
+            $('#tagLstSave').text("Error, changes not saved: " + err.code);
         }
         console.log(err);
     });
@@ -354,7 +354,7 @@ function setprog(bar, n) {
     n = Math.floor(n);
     bar.attr('aria-valuenow', n);
     bar.style.width = n + '%';
-    bar.innerText = n + '%';
+    bar.text(n + '%');
 }
 function runprog(bar, b, e) {
     b = Math.floor(b);
@@ -370,7 +370,7 @@ function showEvent() {
     Object.keys(docDat.events).forEach(key => {
         $('#' + key).hide();
     });
-    $('#mdlEventInfoL').innerHTML = docDat.events[eventToShow].date[lang];
+    $('#mdlEventInfoL').html(docDat.events[eventToShow].date[lang]);
     $('#' + eventToShow).show();
     enableBtn($('#btnPriorEve'));
     enableBtn($('#btnNextEve'));
@@ -453,7 +453,7 @@ $('#btnNextEve').onclick = () => {
 };
 
 function render() {
-    $('#weeksCont').innerHTML = "";
+    $('#weeksCont').html("");
     docDat.weeks.forEach((week, wIdx) => {
         let weekRow = $('<tr></tr>');
         weekRow.style.height = '10rem';
@@ -467,7 +467,7 @@ function render() {
                 let num = $('<p></p>');
                 classes(num, "m-0 p-1");
                 num.style.fontSize = 'x-large';
-                num.innerHTML = '<b>' + day.date + '</b>';
+                num.html('<b>' + day.date + '</b>');
                 dayCell.appendChild(num);
 
                 let events = $('<div></div>');
@@ -480,7 +480,7 @@ function render() {
                     classes(btnEvent, "btn text-left p-1 mb-1 w-100");
                     btnEvent.style.backgroundColor = "#c3e6cb";
                     btnEvent.style.borderColor = "#8fd19e";
-                    btnEvent.innerHTML = '<small>' + event.name + '</small>';
+                    btnEvent.html('<small>' + event.name + '</small>');
                     btnEvent.onclick = () => {
                         eventToShow = wIdx + daysOfWeek[i] + idx;
                         showEvent();
@@ -489,7 +489,7 @@ function render() {
                 });
                 let btnPlusEvent = $('<button></button>');
                 classes(btnPlusEvent, "btn btn-science btn-block btn-sm");
-                btnPlusEvent.innerHTML = '<i class="fas fa-plus"></i>';
+                btnPlusEvent.html('<i class="fas fa-plus"></i>');
                 btnPlusEvent.onclick = () => {
                     docDat.events[wIdx + daysOfWeek[i] + day.events.length] = {
                         date: {
@@ -516,7 +516,7 @@ function render() {
             }
         }
     });
-    $('#eventInfoCont').innerHTML = "";
+    $('#eventInfoCont').html("");
     for (const [key, event] of Object.entries(docDat.events)) {
         let changed = false;
 
@@ -555,9 +555,9 @@ function render() {
 
         let selTypeMainL = $('<label></label>');
         if (lang == "es") {
-            selTypeMainL.innerText = "Tipo de evento";
+            selTypeMainL.text("Tipo de evento");
         } else if (lang == "en") {
-            selTypeMainL.innerText = "Event type";
+            selTypeMainL.text("Event type");
         }
         fgType.appendChild(selTypeMainL);
         let selTypeMain = $('<select></select>');
@@ -566,7 +566,7 @@ function render() {
         calConfig[lang].forEach((itm, idx) => {
             let opt = $('<option></option>');
             opt.value = idx;
-            opt.innerText = itm.label;
+            opt.text(itm.label);
             if ((!event.typeIdx && idx == 0) || idx == event.typeIdx) opt.attr('selected', 'true');
             selTypeMain.appendChild(opt);
         });
@@ -602,12 +602,12 @@ function render() {
         fsec.insertBefore(sfRow, fRow.nextSibling);
 
         function reloadForm() {
-            fRow.innerHTML = "";
+            fRow.html("");
             calConfig[lang][event.typeIdx].options.forEach((option, idx) => {
                 let fCol = $('<div></div>');
                 classes(fCol, "col-auto form-group");
                 let label = $('<label></label>');
-                label.innerText = option.label;
+                label.text(option.label);
                 fCol.appendChild(label);
                 let inp;
                 switch (option.type) {
@@ -616,7 +616,7 @@ function render() {
                         option.options.forEach((itm, i) => {
                             let opt = $('<option></option>');
                             opt.value = itm.val;
-                            opt.innerHTML = itm.label;
+                            opt.html(itm.label);
                             if ((i == 0 && (!event.vals || !event.vals[idx])) || (event.vals && event.vals[idx] && event.vals[idx].val == itm.val)) {
                                 opt.selected = true;
                                 event.vals[idx] = {
@@ -650,7 +650,7 @@ function render() {
                         let sfCol = $('<div></div>');
                         classes(sfCol, "col-auto form-group");
                         let slabel = $('<label></label>');
-                        slabel.innerText = soption.label;
+                        slabel.text(soption.label);
                         sfCol.appendChild(slabel);
                         let sinp;
                         switch (soption.type) {
@@ -659,7 +659,7 @@ function render() {
                                 soption.options.forEach((itm, i) => {
                                     let opt = $('<option></option>');
                                     opt.value = itm.val;
-                                    opt.innerHTML = itm.label;
+                                    opt.html(itm.label);
                                     if ((i == 0 && (!event.vals || !event.vals[idx + '-' + sidx])) || (event.vals && event.vals[idx + '-' + sidx] && event.vals[idx + '-' + sidx].val == itm.val)) {
                                         opt.selected = true;
                                         event.vals[idx + '-' + sidx] = {
@@ -689,7 +689,7 @@ function render() {
                             changed = true;
                             event.vals[idx + '-' + sidx] = {};
                             event.vals[idx + '-' + sidx].val = sinp.value;
-                            if (option.type == "select") event.vals[idx + '-' + sidx].label = sinp.innerText;
+                            if (option.type == "select") event.vals[idx + '-' + sidx].label = sinp.text();
                             else event.vals[idx + '-' + sidx].label = soption.label;
                             regenTxt();
                         }
@@ -700,7 +700,7 @@ function render() {
                     changed = true;
                     event.vals[idx] = {};
                     event.vals[idx].val = inp.value;
-                    if (option.type == "select") event.vals[idx].label = inp.innerText;
+                    if (option.type == "select") event.vals[idx].label = inp.text();
                     else event.vals[idx].label = option.label;
                     if (option.valForSub) {
                         if (option.valForSub == inp.value) sfRow.show();
@@ -736,9 +736,9 @@ function render() {
         classes(fgVis, "form-group");
         fsec.appendChild(fgVis);
         if (lang == "es") {
-            fgVis.innerHTML = '<label>Visibilidad</label>';
+            fgVis.html('<label>Visibilidad</label>');
         } else if (lang == "en") {
-            fgVis.innerHTML = '<label>Visibility</label>';
+            fgVis.html('<label>Visibility</label>');
         }
         inVis = $('<select></select>');
         inVis.id = "inVis" + key;
@@ -746,7 +746,7 @@ function render() {
         calConfig.visOpts[lang].forEach((itm, idx) => {
             let opt = $('<option></option>');
             opt.value = idx;
-            opt.innerHTML = itm;
+            opt.html(itm);
             if (itm == event.visibilidad) opt.attr('selected', "true");
             inVis.appendChild(opt);
         });
@@ -756,9 +756,9 @@ function render() {
         classes(fgTime, "form-group");
         fsec.appendChild(fgTime);
         if (lang == "es") {
-            fgTime.innerHTML = '<label>Horario</label>';
+            fgTime.html('<label>Horario</label>');
         } else if (lang == "en") {
-            fgTime.innerHTML = '<label>Observing time</label>';
+            fgTime.html('<label>Observing time</label>');
         }
         let inTime = $('<textarea></textarea>');
         classes(inTime, "form-control");
@@ -794,7 +794,7 @@ function render() {
         selLangC.appendChild(selLang);
         let btnTrans = $('<button></button>');
         classes(btnTrans, 'btn btn-science mx-2');
-        btnTrans.innerHTML = '<i class="fas fa-language"></i>';
+        btnTrans.html('<i class="fas fa-language"></i>');
         btnTrans.onclick = function () {
             getDoc(docRef(FSDB, 'calendars/langs/' + selLang.value, docId)).then(async function (doc) {
                 let newEve = doc.data().events[key];
@@ -842,9 +842,9 @@ function render() {
                 for (let i = 0; i < newEve.horario.length; i++) {
                     event.horario.push(await translateSimple(newEve.horario[i], selLang.value, lang));
                 }
-                inTime.innerHTML = "";
+                inTime.html("");
                 event.horario.forEach(time => {
-                    inTime.innerHTML += time + "\n";
+                    inTime.html(inTime.html() + time + "\n");
                 });
                 changed = true;
                 saveBtn.click();
@@ -856,32 +856,31 @@ function render() {
         let tsec = $('<div></div>');
         bod.appendChild(tsec);
         let eveTit = $('<h3></h3>');
-        eveTit.innerHTML = event.name;
+        eveTit.html(event.name);
         tsec.appendChild(eveTit);
         let eveDesc = $('<p></p>');
-        eveDesc.innerHTML = event.description;
+        eveDesc.html(event.description);
         tsec.appendChild(eveDesc);
         let eveVis = $('<p></p>');
         if (lang == "es") {
-            eveVis.innerHTML = "Visibilidad: ";
+            eveVis.html("Visibilidad: " + event.visibilidad);
         } else if (lang == "en") {
-            eveVis.innerHTML = "Visibility: ";
+            eveVis.html("Visibility: " + event.visibilidad);
         }
-        eveVis.innerHTML += event.visibilidad;
         tsec.appendChild(eveVis);
         let eveTime = $('<p></p>');
         classes(eveTime, "mb-0");
         if (lang == "es") {
-            eveTime.innerHTML = "Horario: ";
+            eveTime.html("Horario: ");
         } else if (lang == "en") {
-            eveTime.innerHTML = "Observing time: ";
+            eveTime.html("Observing time: ");
         }
         tsec.appendChild(eveTime);
         let eveTimeLst = $('<ul></ul>');
         tsec.appendChild(eveTimeLst);
         event.horario.forEach(time => {
             let li = $('<li></li>');
-            li.innerHTML = time;
+            li.html(time);
             eveTimeLst.appendChild(li);
         });
         if (event.visibilidad == calConfig.visOpts[lang][5]) {
@@ -902,9 +901,9 @@ function render() {
         classes(delBtn, "btn btn-danger mr-auto")
         delBtn.attr("type", "button");
         if (lang == "es") {
-            delBtn.innerText = "Borrar";
+            delBtn.text("Borrar");
         } else if (lang == "en") {
-            delBtn.innerText = "Delete";
+            delBtn.text("Delete");
         }
         delBtn.onclick = () => {
             for (let i = Number(key.substr(4)) + 1; i < docDat.weeks[Number(key[0])][key.substr(1, 3)].events.length; i++) {
@@ -921,17 +920,17 @@ function render() {
         classes(editBtn, "btn btn-info");
         editBtn.attr("type", "button");
         if (lang == "es") {
-            editBtn.innerText = "Editar";
+            editBtn.text("Editar");
         } else if (lang == "en") {
-            editBtn.innerText = "Edit";
+            editBtn.text("Edit");
         }
         editBtn.onclick = () => {
             inVis.value = calConfig.visOpts[lang].indexOf(event.visibilidad);
             if (inVis.value == 5) fgTime.hide();
             else fgTime.show();
-            inTime.innerHTML = "";
+            inTime.html("");
             event.horario.forEach(time => {
-                inTime.innerHTML += time + "\n";
+                inTime.html(inTime.html() + time + "\n");
             });
             tsec.hide();
             fsec.show();
@@ -945,9 +944,9 @@ function render() {
         saveBtn.attr("type", "button");
         disableBtn(saveBtn);
         if (lang == "es") {
-            saveBtn.innerText = "Guardar";
+            saveBtn.text("Guardar");
         } else if (lang == "en") {
-            saveBtn.innerText = "Save";
+            saveBtn.text("Save");
         }
         saveBtn.onclick = () => {
             disableBtn(saveBtn);
@@ -972,7 +971,7 @@ function render() {
     }
 
     document.getElementsByName('selTransLang').forEach(itm => {
-        itm.innerHTML = '';
+        itm.html('');
     });
     langs.forEach((l, i) => {
         if (l != lang) {
@@ -980,7 +979,8 @@ function render() {
             if (i == 0) {
                 opt.attr('selected', 'true');
             }
-            opt.value = opt.innerText = l;
+            opt.value = l;
+            opt.text(l);
             document.getElementsByName('selTransLang').forEach(itm => {
                 itm.appendChild(opt.cloneNode(true));
             });
@@ -1019,7 +1019,7 @@ $('#inChgImg').addEventListener('change', e => {
         };
     };
     newMedia.name = ultraClean(newMedia.name, '');
-    $('#inChgImgL').innerHTML = newMedia.name;
+    $('#inChgImgL').html(newMedia.name);
     prevMed(newMedia);
 });
 $('#inChgImgUrl').onchange = function () {
@@ -1060,11 +1060,11 @@ function validateRevision() {
 $('#btnAprove').onclick = function () {
     if (docDat.revised[lang] && docDat.revised[lang].includes(uid)) {
         docDat.revised[lang].splice(docDat.revised[lang].indexOf(uid), 1);
-        $('#btnAprove').innerHTML = '<i class="far fa-check-square"></i>';
+        $('#btnAprove').html('<i class="far fa-check-square"></i>');
     } else {
         if (!docDat.revised[lang]) docDat.revised[lang] = [];
         docDat.revised[lang].push(uid);
-        $('#btnAprove').innerHTML = '<i class="fas fa-check-square"></i>';
+        $('#btnAprove').html('<i class="fas fa-check-square"></i>');
     }
     if (validateRevision()) {
         docDat.finished = true;
@@ -1078,16 +1078,16 @@ $('#mdlPublish').on('show.bs.modal', e => {
     if (validateRevision()) {
         $('#btnCnfPublish').show();
         if (lang == "es") {
-            $('#mdlPublishTxt').innerText = "El calendario está listo para publicar";
+            $('#mdlPublishTxt').text("El calendario está listo para publicar");
         } else if (lang == "en") {
-            $('#mdlPublishTxt').innerText = "The calendar is ready to publish";
+            $('#mdlPublishTxt').text("The calendar is ready to publish");
         }
     } else {
         $('#btnCnfPublish').hide();
         if (lang == "es") {
-            $('#mdlPublishTxt').innerText = "Para publicar es necesario que lo hayan aprovado al menos dos personas.";
+            $('#mdlPublishTxt').text("Para publicar es necesario que lo hayan aprovado al menos dos personas.");
         } else if (lang == "en") {
-            $('#mdlPublishTxt').innerText = "At least two people must aprove before publishing.";
+            $('#mdlPublishTxt').text("At least two people must aprove before publishing.");
         }
     }
 });

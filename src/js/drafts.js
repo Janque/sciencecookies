@@ -52,9 +52,9 @@ window.loaded = function loaded() {
         getDocs(query(cookiesFSColl, where('file', '==', file), limit(1))).then(snap => {
             if (!snap.empty) {
                 if (lang == "es") {
-                    alertTop("Ese nombre de archivo ya esta en uso.", 0, 'alrtPlusContainer');
+                    alertTop("Ese nombre de archivo ya esta en uso.", 0, $('#alrtPlusContainer'));
                 } else if (lang == "en") {
-                    alertTop("That file name is already in use.", 0, 'alrtPlusContainer');
+                    alertTop("That file name is already in use.", 0, $('#alrtPlusContainer'));
                 }
             } else {
                 $('#btnPlusConf').hide();
@@ -138,9 +138,9 @@ window.loaded = function loaded() {
                 }).catch((err) => {
                     setprog('0');
                     if (lang == "es") {
-                        alertTop("<strong>Ocurrió un error: " + err + ".</strong><br>LLamar a Javier.", 0, 'alrtPlusContainer');
+                        alertTop("<strong>Ocurrió un error: " + err + ".</strong><br>LLamar a Javier.", 0, $('#alrtPlusContainer'));
                     } else if (lang == "en") {
-                        alertTop("<strong>There has been an error: " + err + ".</strong><br>Call Javier.", 0, 'alrtPlusContainer');
+                        alertTop("<strong>There has been an error: " + err + ".</strong><br>Call Javier.", 0, $('#alrtPlusContainer'));
                     }
                     console.log(err);
                 });
@@ -228,28 +228,28 @@ function initSrch(stAf) {
 }
 function shwSrch() {
     if ((kywords == undefined || kywords == null || kywords == "") && page == 1) {
-        $('#crdContainer').innerHTML = `<div class="col mb-4">
+        $('#crdContainer').html(`<div class="col mb-4">
             <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
                 <a type="button" data-toggle="modal" data-target="#mdlPlus" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center">
                     <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
                 </a>
             </div>
-        </div>`;
+        </div>`);
     } else {
-        $('#crdContainer').innerHTML = "";
+        $('#crdContainer').html("");
     }
     getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
         let idx = 0;
         if (docs.length < 1) {
-            $('#crdContainer').innerHTML = `<h5 class="mt-0 text-center">No se han encontrado resultados</h5><div class="col mb-4">
+            $('#crdContainer').html(`<h5 class="mt-0 text-center">No se han encontrado resultados</h5><div class="col mb-4">
             <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
                 <a type="button" data-toggle="modal" data-target="#mdlPlus" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center">
                     <h1 style="font-size: 6rem;" class="mb-0"><i class="far fa-plus-square"></i></h1>
                 </a>
             </div>
-        </div>`;
+        </div>`);
         }
         docs.forEach(function (doc) {
             let col = $('<div></div>');
@@ -285,9 +285,9 @@ function shwSrch() {
                 badge.addClass('badge');
                 badge.addClass('badge-warning');
                 if (lang == "es") {
-                    badge.innerText = 'Borrador';
+                    badge.text('Borrador');
                 } else if (lang == "en") {
-                    badge.innerText = 'Draft';
+                    badge.text('Draft');
                 }
                 col0.appendChild(badge);
                 row.appendChild(col0);
@@ -305,7 +305,7 @@ function shwSrch() {
             btndrp.attr('data-toogle', 'dropdown');
             btndrp.attr('aria-haspopup', "true");
             btndrp.attr('aria-expanded', "false");
-            btndrp.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+            btndrp.html('<i class="fas fa-ellipsis-h"></i>');
             btndrp.onclick = function () {
                 if ($("#drpMenu" + doc.id).classList.contains('show')) {
                     $("#drpMenu" + doc.id).dropdown('hide');
@@ -331,9 +331,9 @@ function shwSrch() {
                 }
             };
             if (lang == "es") {
-                drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
+                drpitm0.html('Editar <i class="fas fa-edit"></i>');
             } else if (lang == "en") {
-                drpitm0.innerHTML = 'Edit <i class="fas fa-edit"></i>';
+                drpitm0.html('Edit <i class="fas fa-edit"></i>');
             }
             drpmenu.appendChild(drpitm0);
             let drpitm1 = $('<button></button>');
@@ -342,9 +342,9 @@ function shwSrch() {
                 window.open('../vista-email/' + doc.data().file, '_blank').focus();
             };
             if (lang == "es") {
-                drpitm1.innerHTML = 'Vista correo <i class="fas fa-envelope"></i>';
+                drpitm1.html('Vista correo <i class="fas fa-envelope"></i>');
             } else if (lang == "en") {
-                drpitm1.innerHTML = 'Mail preview <i class="fas fa-envelope"></i>';
+                drpitm1.html('Mail preview <i class="fas fa-envelope"></i>');
             }
             drpmenu.appendChild(drpitm1);
             let drpitm2 = $('<button></button>');
@@ -355,9 +355,9 @@ function shwSrch() {
                     window.open(doc.data().url, '_blank').focus();
                 };
                 if (lang == "es") {
-                    drpitm2.innerHTML = 'Ver Galleta <i class="fas fa-eye"></i>';
+                    drpitm2.html('Ver Galleta <i class="fas fa-eye"></i>');
                 } else if (lang == "en") {
-                    drpitm2.innerHTML = 'View Cookie <i class="fas fa-eye"></i>';
+                    drpitm2.html('View Cookie <i class="fas fa-eye"></i>');
                 }
                 drpmenu.appendChild(drpitm2);
             }
@@ -400,20 +400,21 @@ function shwSrch() {
             a.appendChild(img);
             let cbody = $('<div></div>');
             cbody.addClass('card-body');
-            cbody.innerHTML = '<h3 class="card-title">' + doc.data().title + '</h3>\n<p>' + authTxt + ':' + doc.data().authors + '</p>\n<p class="card-text">' + doc.data().description + '</p>\n'
+            cbody.html('<h3 class="card-title">' + doc.data().title + '</h3>\n<p>' + authTxt + ':' + doc.data().authors + '</p>\n<p class="card-text">' + doc.data().description + '</p>\n');
             a.appendChild(cbody);
             let f = $('<div></div>');
             f.addClass('card-footer');
             f.addClass('text-muted');
-            f.innerHTML = '<p>' + creatTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
+            let fHtmlStr = '<p>' + creatTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             d = doc.data().ledit.toDate();
-            f.innerHTML += '<p>' + uptTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
+            fHtmlStr += '<p>' + uptTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             if (doc.data().public) {
                 d = doc.data().published.toDate();
-                f.innerHTML += '<p>' + pubTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
+                fHtmlStr += '<p>' + pubTxt + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</p>\n';
             } else {
-                f.innerHTML += '<p>' + noPubTxt + '</p>\n';
+                fHtmlStr += '<p>' + noPubTxt + '</p>\n';
             }
+            f.html(fHtmlStr);
             a.appendChild(f)
             card.appendChild(a);
 
@@ -456,8 +457,8 @@ function reSrch(np) {
     if (page < 1 && np == -1) return;
     if (!nxtp && np == 1) return;
     page += np;
-    $('#disPgT').innerText = page;
-    $('#disPgB').innerText = page;
+    $('#disPgT').text(page);
+    $('#disPgB').text(page);
     initSrch(true);
     $("#cookCnt").scrollIntoView();
 }
@@ -471,7 +472,7 @@ var inFileChanged = false;
 function cancelPlus() {
     $('#inTitle').value = "";
     $('#inFile').value = "";
-    $('#alrtPlusContainer').innerHTML = '';
+    $('#alrtPlusContainer').html('');
     inFileChanged = false;
 }
 $('#btnCanPlus0').onclick = function () {
@@ -482,7 +483,7 @@ $('#btnCanPlus1').onclick = function () {
 };
 
 $('#inTitle').onfocus = function () {
-    $('#alrtPlusContainer').innerHTML = '';
+    $('#alrtPlusContainer').html('');
 };
 $('#inTitle').oninput = function () {
     $('#inTitle').value = $('#inTitle').value.trim();
@@ -494,13 +495,13 @@ $('#inFile').onfocus = function () {
     inFileChanged = true;
 };
 $('#inFile').onchange = function () {
-    $('#alrtPlusContainer').innerHTML = '';
+    $('#alrtPlusContainer').html('');
 };
 
 function setprog(n) {
     $('#bar').attr('aria-valuenow', n);
     $('#bar').style.width = n + '%';
-    $('#bar').innerText = n + '%';
+    $('#bar').text(n + '%');
 }
 
 $('#inFile').oninput = function () {

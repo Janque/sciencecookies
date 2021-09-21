@@ -28,7 +28,7 @@ window.showEvent = function showEvent() {
     eventKeys.forEach(key => {
         $('#' + key).hide();
     });
-    $('#mdlEventInfoL').innerHTML = eventTitles[eventToShow];
+    $('#mdlEventInfoL').html(eventTitles[eventToShow]);
     $('#' + eventToShow).show();
     enableBtn($('#btnPriorEve'));
     enableBtn($('#btnNextEve'));

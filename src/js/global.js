@@ -54,7 +54,7 @@ window.disableBtn = function disableBtn(btn) {
     btn.addClass("disabled");
     btn.attr("disabled", "true");
 }
-window.alertTop = function alertTop(msg, alert, alrtId = "alrtClsSsn") {
+window.alertTop = function alertTop(msg, alert, alrtId = $("#alrtClsSsn")) {
     switch (alert) {
         case 0:
             alert = "danger";
@@ -66,12 +66,12 @@ window.alertTop = function alertTop(msg, alert, alrtId = "alrtClsSsn") {
             alert = "warning";
             break;
     }
-    document.getElementById(alrtId).innerHTML = `<div id="alrtClsSsnAlrt" class="alert alert-${alert} alert-dismissible fade show fixed-bottom" role="alert">${msg}<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
+    alrtId.html(`<div id="alrtClsSsnAlrt" class="alert alert-${alert} alert-dismissible fade show fixed-bottom" role="alert">${msg}<button id="btnAlrtClsSsn" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`);
     setTimeout(function () {
         $("#btnAlrtClsSsn").click();
     }, 3000);
     $('#alrtClsSsnAlrt').on('closed.bs.alert', function () {
-        document.getElementById(alrtId).innerHTML = '';
+        alrtId.html('');
     });
 }
 
@@ -156,36 +156,36 @@ function shwSsnBtns(ac) {
                 pubID = doc.data().shortID;
                 if (fav.indexOf(id) != -1) {
                     if (lang == "es") {
-                        $('#btnFav').innerHTML = ('En mis favoritos <i class="fas fa-heart"></i>').concat(' ', $('#btnFav').innerHTML.substr($('#btnFav').innerHTML.search('<sp')));
+                        $('#btnFav').html(('En mis favoritos <i class="fas fa-heart"></i>').concat(' ', $('#btnFav').html().substr($('#btnFav').html().search('<sp'))));
                     } else if (lang == "en") {
-                        $('#btnFav').innerHTML = ('In my favorites <i class="fas fa-heart"></i>').concat(' ', $('#btnFav').innerHTML.substr($('#btnFav').innerHTML.search('<sp')));
+                        $('#btnFav').html(('In my favorites <i class="fas fa-heart"></i>').concat(' ', $('#btnFav').html().substr($('#btnFav').html().search('<sp'))));
                     }
                     $('#btnFav').removeClass('btn-outline-light');
                     $('#btnFav').addClass('btn-light');
                 }
                 else {
                     if (lang == "es") {
-                        $('#btnFav').innerHTML = ('Añadir a favoritos <i class="far fa-heart"></i>').concat(' ', $('#btnFav').innerHTML.substr($('#btnFav').innerHTML.search('<sp')));
+                        $('#btnFav').html(('Añadir a favoritos <i class="far fa-heart"></i>').concat(' ', $('#btnFav').html().substr($('#btnFav').html().search('<sp'))));
                     } else if (lang == "en") {
-                        $('#btnFav').innerHTML = ('Add to favorites <i class="far fa-heart"></i>').concat(' ', $('#btnFav').innerHTML.substr($('#btnFav').innerHTML.search('<sp')));
+                        $('#btnFav').html(('Add to favorites <i class="far fa-heart"></i>').concat(' ', $('#btnFav').html().substr($('#btnFav').html().search('<sp'))));
                     }
                     $('#btnFav').removeClass('btn-light');
                     $('#btnFav').addClass('btn-outline-light');
                 }
                 if (liked.indexOf(id) != -1) {
                     if (lang == "es") {
-                        $('#btnLike').innerHTML = ('Me gusta <i class="fas fa-thumbs-up"></i>').concat(' ', $('#btnLike').innerHTML.substr($('#btnLike').innerHTML.search('<sp')));
+                        $('#btnLike').html(('Me gusta <i class="fas fa-thumbs-up"></i>').concat(' ', $('#btnLike').html().substr($('#btnLike').html().search('<sp'))));
                     } else if (lang == "en") {
-                        $('#btnLike').innerHTML = ('Liked <i class="fas fa-thumbs-up"></i>').concat(' ', $('#btnLike').innerHTML.substr($('#btnLike').innerHTML.search('<sp')));
+                        $('#btnLike').html(('Liked <i class="fas fa-thumbs-up"></i>').concat(' ', $('#btnLike').html().substr($('#btnLike').html().search('<sp'))));
                     }
                     $('#btnLike').removeClass('btn-outline-light');
                     $('#btnLike').addClass('btn-light');
                 }
                 else {
                     if (lang == "es") {
-                        $('#btnLike').innerHTML = ('Dar me gusta <i class="far fa-thumbs-up"></i>').concat(' ', $('#btnLike').innerHTML.substr($('#btnLike').innerHTML.search('<sp')));
+                        $('#btnLike').html(('Dar me gusta <i class="far fa-thumbs-up"></i>').concat(' ', $('#btnLike').html().substr($('#btnLike').html().search('<sp'))));
                     } else if (lang == "en") {
-                        $('#btnLike').innerHTML = ('Like <i class="far fa-thumbs-up"></i>').concat(' ', $('#btnLike').innerHTML.substr($('#btnLike').innerHTML.search('<sp')));
+                        $('#btnLike').html(('Like <i class="far fa-thumbs-up"></i>').concat(' ', $('#btnLike').html().substr($('#btnLike').html().search('<sp'))));
                     }
                     $('#btnLike').removeClass('btn-light');
                     $('#btnLike').addClass('btn-outline-light');
@@ -283,9 +283,9 @@ function shwRecom() {
             let bod0 = $('<div></div>');
             classes(bod0, "card-body");
             let d = dat.published.toDate();
-            bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
+            bod0.html(`<h5 class="card-title">` + dat.title + `</h5>
                 <p class="card-text">` + dat.description + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`);
             card.appendChild(bod0);
             $("#newCook").appendChild(a0);
 
@@ -304,9 +304,9 @@ function shwRecom() {
             med.appendChild(img1);
             let bod1 = $('<div></div>');
             classes(bod1, "media-body");
-            bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
+            bod1.html(`<h6 class="card-title">` + dat.title + `</h6>
                 <p class="card-text">` + dat.description + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`);
             med.appendChild(bod1);
             $("#newCook").appendChild(a1);
         })
@@ -329,9 +329,9 @@ function shwRecom() {
             let bod0 = $('<div></div>');
             classes(bod0, "card-body");
             let d = dat.published.toDate();
-            bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
+            bod0.html(`<h5 class="card-title">` + dat.title + `</h5>
                 <p class="card-text">` + dat.description + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`);
             card.appendChild(bod0);
             $("#popCook").appendChild(a0);
 
@@ -350,9 +350,9 @@ function shwRecom() {
             med.appendChild(img1);
             let bod1 = $('<div></div>');
             classes(bod1, "media-body");
-            bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
+            bod1.html(`<h6 class="card-title">` + dat.title + `</h6>
                 <p class="card-text">` + dat.description + `</p>
-                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`;
+                <p class="card-text">` + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ` Autor(es):` + dat.authors + `</p>`);
             med.appendChild(bod1);
             $("#popCook").appendChild(a1);
 
@@ -378,8 +378,8 @@ function shwRecom() {
             card.appendChild(img0);
             let bod0 = $('<div></div>');
             classes(bod0, "card-body");
-            bod0.innerHTML = `<h5 class="card-title">` + dat.title + `</h5>
-                <p class="card-text">` + dat.descriptionShort + `</p>`;
+            bod0.html(`<h5 class="card-title">` + dat.title + `</h5>
+                <p class="card-text">` + dat.descriptionShort + `</p>`);
             card.appendChild(bod0);
             $("#calCnt").appendChild(a0);
 
@@ -398,8 +398,8 @@ function shwRecom() {
             med.appendChild(img1);
             let bod1 = $('<div></div>');
             classes(bod1, "media-body");
-            bod1.innerHTML = `<h6 class="card-title">` + dat.title + `</h6>
-                <p class="card-text">` + dat.descriptionShort + `</p>`;
+            bod1.html(`<h6 class="card-title">` + dat.title + `</h6>
+                <p class="card-text">` + dat.descriptionShort + `</p>`);
             med.appendChild(bod1);
             $("#calCnt").appendChild(a1);
 

@@ -37,8 +37,8 @@ window.loaded = function loaded() {
     onValue(cookRef, (snap) => {
         const data = snap.val();
         if (data) {
-            $('#favCount').innerText = data.favs;
-            $('#likeCount').innerText = data.likes;
+            $('#favCount').text(data.favs);
+            $('#likeCount').text(data.likes);
         }
     });
     set(child(cookRef, 'pop'), increment(1));
@@ -121,10 +121,10 @@ window.loaded = function loaded() {
             $('#frmNwComBtns').hide();
             if (lang == "es") {
                 $('#inNwCom').attr('placeholder', 'Nuevo comentario');
-                $('#btnAddCom').innerHTML = 'Comentar';
+                $('#btnAddCom').html('Comentar');
             } else if (lang == "en") {
                 $('#inNwCom').attr('placeholder', 'New comment');
-                $('#btnAddCom').innerHTML = 'Comment';
+                $('#btnAddCom').html('Comment');
             }
             enableBtn($('#btnCanCom'));
             enableBtn($('#btnAddCom'));
@@ -136,7 +136,7 @@ window.loaded = function loaded() {
         if (actSsn) {
             disableBtn($('#btnAddCom'));
             disableBtn($('#btnCanCom'));
-            $('#btnAddCom').innerHTML = '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>';
+            $('#btnAddCom').html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
             sendNwCom();
         }
     });
@@ -160,7 +160,7 @@ $('#btnFav').onclick = function () {
                 if (lang == "en") {
                     langTxt = "Add to favorites";
                 }
-                $('#btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
+                $('#btnFav').html(langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>');
                 $('#btnFav').removeClass('btn-light');
                 $('#btnFav').addClass('btn-outline-light');
                 npop = -20;
@@ -180,7 +180,7 @@ $('#btnFav').onclick = function () {
                     if (lang == "en") {
                         langTxt = "I like it";
                     }
-                    $('#btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
+                    $('#btnLike').html(langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>');
                     $('#btnLike').removeClass('btn-outline-light');
                     $('#btnLike').addClass('btn-light');
                 }
@@ -190,7 +190,7 @@ $('#btnFav').onclick = function () {
                 if (lang == "en") {
                     langTxt = "In my favorites";
                 }
-                $('#btnFav').innerHTML = langTxt + '  <i class="fas fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
+                $('#btnFav').html(langTxt + '  <i class="fas fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>');
                 $('#btnFav').removeClass('btn-outline-light');
                 $('#btnFav').addClass('btn-light');
             }
@@ -202,9 +202,9 @@ $('#btnFav').onclick = function () {
         }).catch(function (err) { console.log('err') });
     } else {
         if (lang == "es") {
-            $('#mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+            $('#mdlRgsL').html('Debes iniciar sesión o registrarte para continuar');
         } else if (lang == "en") {
-            $('#mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+            $('#mdlRgsL').html('You must log in or sign in before you continue');
         }
         $('#mdlRgstr').modal('show');
     }
@@ -229,7 +229,7 @@ $('#btnLike').onclick = function () {
                 if (lang == "en") {
                     langTxt = "I like it";
                 }
-                $('#btnLike').innerHTML = langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
+                $('#btnLike').html(langTxt + ' <i class="fas fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>');
                 $('#btnLike').removeClass('btn-outline-light');
                 $('#btnLike').addClass('btn-light');
             }
@@ -248,7 +248,7 @@ $('#btnLike').onclick = function () {
                     if (lang == "en") {
                         langTxt = "Add to favorites";
                     }
-                    $('#btnFav').innerHTML = langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>';
+                    $('#btnFav').html(langTxt + '  <i class="far fa-heart"></i> <span class="badge badge-dark ml-2" id="favCount"></span>');
                     $('#btnFav').removeClass('btn-light');
                     $('#btnFav').addClass('btn-outline-light');
                 }
@@ -257,7 +257,7 @@ $('#btnLike').onclick = function () {
                     langTxt = "Like";
                 }
                 nlik = -1;
-                $('#btnLike').innerHTML = langTxt + ' <i class="far fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>';
+                $('#btnLike').html(langTxt + ' <i class="far fa-thumbs-up"></i> <span class="badge badge-dark ml-2" id="likeCount"></span>');
                 $('#btnLike').removeClass('btn-light');
                 $('#btnLike').addClass('btn-outline-light');
             }
@@ -270,18 +270,18 @@ $('#btnLike').onclick = function () {
         }).catch(function (err) { console.log(err) });
     } else {
         if (lang == "es") {
-            $('#mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+            $('#mdlRgsL').html('Debes iniciar sesión o registrarte para continuar');
         } else if (lang == "en") {
-            $('#mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+            $('#mdlRgsL').html('You must log in or sign in before you continue');
         }
         $('#mdlRgstr').modal('show');
     }
 };
 $('#mdlRgstr').on('hidden.bs.modal', function (e) {
     if (lang == "es") {
-        $('#mdlRgsL').innerHTML = 'Inicia sesión o regístrate';
+        $('#mdlRgsL').html('Inicia sesión o regístrate');
     } else if (lang == "en") {
-        $('#mdlRgsL').innerHTML = 'Log in or sign in';
+        $('#mdlRgsL').html('Log in or sign in');
     }
 });
 
@@ -290,9 +290,9 @@ $('#inNwCom').onfocus = function () {
         $('#frmNwComBtns').show();
     } else {
         if (lang == "es") {
-            $('#mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+            $('#mdlRgsL').html('Debes iniciar sesión o registrarte para continuar');
         } else if (lang == "en") {
-            $('#mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+            $('#mdlRgsL').html('You must log in or sign in before you continue');
         }
         $('#mdlRgstr').modal('show');
     }
@@ -306,9 +306,9 @@ window.report = function report(r) {
         $('#mdlRprt').modal('show');
     } else {
         if (lang == "es") {
-            $('#mdlRgsL').innerHTML = 'Debes iniciar sesión o registrarte para continuar';
+            $('#mdlRgsL').html('Debes iniciar sesión o registrarte para continuar');
         } else if (lang == "en") {
-            $('#mdlRgsL').innerHTML = 'You must log in or sign in before you continue';
+            $('#mdlRgsL').html('You must log in or sign in before you continue');
         }
         $('#mdlRgstr').modal('show');
     }
@@ -354,9 +354,9 @@ function drwComs(num) {
     } else if (lang == "en") {
         comTxt = 'comment';
     }
-    $('#cntComs2').innerHTML = '';
-    $('#comCount').innerHTML = comCount + ' ' + comTxt;
-    if (comCount != 1) $('#comCount').innerHTML += 's';
+    let htmlString = comCount + ' ' + comTxt;
+    if (comCount != 1) htmlString += 's';
+    $('#comCount').html(htmlString);
     for (let i = 1; i <= num; i++) {
         if (i > comList.length) break;
         if (comList[comList.length - i] == null) continue;
@@ -384,7 +384,7 @@ function createCom(comDat) {
     a.addClass('text-decoration-none');
     a.addClass('text-dark');
     a.href = '../../ver-perfil?user=' + comDat.shortID;
-    a.innerHTML = '<img src="' + comDat.pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`https://via.placeholder.com/20.webp`">' + comDat.from;
+    a.html('<img src="' + comDat.pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`https://via.placeholder.com/20.webp`">' + comDat.from);
     usr.appendChild(a);
     head.appendChild(usr);
     let rprt = $('<div></div>');
@@ -396,7 +396,7 @@ function createCom(comDat) {
     btnRprt.attr('data-toggle', 'dropdown');
     btnRprt.attr('aria-haspopup', 'true');
     btnRprt.attr('aria-expanded', 'false');
-    btnRprt.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+    btnRprt.html('<i class="fas fa-ellipsis-h"></i>');
     rprt.appendChild(btnRprt);
     let drpRprt = $('<div></div>');
     drpRprt.addClass('dropdown-menu');
@@ -407,7 +407,7 @@ function createCom(comDat) {
     if (lang == "es") {
         reportTxt = 'ar';
     }
-    drpRprt.innerHTML = '<button class="dropdown-item" onclick="report(' + aux + ');"><i class="fas fa-flag"></i> Report' + reportTxt + '</button>';
+    drpRprt.html('<button class="dropdown-item" onclick="report(' + aux + ');"><i class="fas fa-flag"></i> Report' + reportTxt + '</button>');
     rprt.appendChild(drpRprt);
     head.appendChild(rprt);
     let bod = $('<div></div>');
@@ -415,7 +415,7 @@ function createCom(comDat) {
     bod.addClass('pl-3');
     bod.addClass('pr-2');
     let p = $('<p></p>');
-    p.innerText = comDat.text;
+    p.text(comDat.text);
     bod.appendChild(p);
     let foot = $('<div></div>');
     foot.addClass('row');
@@ -425,7 +425,7 @@ function createCom(comDat) {
     /*@#btn.addClass('btn');
     btn.addClass('btn-light');
     btn.addClass('mr-3');
-    btn.innerHTML='<i class="far fa-thumbs-up"></i> '+comDat.likes;
+    btn.html('<i class="far fa-thumbs-up"></i> '+comDat.likes);
     btn.attr('id',comDat.id);
     btn.attr('onclick','likeCom('+comDat.id+')');
     btns.appendChild(btn);
@@ -435,9 +435,9 @@ function createCom(comDat) {
     btn.addClass('mr-3');
     btn.attr('onclick', 'reply(' + comDat.id + ')');
     if (lang == "es") {
-        btn.innerHTML = 'Responder';
+        btn.html('Responder');
     } else if (lang == "en") {
-        btn.innerHTML = 'Reply';
+        btn.html('Reply');
     }
     btns.appendChild(btn);
     if (comDat.reps.length > 0) {
@@ -446,9 +446,9 @@ function createCom(comDat) {
         btn.addClass('btn-link-science');
         btn.attr('onclick', '$("#' + comDat.id + 'Reps").classList.toggle("d-none")');
         if (lang == "es") {
-            btn.innerHTML = 'Respuestas <i class="fas fa-caret-down"></i>';
+            btn.html('Respuestas <i class="fas fa-caret-down"></i>');
         } else if (lang == "en") {
-            btn.innerHTML = 'Replies <i class="fas fa-caret-down"></i>';
+            btn.html('Replies <i class="fas fa-caret-down"></i>');
         }
         btns.appendChild(btn);
     }
@@ -480,7 +480,7 @@ function createCom(comDat) {
         ra.addClass('text-decoration-none');
         ra.addClass('text-dark');
         ra.href = '../../ver-perfil?user=' + comDat.reps[i].shortID;
-        ra.innerHTML = '<img src="' + comDat.reps[i].pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`https://via.placeholder.com/20.webp`">' + comDat.reps[i].from;
+        ra.html('<img src="' + comDat.reps[i].pic + '" alt="" class="rounded-circle mr-2" height="35" width="35" onerror="this.src=`https://via.placeholder.com/20.webp`">' + comDat.reps[i].from);
         rusr.appendChild(ra);
         rHd.appendChild(rusr);
         let rrprt = $('<div></div>');
@@ -492,7 +492,7 @@ function createCom(comDat) {
         rbtnRprt.attr('data-toggle', 'dropdown');
         rbtnRprt.attr('aria-haspopup', 'true');
         rbtnRprt.attr('aria-expanded', 'false');
-        rbtnRprt.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+        rbtnRprt.html('<i class="fas fa-ellipsis-h"></i>');
         rrprt.appendChild(rbtnRprt);
         let rdrpRprt = $('<div></div>');
         rdrpRprt.addClass('dropdown-menu');
@@ -503,7 +503,7 @@ function createCom(comDat) {
         if (lang == "es") {
             reportTxt = 'ar';
         }
-        rdrpRprt.innerHTML = '<button class="dropdown-item" onclick="report(' + raux + ');"><i class="fas fa-flag"></i> Report' + reportTxt + '</button>';
+        rdrpRprt.html('<button class="dropdown-item" onclick="report(' + raux + ');"><i class="fas fa-flag"></i> Report' + reportTxt + '</button>');
         rrprt.appendChild(rdrpRprt);
         rHd.appendChild(rrprt);
         let rbod = $('<div></div>');
@@ -511,7 +511,7 @@ function createCom(comDat) {
         rbod.addClass('pl-3');
         rbod.addClass('pr-2');
         let rp = $('<p></p>');
-        rp.innerText = comDat.reps[i].text;
+        rp.text(comDat.reps[i].text);
         rbod.appendChild(rp);
         /*@#let rfoot=$('<div></div>');
         rfoot.addClass('row');
@@ -521,7 +521,7 @@ function createCom(comDat) {
         rbtn.addClass('btn');
         rbtn.addClass('btn-light');
         rbtn.addClass('mr-3');
-        rbtn.innerHTML='<i class="far fa-thumbs-up"></i> '+comDat.reps[i].likes;
+        rbtn.html('<i class="far fa-thumbs-up"></i> '+comDat.reps[i].likes);
         rbtn.attr('id',comDat.id+'r'+comDat.reps[i].id);
         rbtn.attr('onclick','likeCom('+comDat.id+','+comDat.reps[i].id+')');
         rbtns.appendChild(rbtn);

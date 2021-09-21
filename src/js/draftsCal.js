@@ -37,7 +37,7 @@ function initSrch(stAf) {
     shwSrch();
 }
 function shwSrch() {
-    $('#crdContainer').innerHTML = "";
+    $('#crdContainer').html("");
     getDocs(srchQuery).then(snap => {
         let docs = snap.docs;
         nxtp = false;
@@ -65,9 +65,9 @@ function shwSrch() {
                 let badge = $('<span></span>');
                 classes(badge, 'badge badge-warning');
                 if (lang == "es") {
-                    badge.innerText = 'Pendiente';
+                    badge.text('Pendiente');
                 } else if (lang == "en") {
-                    badge.innerText = 'Pending';
+                    badge.text('Pending');
                 }
                 col0.appendChild(badge);
                 row.appendChild(col0);
@@ -82,7 +82,7 @@ function shwSrch() {
             btndrp.attr('data-toogle', 'dropdown');
             btndrp.attr('aria-haspopup', "true");
             btndrp.attr('aria-expanded', "false");
-            btndrp.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+            btndrp.html('<i class="fas fa-ellipsis-h"></i>');
             btndrp.onclick = function () {
                 if ($("#drpMenu" + doc.id).classList.contains('show')) {
                     $("#drpMenu" + doc.id).dropdown('hide');
@@ -107,9 +107,9 @@ function shwSrch() {
                 }
             };
             if (lang == "es") {
-                drpitm0.innerHTML = 'Editar <i class="fas fa-edit"></i>';
+                drpitm0.html('Editar <i class="fas fa-edit"></i>');
             } else if (lang == "en") {
-                drpitm0.innerHTML = 'Edit <i class="fas fa-edit"></i>';
+                drpitm0.html('Edit <i class="fas fa-edit"></i>');
             }
             drpmenu.appendChild(drpitm0);
             let drpitm1 = $('<button></button>');
@@ -118,9 +118,9 @@ function shwSrch() {
                 window.open('../vista-email-calendario/' + doc.id, '_blank').focus();
             };
             if (lang == "es") {
-                drpitm1.innerHTML = 'Vista correo <i class="fas fa-envelope"></i>';
+                drpitm1.html('Vista correo <i class="fas fa-envelope"></i>');
             } else if (lang == "en") {
-                drpitm1.innerHTML = 'Mail preview <i class="fas fa-envelope"></i>';
+                drpitm1.html('Mail preview <i class="fas fa-envelope"></i>');
             }
             drpmenu.appendChild(drpitm1);
             let drpitm2 = $('<button></button>');
@@ -130,9 +130,9 @@ function shwSrch() {
                     window.open(dat.url, '_blank').focus();
                 };
                 if (lang == "es") {
-                    drpitm2.innerHTML = 'Ver Galleta <i class="fas fa-eye"></i>';
+                    drpitm2.html('Ver Galleta <i class="fas fa-eye"></i>');
                 } else if (lang == "en") {
-                    drpitm2.innerHTML = 'View Cookie <i class="fas fa-eye"></i>';
+                    drpitm2.html('View Cookie <i class="fas fa-eye"></i>');
                 }
                 drpmenu.appendChild(drpitm2);
             }
@@ -163,7 +163,7 @@ function shwSrch() {
             a.appendChild(img);
             let cbody = $('<div></div>');
             classes(cbody, 'card-body');
-            cbody.innerHTML = '<h3 class="card-title">' + dat.title + '</h3>\n<p class="card-text">' + dat.description + '</p>\n'
+            cbody.html('<h3 class="card-title">' + dat.title + '</h3>\n<p class="card-text">' + dat.description + '</p>\n');
             a.appendChild(cbody);
             card.appendChild(a);
 
@@ -205,8 +205,8 @@ function reSrch(np) {
     if (page < 1 && np == -1) return;
     if (!nxtp && np == 1) return;
     page += np;
-    $('#disPgT').innerText = page;
-    $('#disPgB').innerText = page;
+    $('#disPgT').text(page);
+    $('#disPgB').text(page);
     initSrch(true);
     $("#cookCnt").scrollIntoView();
 }

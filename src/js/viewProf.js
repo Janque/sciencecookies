@@ -41,16 +41,16 @@ function shwPrfl() {
         else $('#disPP').attr('onerror', "this.src='https://via.placeholder.com/20.webp'");
         $('#disPP').src = url;
         if (userPublic.pemail != null) $('#contEmail').show();
-        $('#disMail').innerHTML = userPublic.pemail;
-        $('#disName').innerHTML = userPublic.pname;
+        $('#disMail').html(userPublic.pemail);
+        $('#disName').html(userPublic.pname);
         $('#crdPrfl').show();
     }).catch(err => {
         if (userPublic.ppic != null) $('#disPP').attr('onerror', "this.src='" + userPublic.ppic + "'");
         else $('#disPP').attr('onerror', "https://via.placeholder.com/20.webp'");
         $('#disPP').src = '';
         if (userPublic.pemail != null) $('#contEmail').show();
-        $('#disMail').innerHTML = userPublic.pemail;
-        $('#disName').innerHTML = userPublic.pname;
+        $('#disMail').html(userPublic.pemail);
+        $('#disName').html(userPublic.pname);
         $('#crdPrfl').show();
     });
 }
@@ -65,7 +65,7 @@ function shwFav() {
             favStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + useruserPublic.favl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
         }
     });
-    $('#cntFav').innerHTML = favStr;
+    $('#cntFav').html(favStr);
     $('#crdFav').show();
 }
 function shwLike() {
@@ -79,7 +79,7 @@ function shwLike() {
             likedStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + userPublic.likedl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
         }
     });
-    $('#cntLike').innerHTML = likedStr;
+    $('#cntLike').html(likedStr);
     $('#crdLike').show();
 }
 window.shwCrds = function shwCrds(t, u) {
@@ -98,9 +98,9 @@ window.shwCrds = function shwCrds(t, u) {
                 $('#contEmail').hide();
                 $('#contPic').hide();
                 if (lang == "es") {
-                    $('#contNull').innerHTML = '<div class="col"><strong>Este perfíl no existe o es privado</strong></div>';
+                    $('#contNull').html('<div class="col"><strong>Este perfíl no existe o es privado</strong></div>');
                 } else if (lang == "en") {
-                    $('#contNull').innerHTML = '<div class="col"><strong>This profile does not exist or it is private.</strong></div>';
+                    $('#contNull').html('<div class="col"><strong>This profile does not exist or it is private.</strong></div>');
                 }
                 $('#crdPrfl').show();
             } else {

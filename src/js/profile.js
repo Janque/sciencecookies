@@ -59,7 +59,7 @@ window.loaded = function loaded() {
         }).then(() => {
             userData = localUserData;
             resetFrm();
-            $('#disName').innerHTML = displayName;
+            $('#disName').html(displayName);
         }).catch(function (err) { console.log(err) });
     }
     $("#frmChngNk").addEventListener("submit", function (event) {
@@ -151,7 +151,7 @@ window.loaded = function loaded() {
                 $("#preVIn").src = e2.target.result;
             };
         };
-        $('#inNwPPL').innerHTML = fileForUp.name;
+        $('#inNwPPL').html(fileForUp.name);
         prevImg(fileForUp);
     });
 }
@@ -160,9 +160,9 @@ window.resetFrm = function resetFrm() {
     $('#inNwPP').value = '';
     $("#preVIn").src = '';
     if (lang == "es") {
-        $('#inNwPPL').innerHTML = 'Elige una imagen';
+        $('#inNwPPL').html('Elige una imagen');
     } else if (lang == "en") {
-        $('#inNwPPL').innerHTML = 'Choose an image';
+        $('#inNwPPL').html('Choose an image');
     }
     $("#prBar").hide();
     $("#frmChngPP").show();
@@ -213,8 +213,8 @@ function shwPrfl() {
     $('#navBtnPrfl').addClass('active');
     $('#disPP').attr('onerror', "this.src='https://via.placeholder.com/20.webp'");
     $('#disPP').src = photoURL;
-    $('#disMail').innerHTML = email;
-    $('#disName').innerHTML = displayName;
+    $('#disMail').html(email);
+    $('#disName').html(displayName);
     $('#crdPrfl').show();
 }
 function shwFav() {
@@ -227,7 +227,7 @@ function shwFav() {
             favStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + userData.favl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
         }
     });
-    $('#cntFav').innerHTML = favStr;
+    $('#cntFav').html(favStr);
     $('#crdFav').show();
 }
 function shwLike() {
@@ -240,7 +240,7 @@ function shwLike() {
             likedStr += '<li class="list-group-item text-light border-light bg-transparent"><a class="text-decoration-none text-light" href="' + userData.likedl[idx] + '">' + itm + ' <i class="fas fa-link"></i></a></li>';
         }
     });
-    $('#cntLike').innerHTML = likedStr;
+    $('#cntLike').html(likedStr);
     $('#crdLike').show();
 }
 window.shwPref = function shwPref() {
