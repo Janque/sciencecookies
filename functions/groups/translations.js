@@ -94,12 +94,10 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
         picCapt: await translateString(data.picCapt, req.from, req.target),
         weeks: data.weeks.slice()
     };
-    translation = {
-        description: postTranslate(translation.description),
-        descriptionShort: postTranslate(translation.descriptionShort),
-        picAlt: postTranslate(translation.picAlt),
-        picCapt: postTranslate(translation.picCapt)
-    };
+    translation.description = postTranslate(translation.description);
+    translation.descriptionShort = postTranslate(translation.descriptionShort);
+    translation.picAlt = postTranslate(translation.picAlt);
+    translation.picCapt = postTranslate(translation.picCapt);
 
     for (const [key, event] of Object.entries(data.events)) {
         for (let i = 0; i < calConfig[req.target][event.typeIdx].options.length; i++) {
