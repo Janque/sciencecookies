@@ -119,6 +119,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 options: [{
                     label: "Luna Nueva",
                     val: "00",
+                    defaultVis: 5
                 }, {
                     label: "Cuarto Creciente",
                     val: "11",
@@ -287,7 +288,8 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
             titleTxt: [
                 "$1$ en afelio",
                 "$1$ en perihelio"
-            ]
+            ],
+            defaultVis: 5
         }, {
             label: "Movimiento retrógrada",
             multipleTxt: true,
@@ -314,9 +316,11 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 }, {
                     label: "Urano",
                     val: "Urano",
+                    defaultVis: 1
                 }, {
                     label: "Neptuno",
                     val: "Neptuno",
+                    defaultVis: 2
                 }],
             }],
             text: [
@@ -405,7 +409,8 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 "Solsticio de Junio",
                 "Equinoccio de Septiembre",
                 "Solsticio de Diciembre"
-            ]
+            ],
+            defaultVis: 5
         }, {
             label: "Lluvia de estrellas",
             multipleTxt: false,
@@ -630,6 +635,7 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 options: [{
                     label: "New Moon",
                     val: "00",
+                    defaultVis: 5
                 }, {
                     label: "Moon at First Quarter",
                     val: "11",
@@ -799,7 +805,8 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
             titleTxt: [
                 "$1$ at aphelion",
                 "$1$ at perihelion"
-            ]
+            ],
+            defaultVis: 5
         }, {
             label: "Retrograde motion",
             multipleTxt: true,
@@ -826,9 +833,11 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 }, {
                     label: "Uranus",
                     val: "Uranus",
+                    defaultVis: 1
                 }, {
                     label: "Neptune",
                     val: "Neptune",
+                    defaultVis: 2
                 }],
             }],
             text: [
@@ -917,7 +926,8 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
                 "June Solstice",
                 "September Equinox",
                 "December Solstice"
-            ]
+            ],
+            defaultVis: 5
         }, {
             label: "Meteor shower",
             multipleTxt: false,

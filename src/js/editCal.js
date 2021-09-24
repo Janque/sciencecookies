@@ -577,8 +577,8 @@ function render() {
             event.typeIdx = parseInt(selTypeMain.value);
             if (!event.typeIdx) event.typeIdx = 0;
             event.vals = {};
-            if (calConfig[lang][event.typeIdx].defaultVis != null && calConfig[lang][event.typeIdx].defaultVis != undefined) {
-                let newVisVal = calConfig[lang][event.typeIdx].defaultVis;
+            let newVisVal = calConfig[lang][event.typeIdx].defaultVis;
+            if (newVisVal != null && newVisVal != undefined) {
                 inVis.value = newVisVal;
                 inVisTakeInput();
             }
@@ -689,7 +689,16 @@ function render() {
                             changed = true;
                             event.vals[idx + '-' + sidx] = {};
                             event.vals[idx + '-' + sidx].val = sinp.value;
-                            if (option.type == "select") event.vals[idx + '-' + sidx].label = sinp.text();
+                            if (soption.type == "select") {
+                                event.vals[idx + '-' + sidx].label = sinp.text();
+
+                                let optIdx = $(this).find('option').index($(this).find(':selected'));
+                                let newVisVal = option.sub[sidx].options[optIdx].defaultVis;
+                                if (newVisVal != null && newVisVal != undefined) {
+                                    inVis.value = newVisVal;
+                                    inVisTakeInput();
+                                }
+                            }
                             else event.vals[idx + '-' + sidx].label = soption.label;
                             regenTxt();
                         }
@@ -700,7 +709,16 @@ function render() {
                     changed = true;
                     event.vals[idx] = {};
                     event.vals[idx].val = inp.value;
-                    if (option.type == "select") event.vals[idx].label = inp.text();
+                    if (option.type == "select") {
+                        event.vals[idx].label = inp.text();
+
+                        let optIdx = $(this).find('option').index($(this).find(':selected'));
+                        let newVisVal = option.options[optIdx].defaultVis;
+                        if (newVisVal != null && newVisVal != undefined) {
+                            inVis.value = newVisVal;
+                            inVisTakeInput();
+                        }
+                    }
                     else event.vals[idx].label = option.label;
                     if (option.valForSub) {
                         if (option.valForSub == inp.value) sfRow.show();
@@ -765,8 +783,8 @@ function render() {
         inTime.id = "inTime" + key;
         inTime.attr("rows", "4");
         fgTime.appendChild(inTime);
-        if (inVis.value == 5) fgTime.hide();
-        else fgTime.show();
+        inVisTakeInput();
+        changed = false;
 
         function inVisTakeInput() {
             changed = true;
