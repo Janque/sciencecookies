@@ -967,6 +967,72 @@ function newCal() {
             if (error) {
                 console.log(error);
             } else {
+                const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+                function fullMonth(n, l) {
+                    if (l == "es") {
+                        switch (n) {
+                            case 1:
+                                return "Enero";
+                            case 2:
+                                return "Febrero";
+                            case 3:
+                                return "Marzo";
+                            case 4:
+                                return "Abril";
+                            case 5:
+                                return "Mayo";
+                            case 6:
+                                return "Junio";
+                            case 7:
+                                return "Julio";
+                            case 8:
+                                return "Agosto";
+                            case 9:
+                                return "Septiembre";
+                            case 10:
+                                return "Octubre";
+                            case 11:
+                                return "Noviembre";
+                            case 12:
+                                return "Diciembre";
+                            case 0:
+                                return "Diciembre";
+                            case 13:
+                                return "Enero";
+                        }
+                    } else if (l == "en") {
+                        switch (n) {
+                            case 1:
+                                return "January";
+                            case 2:
+                                return "February";
+                            case 3:
+                                return "March";
+                            case 4:
+                                return "April";
+                            case 5:
+                                return "May";
+                            case 6:
+                                return "June";
+                            case 7:
+                                return "July";
+                            case 8:
+                                return "August";
+                            case 9:
+                                return "September";
+                            case 10:
+                                return "October";
+                            case 11:
+                                return "November";
+                            case 12:
+                                return "December";
+                            case 0:
+                                return "December";
+                            case 13:
+                                return "January";
+                        }
+                    }
+                }
                 let date = new Date((nextCalID - nextCalID % 100) / 100 + ' ' + nextCalID % 100 + ' ' + '00:00');
                 let weeks = [];
                 let days;
