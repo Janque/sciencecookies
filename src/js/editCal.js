@@ -28,7 +28,7 @@ const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 import { getFirestore, getDoc, doc as docRef, onSnapshot, updateDoc, Timestamp } from "firebase/firestore";
 const FSDB = getFirestore();
 
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 const STORAGE = getStorage();
 
 let docDat, docId, calDocRef, calConfig;
@@ -219,7 +219,7 @@ window.loaded = function loaded() {
 
     function addMed() {
         let ref = storageRef(STORAGE, 'calendarMedia/' + docId + '/pic');
-        uploadBytes(ref, newMedia).on('state_changed',
+        uploadBytesResumable(ref, newMedia).on('state_changed',
             (snap) => {
                 setprog('barChgImg', (snap.bytesTransferred / snap.totalBytes) * 100);
             },
