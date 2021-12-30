@@ -49,10 +49,14 @@ exports.uptIDs = functions.region('us-east1').pubsub.schedule('0 0 * * *').onRun
 //Update today's CookieID's
 exports.publishCal = functions.region('us-east1').pubsub.schedule('30 17 28 * *').onRun((context) => {
     let calID = "";
-    let date = new Date(admin.firestore.Timestamp.now().toMillis() - 6 * 60 * 60 * 1000)
-    calID += date.getFullYear();
+    let date = new Date(admin.firestore.Timestamp.now().toMillis() - 6 * 60 * 60 * 1000);
+    let year = date.getFullYear();
     let month = date.getMonth() + 2;
-    if (month == 13) month = 1;
+    if (month == 13) {
+        month = 1;
+        year++;
+    }
+    calID += year;
     if (month <= 9) calID += "0";
     calID += month;
     let makePop = true;
@@ -60,7 +64,7 @@ exports.publishCal = functions.region('us-east1').pubsub.schedule('30 17 28 * *'
         const langs = doc.data().langs;
         const promises = [];
         langs.forEach(lang => {
-            promises.push(db.collection('calendars/langs/'+lang).doc(calID).get().then(doc => {
+            promises.push(db.collection('calendars/langs/' + lang).doc(calID).get().then(doc => {
                 if (!doc.exists) {
                     console.log(calID, ' !doc.exists')
                     return null;
@@ -73,11 +77,11 @@ exports.publishCal = functions.region('us-east1').pubsub.schedule('30 17 28 * *'
                 if (!dat.finished) {
                     console.log('Not finished')
                     makePop = false;
-                    return db.collection('calendars/langs/'+lang).doc(calID).update({
+                    return db.collection('calendars/langs/' + lang).doc(calID).update({
                         pastDue: true
                     });
                 }
-                return db.collection('calendars/langs/'+lang).doc(calID).update({
+                return db.collection('calendars/langs/' + lang).doc(calID).update({
                     public: true
                 });
             }));
