@@ -9,7 +9,7 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "14"
+    "node": "16"
   },
   "dependencies": {
     "@google-cloud/translate": "^6.2.1",
