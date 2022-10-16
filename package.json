@@ -6,21 +6,10 @@
     "build": "./scripts/parcelBuild.sh",
     "syncFSDB": "./scripts/syncFSDB.sh",
     "fireStart": "./scripts/fireStart.sh",
-    "getFuncConf":"firebase functions:config:get > .runtimeconfig.json"
+    "getFuncConf": "firebase functions:config:get > .runtimeconfig.json"
   },
   "devDependencies": {
-    "@parcel/resolver-glob": "^2.0.0-rc.0",
-    "@parcel/transformer-pug": "^2.0.0-rc.0",
-    "@parcel/transformer-sass": "^2.0.0-rc.0",
-    "parcel": "^2.0.0-rc.0"
   },
-  "browserslist": [
-    "last 3 and_chr versions",
-    "last 3 chrome versions",
-    "last 3 opera versions",
-    "last 3 ios_saf versions",
-    "last 3 safari versions"
-  ],
   "dependencies": {
     "firebase": "^9.0.0",
     "firebaseui": "^0.600.0"

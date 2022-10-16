@@ -1,7 +1,0 @@
-{
-  "extends": "@parcel/config-default",
-  "transformers": {
-    "*.{jpg,jpeg,png,svg,webp,woff,woff2,ttf,eot,min.css,min.js,html}": ["@parcel/transformer-raw"]
-  },
-  "resolvers": ["@parcel/resolver-glob","..."]
-}
