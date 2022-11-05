@@ -8,7 +8,7 @@
   },
   "hosting": {
     "site": "sciencecookies",
-    "public": "public",
+    "source": "next",
     "cleanUrls": true,
     "trailingSlash": true,
     "ignore": [
@@ -16,9 +16,6 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "i18n": {
-      "root": "/localized"
-    },
     "rewrites": [
       {
         "regex": "/galletas/\\d{6}/.+$",
@@ -79,78 +76,6 @@
       {
         "source": "/sitemap.xml",
         "function": "sitemap-serveSitemap"
-      },
-      {
-        "source": "/es",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/en",
-        "destination": "/localized/en_ALL/index.html"
-      },
-      {
-        "source": "/drafts",
-        "destination": "/localized/en_ALL/borradores.html"
-      },
-      {
-        "source": "/calendars",
-        "destination": "/localized/en_ALL/calendarios.html"
-      },
-      {
-        "source": "/contact",
-        "destination": "/localized/en_ALL/contacto.html"
-      },
-      {
-        "source": "/edit",
-        "destination": "/localized/en_ALL/editar.html"
-      },
-      {
-        "source": "/edit-calendar",
-        "destination": "/localized/en_ALL/editar-calendario.html"
-      },
-      {
-        "source": "/who-are-we",
-        "destination": "/localized/en_ALL/quienes-somos.html"
-      },
-      {
-        "source": "/profile",
-        "destination": "/localized/en_ALL/perfil.html"
-      },
-      {
-        "source": "/view-profile",
-        "destination": "/localized/en_ALL/ver-perfil.html"
-      },
-      {
-        "source": "/borradores",
-        "destination": "/borradores.html"
-      },
-      {
-        "source": "/calendarios",
-        "destination": "/calendarios.html"
-      },
-      {
-        "source": "/contacto",
-        "destination": "/contacto.html"
-      },
-      {
-        "source": "/editar",
-        "destination": "/editar.html"
-      },
-      {
-        "source": "/editar-calendario",
-        "destination": "/editar-calendario.html"
-      },
-      {
-        "source": "/quienes-somos",
-        "destination": "/quienes-somos.html"
-      },
-      {
-        "source": "/perfil",
-        "destination": "/perfil.html"
-      },
-      {
-        "source": "/ver-perfil",
-        "destination": "/ver-perfil.html"
       }
     ],
     "redirects": [
@@ -215,7 +140,7 @@
       "port": 9000
     },
     "hosting": {
-      "port": 5000
+      "port": 5002
     },
     "pubsub": {
       "port": 8085

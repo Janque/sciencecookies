@@ -2,7 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  distDir: "../functions/next"
+  i18n: {
+    locales: ['es', 'en'],
+    defaultLocale: 'es',
+  },
+  trailingSlash: true,
 }
 
 module.exports = nextConfig

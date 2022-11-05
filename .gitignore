@@ -78,6 +78,9 @@ emulators
 *Key.json
 
 # Public folder
-public*
 functions/views/includes*
 functions/views/layouts*
+
+# Next
+out/
+.next/

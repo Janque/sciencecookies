@@ -1,0 +1,14 @@
+.medSimple{
+    position:relative;
+    border-radius:.25rem;
+}
+
+a:not(:target){
+	//style for links in cookies
+}
+
+@media (max-width: 768px){
+	.medSimple{
+		width: 100% !important;
+	}
+}

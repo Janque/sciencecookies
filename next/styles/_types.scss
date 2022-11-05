@@ -1,0 +1,185 @@
+$science: #791acd;
+$rebecca: rebeccapurple;
+$blue: #6c91c2;
+$latte: #fff8e7;
+$white: #f8f9fa;
+$black: #343a40;
+
+body {
+    font-family: raleway-semi-bold;
+}
+
+h1 {
+    font-family: raleway-bold;
+    font-size: 30px;
+}
+h2 {
+    font-size: 22px;
+}
+h3 {
+    font-size: 20px;
+}
+h4,
+h5,
+h6 {
+    font-size: 18px;
+}
+.title,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: raleway-semi-bold;
+    &.v1 {
+        font-family: raleway-bold;
+        font-size: 30px;
+    }
+    &.v2 {
+        font-size: 22px;
+    }
+    &.v3 {
+        font-size: 20px;
+    }
+    &.v4,
+    &.v5,
+    &.v6 {
+        font-size: 18px;
+    }
+}
+
+.paragraph {
+    font-family: raleway-regular;
+    color: $white;
+    &.v1 {
+        font-size: 18px;
+    }
+    &.v2 {
+        font-size: 16px;
+    }
+    &.v3 {
+        font-size: 14px;
+    }
+}
+
+b,
+strong,
+.bold {
+    font-family: raleway-bold;
+}
+
+.figcaption {
+    color: $white;
+    font-size: 70%;
+    font-family: raleway-light;
+}
+
+.btn-science {
+    font-family: raleway-regular;
+    color: $white;
+    background-color: $rebecca;
+    border-color: $rebecca;
+    &.active,
+    &:active,
+    &:focus {
+        outline: none;
+    }
+}
+
+.btn-link-science {
+    font-family: raleway-regular;
+    color: $rebecca;
+    text-decoration: none;
+    &.white-link {
+        color: $white;
+    }
+}
+
+#changeLang {
+    margin: auto 14px auto 5px;
+    display: inline-block;
+    color: $white;
+    text-align: center;
+    vertical-align: middle;
+    background-color: transparent;
+    font-size: 0.8rem;
+    width: 91px;
+}
+
+@media screen and (min-width: 768px) {
+    h1 {
+        font-size: 40px;
+    }
+    h2 {
+        font-size: 25px;
+    }
+    h3 {
+        font-size: 22px;
+    }
+    h4 {
+        font-size: 20px;
+    }
+    h5 {
+        font-size: 18px;
+    }
+    h6 {
+        font-size: 16px;
+    }
+    .title {
+        &.v1 {
+            font-size: 40px;
+        }
+        &.v2 {
+            font-size: 25px;
+        }
+        &.v3 {
+            font-size: 22px;
+        }
+        &.v4 {
+            font-size: 20px;
+        }
+        &.v5 {
+            font-size: 18px;
+        }
+        &.v6 {
+            font-size: 16px;
+        }
+    }
+}
+
+@font-face {
+    font-family: raleway-light;
+    src: url("./fonts/Raleway-Light.ttf");
+    font-display: swap;
+}
+@font-face {
+    font-family: raleway-light-italic;
+    src: url("./fonts/Raleway-LightItalic.ttf");
+    font-display: swap;
+}
+@font-face {
+    font-family: raleway-regular;
+    src: url("./fonts/Raleway-Regular.ttf");
+    font-display: swap;
+}
+@font-face {
+    font-family: raleway-italic;
+    src: url("./fonts/Raleway-Italic.ttf");
+    font-display: swap;
+}
+@font-face {
+    font-family: raleway-bold;
+    src: url("./fonts/Raleway-Bold.ttf");
+    font-display: swap;
+}
+@font-face {
+    font-family: raleway-semi-bold;
+    src: url("./fonts/Raleway-SemiBold.ttf");
+    font-display: swap;
+}
+@font-face {
+    font-family: raleway-semi-bold-italic;
+    src: url("./fonts/Raleway-SemiBoldItalic.ttf");
+    font-display: swap;
+}
