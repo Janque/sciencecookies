@@ -84,3 +84,6 @@ functions/views/layouts*
 # Next
 out/
 .next/
+
+# VSCode
+.vscode/

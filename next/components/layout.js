@@ -23,7 +23,7 @@ export default function Layout({ children }) {
                 </div>
                 {/* <AdsH />*/}
             </div>
-            {/* <Footer />*/}
+            <Footer site={children.props.site} />
             {/* Global JS*/}
             {/* Page JS*/}
         </>
