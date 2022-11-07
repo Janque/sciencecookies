@@ -16,20 +16,6 @@
   background-color: $black;
 }
 
-.navbar {
-  .container-fluid {
-    .logo {
-      img {
-        width: 30px;
-        height: 30px;
-      }
-    }
-    #navbarMenu {
-      flex: 0 0 100%;
-    }
-  }
-}
-
 .page-container {
   background-color: black;
   background-image: url("../public/img/fondo1.webp");
