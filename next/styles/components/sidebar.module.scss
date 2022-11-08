@@ -1,0 +1,25 @@
+@import "../_colors.scss";
+
+.sdbarCnt {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.sidebar {
+    background-color: $latte;
+}
+
+@media (min-width: 768px) {
+    .sidebar {
+        order: 0;
+        position: sticky;
+        z-index: 1000;
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .sdbarCnt {
+        display: block !important;
+    }
+}
