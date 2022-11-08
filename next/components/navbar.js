@@ -62,7 +62,7 @@ export default function Navbar(props) {
                         </div>
                         {(props.site == 'edit' || props.site == 'editCal') ? <i id='tagLstSave' className='text-light mx-3 my-auto'></i> : null}
                     </ul>
-                    <div className={`row justify-content-end ${stles['w-nsm-100']}`}>
+                    <div className={`row justify-content-end ${styles['w-nsm-100']}`}>
                         <Link className={styles['lang-switch'] + ' btn btn-link text-light text-decoration-none'} locale={otLang} href={transLinkHref} as={transLinkAs}>{otLang == 'es' ? 'Español' : 'English'} <i className='fas fa-globe'></i></Link>
                         <div className='dropdown mr-2 dropleft'>
                             <button className='btn btn-dark dropdown-toggle p-2' id='usrDrpdwn' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
