@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Navbar from './navbar';
 import Sidebar from './sidebarL';
+import Banner from './banner';
 import Footer from './footer';
 
 export default function Layout({ children }) {
@@ -20,14 +21,16 @@ export default function Layout({ children }) {
                 <div className="row justify-content-around">
                     <Sidebar />
                     <div id="cookCnt" className="col-12 col-sm-9 col-md-6 col-xl-7 py-md-3 pl-md-3">
-                        {/* <Banner />*/}
+                        <Banner />
                         {children}
                     </div>
                     {/* <AdsV />*/}
                 </div>
                 {/* <AdsH />*/}
             </div>
+
             <Footer site={children.props.site} />
+
             {/* Global JS*/}
             {/* Page JS*/}
         </>
