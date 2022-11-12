@@ -4,6 +4,7 @@ import Navbar from './navbar';
 import Sidebar from './sidebarL';
 import Banner from './banner';
 import AdsV from './adsV';
+import AdsH from './adsH';
 import Footer from './footer';
 
 export default function Layout({ children }) {
@@ -27,7 +28,7 @@ export default function Layout({ children }) {
                     </div>
                     <AdsV />
                 </div>
-                {/* <AdsH />*/}
+                <AdsH />
             </div>
 
             <Footer site={children.props.site} />
