@@ -11,14 +11,14 @@ export default function AdsV() {
             <div className="col-6 px-1">
                 <a href="https://www.instagram.com/_pedacitode_cielo/" rel="sponsored">
                     <div style={{ position: 'relative', width: '100%', paddingTop: '100%' }} className="mb-2">
-                        <Image src='/publicidad/PedacitoDeCielo.webp' fill objectFit="contain" alt='Pedacito de Cielo' />
+                        <Image src='/publicidad/PedacitoDeCielo.webp' fill alt='Pedacito de Cielo' sizes='(max-width: 576px) 50vw, 0vw' style={{objectFit:'contain'}} />
                     </div>
                 </a>
             </div>
             <div className="col-6 px-1">
                 <a href="https://www.google.com/url?sa=t&source=web&rct=j&url=https://www.instagram.com/awesomefundas/&ved=2ahUKEwi7pZiOvfjqAhUD2qwKHSV_ChQQFjAAegQIBhAC&usg=AOvVaw072K32mWOHN9b7u3cEzrcd" rel="sponsored">
                     <div style={{ position: 'relative', width: '100%', paddingTop: '164%' }} className="mb-2">
-                        <Image src='/publicidad/AwesomeFundas.webp' alt='Awesome Fundas' fill objectFit="contain" />
+                        <Image src='/publicidad/AwesomeFundas.webp' alt='Awesome Fundas' fill sizes='(max-width: 576px) 50vw, 0vw' style={{objectFit:'contain'}} />
                     </div>
                 </a>
             </div>
