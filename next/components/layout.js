@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Navbar from './navbar';
 import Sidebar from './sidebarL';
 import Banner from './banner';
+import AdsV from './adsV';
 import Footer from './footer';
 
 export default function Layout({ children }) {
@@ -24,7 +25,7 @@ export default function Layout({ children }) {
                         <Banner />
                         {children}
                     </div>
-                    {/* <AdsV />*/}
+                    <AdsV />
                 </div>
                 {/* <AdsH />*/}
             </div>
