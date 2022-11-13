@@ -1,35 +1,34 @@
-import { NavLinks, Buttons } from './layoutAttr.js';
 import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import styles from '../styles/components/footer.module.scss';
 import NavLink from './navLinks.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShare } from '@fortawesome/free-solid-svg-icons';
+import { faTwitter, faFacebook, faWhatsapp, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
 export default function Footer(props) {
-    const router = useRouter();
     return (
         <>
             <div className={styles.share}>
                 <a href="#shareBtns" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="shareBtns">
-                    <i className='fas fa-share'></i>
+                    <FontAwesomeIcon icon={faShare} />
                 </a>
                 <div id='shareBtns' className='collapse'>
-                    <a id="ttShare" target="_blank" rel="external"><i className="fab fa-twitter"></i></a>
-                    <a id="fbShare" target="_blank" rel="external"><i className="fab fa-facebook"></i></a>
-                    <a id="waShare" target="_blank" rel="external"><i className="fab fa-whatsapp"></i></a>
+                    <a id="ttShare" target="_blank" rel="external"><FontAwesomeIcon icon={faTwitter} /></a>
+                    <a id="fbShare" target="_blank" rel="external"><FontAwesomeIcon icon={faFacebook} /></a>
+                    <a id="waShare" target="_blank" rel="external"><FontAwesomeIcon icon={faWhatsapp} /></a>
                 </div>
             </div>
 
             <div className={styles['follow-us'] + ' bg-blue'}>
                 <div className="row">
                     <a href="//twitter.com/intent/follow?screen_name=_sciencecookies" target="_blank" rel="external">
-                        <i className="fab fa-twitter" style={{ color: '#1da1f2' }}></i>
+                        <FontAwesomeIcon icon={faTwitter} color='#1da1f2' />
                     </a>
                     <a href="http://instagram.com/sciencecookies" target="_blank" rel="external">
-                        <i className="fab fa-instagram" style={{ color: '#e03566' }}></i>
+                        <FontAwesomeIcon icon={faInstagram} color='#e03566' />
                     </a>
                     <a href="http://www.facebook.com/Science-Cookies-106549557818780/" target="_blank" rel="external">
-                        <i className="fab fa-facebook" style={{ color: '#3b5998' }}></i>
+                        <FontAwesomeIcon icon={faFacebook} color='#3b5998' />
                     </a>
                 </div>
             </div>

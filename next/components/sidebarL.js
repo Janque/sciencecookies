@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router';
 import styles from '../styles/components/sidebar.module.scss';
 import NavLink from './navLinks';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 export default function Sidebar() {
     const router = useRouter();
@@ -9,7 +11,7 @@ export default function Sidebar() {
             <div className="row">
                 <h5 className="text-center my-auto mr-auto ml-3 ml-md-auto mt-md-2 d-md-none">{router.locale == 'es' ? 'Galletas recomendadas' : 'Recommended Cookies'}</h5>
                 <button className="btn d-md-none p-0 pr-2 mr-4" type="button" data-toggle="collapse" data-target="#sdbarL" aria-controls="sdbarL" aria-expanded="false" style={{ fontSize: '1.8rem' }}>
-                    <i className="fas fa-bars"></i>
+                    <FontAwesomeIcon icon={faBars} />
                 </button>
             </div>
             <nav id="sdbarL" className={`collapse ${styles.sdbarCnt}`}>

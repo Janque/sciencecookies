@@ -1,9 +1,6 @@
 //Bootstrap
 import 'bootstrap/dist/css/bootstrap.css';
 
-//Font awesome
-import '../vendor/font-awesome/css/all.min.css';
-
 import '../styles/main.scss';
 import Layout from '../components/layout';
 

@@ -6,6 +6,8 @@ import styles from '../styles/components/navbar.module.scss';
 import NavLink from './navLinks.js';
 import { useAuth } from '../firebase/auth.js';
 import { useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGlobe, faUser, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 
 export default function Navbar(props) {
     const router = useRouter();
@@ -84,12 +86,14 @@ export default function Navbar(props) {
                     </ul>
 
                     <div className={`row justify-content-end ${styles['w-nsm-100']}`}>
-                        <Link className={styles['lang-switch'] + ' btn btn-link text-light text-decoration-none'} locale={otLang} href={transLinkHref} as={transLinkAs}>{otLang == 'es' ? 'Español' : 'English'} <i className='fas fa-globe'></i></Link>
-                        
+                        <Link className={styles['lang-switch'] + ' btn btn-link text-light text-decoration-none'} locale={otLang} href={transLinkHref} as={transLinkAs}>
+                            {otLang == 'es' ? 'Español' : 'English'} <FontAwesomeIcon icon={faGlobe} />
+                        </Link>
+
                         {authUser ?
                             <div className='dropdown mr-2 dropleft'>
                                 <button className='btn btn-dark dropdown-toggle p-2' id='usrDrpdwn' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                                    <i id='icnUsr' className={`fas ${authUser ? 'fa-user' : 'fa-user-slash'}`}></i>
+                                    <FontAwesomeIcon icon={faUser} />
                                     <Image id='picUsr' className='d-inline-block align-center ml-2 rounded-circle' src={authUser.photoURL} width={30} height={30} alt='' />
                                 </button>
                                 <div className='dropdown-menu dropdown-menu-right bg-dark pl-1' aria-labelledby='usrDrpdwn'>
@@ -101,7 +105,9 @@ export default function Navbar(props) {
                                     <button onClick={signOut} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["logOut"]}</button>
                                 </div>
                             </div> :
-                            <button className='btn btn-dark mr-2' data-toggle='modal' data-target='#mdlRgstr'><i className="fas fa-sign-in-alt"></i></button>
+                            <button className='btn btn-dark mr-2' data-toggle='modal' data-target='#mdlRgstr'>
+                                <FontAwesomeIcon icon={faRightToBracket} />
+                            </button>
                         }
                     </div>
                 </div>
