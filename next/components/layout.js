@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Navbar from './navbar';
+import Register from './register';
 import Sidebar from './sidebarL';
 import Banner from './banner';
 import AdsV from './adsV';
@@ -17,7 +18,7 @@ export default function Layout({ children }) {
 
             <Navbar site={children.props.site} />
 
-            {/* <Register />*/}
+            <Register site={children.props.site} />
 
             <div className="container-fluid text-white page-container">
                 <div className="row justify-content-around">

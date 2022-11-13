@@ -7,6 +7,14 @@ const nextConfig = {
     defaultLocale: 'es',
   },
   trailingSlash: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig

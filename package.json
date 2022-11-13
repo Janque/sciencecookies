@@ -4,7 +4,7 @@
     "deployDyn": "firebase deploy --only functions:dynAllCalls,functions:dynArchive,functions:dynCalendars,functions:dynCookies",
     "inst": "cd next && npm i",
     "syncFSDB": "./scripts/syncFSDB.sh",
-    "start": "npm run inst && firebase emulators:start --import emulators/emulator-fsdb",
+    "start": "firebase emulators:start --import emulators/emulator-fsdb",
     "getFuncConf": "firebase functions:config:get > .runtimeconfig.json",
     "deployHost": "firebase deploy --only hosting"
   }
