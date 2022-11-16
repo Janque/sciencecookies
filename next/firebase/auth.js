@@ -18,6 +18,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut as authSignOut } from 'firebase/auth';
 import { auth } from './firebase';
+import { useAlert } from '../components/alert';
+import Router, { useRouter } from 'next/router';
 
 export default function useFirebaseAuth() {
     const [authUser, setAuthUser] = useState(null);
@@ -44,7 +46,15 @@ export default function useFirebaseAuth() {
         setIsLoading(false);
     };
 
-    const signOut = () => authSignOut(auth).then(clear);
+    const { showAlert } = useAlert();
+    const signOut = () => authSignOut(auth).then(() => {
+        clear();
+        if (Router.locale == 'es') {
+            showAlert('Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>', 'warning');
+        } else {
+            showAlert('You have successfully closed your session. <strong>! Come back soon! </strong>', 'warning');
+        }
+    });
 
     // Listen for Firebase Auth state change
     useEffect(() => {

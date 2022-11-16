@@ -56,6 +56,8 @@ window.disableBtn = function disableBtn(btn) {
     btn.addClass("disabled");
     btn.attr("disabled", "true");
 }
+
+//Done
 window.alertTop = function alertTop(msg, alert, alrtId = $("#alrtClsSsn")) {
     switch (alert) {
         case 0:
@@ -76,6 +78,7 @@ window.alertTop = function alertTop(msg, alert, alrtId = $("#alrtClsSsn")) {
         alrtId.html('');
     });
 }
+//Done/
 
 //Check auth
 window.displayName;
@@ -220,7 +223,6 @@ function shwSsnBtns(ac) {
 //Log Out
 $("#btnLgO").onclick = function () {
     signOut(AUTH).then(function () {
-//Done/
         if (lang == "es") {
             alertTop("Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>", 2);
         } else if (lang == "en") {
@@ -234,6 +236,7 @@ $("#btnLgO").onclick = function () {
         }
     });
 };
+//Done/
 
 //Done
 var uiConfig = {

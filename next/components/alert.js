@@ -62,7 +62,7 @@ export function AlertComponent(props) {
 
     return (
         <div className={`alert alert-${alertType} alert-dismissible fade ${visible ? 'show' : ''} fixed-bottom`} role="alert">
-            {alertText}
+            <span dangerouslySetInnerHTML={{ __html: alertText }}></span>
             <button type="button" className="close" onClick={() => { setVisible(false) }}>
                 <span aria-hidden="true">&times;</span>
             </button>
