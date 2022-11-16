@@ -8,6 +8,7 @@ import { useAuth } from '../firebase/auth.js';
 import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faUser, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { AlertComponent } from './alert.js';
 
 export default function Navbar(props) {
     const router = useRouter();
@@ -112,7 +113,9 @@ export default function Navbar(props) {
                     </div>
                 </div>
             </nav>
-            <div id='alrtClsSsn'></div>
+            <div>
+                <AlertComponent id='defaultAlert' />
+            </div>
         </>
     )
 }
