@@ -113,9 +113,7 @@ export default function Navbar(props) {
                     </div>
                 </div>
             </nav>
-            <div>
-                <AlertComponent id='defaultAlert' />
-            </div>
+            <AlertComponent id='defaultAlert' />
         </>
     )
 }
