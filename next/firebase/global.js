@@ -140,6 +140,7 @@ onAuthStateChanged(AUTH, (user) => {
 //Botones de sesion
 function shwSsnBtns(ac) {
     if (ac) {
+        //Done
         $('#icnUsr').removeClass('fa-user-slash');
         $('#icnUsr').addClass('fa-user');
         $('#picUsr').attr('onerror', "this.src='https://via.placeholder.com/20.webp'");
@@ -156,6 +157,7 @@ function shwSsnBtns(ac) {
         }
         $('#btnLgO').show();
         if ($('#btnLgI')) $('#btnLgI').hide();
+        //Done/
         if (site == "cookie") {
             getDoc(docRef(FSDB, 'users', uid)).then(function (doc) {
                 let fav = doc.data().fav;
@@ -199,6 +201,7 @@ function shwSsnBtns(ac) {
                 }
             }).catch(function (err) { console.log(err) });
         }
+        //Done
     } else {
         $('#icnUsr').removeClass('fa-user');
         $('#icnUsr').addClass('fa-user-slash');
@@ -211,6 +214,7 @@ function shwSsnBtns(ac) {
         $('#btnLgO').hide();
         if ($('#btnLgI')) $('#btnLgI').show();
     }
+    //Done/
     if (site == "cookie") {
         enableBtn($('#btnFav'));
         enableBtn($('#btnLike'));
@@ -272,6 +276,7 @@ window.addEventListener("load", function () {
     if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
     if (urlSrch.get('mode') == 'select') $('#mdlRgstr').modal('show');
 
+    //Done
     shwRecom();
     shareBtns();
 });
@@ -422,6 +427,7 @@ function shwRecom() {
         });
     }).catch(err => { console.log(err) });
 }
+//Done/
 
 //Prepare share btns
 function shareBtns() {

@@ -1,6 +1,7 @@
 import Head from 'next/head';
 //import styles from '../styles/index.scss';
 import HeadSecond from '../components/headSecond';
+import { getRecommended } from '../firebase/firestore';
 
 export default function Home(data) {
   return (
@@ -21,6 +22,7 @@ export default function Home(data) {
 export async function getServerSideProps(context) {
   const data = {
     site: 'index',
+    ...(await getRecommended(context.locale)),
     title: "The Title"
   }
   data.locale = context.locale;

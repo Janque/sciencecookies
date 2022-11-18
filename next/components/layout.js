@@ -22,7 +22,7 @@ export default function Layout({ children }) {
 
             <div className="container-fluid text-white page-container">
                 <div className="row justify-content-around">
-                    <Sidebar />
+                    <Sidebar latestCookie={children.props.latestCookie} mostPopularCookies={children.props.mostPopularCookies} latestCalendar={children.props.latestCalendar} />
                     <div id="cookCnt" className="col-12 col-sm-9 col-md-6 col-xl-7 py-md-3 pl-md-3">
                         <Banner />
                         {children}
