@@ -1105,7 +1105,7 @@ async function ft_step1() {
     });
 }
 async function ft_step2() {
-    const snap = await firestore.collection('cookies/langs/es').where('old', '==', true).get();
+    const snap = await firestore.collection('cookies/langs/es').get();
     snap.forEach(async doc => {
         await firestore.collection('cookies/langs/es').doc(doc.id).update({
             translations: FieldValue.delete(),
@@ -1119,12 +1119,27 @@ async function ft_step2() {
         });
     });
 }
-export const fileTranslations = functions.region('us-central1').https.onRequest(async (req, res) => {
+async function ft_step3() {
+    const snap = await firestore.collection('calendars/langs/es').get();
+    snap.forEach(async doc => {
+        await firestore.collection('calendars/langs/es').doc(doc.id).update({
+            translations: FieldValue.delete(),
+            url: FieldValue.delete()
+        });
+        await firestore.collection('calendars/langs/en').doc(doc.id).update({
+            translations: FieldValue.delete(),
+            url: FieldValue.delete()
+        });
+    });
+}
+export const urlTranslations = functions.region('us-central1').https.onRequest(async (req, res) => {
     try {
         console.log("Step 1");
         await ft_step1();
         console.log("Step 2");
         await ft_step2();
+        console.log("Step 3");
+        await ft_step3();
 
         console.log("Successful");
         res.send('Success!');

@@ -1,3 +1,5 @@
+import { NavLinks } from "../components/layoutAttr";
+
 export function formatDate(d) {
     return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
 }
@@ -14,4 +16,13 @@ export function cookieCardBody(locale, title, description, authors, published, l
             </p>
         </>
     )
+}
+
+export function formatCalUrl(date, locale) {
+    date = new Date(date.seconds * 1000);
+    return NavLinks[locale].cal + date.getFullYear() + '/' + date.toLocaleString('es', { month: 'long' }) + '/';
+}
+
+export function formatCookieUrl(file, locale) {
+    return NavLinks[locale].cook + file + '/';
 }
