@@ -1,12 +1,16 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-const db = admin.firestore();
+import { initializeApp } from 'firebase-admin/app';
+initializeApp();
 
-const ShortUniqueId = require('short-unique-id');
+import * as functions from 'firebase-functions';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore'
+const firestore = getFirestore();
+
+import ShortUniqueId from 'short-unique-id';
 const uid = new ShortUniqueId({ length: 8 });
 
-exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res) => {
-    db.collection('config').doc('calTypes').set({
+//Config setups
+export const setCalConfig = functions.region('us-central1').https.onRequest((req, res) => {
+    firestore.collection('config').doc('calTypes').set({
         visOpts: {
             es: ["Visible a simple vista", "Visible con binoculares", "Visible con un telescopio pequeño", "Visible con un telescopio de 4 pulgadas", "Visible con un telescopio grande", "No observable"],
             en: ["Visible to the naked eye", "Visible with binoculars", "Visible with a small telescope", "Visible with a 4 inch telescope", "Visible with a large telescope", "Not observable"]
@@ -1055,50 +1059,8 @@ exports.setCalConfig = functions.region('us-central1').https.onRequest((req, res
     });
 });
 
-exports.formatDBCtemp = functions.region('us-central1').https.onRequest((req, res) => {
-    return db.collection('calendars/langs/es').doc("202107").get().then(doc => {
-        let events = {};
-        for (const [key, event] of Object.entries(doc.data().events)) {
-            events[key] = {
-                date: event.date.es,
-                horario: event.horario,
-                description: event.description,
-                name: event.name,
-                visibilidad: event.visibilidad,
-            };
-        }
-        return db.collection('calendarios').doc("202107").set({
-            events: events,
-            date: doc.data().published,
-            description: doc.data().description,
-            descriptionShort: doc.data().descriptionShort,
-            finished: doc.data().finished,
-            pastDue: doc.data().pastDue,
-            picUrl: doc.data().picUrl,
-            picAlt: doc.data().picAlt,
-            picCapt: doc.data().picCapt,
-            public: doc.data().public,
-            sentMail: doc.data().sentMail,
-            revised: doc.data().revised,
-            title: doc.data().title,
-            url: doc.data().url,
-            nextCal: doc.data().nextCal,
-            priorCal: doc.data().priorCal,
-            weeks: doc.data().weeks,
-        });
-    }).then(() => {
-        console.log("Successful");
-        res.send('Successful');
-        return;
-    }).catch(err => {
-        console.log(err);
-        res.send(err);
-        return;
-    });
-});
-
-exports.setupTranslationReplacements = functions.region('us-central1').https.onRequest((req, res) => {
-    db.collection('config').doc('postTrans').set({
+export const setupTranslationReplacements = functions.region('us-central1').https.onRequest((req, res) => {
+    firestore.collection('config').doc('postTrans').set({
         words: {
             es: {
                 en: {
@@ -1122,15 +1084,121 @@ exports.setupTranslationReplacements = functions.region('us-central1').https.onR
     });
 });
 
-exports.mergeUsers = functions.region('us-central1').https.onRequest((req, res) => {
-    return db.collection('users').get().then(snap => {
+
+//Not often used
+
+//New cookie field - fileTranslations
+async function ft_step1() {
+    const snap = await firestore.collection('cookies/langs/es').get();
+    snap.forEach(async doc => {
+        await firestore.collection('cookies/langs/es').doc(doc.id).update({
+            old: true
+        });
+        await firestore.collection('cookies/langs/en').doc(doc.id).update({
+            old: true
+        });
+    });
+}
+async function ft_step2() {
+    const snap = await firestore.collection('cookies/langs/es').where('old', '==', true).get();
+    snap.forEach(async doc => {
+        const den = await firestore.collection('cookies/langs/en').doc(doc.id).get();
+        let fileTranslations = {
+            es: doc.data().file,
+            en: den.data().file
+        }
+        await firestore.collection('cookies/langs/es').doc(doc.id).update({
+            fileTranslations: fileTranslations
+        });
+        await firestore.collection('cookies/langs/en').doc(doc.id).update({
+            fileTranslations: fileTranslations
+        });
+    });
+}
+async function ft_step3() {
+    const snap = await firestore.collection('cookies/langs/es').where('old', '==', true).get();
+    snap.forEach(async doc => {
+        await firestore.collection('cookies/langs/es').doc(doc.id).update({
+            translations: FieldValue.delete(),
+            url: FieldValue.delete()
+        });
+        await firestore.collection('cookies/langs/en').doc(doc.id).update({
+            translations: FieldValue.delete(),
+            url: FieldValue.delete()
+        });
+    });
+}
+export const fileTranslations = functions.region('us-central1').https.onRequest(async (req, res) => {
+    try {
+        console.log("Step 1");
+        await ft_step1();
+        console.log("Step 2");
+        await ft_step2();
+        console.log("Step 3");
+        console.log(FieldValue);
+        await ft_step3();
+
+        console.log("Successful");
+        res.send('Success!');
+        return;
+    } catch (err) {
+        console.log(err);
+        res.send(err);
+        return;
+    }
+});
+
+export const mergeUsers = functions.region('us-central1').https.onRequest((req, res) => {
+    return firestore.collection('users').get().then(snap => {
         const promises = [];
         snap.forEach(doc => {
-            promises.push(db.collection('users').doc(doc.id).update({
+            promises.push(firestore.collection('users').doc(doc.id).update({
                 shortID: uid()
             }));
         });
         return Promise.all(promises);
+    }).then(() => {
+        console.log("Successful");
+        res.send('Successful');
+        return;
+    }).catch(err => {
+        console.log(err);
+        res.send(err);
+        return;
+    });
+});
+
+export const formatDBCtemp = functions.region('us-central1').https.onRequest((req, res) => {
+    return firestore.collection('calendars/langs/es').doc("202107").get().then(doc => {
+        let events = {};
+        for (const [key, event] of Object.entries(doc.data().events)) {
+            events[key] = {
+                date: event.date.es,
+                horario: event.horario,
+                description: event.description,
+                name: event.name,
+                visibilidad: event.visibilidad,
+            };
+        }
+        return firestore.collection('calendarios').doc("202107").set({
+            events: events,
+            date: doc.data().published,
+            description: doc.data().description,
+            descriptionShort: doc.data().descriptionShort,
+            finished: doc.data().finished,
+            pastDue: doc.data().pastDue,
+            picUrl: doc.data().picUrl,
+            picAlt: doc.data().picAlt,
+            picCapt: doc.data().picCapt,
+            public: doc.data().public,
+            sentMail: doc.data().sentMail,
+            revised: doc.data().revised,
+            title: doc.data().title,
+            url: doc.data().url,
+            nextCal: doc.data().nextCal,
+            priorCal: doc.data().priorCal,
+            weeks: doc.data().weeks,
+        });
     }).then(() => {
         console.log("Successful");
         res.send('Successful');

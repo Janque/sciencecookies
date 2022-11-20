@@ -7,5 +7,8 @@
     "start": "firebase emulators:start --import emulators/emulator-fsdb",
     "getFuncConf": "firebase functions:config:get > .runtimeconfig.json",
     "deployHost": "firebase deploy --only hosting"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.3.0"
   }
 }
