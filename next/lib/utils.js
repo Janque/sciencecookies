@@ -1,4 +1,5 @@
 import { NavLinks } from "../components/layoutAttr";
+import { getRecommended } from '../firebase/firestore';
 
 export function formatDate(d) {
     return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
@@ -25,4 +26,28 @@ export function formatCalUrl(date, locale) {
 
 export function formatCookieUrl(file, locale) {
     return NavLinks[locale].cook + file + '/';
+}
+
+export function getFullUrl(req) {
+    //console.log(req);
+    //TODO fix
+    return {
+        fullUrl: 'https://' + req.headers.host + req.originalUrl
+    }
+}
+
+export function isMobile(userAgent) {
+    return {
+        isMobile: Boolean(userAgent.match(
+            /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
+        ))
+    };
+}
+
+export async function getGlobalData(context) {
+    return {
+        ...(await getRecommended(context.locale)),
+        ...(getFullUrl(context.req)),
+        ...(isMobile(context.req.headers['user-agent']))
+    }
 }

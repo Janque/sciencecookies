@@ -13,9 +13,9 @@ export default function Footer(props) {
                     <FontAwesomeIcon icon={faShare} />
                 </a>
                 <div id='shareBtns' className='collapse'>
-                    <a id="ttShare" target="_blank" rel="external"><FontAwesomeIcon icon={faTwitter} /></a>
-                    <a id="fbShare" target="_blank" rel="external"><FontAwesomeIcon icon={faFacebook} /></a>
-                    <a id="waShare" target="_blank" rel="external"><FontAwesomeIcon icon={faWhatsapp} /></a>
+                    <a id="ttShare" target="_blank" rel="external" href={`https://twitter.com/intent/tweet?text${props.fullUrl}`}><FontAwesomeIcon icon={faTwitter} /></a>
+                    <a id="fbShare" target="_blank" rel="external" href={`https://www.facebook.com/sharer/sharer.php?u=${props.fullUrl}`}><FontAwesomeIcon icon={faFacebook} /></a>
+                    <a id="waShare" target="_blank" rel="external" href={`${props.isMobile ? 'whatsapp://send?text=' : 'https://web.whatsapp.com/send?text='}${props.fullUrl}`}><FontAwesomeIcon icon={faWhatsapp} /></a>
                 </div>
             </div>
 

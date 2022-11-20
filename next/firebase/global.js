@@ -29,6 +29,7 @@ const FSDB = getFirestore();
 import { getFunctions, httpsCallable } from "firebase/functions";
 const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
+//Done
 var firebaseui = require('firebaseui');
 
 if (!lang) lang = "es";
@@ -37,6 +38,7 @@ document.cookie = "firebase-language-override=";
 
 window.cookiesFSColl = collection(FSDB, 'cookies/langs/' + lang);
 window.calendarsFSColl = collection(FSDB, 'calendars/langs/' + lang);
+//Done/
 
 var urlSrch = '';
 window.actSsn = false;
@@ -240,9 +242,7 @@ $("#btnLgO").onclick = function () {
         }
     });
 };
-//Done/
 
-//Done
 var uiConfig = {
     signInSuccessUrl: window.location,
     signInOptions: [
@@ -260,7 +260,6 @@ var uiConfig = {
 };
 var ui = new firebaseui.auth.AuthUI(AUTH);
 ui.start('#firebaseui-auth-container', uiConfig);
-//Done/
 
 function checkMobile() {
     let check = false;
@@ -271,6 +270,7 @@ function checkMobile() {
 window.addEventListener("load", function () {
     mobile = checkMobile();
     url = new URL(document.location.href);
+//Done/
     urlSrch = new URLSearchParams(location.search);
 
     if (ui.isPendingRedirect()) ui.start('#firebaseui-auth-container', uiConfig);
@@ -427,7 +427,6 @@ function shwRecom() {
         });
     }).catch(err => { console.log(err) });
 }
-//Done/
 
 //Prepare share btns
 function shareBtns() {
@@ -439,6 +438,7 @@ function shareBtns() {
         $("#waShare").href = 'https://web.whatsapp.com/send?text=' + window.location.href;
     }
 }
+//Done/
 
 
 var defDiacs = [
