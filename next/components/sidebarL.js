@@ -80,7 +80,7 @@ export default function Sidebar(props) {
                         props.mostPopularCookies.map(cookie => {
                             const popularCookieBody = cookieCardBody(router.locale, cookie.title, cookie.description, cookie.authors, cookie.published);
                             return (<>
-                                <Link href={cookie.url} className='text-decoration-none text-dark'>
+                                <Link href={NavLinks[router.locale].cook + cookie.fileTranslations[router.locale]} className='text-decoration-none text-dark'>
                                     <div className="d-none d-md-inline">
                                         <div className="card mb-2">
                                             <div className="card-img-top" style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
