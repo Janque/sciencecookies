@@ -21,12 +21,21 @@ export function cookieCardBody(locale, title, description, authors, published, l
     )
 }
 
-export function formatCalUrl(date, locale) {
+export function formatCalUrl(date) {
+    date = new Date(date.seconds * 1000);
+    return NavLinks.es.cal + date.getFullYear() + '/' + date.toLocaleString('es', { month: 'long' }) + '/';
+}
+
+export function formatCalAsUrl(date, locale) {
     date = new Date(date.seconds * 1000);
     return NavLinks[locale].cal + date.getFullYear() + '/' + date.toLocaleString('es', { month: 'long' }) + '/';
 }
 
-export function formatCookieUrl(file, locale) {
+export function formatCookieUrl(file) {
+    return NavLinks.es.cook + file + '/';
+}
+
+export function formatCookieAsUrl(file, locale) {
     return NavLinks[locale].cook + file + '/';
 }
 
