@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import Image from 'next/image';
-import { cookieCardBody, formatCalUrl, formatCookieUrl, formatCalAsUrl, formatCookieAsUrl } from '../lib/utils';
+import { cookieCardBody } from '../lib/utils';
 
 export default function Sidebar(props) {
     const router = useRouter();
@@ -21,15 +21,15 @@ export default function Sidebar(props) {
             <nav id="sdbarL" className={`collapse ${styles.sdbarCnt}`}>
                 <div className="col justify-content-center px-3 px-md-0 px-lg-3 px-xl-2">
                     <h5 className="text-center">{router.locale == 'es' ? 'Calendario Astronómico' : 'Astronomic Calendar'}</h5>
-                    <Link href={formatCalUrl(props.latestCalendar.published)} className='text-decoration-none text-dark' as={formatCalAsUrl(props.latestCalendar.published, router.locale)}>
+                    <NavLink type='calendar' className='text-decoration-none text-dark' date={props.latestCalendar.published}>
                         <div className="d-none d-md-inline">
                             <div className="card mb-2">
                                 <div className='card-img-top' style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
                                     <Image fill src={props.latestCalendar.picUrl} alt={props.latestCalendar.title} sizes="(max-width: 1200px) 25vw, 17vw" style={{ objectFit: 'cover' }} />
                                 </div>
                                 <div className="card-body">
-                                    <h5 class="card-title">{props.latestCalendar.title}</h5>
-                                    <p class="card-text">{props.latestCalendar.descriptionShort}</p>
+                                    <h5 className="card-title">{props.latestCalendar.title}</h5>
+                                    <p className="card-text">{props.latestCalendar.descriptionShort}</p>
                                 </div>
                             </div>
                         </div>
@@ -39,17 +39,17 @@ export default function Sidebar(props) {
                                     <Image fill src={props.latestCalendar.picUrl} alt={props.latestCalendar.title} sizes="(max-width: 1200px) 25vw, 17vw" style={{ objectFit: 'cover' }} />
                                 </div>
                                 <div className="media-body">
-                                    <h5 class="card-title">{props.latestCalendar.title}</h5>
-                                    <p class="card-text">{props.latestCalendar.descriptionShort}</p>
+                                    <h5 className="card-title">{props.latestCalendar.title}</h5>
+                                    <p className="card-text">{props.latestCalendar.descriptionShort}</p>
                                 </div>
                             </div>
                         </div>
-                    </Link>
+                    </NavLink>
 
                     <div className="dropdown-divider d-md-none"></div>
 
                     <h5 className="text-center">{router.locale == 'es' ? 'La Galleta más nueva' : 'Latest Cookie'}</h5>
-                    <Link href={formatCookieUrl(props.latestCookie.fileTranslations[router.locale])} as={formatCookieAsUrl(props.latestCookie.fileTranslations[router.locale], router.locale)} className='text-decoration-none text-dark'>
+                    <NavLink type='cookie' className='text-decoration-none text-dark' file={props.latestCookie.fileTranslations[router.locale]}>
                         <div className="d-none d-md-inline">
                             <div className="card mb-2">
                                 <div className='card-img-top' style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
@@ -70,7 +70,7 @@ export default function Sidebar(props) {
                                 </div>
                             </div>
                         </div>
-                    </Link>
+                    </NavLink>
 
                     <div className="dropdown-divider d-md-none"></div>
 
@@ -79,7 +79,7 @@ export default function Sidebar(props) {
                         props.mostPopularCookies.map(cookie => {
                             const popularCookieBody = cookieCardBody(router.locale, cookie.title, cookie.description, cookie.authors, cookie.published);
                             return (<>
-                                <Link href={formatCookieUrl(cookie.fileTranslations[router.locale])} as={formatCookieAsUrl(cookie.fileTranslations[router.locale], router.locale)} className='text-decoration-none text-dark'>
+                                <NavLink type='cookie' className='text-decoration-none text-dark' file={cookie.fileTranslations[router.locale]}>
                                     <div className="d-none d-md-inline">
                                         <div className="card mb-2">
                                             <div className="card-img-top" style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
@@ -100,7 +100,7 @@ export default function Sidebar(props) {
                                             </div>
                                         </div>
                                     </div>
-                                </Link>
+                                </NavLink>
                             </>)
                         })
                     }

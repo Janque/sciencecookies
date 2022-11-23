@@ -5,6 +5,15 @@ import { useRouter } from 'next/router';
 export default function NavLink(props) {
     const router = useRouter();
     switch (props.type) {
+        case 'cookie':
+            return (
+                <Link href={NavLinks.es.cook + props.file + '/'} as={NavLinks[router.locale].cook + props.file + '/'} locale={false} className={props.className}>{props.children}</Link>
+            );
+        case 'calendar':
+            let date = new Date(props.date.seconds * 1000);
+            return (
+                <Link href={NavLinks.es.cal + date.getFullYear() + '/' + date.toLocaleString('es', { month: 'long' }) + '/'} as={NavLinks[router.locale].cal + date.getFullYear() + '/' + (date.toLocaleString(router.locale, { month: 'long' })).toLowerCase() + '/'} locale={false} className={props.className}>{props.children}</Link>
+            );
         case 'cook':
             return (
                 <Link href={`/${NavLinks['es']['cook']}`} as={`/${NavLinks[router.locale]['cook']}`} locale={false} className={props.className}>{props.text || Buttons[router.locale]['cook']}</Link>
