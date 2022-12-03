@@ -1,4 +1,3 @@
-import { NavLinks } from "../components/layoutAttr";
 import { getRecommended } from '../firebase/firestore';
 
 //Format date to dd/mm/yyyy
@@ -10,9 +9,9 @@ export function formatDate(d) {
 export function cookieCardBody(locale, title, description, authors, published, lineJump = true) {
     return (
         <>
-            <h5 class="card-title">{title}</h5>
-            <p class="card-text">{description}</p>
-            <p class="card-text">
+            <h5 className="card-title">{title}</h5>
+            <p className="card-text">{description}</p>
+            <p className="card-text">
                 {`${formatDate(new Date(published.seconds * 1000))}`}
                 {lineJump ? <br /> : <span>&emsp;</span>}
                 {`${locale == 'es' ? 'Autor(es)' : 'Author(s)'}: ${authors}`}

@@ -3,7 +3,6 @@ import styles from '../styles/components/sidebar.module.scss';
 import NavLink from './navLinks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import Link from 'next/link';
 import Image from 'next/image';
 import { cookieCardBody } from '../lib/utils';
 
