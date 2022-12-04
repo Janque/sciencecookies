@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAnalytics } from "firebase/analytics";
 import { getPerformance } from "firebase/performance";
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getDatabase } from "firebase/database";
 
 // Configure Firebase.
 const firebaseConfig = {
@@ -33,9 +34,10 @@ const firebaseConfig = {
     measurementId: "G-1MYVREMBFV"
 };
 
-export const firebaseApp = initializeApp(firebaseConfig);
+export const firebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
 //export const analytics = getAnalytics();
 //export const performance = getPerformance(firebaseApp);
 export const auth = getAuth(firebaseApp);
 export const firestore = getFirestore(firebaseApp);
+export const database = getDatabase(firebaseApp);
 //export const storage = getStorage(app); 
