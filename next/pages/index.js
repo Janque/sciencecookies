@@ -107,7 +107,7 @@ export default function Home(props) {
                 <>
                   {idx != 0 ? <div className="dropdown-divider d-md-none"></div> : null}
                   <NavLink type='cookie' file={cookie.fileTranslations[router.locale]} className='text-decoration-none text-dark' key={cookie.id}>
-                  test
+                    test
                   </NavLink>
                 </>
               )
@@ -146,38 +146,42 @@ export async function getServerSideProps(context) {
 
   cats = configCatsList[context.locale].allCats.slice();
   checkCats = cats.slice();
-  checkCats.push(context.locale == 'es' ? 'todas' : 'all');
 
   if (query.categories || query.categorias) {
     if (query.categories) {
-      cats = query.categories.split('+');
-      cats = cats.concat(query.categorias?.split('+'))
+      cats = query.categories.split(' ');
+      if (query.categorias) cats = cats.concat(query.categorias.split(' '));
     } else {
-      cats = query.categorias.split('+');
+      cats = query.categorias.split(' ');
     }
   }
   if (query.search || query.busqueda) {
     if (query.search) {
-      kywords = query.search.split('+');
-      kywords = kywords.concat(query.busqueda?.split('+'))
+      searchBar = query.search;
+      kywords = query.search.split(' ');
+      if (query.busqueda) {
+        searchBar += ' ' + query.busqueda;
+        kywords = kywords.concat(query.busqueda.split(' '))
+      }
     } else {
-      kywords = query.busqueda.split('+');
+      searchBar = query.busqueda;
+      kywords = query.busqueda.split(' ');
     }
   };
-  kywords.forEach(itm => {
-    searchBar += itm + ' ';
-  });
   searchBox.searchBar = searchBar;
   kywords = cats.concat(kywords);
   kywords.forEach((itm, idx) => {
     kywords.splice(idx, 1, rmDiacs(itm.toLowerCase()));
   });
+  let remAll = false;
+  checkCats.push(context.locale == 'es' ? 'todas' : 'all');
   configCatsList[context.locale].allCats.forEach((itm) => {
     if (kywords.indexOf(itm) == -1) {
       checkCats.splice(checkCats.indexOf(itm), 1);
-    } else {
-      checkCats.splice(checkCats.indexOf('todas'), 1);
-      checkCats.splice(checkCats.indexOf('all'), 1);
+      if (!remAll) {
+        remAll = true;
+        checkCats.splice(checkCats.indexOf(context.locale == 'es' ? 'todas' : 'all'), 1);
+      }
     }
   });
   searchBox.checkCats = checkCats;
