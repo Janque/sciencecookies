@@ -34,10 +34,10 @@ const firebaseConfig = {
     measurementId: "G-1MYVREMBFV"
 };
 
-export const firebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);
 //export const analytics = getAnalytics();
 //export const performance = getPerformance(firebaseApp);
 export const auth = getAuth(firebaseApp);
 export const firestore = getFirestore(firebaseApp);
 export const database = getDatabase(firebaseApp);
-//export const storage = getStorage(app); 
+//export const storage = getStorage(app);
