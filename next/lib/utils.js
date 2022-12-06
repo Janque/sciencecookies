@@ -2,7 +2,7 @@ import { getRecommended } from '../firebase/firestore';
 
 //Format date to dd/mm/yyyy
 export function formatDate(d) {
-    if (!typeof d == Date) d = new Date(d.seconds * 1000);
+    if (!(typeof d == Date)) d = new Date(d.seconds * 1000);
     return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
 }
 
