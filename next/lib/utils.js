@@ -2,6 +2,7 @@ import { getRecommended } from '../firebase/firestore';
 
 //Format date to dd/mm/yyyy
 export function formatDate(d) {
+    if (!typeof d == Date) d = new Date(d.seconds * 1000);
     return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
 }
 
@@ -12,7 +13,7 @@ export function cookieCardBody(locale, title, description, authors, published, l
             <h5 className="card-title">{title}</h5>
             <p className="card-text">{description}</p>
             <p className="card-text">
-                {`${formatDate(new Date(published.seconds * 1000))}`}
+                {`${formatDate(published)}`}
                 {lineJump ? <br /> : <span>&emsp;</span>}
                 {`${locale == 'es' ? 'Autor(es)' : 'Author(s)'}: ${authors}`}
             </p>
