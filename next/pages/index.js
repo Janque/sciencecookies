@@ -2,7 +2,7 @@ import Head from 'next/head';
 import styles from '../styles/index.module.scss';
 import HeadSecond from '../components/headSecond';
 import { useRouter } from 'next/router';
-import { getGlobalData, rmDiacs } from '../lib/utils';
+import { getGlobalData, rmDiacs, formatDate } from '../lib/utils';
 import Image from 'next/image';
 import { getConfigCatsList, getIndexSearch } from '../firebase/firestore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -106,8 +106,20 @@ export default function Home(props) {
               return (
                 <>
                   {idx != 0 ? <div className="dropdown-divider d-md-none"></div> : null}
-                  <NavLink type='cookie' file={cookie.fileTranslations[router.locale]} className='text-decoration-none text-dark' key={cookie.id}>
-                    test
+                  <NavLink type='cookie' file={cookie.fileTranslations[router.locale]} className='text-decoration-none text-light' key={cookie.id}>
+                    <div className="media mb-3">
+                      <Image className="align-self-center mr-3" src={cookie.picUrl} width={64} height={64} alt={cookie.title} />
+                      <div className="media-body">
+                        <h5 className="mt-0">{cookie.title}</h5>
+                        <p dangerouslySetInnerHTML={{ __html: cookie.description }}></p>
+                        <p className="my-0">{
+                          cookie.dledit ?
+                            (router.locale == 'es' ? 'Actualizado: ' : 'Updated: ') + formatDate(cookie.dledit) :
+                            (router.locale == 'es' ? 'Publicado: ' : 'Published: ') + formatDate(cookie.published)
+                        }</p>
+                        <p className="mt-0">{router.locale == 'es' ?'Autor(es):':'Author(s)' + cookie.authors}</p>
+                      </div>
+                    </div>
                   </NavLink>
                 </>
               )

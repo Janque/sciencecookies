@@ -123,7 +123,6 @@ function shwSrch() {
             med.appendChild(bod);
             $('#cookiesCont').appendChild(a);
         }
-        //Done/
         docs.forEach((doc, idx) => {
             if (idx != 0) {
                 let divi = $('<div></div>');
@@ -179,6 +178,7 @@ function shwSrch() {
             med.appendChild(img);
             med.appendChild(bod);
             $('#cookiesCont').appendChild(a);
+        //Done/
             if (idx == previewLim - 1) {
                 if (paglast[page] == undefined || paglast[page] == null) {
                     paglast.push(docs[docs.length - 1]);
