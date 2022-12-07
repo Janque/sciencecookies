@@ -8,9 +8,33 @@ import { getConfigCatsList, getIndexSearch } from '../firebase/firestore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import NavLink from '../components/navLinks';
+import { useState } from 'react';
 
 export default function Home(props) {
   const router = useRouter();
+
+  //Form functions
+  const [selCats, setSelCats] = useState(props.searchBox.checkCats);
+  function handleAllCatsClick(e) {
+    if (e.target.checked) {
+      setSelCats(props.configCatsList[router.locale].allCats.slice());
+    } else {
+      setSelCats([]);
+    }
+  }
+  function handleCatsClick(e, cat) {
+    if (e.target.checked) {
+      let tc = selCats.slice();
+      tc.push(cat);
+      tc.sort();
+      setSelCats(tc);
+    } else {
+      let tc = selCats.slice();
+      tc.splice(tc.indexOf(cat), 1);
+      setSelCats(tc);
+    }
+  }
+
   return (
     <>
       <Head>
@@ -38,21 +62,21 @@ export default function Home(props) {
         </NavLink>
       </div>
 
-      <form id="frmSrch" className="mb-4">
+      <form action='' method='get' className="mb-4">
         <div className={`rounded mb-1 pl-2 pt-1 ${styles['cats-container']}`}>
           <div className="from-row">
-            <label htmlFor="cats">{router.locale == 'es' ? 'Categorías' : 'Categories'}</label>
+            <label>{router.locale == 'es' ? 'Categorías' : 'Categories'}</label>
             <div className="form-check">
-              <input type="checkbox" id="catA" className="form-check-input" defaultChecked={props.searchBox.checkCats.indexOf('all') != -1 || props.searchBox.checkCats.indexOf('todas') != -1} />
+              <input type="checkbox" id="catA" className="form-check-input" checked={selCats.length == props.configCatsList['es'].allCats.length} defaultChecked={selCats.length == props.configCatsList['es'].allCats.length} onChange={handleAllCatsClick} />
               <label htmlFor="catA" className="form-check-label">{router.locale == 'es' ? 'Todas' : 'All'}</label>
             </div>
           </div>
           <div className="form-row justify-content-around">
             {props.configCatsList[router.locale].allCats.map((cat, idx) => {
               return (
-                <div className="form-group col-auto" key={cat}>
+                <div className="form-group col-auto">
                   <div className="form-check">
-                    <input type="checkbox" id={`cat${idx}`} className="form-check-input" defaultValue={cat} defaultChecked={props.searchBox.checkCats.indexOf(cat) != -1} />
+                    <input type="checkbox" id={`cat${idx}`} className="form-check-input" defaultValue={cat} checked={selCats.indexOf(cat) != -1} defaultChecked={selCats.indexOf(cat) != -1} name={router.locale == 'es' ? 'categorias' : 'categories'} onChange={(e) => handleCatsClick(e, cat)} />
                     <label htmlFor={`cat${idx}`} className="form-check-label">{props.configCatsList[router.locale].textCats[idx]}</label>
                   </div>
                 </div>
@@ -61,9 +85,9 @@ export default function Home(props) {
           </div>
         </div>
         <div className="input-group">
-          <input type="text" className="form-control" placeholder={router.locale == 'es' ? 'Buscar Galletas...' : 'Search Cookies...'} maxLength="100" defaultValue={props.searchBox.searchBar} />
+          <input type="text" className="form-control" placeholder={router.locale == 'es' ? 'Buscar Galletas...' : 'Search Cookies...'} maxLength="100" defaultValue={props.searchBox.searchBar} name={router.locale == 'es' ? 'busqueda' : 'search'} />
           <div className="input-group-append">
-            <select name="" id="inOrd" className="custom-select rounded-0" defaultValue={props.searchBox.srtOrd}>
+            <select name={router.locale == 'es' ? 'orden' : 'order'} id="inOrd" className="custom-select rounded-0" defaultValue={props.searchBox.srtOrd}>
               <option value={router.locale == 'es' ? 'nuevo' : 'new'}>{router.locale == 'es' ? 'Más nuevo' : 'Newest'}</option>
               <option value={router.locale == 'es' ? 'viejo' : 'old'}>{router.locale == 'es' ? 'Más viejo' : 'Oldest'}</option>
               <option value="popular">{router.locale == 'es' ? 'Más popular' : 'Popularity'}</option>
@@ -117,7 +141,7 @@ export default function Home(props) {
                             (router.locale == 'es' ? 'Actualizado: ' : 'Updated: ') + formatDate(cookie.dledit) :
                             (router.locale == 'es' ? 'Publicado: ' : 'Published: ') + formatDate(cookie.published)
                         }</p>
-                        <p className="mt-0">{router.locale == 'es' ?'Autor(es):':'Author(s)' + cookie.authors}</p>
+                        <p className="mt-0">{router.locale == 'es' ? 'Autor(es):' : 'Author(s)' + cookie.authors}</p>
                       </div>
                     </div>
                   </NavLink>
@@ -159,41 +183,38 @@ export async function getServerSideProps(context) {
   cats = configCatsList[context.locale].allCats.slice();
   checkCats = cats.slice();
 
-  if (query.categories || query.categorias) {
-    if (query.categories) {
-      cats = query.categories.split(' ');
-      if (query.categorias) cats = cats.concat(query.categorias.split(' '));
-    } else {
-      cats = query.categorias.split(' ');
-    }
-  }
   if (query.search || query.busqueda) {
     if (query.search) {
       searchBar = query.search;
       kywords = query.search.split(' ');
       if (query.busqueda) {
         searchBar += ' ' + query.busqueda;
-        kywords = kywords.concat(query.busqueda.split(' '))
+        kywords = kywords.concat(query.busqueda.split(' '));
       }
     } else {
       searchBar = query.busqueda;
       kywords = query.busqueda.split(' ');
     }
-  };
+    cats = [];
+    checkCats = [];
+  } else if (query.categories || query.categorias) {
+    if (typeof query.categories === 'string') query.categories = [query.categories];
+    if (typeof query.categorias === 'string') query.categorias = [query.categorias];
+    if (query.categories) {
+      cats = query.categories;
+      if (query.categorias) cats = cats.concat(query.categorias);
+    } else {
+      cats = query.categorias;
+    }
+  }
   searchBox.searchBar = searchBar;
-  kywords = cats.concat(kywords);
+  kywords = kywords.concat(cats);
   kywords.forEach((itm, idx) => {
     kywords.splice(idx, 1, rmDiacs(itm.toLowerCase()));
   });
-  let remAll = false;
-  checkCats.push(context.locale == 'es' ? 'todas' : 'all');
   configCatsList[context.locale].allCats.forEach((itm) => {
     if (kywords.indexOf(itm) == -1) {
       checkCats.splice(checkCats.indexOf(itm), 1);
-      if (!remAll) {
-        remAll = true;
-        checkCats.splice(checkCats.indexOf(context.locale == 'es' ? 'todas' : 'all'), 1);
-      }
     }
   });
   searchBox.checkCats = checkCats;
