@@ -1,5 +1,9 @@
 @import "_types.scss";
 
+body{
+  scroll-behavior: smooth;
+}
+
 .bg-rebecca {
   background-color: $rebecca;
 }

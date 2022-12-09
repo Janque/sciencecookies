@@ -1,5 +1,5 @@
 import { firestore } from './firebase';
-import { getDocs, query, collection, where, orderBy, limit, getDoc, doc as docRef, getCountFromServer } from 'firebase/firestore';
+import { getDocs, query, collection, where, orderBy, limit, getDoc, doc as docRef, getCountFromServer, startAfter } from 'firebase/firestore';
 import { addKeywordsToStats } from './database';
 
 
@@ -64,10 +64,11 @@ export async function getConfigCatTranslations() {
 export async function getIndexSearch(locale, keywords, order, desc, paged = false, paglast = null) {
     let srchQuery;
     if (paged && paglast) {
+        let lastDoc = await getDoc(docRef(firestore, 'cookies/langs/' + locale, paglast));
         if (!desc) {
-            srchQuery = query(cookiesFSColl[locale], where('public', '==', true), where('cats', 'array-contains-any', keywords), orderBy(order), startAfter(paglast), limit(indexPreviewLim));
+            srchQuery = query(cookiesFSColl[locale], where('public', '==', true), where('cats', 'array-contains-any', keywords), orderBy(order), startAfter(lastDoc), limit(indexPreviewLim));
         } else {
-            srchQuery = query(cookiesFSColl, where('public', '==', true), where('cats', 'array-contains-any', keywords), orderBy(order, 'desc'), startAfter(paglast), limit(indexPreviewLim));
+            srchQuery = query(cookiesFSColl[locale], where('public', '==', true), where('cats', 'array-contains-any', keywords), orderBy(order, 'desc'), startAfter(lastDoc), limit(indexPreviewLim));
         }
     } else {
         if (!desc) {

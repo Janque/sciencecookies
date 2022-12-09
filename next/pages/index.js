@@ -4,11 +4,11 @@ import HeadSecond from '../components/headSecond';
 import { useRouter } from 'next/router';
 import { getGlobalData, rmDiacs, formatDate } from '../lib/utils';
 import Image from 'next/image';
-import { getConfigCatsList, getIndexSearch } from '../firebase/firestore';
+import { getConfigCatsList, getIndexSearch, indexPreviewLim } from '../firebase/firestore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import NavLink from '../components/navLinks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home(props) {
   const router = useRouter();
@@ -33,6 +33,18 @@ export default function Home(props) {
       tc.splice(tc.indexOf(cat), 1);
       setSelCats(tc);
     }
+  }
+
+  //Page controls
+  const [searchRes, setSearchRes] = useState(props.searchResults.docs);
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(props.searchResults.resultCount / indexPreviewLim);
+  var paglast = [null];
+  async function handlePageChange(np) {
+    if (page <= 1 && np == -1) return;
+    if (page == totalPages && np == 1) return;
+    setSearchRes((await getIndexSearch(router.locale, props.searchParams.kywords, props.searchParams.srtOrd, props.searchParams.desc, true, paglast[page])).docs);
+    setPage(page + np);
   }
 
   return (
@@ -99,23 +111,29 @@ export default function Home(props) {
         </div>
       </form>
 
-      <nav id="pgNavT" aria-label="pageNavT">
-        <ul className="pagination justify-content-end">
-          <li className="page-item" key='1'>
-            <button id="pgTPrv" className="page-link text-light bg-transparent" aria-label="pgTPrv">
-              <span aria-hidden="true">«</span>
-            </button>
-          </li>
-          <li className="page-item" key='2'>
-            <span id="disPgT" className="page-link text-light bg-transparent">1</span>
-          </li>
-          <li className="page-item" key='3'>
-            <button id="pgTNxt" className="page-link text-light bg-transparent" aria-label="pgTNxt">
-              <span aria-hidden="true">»</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
+      {totalPages > 1 ?
+        <nav>
+          <ul className="pagination justify-content-end">
+            {page > 1 ?
+              <li className="page-item" key='1'>
+                <button className="page-link text-light bg-transparent" onClick={() => handlePageChange(-1)}>
+                  <span aria-hidden="true">«</span>
+                </button>
+              </li>
+              : null}
+            <li className="page-item" key='2'>
+              <span className="page-link text-light bg-transparent">{page}</span>
+            </li>
+            {page < totalPages ?
+              <li className="page-item" key='3'>
+                <button className="page-link text-light bg-transparent" onClick={() => handlePageChange(1)}>
+                  <span aria-hidden="true">»</span>
+                </button>
+              </li>
+              : null}
+          </ul>
+        </nav>
+        : null}
 
       <div>
         {props.searchResults.resultCount == 0 ?
@@ -126,7 +144,14 @@ export default function Home(props) {
           </div>
           :
           <>
-            {props.searchResults.docs.map((cookie, idx) => {
+            {searchRes.map((cookie, idx) => {
+              if (idx == indexPreviewLim - 1) {
+                if (paglast[page] == undefined || paglast[page] == null) {
+                  paglast.push(cookie.id);
+                } else if (paglast[page] != cookie.id) {
+                  paglast.splice(page, 1, cookie.id);
+                }
+              }
               return (
                 <>
                   {idx != 0 ? <div className="dropdown-divider d-md-none"></div> : null}
@@ -152,23 +177,29 @@ export default function Home(props) {
         }
       </div>
 
-      <nav id="pgNavB" aria-label="pageNavB">
-        <ul className="pagination justify-content-end">
-          <li className="page-item" key='1'>
-            <button id="pgBPrv" className="page-link text-light bg-transparent" aria-label="pgBPrv">
-              <span aria-hidden="true">«</span>
-            </button>
-          </li>
-          <li className="page-item" key='2'>
-            <span id="disPgB" className="page-link text-light bg-transparent">1</span>
-          </li>
-          <li className="page-item" key='3'>
-            <button id="pgBNxt" className="page-link text-light bg-transparent" aria-label="pgBNxt">
-              <span aria-hidden="true">»</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
+      {totalPages > 1 ?
+        <nav>
+          <ul className="pagination justify-content-end">
+            {page > 1 ?
+              <li className="page-item" key='1'>
+                <button className="page-link text-light bg-transparent" onClick={() => handlePageChange(-1)}>
+                  <span aria-hidden="true">«</span>
+                </button>
+              </li>
+              : null}
+            <li className="page-item" key='2'>
+              <span className="page-link text-light bg-transparent">{page}</span>
+            </li>
+            {page < totalPages ?
+              <li className="page-item" key='3'>
+                <button className="page-link text-light bg-transparent" onClick={() => handlePageChange(1)}>
+                  <span aria-hidden="true">»</span>
+                </button>
+              </li>
+              : null}
+          </ul>
+        </nav>
+        : null}
     </>
   )
 }
@@ -239,7 +270,12 @@ export async function getServerSideProps(context) {
     ...(await getGlobalData(context)),
     configCatsList: { ...configCatsList },
     searchBox: { ...searchBox },
-    searchResults: { ...(await getIndexSearch(context.locale, kywords, srtOrd, desc)) }
+    searchResults: { ...(await getIndexSearch(context.locale, kywords, srtOrd, desc)) },
+    searchParams: {
+      kywords: kywords,
+      srtOrd: srtOrd,
+      desc: desc
+    }
   }
   props.host = context.req.headers.host;
   return { props: props }
