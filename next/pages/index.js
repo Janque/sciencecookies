@@ -8,7 +8,7 @@ import { getConfigCatsList, getIndexSearch, indexPreviewLim } from '../firebase/
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import NavLink from '../components/navLinks';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function Home(props) {
   const router = useRouter();
