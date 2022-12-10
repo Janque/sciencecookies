@@ -1,6 +1,9 @@
 //Bootstrap
 import 'bootstrap/dist/css/bootstrap.css';
 
+//FontAwesomeIcon
+import '@fortawesome/fontawesome-svg-core/styles.css';
+
 import '../styles/main.scss';
 import Layout from '../components/layout';
 

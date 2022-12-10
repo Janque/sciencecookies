@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import styles from '../styles/index.module.scss';
-import HeadSecond from '../components/headSecond';
 import { useRouter } from 'next/router';
 import { getGlobalData, rmDiacs, formatDate } from '../lib/utils';
 import Image from 'next/image';
@@ -50,8 +49,6 @@ export default function Home(props) {
   return (
     <>
       <Head>
-        <HeadSecond host={props.host} locale={router.locale} site={props.site} />
-
         <meta name="description" content={router.locale == 'es' ? 'Artículos de ciencia con chispas de chocolate. Artículos de difusión científica y sobre curiosidades.' : 'Science articles with chocolate chips. Articles of scientific diffusion and on curiosities.'} />
         <meta property="og:description" content={router.locale == 'es' ? 'Artículos de ciencia con chispas de chocolate. Artículos de difusión científica y sobre curiosidades.' : 'Science articles with chocolate chips. Articles of scientific diffusion and on curiosities.'} />
         <title key="title">{router.locale == 'es' ? 'Science Cookies - Artículos de ciencia con chispas de chocolate.' : 'Science Cookies - Science articles with chocolate chips.'}</title>
@@ -267,6 +264,7 @@ export async function getServerSideProps(context) {
 
   const props = {
     site: 'index',
+    host: context.req.headers.host,
     ...(await getGlobalData(context)),
     configCatsList: { ...configCatsList },
     searchBox: { ...searchBox },
@@ -277,6 +275,5 @@ export async function getServerSideProps(context) {
       desc: desc
     }
   }
-  props.host = context.req.headers.host;
   return { props: props }
 }
