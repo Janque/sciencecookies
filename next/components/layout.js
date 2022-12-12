@@ -8,6 +8,7 @@ import AdsV from './adsV';
 import AdsH from './adsH';
 import Footer from './footer';
 import Script from 'next/script';
+import { NavLinks,Buttons } from './layoutAttr';
 
 export default function Layout({ children }) {
     const router = useRouter();

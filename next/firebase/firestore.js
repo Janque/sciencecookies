@@ -91,3 +91,9 @@ export async function getIndexSearch(locale, keywords, order, desc, paged = fals
         resultCount: resultCount
     }
 }
+
+export async function userIsMod(uid) {
+    const doc = await getDoc(docRef(firestore, 'users/' + uid));
+    const data = doc.data();
+    return data.modod;
+}

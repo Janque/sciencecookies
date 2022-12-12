@@ -24,7 +24,7 @@ export default function Navbar(props) {
                 router.push('https://sciencecookies.net');
             }
             if (props.site == "drafts" || props.site == "edit" || props.site == "draftsCal" || props.site == "editCal") {
-                $('#mdlRgstr').modal('show');
+                //$('#mdlRgstr').modal('show');
             }
         }
     }, [authUser, isLoading])
@@ -100,8 +100,8 @@ export default function Navbar(props) {
                                 <div className='dropdown-menu dropdown-menu-right bg-dark pl-1' aria-labelledby='usrDrpdwn'>
                                     <Link id='btnPrfl' href={`/${NavLinks['es']['profile']}`} as={`/${NavLinks[router.locale]['profile']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["profile"]}</Link>
                                     <Link id='btnPref' href={`/${NavLinks['es']['profile']}?tab=pref`} as={`/${NavLinks[router.locale]['profile']}?tab=pref`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["prefs"]}</Link>
-                                    {authUser.mod ? <Link id='btnDraft' href={`/${NavLinks['es']['drafts']}`} as={`/${NavLinks[router.locale]['drafts']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["profile"]}</Link> : null}
-                                    {authUser.mod ? <Link id='btnCals' href={`/${NavLinks['es']['draftsCal']}`} as={`/${NavLinks[router.locale]['draftsCal']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["profile"]}</Link> : null}
+                                    {authUser.mod ? <Link id='btnDraft' href={`/${NavLinks['es']['drafts']}`} as={`/${NavLinks[router.locale]['drafts']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["drafts"]}</Link> : null}
+                                    {authUser.mod ? <Link id='btnCals' href={`/${NavLinks['es']['draftsCal']}`} as={`/${NavLinks[router.locale]['draftsCal']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["draftsCal"]}</Link> : null}
                                     <div className='dropdown-divider ml-1 mr-2'></div>
                                     <button onClick={signOut} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["logOut"]}</button>
                                 </div>

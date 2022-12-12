@@ -19,11 +19,13 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut as authSignOut } from 'firebase/auth';
 import { auth } from './firebase';
 import { useAlert } from '../components/alert';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
+import { userIsMod } from './firestore';
 
 export default function useFirebaseAuth() {
     const [authUser, setAuthUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const router = useRouter();
 
     const clear = () => {
         setAuthUser(null);
@@ -41,7 +43,7 @@ export default function useFirebaseAuth() {
             email: user.email,
             photoURL: user.photoURL,
             uid: user.uid,
-            mod: false
+            mod: userIsMod(user.uid)
         });
         setIsLoading(false);
     };
@@ -49,7 +51,7 @@ export default function useFirebaseAuth() {
     const { showAlert } = useAlert();
     const signOut = () => authSignOut(auth).then(() => {
         clear();
-        if (Router.locale == 'es') {
+        if (router.locale == 'es') {
             showAlert('Haz cerrado tu sesión correctamente. <strong>!Vuelve pronto!</strong>', 'warning');
         } else {
             showAlert('You have successfully closed your session. <strong>! Come back soon! </strong>', 'warning');
