@@ -17,14 +17,14 @@ export default function Navbar(props) {
     useEffect(() => {
         if (!isLoading && authUser) {
             if ((props.site == "drafts" || props.site == "edit" || props.site == "draftsCal" || props.site == "editCal" || props.site == "mailPrev") && !authUser.mod) {
-                router.push('https://sciencecookies.net');
+                router.push('/');
             }
         } else {
             if (props.site == "mailPrev") {
-                router.push('https://sciencecookies.net');
+                router.push('/');
             }
-            if (props.site == "drafts" || props.site == "edit" || props.site == "draftsCal" || props.site == "editCal") {
-                //$('#mdlRgstr').modal('show');
+            if (!isLoading && (props.site == "drafts" || props.site == "edit" || props.site == "draftsCal" || props.site == "editCal")) {
+                router.push('/');
             }
         }
     }, [authUser, isLoading])
