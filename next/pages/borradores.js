@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch, faPlusSquare, faEllipsisH, faEdit, faEye } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
-import { getDraftsSearch } from '../firebase/firestore';
+import { draftsPreviewLim, getDraftsSearch } from '../firebase/firestore';
 import { useAuth } from '../firebase/auth.js';
 import { NavLinks } from '../components/layoutAttr';
 import { useEffect, useState } from 'react';
@@ -17,6 +17,14 @@ export default function Borradores(props) {
     //Page controls
     const [searchRes, setSearchRes] = useState(props.searchResults.docs);
     const [page, setPage] = useState(1);
+    const totalPages = Math.ceil(props.searchResults.resultCount / draftsPreviewLim);
+    var paglast = [null];
+    async function handlePageChange(np) {
+        if (page <= 1 && np == -1) return;
+        if (page == totalPages && np == 1) return;
+        setSearchRes((await getDraftsSearch(router.locale, props.searchParams.kywords, props.searchParams.order, props.searchParams.desc, page + np == 1 ? 1 : 0, true, paglast[page])).docs);
+        setPage(page + np);
+    }
 
     //Card dropdowns
     const [dropdowns, setDropdowns] = useState([])
@@ -114,23 +122,26 @@ export default function Borradores(props) {
                 </div>
             </form>
 
-            <nav className="d-none" id="pgNavT" aria-label="pageNavT">
-                <ul className="pagination justify-content-end">
-                    <li className="page-item">
-                        <button className="page-link text-light bg-transparent" id="pgTPrv" aria-label="pgTPrv">
-                            <span aria-hidden="true">«</span>
-                        </button>
-                    </li>
-                    <li className="page-item">
-                        <span className="page-link text-light bg-transparent" id="disPgT">1</span>
-                    </li>
-                    <li className="page-item">
-                        <button className="page-link text-light bg-transparent" id="pgTNxt" aria-label="pgTNxt">
-                            <span aria-hidden="true">»</span>
-                        </button>
-                    </li>
-                </ul>
-            </nav>
+            {totalPages > 1 ?
+                <nav >
+                    <ul className="pagination justify-content-end">
+                        <li className="page-item" key='1'>
+                            <button className="page-link text-light bg-transparent" onClick={() => handlePageChange(-1)}>
+                                <span aria-hidden="true">«</span>
+                            </button>
+                        </li>
+                        <li className="page-item" key='2'>
+                            <span className="page-link text-light bg-transparent">{page}</span>
+                        </li>
+                        <li className="page-item" key='3'>
+                            <button className="page-link text-light bg-transparent" onClick={() => handlePageChange(1)}>
+                                <span aria-hidden="true">»</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+                : null
+            }
 
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-1 row-cols-lg-2 row-cols-xl-3">
                 {searchRes.length < 1 ?
@@ -148,7 +159,14 @@ export default function Borradores(props) {
                     </div>
                     : <></>
                 }
-                {searchRes.map(cookie => {
+                {searchRes.map((cookie, idx) => {
+                    if (idx == searchRes.length - 1) {
+                        if (paglast[page] == undefined || paglast[page] == null) {
+                            paglast.push(cookie.id);
+                        } else if (paglast[page] != cookie.id) {
+                            paglast.splice(page, 1, cookie.id);
+                        }
+                    }
                     return (
                         <div className="col mb-4" key={cookie.id}>
                             <div className={`card text-dark bg-light h-100 cardBorder ${cookie.owner == authUser?.uid ? 'border-success' : 'border-secondary'}`}>
@@ -206,23 +224,26 @@ export default function Borradores(props) {
                 })}
             </div>
 
-            <nav className="d-none" id="pgNavB" aria-label="pageNavB">
-                <ul className="pagination justify-content-end">
-                    <li className="page-item">
-                        <button className="page-link text-light bg-transparent" id="pgBPrv" aria-label="pgBPrv">
-                            <span aria-hidden="true">«</span>
-                        </button>
-                    </li>
-                    <li className="page-item">
-                        <span className="page-link text-light bg-transparent" id="disPgB">1</span>
-                    </li>
-                    <li className="page-item">
-                        <button className="page-link text-light bg-transparent" id="pgBNxt" aria-label="pgBNxt">
-                            <span aria-hidden="true">»</span>
-                        </button>
-                    </li>
-                </ul>
-            </nav>
+            {totalPages > 1 ?
+                <nav>
+                    <ul className="pagination justify-content-end">
+                        <li className="page-item" key='1'>
+                            <button className="page-link text-light bg-transparent" onClick={() => handlePageChange(-1)}>
+                                <span aria-hidden="true">«</span>
+                            </button>
+                        </li>
+                        <li className="page-item" key='2'>
+                            <span className="page-link text-light bg-transparent">{page}</span>
+                        </li>
+                        <li className="page-item" key='3'>
+                            <button className="page-link text-light bg-transparent" onClick={() => handlePageChange(1)}>
+                                <span aria-hidden="true">»</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+                : null
+            }
         </>
     );
 
@@ -277,7 +298,7 @@ export async function getServerSideProps(context) {
         host: context.req.headers.host,
         ...(await getGlobalData(context)),
         searchBox: { ...searchBox },
-        searchResults: { ...(await getDraftsSearch(context.locale, kywords, order, desc)) },
+        searchResults: { ...(await getDraftsSearch(context.locale, kywords, order, desc, 1)) },
         searchParams: {
             kywords: kywords,
             order: order,
