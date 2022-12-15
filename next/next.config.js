@@ -16,6 +16,20 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/:locale/drafts',
+        destination: '/en/borradores',
+        locale: false
+      },
+      {
+        source: '/:locale/borradores',
+        destination: '/es/borradores',
+        locale: false
+      }
+    ]
+  }
 }
 
 module.exports = nextConfig

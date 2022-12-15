@@ -30,32 +30,27 @@ export default function Navbar(props) {
     }, [authUser, isLoading])
 
     //Translate link
-    let transLinkHref, transLinkAs;
     let otLang = router.locale == 'es' ? 'en' : 'es';
+    var transLinkHref = '/' + otLang + '/', transLinkAs = '/';
     if (props.transLink) {
-        transLinkAs = props.transLink;
-        transLinkHref = router.pathname;
+        transLinkHref = props.transLink;
     } else {
-        if (props.site == "index") {
-            transLinkHref = '/';
-            transLinkAs = '/';
-        }
-        else {
+        if (props.site != "index") {
             if (props.site == "allCalsY") {
-                transLinkHref = NavLinks['es']["cal"];
-                transLinkAs = NavLinks[otLang]["cal"];
+                transLinkHref += NavLinks['es']["cal"];
+                transLinkAs += NavLinks[otLang]["cal"];
             }
             else if (props.site == "allCalsM") {
-                transLinkHref = NavLinks['es']["cal"];
-                transLinkAs = NavLinks[otLang]["cal"] + props.year + '/';
+                transLinkHref += NavLinks['es']["cal"] + props.year + '/';
+                transLinkAs += NavLinks[otLang]["cal"] + props.year + '/';
             }
             else if (props.site == "cookTri") {
-                transLinkHref = NavLinks['es']["cook"];
-                transLinkAs = NavLinks[otLang]["cook"] + props.year + '/' + props.sTri + '/';
+                transLinkHref += NavLinks['es']["cook"] + props.year + '/' + props.sTri + '/';
+                transLinkAs += NavLinks[otLang]["cook"] + props.year + '/' + props.sTri + '/';
             }
             else {
-                transLinkHref = NavLinks['es'][props.site];
-                transLinkAs = NavLinks[otLang][props.site];
+                transLinkHref += NavLinks['es'][props.site];
+                transLinkAs += NavLinks[otLang][props.site];
             }
         }
     }
@@ -63,7 +58,7 @@ export default function Navbar(props) {
         <>
             <nav className={styles.navbar + ' navbar sticky-top navbar-expand-lg navbar-dark bg-science'}>
                 <Image className='d-inline-block align-center mr-2' src='/img/wlogoT.svg' width={30} height={30} alt='Science Cookies Logo' />
-                <Link href='/' className='navbar-brand'>Science Cookies</Link>
+                <NavLink type='index' className='navbar-brand' text='Science Cookies' />
 
                 <button className='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarMenu' aria-controls='navbarMenu' aria-expanded='false' aria-label='Toggle navigation'><span className='navbar-toggler-icon'></span></button>
 
@@ -87,7 +82,7 @@ export default function Navbar(props) {
                     </ul>
 
                     <div className={`row justify-content-end ${styles['w-nsm-100']}`}>
-                        <Link className={styles['lang-switch'] + ' btn btn-link text-light text-decoration-none'} locale={otLang} href={transLinkHref} as={transLinkAs}>
+                        <Link className={styles['lang-switch'] + ' btn btn-link text-light text-decoration-none'} href={transLinkHref} as={transLinkAs} locale={props.site == 'index' ? otLang : false}>
                             {otLang == 'es' ? 'Español' : 'English'} <FontAwesomeIcon icon={faGlobe} />
                         </Link>
 
@@ -98,10 +93,10 @@ export default function Navbar(props) {
                                     <Image id='picUsr' className='d-inline-block align-center ml-2 rounded-circle' src={authUser.photoURL} width={30} height={30} alt='' />
                                 </button>
                                 <div className='dropdown-menu dropdown-menu-right bg-dark pl-1' aria-labelledby='usrDrpdwn'>
-                                    <Link id='btnPrfl' href={`/${NavLinks['es']['profile']}`} as={`/${NavLinks[router.locale]['profile']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["profile"]}</Link>
-                                    <Link id='btnPref' href={`/${NavLinks['es']['profile']}?tab=pref`} as={`/${NavLinks[router.locale]['profile']}?tab=pref`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["prefs"]}</Link>
-                                    {authUser.mod ? <Link id='btnDraft' href={`/${NavLinks['es']['drafts']}`} as={`/${NavLinks[router.locale]['drafts']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["drafts"]}</Link> : null}
-                                    {authUser.mod ? <Link id='btnCals' href={`/${NavLinks['es']['draftsCal']}`} as={`/${NavLinks[router.locale]['draftsCal']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["draftsCal"]}</Link> : null}
+                                    <Link id='btnPrfl' href={`/${router.locale}/${NavLinks['es']['profile']}`} as={`/${NavLinks[router.locale]['profile']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["profile"]}</Link>
+                                    <Link id='btnPref' href={`/${router.locale}/${NavLinks['es']['profile']}?tab=pref`} as={`/${NavLinks[router.locale]['profile']}?tab=pref`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["prefs"]}</Link>
+                                    {authUser.mod ? <Link id='btnDraft' href={`/${router.locale}/${NavLinks['es']['drafts']}`} as={`/${NavLinks[router.locale]['drafts']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["drafts"]}</Link> : null}
+                                    {authUser.mod ? <Link id='btnCals' href={`/${router.locale}/${NavLinks['es']['draftsCal']}`} as={`/${NavLinks[router.locale]['draftsCal']}`} locale={false} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["draftsCal"]}</Link> : null}
                                     <div className='dropdown-divider ml-1 mr-2'></div>
                                     <button onClick={signOut} className='btn btn-link text-decoration-none text-light'>{Buttons[router.locale]["logOut"]}</button>
                                 </div>
