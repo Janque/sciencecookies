@@ -15,6 +15,8 @@ export const calendarsFSColl = {
 
 export const indexPreviewLim = 20;
 
+export const draftsPreviewLim = 21;
+
 //Get Sidebar Cookies and Calendar
 export async function getRecommended(locale) {
     let latestCookie, mostPopularCookies = [], latestCalendar;
@@ -81,6 +83,54 @@ export async function getIndexSearch(locale, keywords, order, desc, paged = fals
     const countSnap = paged || await getCountFromServer(query(cookiesFSColl[locale], where('public', '==', true), where('cats', 'array-contains-any', keywords)));
     const resultCount = countSnap !== true ? countSnap.data().count : 0;
     if (!paged) await addKeywordsToStats(keywords);
+    return {
+        docs: JSON.parse(JSON.stringify(snap.docs.map(doc => {
+            return {
+                id: doc.id,
+                ...doc.data()
+            };
+        }))),
+        resultCount: resultCount
+    }
+}
+
+export async function getDraftsSearch(locale, keywords, order, desc, spaced = 0, paged = false, paglast = null) {
+    let srchQuery, countQuery;
+    if (paged && paglast) {
+        let lastDoc = await getDoc(docRef(firestore, 'cookies/langs/' + locale, paglast));
+        if (keywords) {
+            if (!desc) {
+                srchQuery = query(cookiesFSColl[locale], where('title', '==', keywords), orderBy(order), startAfter(lastDoc), limit(draftsPreviewLim - spaced));
+            } else {
+                srchQuery = query(cookiesFSColl[locale], where('title', '==', keywords), orderBy(order, 'desc'), startAfter(lastDoc), limit(draftsPreviewLim - spaced));
+            }
+        } else {
+            if (!desc) {
+                srchQuery = query(cookiesFSColl[locale], orderBy(order), startAfter(lastDoc), limit(draftsPreviewLim - spaced));
+            } else {
+                srchQuery = query(cookiesFSColl[locale], orderBy(order, 'desc'), startAfter(lastDoc), limit(draftsPreviewLim - spaced));
+            }
+        }
+    } else {
+        if (keywords) {
+            countQuery = query(cookiesFSColl[locale], where('title', '==', keywords));
+            if (!desc) {
+                srchQuery = query(cookiesFSColl[locale], where('title', '==', keywords), orderBy(order), limit(draftsPreviewLim - spaced));
+            } else {
+                srchQuery = query(cookiesFSColl[locale], where('title', '==', keywords), orderBy(order, 'desc'), limit(draftsPreviewLim - spaced));
+            }
+        } else {
+            countQuery = query(cookiesFSColl[locale]);
+            if (!desc) {
+                srchQuery = query(cookiesFSColl[locale], orderBy(order), limit(draftsPreviewLim - spaced));
+            } else {
+                srchQuery = query(cookiesFSColl[locale], orderBy(order, 'desc'), limit(draftsPreviewLim - spaced));
+            }
+        }
+    }
+    const snap = await getDocs(srchQuery);
+    const countSnap = paged || await getCountFromServer(countQuery);
+    const resultCount = countSnap !== true ? countSnap.data().count : 0;
     return {
         docs: JSON.parse(JSON.stringify(snap.docs.map(doc => {
             return {

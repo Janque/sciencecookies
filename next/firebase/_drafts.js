@@ -1,3 +1,4 @@
+//Done
 import { initializeApp, getApps, getApp } from "firebase/app"
 
 var firebaseConfig = {
@@ -24,6 +25,7 @@ const RTDB = getDatabase();
 
 import { getFirestore, doc as docRef, query, where, orderBy, limit, startAfter, getDocs, setDoc, Timestamp } from "firebase/firestore/lite";
 const FSDB = getFirestore();
+//Done/
 
 var urlSrch;
 window.loaded = function loaded() {
@@ -420,6 +422,7 @@ function shwSrch() {
 
             col.appendChild(card);
             $('#crdContainer').appendChild(col);
+    //Done/
             if (idx == previewLim - 1) {
                 if (paglast[page] == undefined || paglast[page] == null) {
                     paglast.push(docs[docs.length - 1]);

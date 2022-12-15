@@ -1,12 +1,43 @@
-import { getGlobalData } from '../lib/utils';
+import { getGlobalData, formatDate } from '../lib/utils';
 import Head from 'next/head';
+import Link from 'next/link';
+import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSearch, faPlusSquare, faEllipsisH, faEdit, faEye } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
-import { getConfigCatsList } from '../firebase/firestore';
+import { getDraftsSearch } from '../firebase/firestore';
+import { useAuth } from '../firebase/auth.js';
+import { NavLinks } from '../components/layoutAttr';
+import { useEffect, useState } from 'react';
 
 export default function Borradores(props) {
     const router = useRouter();
+    const { authUser } = useAuth();
+
+    //Page controls
+    const [searchRes, setSearchRes] = useState(props.searchResults.docs);
+    const [page, setPage] = useState(1);
+
+    //Card dropdowns
+    const [dropdowns, setDropdowns] = useState([])
+    useEffect(() => {
+        const dd = dropdowns.slice();
+        searchRes.forEach(cookie => {
+            dd[cookie.id] = false;
+        });
+        setDropdowns(dd);
+    }, [searchRes])
+    function handleDropdownClick(cook) {
+        const dd = dropdowns.slice();
+        dd[cook] = !dd[cook];
+        setDropdowns(dd);
+    }
+    function handleDropdownBlur(cook) {
+        const dd = dropdowns.slice();
+        dd[cook] = false;
+        setDropdowns(dd);
+    }
+
     return (
         <>
             <Head>
@@ -15,7 +46,7 @@ export default function Borradores(props) {
             </Head>
 
             {/* Plus modal */}
-            <div className="modal fade" id="mdlPlus" tabindex="-1" aria-labelledby="mdlPlusL" aria-hidden="true">
+            <div className="modal fade" id="mdlPlus" tabIndex="-1" aria-labelledby="mdlPlusL" aria-hidden="true">
                 <div id="alrtPlusContainer">
                 </div>
                 <div className="modal-dialog modal-dialog-centered">
@@ -29,11 +60,11 @@ export default function Borradores(props) {
                         <div className="modal-body">
                             <form id="frmPlus">
                                 <div className="form-group">
-                                    <label for="inTitle">{router.locale == 'es' ? 'Título de la Galleta' : 'Cookie title'}</label>
+                                    <label htmlFor="inTitle">{router.locale == 'es' ? 'Título de la Galleta' : 'Cookie title'}</label>
                                     <input className="form-control" id="inTitle" type="text" placeholder={router.locale == 'es' ? 'Nueva Galleta' : 'New Cookie'} required />
                                 </div>
                                 <div className="form-group">
-                                    <label for="inFile">{router.locale == 'es' ? 'Nombre del archivo' : 'File name'}</label>
+                                    <label htmlFor="inFile">{router.locale == 'es' ? 'Nombre del archivo' : 'File name'}</label>
                                     <input className="form-control" id="inFile" type="text" placeholder={router.locale == 'es' ? 'nueva-galleta' : 'new-cookie'} required />
                                 </div>
                                 <div className="dropdown-divider">
@@ -62,19 +93,19 @@ export default function Borradores(props) {
                 </div>
             </div>
 
-            <form className="mb-4" id="frmSrch">
+            <form action='' method='get' className="mb-4">
                 <div className="input-group">
-                    <input className="form-control" id="srcBox" type="text" placeholder={router.locale == 'es' ? 'Buscar Galletas...' : 'Search Cookies...'} aria-describedby="frmBtns" maxlength="100" />
-                    <div className="input-group-append" id="frmBtns">
-                        <select className="custom-select rounded-0" id="inOrd">
-                            <option id="inSrchOrd0" value="created">{router.locale == 'es' ? 'Creación' : 'Creation'}</option>
-                            <option id="inSrchOrd1" value="published">{router.locale == 'es' ? 'Publicación' : 'Publication'}</option>
-                            <option id="inSrchOrd2" value="ledit">{router.locale == 'es' ? 'Edición' : 'Edition'}</option>
-                            <option id="inSrchOrd3" value="pop">{router.locale == 'es' ? 'Popularidad' : 'Popularity'}</option>
+                    <input className="form-control" type="text" placeholder={router.locale == 'es' ? 'Buscar Galletas...' : 'Search Cookies...'} aria-describedby="frmBtns" maxLength="100" defaultValue={props.searchBox.searchBar} />
+                    <div className="input-group-append" >
+                        <select className="custom-select rounded-0" defaultValue={props.searchBox.order}>
+                            <option value={router.locale == 'es' ? 'creacion' : 'creation'}>{router.locale == 'es' ? 'Creación' : 'Creation'}</option>
+                            <option value={router.locale == 'es' ? 'publicacion' : 'publication'}>{router.locale == 'es' ? 'Publicación' : 'Publication'}</option>
+                            <option value={router.locale == 'es' ? 'edicion' : 'edition'}>{router.locale == 'es' ? 'Edición' : 'Edition'}</option>
+                            <option value={router.locale == 'es' ? 'popularidad' : 'popularity'}>{router.locale == 'es' ? 'Popularidad' : 'Popularity'}</option>
                         </select>
-                        <select className="custom-select rounded-0" id="inDir">
-                            <option id="inSrchDir0" value="desc">{router.locale == 'es' ? 'Descendente' : 'Descending'}</option>
-                            <option id="inSrchDir1" value="asc">{router.locale == 'es' ? 'Ascendente' : 'Ascending'}</option>
+                        <select className="custom-select rounded-0" defaultValue={props.searchBox.direction}>
+                            <option value={router.locale == 'es' ? 'descendente' : 'descending'}>{router.locale == 'es' ? 'Descendente' : 'Descending'}</option>
+                            <option value={router.locale == 'es' ? 'ascendente' : 'ascending'}>{router.locale == 'es' ? 'Ascendente' : 'Ascending'}</option>
                         </select>
                         <button className="btn btn-outline-light" type="submit">
                             <FontAwesomeIcon icon={faSearch} />
@@ -101,7 +132,79 @@ export default function Borradores(props) {
                 </ul>
             </nav>
 
-            <div className="row row-cols-1 row-cols-sm-2 row-cols-md-1 row-cols-lg-2 row-cols-xl-3" id="crdContainer"></div>
+            <div className="row row-cols-1 row-cols-sm-2 row-cols-md-1 row-cols-lg-2 row-cols-xl-3">
+                {searchRes.length < 1 ?
+                    <h5 className="mt-0 text-center" key='1'>No se han encontrado resultados</h5> : <></>
+                }
+                {(!props.searchParams.kywords && page == 1) || searchRes.length < 1 ?
+                    <div className="col mb-4" key='0'>
+                        <div className="card text-dark bg-light h-100 cardBorder" style={{ borderColor: '#343a40' }}>
+                            <a type="button" data-toggle="modal" data-target="#mdlPlus" className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center">
+                                <h1 style={{ fontSize: '6rem' }} className="mb-0">
+                                    <FontAwesomeIcon icon={faPlusSquare} />
+                                </h1>
+                            </a>
+                        </div>
+                    </div>
+                    : <></>
+                }
+                {searchRes.map(cookie => {
+                    return (
+                        <div className="col mb-4" key={cookie.id}>
+                            <div className={`card text-dark bg-light h-100 cardBorder ${cookie.owner == authUser?.uid ? 'border-success' : 'border-secondary'}`}>
+                                <div className="card-header bg-light m-0 py-0 text-right">
+                                    <div className="row justify-content-between">
+                                        {!cookie.public ?
+                                            <div className="col-auto p-0">
+                                                <span className="badge badge-warning">{router.locale == 'es' ? 'Borrador' : 'Draft'}</span>
+                                            </div> : <></>
+                                        }
+                                        <div className="col-auto p-0 ml-auto">
+                                            <div className="dropdown">
+                                                <button className="btn btn-light" onClick={() => handleDropdownClick(cookie.id)} onBlur={() => { handleDropdownBlur(cookie.id) }}>
+                                                    <FontAwesomeIcon icon={faEllipsisH} />
+                                                </button>
+                                            </div>
+                                            <div className={`dropdown-menu dropdown-menu-right ${dropdowns[cookie.id] ? 'show' : ''}`}>
+                                                <Link className="dropdown-item" href={`/${router.locale}/${NavLinks['es']['edit']}?id=${cookie.id}`} as={`/${NavLinks[router.locale]['edit']}?id=${cookie.id}`} locale={false}>
+                                                    {router.locale == 'es' ? 'Editar ' : 'Edit '}
+                                                    <FontAwesomeIcon icon={faEdit} />
+                                                </Link>
+                                                {cookie.public ?
+                                                    <a className="dropdown-item" href={NavLinks[router.locale].cook + props.file + '/'} target='_blank'>
+                                                        {router.locale == 'es' ? 'Ver galleta ' : 'View cookie '}
+                                                        <FontAwesomeIcon icon={faEye} />
+                                                    </a>
+                                                    : <></>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <Link className="text-decoration-none text-dark" href={`/${router.locale}/${NavLinks['es']['edit']}?id=${cookie.id}`} as={`/${NavLinks[router.locale]['edit']}?id=${cookie.id}`} locale={false}>
+                                    <div className='card-img-top' style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
+                                        <Image fill src={cookie.picUrl} alt={cookie.title || (router.locale == 'es' ? 'No hay imagen' : 'No image')} sizes="(max-width: 1200px) 25vw, 17vw" style={{ objectFit: 'cover' }} />
+                                    </div>
+                                    <div className="card-body">
+                                        <h3 className="card-title">{cookie.title}</h3>
+                                        <p>{`${router.locale == 'es' ? 'Autor(es)' : 'Author(s)'}: ${cookie.authors}`}</p>
+                                        <p className="card-text">{cookie.description}</p>
+                                    </div>
+                                    <div className="card-footer text-muted">
+                                        <p>{`${router.locale == 'es' ? 'Creado' : 'Created'}: ${formatDate(cookie.created)}`}</p>
+                                        <p>{`${router.locale == 'es' ? 'Actualizado' : 'Actualizado'}: ${formatDate(cookie.ledit)}`}</p>
+                                        {cookie.public ?
+                                            <p>{`${router.locale == 'es' ? 'Publicado' : 'Published'}: ${formatDate(cookie.published)}`}</p>
+                                            :
+                                            <p>{router.locale == 'es' ? 'No publicado' : 'Not published'}</p>
+                                        }
+                                    </div>
+                                </Link>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
 
             <nav className="d-none" id="pgNavB" aria-label="pageNavB">
                 <ul className="pagination justify-content-end">
@@ -126,11 +229,60 @@ export default function Borradores(props) {
 }
 
 export async function getServerSideProps(context) {
+    //Parse query to get results
+    const query = context.query;
+    const searchBox = {};
+    let kywords = '', direction, orderq, desc = false, order;
+
+    if (query.search || query.busqueda) {
+        if (query.search) {
+            kywords = query.search;
+        } else {
+            kywords = query.busqueda;
+        }
+    }
+    direction = (query.direction || query.direccion) || (context.locale === 'es' ? 'descendente' : 'descending');
+    if (direction == 'descendente' || direction == 'descending') {
+        desc = true;
+    }
+    orderq = (query.order || query.orden) || (context.locale === 'es' ? 'creacion' : 'creation');
+    switch (orderq) {
+        case 'creacion':
+        case 'creation':
+            order = 'created'
+            break;
+        case 'publicacion':
+        case 'publication':
+            order = 'published'
+            break;
+        case 'edicion':
+        case 'edition':
+            order = 'ledit'
+            break;
+        case 'popularidad':
+        case 'popularity':
+            order = 'pop';
+            break;
+        default:
+            order = 'created';
+            break;
+    }
+    searchBox.searchBar = kywords;
+    searchBox.direction = direction;
+    searchBox.order = orderq;
+
+
     const props = {
         site: 'drafts',
         host: context.req.headers.host,
         ...(await getGlobalData(context)),
-        configCatsList: { ...(await getConfigCatsList()) }
+        searchBox: { ...searchBox },
+        searchResults: { ...(await getDraftsSearch(context.locale, kywords, order, desc)) },
+        searchParams: {
+            kywords: kywords,
+            order: order,
+            desc: desc
+        }
     }
     return { props: props }
 }
