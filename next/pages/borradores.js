@@ -1,18 +1,91 @@
-import { getGlobalData, formatDate } from '../lib/utils';
+import { getGlobalData, formatDate, ultraClean } from '../lib/utils';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch, faPlusSquare, faEllipsisH, faEdit, faEye } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
-import { draftsPreviewLim, getDraftsSearch } from '../firebase/firestore';
-import { useAuth } from '../firebase/auth.js';
-import { NavLinks } from '../components/layoutAttr';
+import { cookieExists, createCookie, draftsPreviewLim, getConfigLanguages, getDraftsSearch } from '../firebase/firestore';
+import { useAuth } from '../firebase/auth';
+import { Buttons, NavLinks } from '../components/layoutAttr';
 import { useEffect, useState } from 'react';
+import { useAlert, AlertComponent } from '../components/alert';
+import Modal from 'react-bootstrap/Modal';
+import ProgressBar from 'react-bootstrap/ProgressBar';
+import Button from 'react-bootstrap/Button';
+import { getTodaysID } from '../firebase/database';
 
 export default function Borradores(props) {
     const router = useRouter();
     const { authUser } = useAuth();
+    const { showAlert, hideAlert } = useAlert();
+
+    //Plus modal
+    const [mdlOpenPlus, setMdlOpenPlus] = useState(false);
+    const [frmPlusTitle, setFrmPlusTitle] = useState('');
+    const [frmPlusFile, setFrmPlusFile] = useState('');
+    const [frmPlusFileChanged, setFrmPlusFileChanged] = useState(false);
+    const [submitingPlus, setSubmitingPlus] = useState(false);
+    const [progressPlus, setProgressPlus] = useState(0);
+    const [progressPlusVar, setProgressPlusVar] = useState('primary');
+    function handleTitleChange(e) {
+        setFrmPlusTitle(e.target.value);
+        let newFile = frmPlusFile;
+        if (!frmPlusFileChanged) {
+            newFile = ultraClean(e.target.value.trim(), '-', true);
+        }
+        setFrmPlusFile(newFile);
+    }
+    function handleFileChange(e) {
+        let newFile = e.target.value;
+        newFile = ultraClean(newFile, '-', true, true);
+        setFrmPlusFile(newFile);
+        setFrmPlusFileChanged(true);
+    }
+    function handleTitleBlur(e) {
+        let newTitle = e.target.value.trim();
+        setFrmPlusTitle(newTitle);
+    }
+    function handleFileBlur(e) {
+        let newFile = e.target.value;
+        newFile = ultraClean(newFile, '-', true);
+        setFrmPlusFile(newFile);
+    }
+    useEffect(() => {
+        if (!mdlOpenPlus) {
+            setFrmPlusTitle('');
+            setFrmPlusFile('');
+            setFrmPlusFileChanged(false);
+        }
+    }, [mdlOpenPlus]);
+    async function handleSubmitPlus(e) {
+        e.preventDefault();
+        if (await cookieExists(router.locale, frmPlusFile)) {
+            showAlert(router.locale == 'es' ? 'Ese nombre de archivo ya esta en uso.' : 'That file name is already in use.', 'danger', 'alrtPlus');
+        } else {
+            setSubmitingPlus(true);
+
+            let id = await getTodaysID();
+            setProgressPlus(3);
+
+            const promises = [];
+            props.langsList.forEach((l, i) => {
+                setProgressPlus(3 + 30 / props.langsList.length * i);
+                promises.push(createCookie(l, id, ' ' + authUser.displayName, frmPlusTitle, frmPlusFile, authUser.uid));
+            });
+            Promise.all(promises).then(() => {
+                setProgressPlus(90);
+                setTimeout(function () {
+                    setProgressPlus(100);
+                    setProgressPlusVar('success');
+                    showAlert(router.locale == 'es' ? `Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-science" href="../editar?id=${id}">click aqui</a>.` : `Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-science" href="../edit?id=${id}">click here</a>.`, 'success', 'alrtPlus');
+                }, 700);
+                setTimeout(function () {
+                    router.push(`/${router.locale}/${NavLinks['es']['edit']}?id=${id}`, `/${NavLinks[router.locale]['edit']}?id=${id}`, { locale: false });
+                }, 3000);
+            }).catch(err => console.log(err));
+        }
+    }
 
     //Page controls
     const [searchRes, setSearchRes] = useState(props.searchResults.docs);
@@ -54,48 +127,46 @@ export default function Borradores(props) {
             </Head>
 
             {/* Plus modal */}
-            <div className="modal fade" id="mdlPlus" tabIndex="-1" aria-labelledby="mdlPlusL" aria-hidden="true">
-                <div id="alrtPlusContainer">
-                </div>
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="mdlPlusL">{router.locale == 'es' ? 'Crear una nueva Galleta' : 'Create a new Cookie'}</h5>
-                            <button className="close" id="btnCanPlus1" type="button" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
+            <Modal className='text-dark' show={mdlOpenPlus} onHide={() => setMdlOpenPlus(false)} centered>
+                <AlertComponent id='alrtPlus' />
+                <Modal.Header>
+                    <Modal.Title>{router.locale == 'es' ? 'Crear una nueva Galleta' : 'Create a new Cookie'}</Modal.Title>
+                    <button className="close" type="button" onClick={() => setMdlOpenPlus(false)} disabled={submitingPlus}>
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={handleSubmitPlus}>
+                        <div className="form-group">
+                            <label htmlFor="inTitle">{router.locale == 'es' ? 'Título de la Galleta' : 'Cookie title'}</label>
+                            <input className="form-control" id="inTitle" name='title' type="text" placeholder={router.locale == 'es' ? 'Nueva Galleta' : 'New Cookie'} value={frmPlusTitle} required onBlur={handleTitleBlur} onChange={handleTitleChange} onFocus={hideAlert} />
                         </div>
-                        <div className="modal-body">
-                            <form id="frmPlus">
-                                <div className="form-group">
-                                    <label htmlFor="inTitle">{router.locale == 'es' ? 'Título de la Galleta' : 'Cookie title'}</label>
-                                    <input className="form-control" id="inTitle" type="text" placeholder={router.locale == 'es' ? 'Nueva Galleta' : 'New Cookie'} required />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="inFile">{router.locale == 'es' ? 'Nombre del archivo' : 'File name'}</label>
-                                    <input className="form-control" id="inFile" type="text" placeholder={router.locale == 'es' ? 'nueva-galleta' : 'new-cookie'} required />
-                                </div>
-                                <div className="dropdown-divider">
-                                </div>
-                                <button className="btn btn-primary btn-block" id="btnPlusConf" type="submit">{router.locale == 'es' ? 'Crear' : 'Create'}</button>
-                                <div className="progress d-none" id="barCont">
-                                    <div className="progress-bar progress-bar-striped progress-bar-animated" id="bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style={{ width: '0%' }}>
-                                    </div>
-                                </div>
-                            </form>
+                        <div className="form-group">
+                            <label htmlFor="inFile">{router.locale == 'es' ? 'Nombre del archivo' : 'File name'}</label>
+                            <input className="form-control" id="inFile" name='file' type="text" placeholder={router.locale == 'es' ? 'nueva-galleta' : 'new-cookie'} value={frmPlusFile} required onBlur={handleFileBlur} onChange={handleFileChange} onFocus={hideAlert} />
                         </div>
-                        <div className="modal-footer">
-                            <button className="btn btn-secondary btn-block" id="btnCanPlus0" type="button" data-dismiss="modal">
-                            </button>
+                        <div className="dropdown-divider">
                         </div>
+                        {submitingPlus ?
+                            <ProgressBar variant={progressPlusVar} animated now={progressPlus} label={`${progressPlus}%`} />
+                            :
+                            <div className="d-grid">
+                                <Button variant="primary" type="submit">{router.locale == 'es' ? 'Crear' : 'Create'}</Button>
+                            </div>
+                        }
+                    </form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="d-grid w-100">
+                        <Button disabled={submitingPlus} variant="secondary" type="button" onClick={() => setMdlOpenPlus(false)}>{Buttons[router.locale]["cancel"]}</Button>
                     </div>
-                </div>
-            </div>
+                </Modal.Footer>
+            </Modal>
 
             {/* Side toolbar */}
             <div className="tbar tbar-right btn-toolbar mb-3" role="toolbar">
                 <div className="btn-group-vertical mr-2 btn-group-lg" role="group">
-                    <button className="btn btn-science" id="btnPlus" type="button">
+                    <button className="btn btn-science" onClick={() => { setMdlOpenPlus(true) }}>
                         <FontAwesomeIcon icon={faPlus} />
                     </button>
                 </div>
@@ -150,7 +221,7 @@ export default function Borradores(props) {
                 {(!props.searchParams.kywords && page == 1) || searchRes.length < 1 ?
                     <div className="col mb-4" key='0'>
                         <div className="card text-dark bg-light h-100 cardBorder" style={{ borderColor: '#343a40' }}>
-                            <a type="button" data-toggle="modal" data-target="#mdlPlus" className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center">
+                            <a type="button" onClick={() => { setMdlOpenPlus(true) }} className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center">
                                 <h1 style={{ fontSize: '6rem' }} className="mb-0">
                                     <FontAwesomeIcon icon={faPlusSquare} />
                                 </h1>
@@ -189,7 +260,7 @@ export default function Borradores(props) {
                                                     <FontAwesomeIcon icon={faEdit} />
                                                 </Link>
                                                 {cookie.public ?
-                                                    <a className="dropdown-item" href={NavLinks[router.locale].cook + props.file + '/'} target='_blank'>
+                                                    <a className="dropdown-item" href={'/' + NavLinks[router.locale].cook + cookie.fileTranslations[router.locale] + '/'} target='_blank'>
                                                         {router.locale == 'es' ? 'Ver galleta ' : 'View cookie '}
                                                         <FontAwesomeIcon icon={faEye} />
                                                     </a>
@@ -297,6 +368,7 @@ export async function getServerSideProps(context) {
         site: 'drafts',
         host: context.req.headers.host,
         ...(await getGlobalData(context)),
+        langsList: await getConfigLanguages(),
         searchBox: { ...searchBox },
         searchResults: { ...(await getDraftsSearch(context.locale, kywords, order, desc, 1)) },
         searchParams: {

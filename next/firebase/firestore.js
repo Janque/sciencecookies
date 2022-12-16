@@ -1,5 +1,5 @@
-import { firestore } from './firebase';
-import { getDocs, query, collection, where, orderBy, limit, getDoc, doc as docRef, getCountFromServer, startAfter } from 'firebase/firestore';
+import { database, firestore } from './firebase';
+import { getDocs, query, collection, where, orderBy, limit, getDoc, doc as docRef, getCountFromServer, startAfter, setDoc, Timestamp } from 'firebase/firestore';
 import { addKeywordsToStats } from './database';
 
 
@@ -44,6 +44,12 @@ export async function getRecommended(locale) {
         mostPopularCookies: mostPopularCookies,
         latestCalendar: JSON.parse(JSON.stringify(latestCalendar))
     }
+}
+
+export async function getConfigLanguages() {
+    const doc = await getDoc(docRef(firestore, 'config', 'langs'));
+    const data = doc.data();
+    return data.langs;
 }
 
 export async function getConfigCatsList() {
@@ -145,5 +151,50 @@ export async function getDraftsSearch(locale, keywords, order, desc, spaced = 0,
 export async function userIsMod(uid) {
     const doc = await getDoc(docRef(firestore, 'users/' + uid));
     const data = doc.data();
-    return data.modod;
+    return data.role == 'admin' || data.role == 'mod';
+}
+
+export async function cookieExists(locale, file) {
+    const snap = await getDocs(query(cookiesFSColl[locale], where('fileTranslations.' + locale, '==', file), limit(1)));
+    return !snap.empty;
+}
+
+export function createCookie(lang, id, author, title, file, uid) {
+    return setDoc(docRef(firestore, 'cookies/langs/' + lang, id), {
+        authors: [author],
+        cont: [
+            {
+                type: "head",
+                title: title,
+                author: [author]
+            },
+            {
+                type: "ref",
+                ref: []
+            }
+        ],
+        media: [],
+        picUrl: "",
+        title: title,
+        description: "",
+        owner: uid,
+        java: "",
+        revised: {},
+        notify: false,
+        public: false,
+        beenPublic: false,
+        dledit: false,
+        created: Timestamp.now(),
+        ledit: Timestamp.now(),
+        published: Timestamp.now(),
+        pop: 0,
+        likes: 0,
+        favs: 0,
+        fixedCats: [],
+        cats: [],
+        fileTranslations: {
+            es: file,
+            en: file
+        }
+    });
 }

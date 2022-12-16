@@ -123,7 +123,6 @@ onAuthStateChanged(AUTH, (user) => {
         uid = null;
         shwSsnBtns(false);
     }
-    //Done/
 
     if ((!(site == "drafts" || site == "edit" || site == "draftsCal" || site == "editCal") || actSsn) && notLoaded) {
         notLoaded = false;
@@ -142,7 +141,6 @@ onAuthStateChanged(AUTH, (user) => {
 //Botones de sesion
 function shwSsnBtns(ac) {
     if (ac) {
-        //Done
         $('#icnUsr').removeClass('fa-user-slash');
         $('#icnUsr').addClass('fa-user');
         $('#picUsr').attr('onerror', "this.src='https://via.placeholder.com/20.webp'");

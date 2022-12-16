@@ -148,11 +148,16 @@ export function rmDiacs(s) {
         return diacs[a] || a;
     });
 }
-export function ultraClean(str, rep) {
-    str = rmDiacs(str.trim().toLowerCase());
-    let banChars = ",.^*!¡'?¿#@[]-:;ªº$%&()=/+{} ";
+export function ultraClean(str, rep, noDup = false, allowEndSpace = false) {
+    str = rmDiacs(str.toLowerCase());
+    let banChars = " ,.^*!¡'?¿#@[]-:;ªº$%&()=/+{}´`¨";
     banChars.split('').forEach(c => {
         str = str.replaceAll(c, rep);
     });
+    const re = new RegExp(rep + rep + '+', 'g');
+    if (noDup) {
+        str = str.replaceAll(re, rep);
+    }
+    if (!allowEndSpace && str.slice(-1) == rep) str = str.slice(0, -1);
     return str;
 }

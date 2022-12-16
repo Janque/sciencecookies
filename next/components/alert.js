@@ -6,11 +6,14 @@ export default function useLogicAlert() {
     const [alertId, setAlertId] = useState('defaultAlert');
     const [alertShow, setAlertShow] = useState(false);
 
-    const showAlert = (txt, type, id = 'defaultAlert') => {
+    const showAlert = (txt, type = 'danger', id = 'defaultAlert') => {
         setAlertText(txt);
         setAlertType(type);
         setAlertId(id);
         setAlertShow(true);
+    }
+    const hideAlert = () => {
+        setAlertShow(false);
     }
 
     useEffect(() => {
@@ -26,6 +29,7 @@ export default function useLogicAlert() {
         alertType,
         alertId,
         showAlert,
+        hideAlert,
         alertShow
     }
 }
@@ -34,7 +38,8 @@ const AlertContext = createContext({
     alertText: '',
     alertType: 'danger',
     alertId: null,
-    showAlert: async () => { },
+    showAlert: () => { },
+    hideAlert: () => { },
     alertShow: false
 });
 
