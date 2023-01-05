@@ -1,16 +1,13 @@
 import styles from '../styles/edit.module.scss';
 import { getGlobalData } from '../lib/utils';
-import Head from 'next/head';
+import MetaDescription from '../components/metaDescription';
 
 
 export default function Editar(props) {
     const router = useRouter();
     return (
         <>
-            <Head>
-                <meta name="description" content={router.locale == 'es' ? 'Edita las Galletas' : 'Edit the Cookies'} />
-                <meta property="og:description" content={router.locale == 'es' ? 'Edita las Galletas' : 'Edit the Cookies'} />
-            </Head>
+            <MetaDescription description={router.locale == 'es' ? 'Edita las Galletas' : 'Edit the Cookies'} />
         </>
     );
 

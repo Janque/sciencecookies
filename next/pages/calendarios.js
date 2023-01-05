@@ -1,15 +1,13 @@
 import { getGlobalData } from '../lib/utils';
-import Head from 'next/head';
+import MetaDescription from '../components/metaDescription';
+import { useRouter } from 'next/router';
 
 
 export default function Calendarios(props) {
     const router = useRouter();
     return (
         <>
-            <Head>
-                <meta name="description" content={router.locale == 'es' ? 'Revisa y edita los calendarios' : 'Review and edit the calendars'} />
-                <meta property="og:description" content={router.locale == 'es' ? 'Revisa y edita los calendarios' : 'Review and edit the calendars'} />
-            </Head>
+            <MetaDescription description={router.locale == 'es' ? 'Revisa y edita los calendarios' : 'Review and edit the calendars'} />
         </>
     );
 

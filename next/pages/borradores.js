@@ -1,5 +1,5 @@
 import { getGlobalData, formatDate, ultraClean } from '../lib/utils';
-import Head from 'next/head';
+import MetaDescription from '../components/metaDescription';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -121,10 +121,7 @@ export default function Borradores(props) {
 
     return (
         <>
-            <Head>
-                <meta name="description" content={router.locale == 'es' ? 'Revisa y administra tus borradores' : 'Review and manage your drafts'} />
-                <meta property="og:description" content={router.locale == 'es' ? 'Revisa y administra tus borradores' : 'Review and manage your drafts'} />
-            </Head>
+            <MetaDescription description={router.locale == 'es' ? 'Revisa y administra tus borradores' : 'Review and manage your drafts'} />
 
             {/* Plus modal */}
             <Modal className='text-dark' show={mdlOpenPlus} onHide={() => setMdlOpenPlus(false)} centered>

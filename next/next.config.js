@@ -27,6 +27,16 @@ const nextConfig = {
         source: '/:locale/borradores',
         destination: '/es/borradores',
         locale: false
+      },
+      {
+        source: '/:locale/calendars',
+        destination: '/en/calendarios',
+        locale: false
+      },
+      {
+        source: '/:locale/calendarios',
+        destination: '/es/calendarios',
+        locale: false
       }
     ]
   }

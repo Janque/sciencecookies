@@ -1,3 +1,4 @@
+import MetaDescription from '../components/metaDescription';
 import Head from 'next/head';
 import styles from '../styles/index.module.scss';
 import { useRouter } from 'next/router';
@@ -48,9 +49,8 @@ export default function Home(props) {
 
   return (
     <>
+      <MetaDescription description={router.locale == 'es' ? 'Artículos de ciencia con chispas de chocolate. Artículos de difusión científica y sobre curiosidades.' : 'Science articles with chocolate chips. Articles of scientific diffusion and on curiosities.'} />
       <Head>
-        <meta name="description" content={router.locale == 'es' ? 'Artículos de ciencia con chispas de chocolate. Artículos de difusión científica y sobre curiosidades.' : 'Science articles with chocolate chips. Articles of scientific diffusion and on curiosities.'} />
-        <meta property="og:description" content={router.locale == 'es' ? 'Artículos de ciencia con chispas de chocolate. Artículos de difusión científica y sobre curiosidades.' : 'Science articles with chocolate chips. Articles of scientific diffusion and on curiosities.'} />
         <title key="title">{router.locale == 'es' ? 'Science Cookies - Artículos de ciencia con chispas de chocolate.' : 'Science Cookies - Science articles with chocolate chips.'}</title>
         <meta key="ogtitle" property="og:title" content={'Science Cookies - ' + (router.locale == 'es' ? 'Artículos de ciencia con chispas de chocolate.' : 'Science articles with chocolate chips.')} />
         <meta property="og:image" content={props.host + "/img/logoT.svg"} />
