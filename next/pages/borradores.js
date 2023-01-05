@@ -174,15 +174,15 @@ export default function Borradores(props) {
 
             <form action='' method='get' className="mb-4">
                 <div className="input-group">
-                    <input className="form-control" type="text" placeholder={router.locale == 'es' ? 'Buscar Galletas...' : 'Search Cookies...'} aria-describedby="frmBtns" maxLength="100" defaultValue={props.searchBox.searchBar} />
+                    <input className="form-control" type="text" placeholder={router.locale == 'es' ? 'Buscar Galletas...' : 'Search Cookies...'} aria-describedby="frmBtns" maxLength="100" defaultValue={props.searchBox.searchBar} name={router.locale == 'es' ? 'busqueda' : 'search'} />
                     <div className="input-group-append" >
-                        <select className="custom-select rounded-0" defaultValue={props.searchBox.order}>
+                        <select className="custom-select rounded-0" defaultValue={props.searchBox.order} name={router.locale == 'es' ? 'orden' : 'order'}>
                             <option value={router.locale == 'es' ? 'creacion' : 'creation'}>{router.locale == 'es' ? 'Creación' : 'Creation'}</option>
                             <option value={router.locale == 'es' ? 'publicacion' : 'publication'}>{router.locale == 'es' ? 'Publicación' : 'Publication'}</option>
                             <option value={router.locale == 'es' ? 'edicion' : 'edition'}>{router.locale == 'es' ? 'Edición' : 'Edition'}</option>
                             <option value={router.locale == 'es' ? 'popularidad' : 'popularity'}>{router.locale == 'es' ? 'Popularidad' : 'Popularity'}</option>
                         </select>
-                        <select className="custom-select rounded-0" defaultValue={props.searchBox.direction}>
+                        <select className="custom-select rounded-0" defaultValue={props.searchBox.direction} name={router.locale == 'es' ? 'direccion' : 'direction'}>
                             <option value={router.locale == 'es' ? 'descendente' : 'descending'}>{router.locale == 'es' ? 'Descendente' : 'Descending'}</option>
                             <option value={router.locale == 'es' ? 'ascendente' : 'ascending'}>{router.locale == 'es' ? 'Ascendente' : 'Ascending'}</option>
                         </select>
