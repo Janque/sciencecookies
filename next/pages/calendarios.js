@@ -19,13 +19,6 @@ export default function Calendarios(props) {
     const [page, setPage] = useState(1);
     const totalPages = Math.ceil(props.searchResults.resultCount / draftsPreviewLim);
     var paglast = [null];
-    useEffect(() => {
-        if (paglast[page] == undefined || paglast[page] == null) {
-            paglast.push(searchRes[searchRes.length - 1].id);
-        } else if (paglast[page] != searchRes[searchRes.length - 1].id) {
-            paglast.splice(page, 1, searchRes[searchRes.length - 1].id);
-        }
-    }, searchRes)
     async function handlePageChange(np) {
         if (page <= 1 && np == -1) return;
         if (page == totalPages && np == 1) return;
@@ -59,7 +52,14 @@ export default function Calendarios(props) {
             }
 
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-1 row-cols-lg-2 row-cols-xl-3">
-                {searchRes.map(calendar => {
+                {searchRes.map((calendar, idx) => {
+                    if (idx == searchRes.length - 1) {
+                        if (paglast[page] == undefined || paglast[page] == null) {
+                            paglast.push(calendar.id);
+                        } else if (paglast[page] != calendar.id) {
+                            paglast.splice(page, 1, calendar.id);
+                        }
+                    }
                     return (
                         <div className="col mb-4">
                             <div className={`card text-dark bg-light h-100 cardBorder ${calendar.public ? 'border-success' : 'border-secondary'}`}>
