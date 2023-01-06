@@ -148,6 +148,28 @@ export async function getDraftsSearch(locale, keywords, order, desc, spaced = 0,
     }
 }
 
+export async function getDraftsCalSearch(locale, paged = false, paglast = null) {
+    let srchQuery;
+    if (paged && paglast) {
+        let lastDoc = await getDoc(docRef(firestore, 'calendars/langs/' + locale, paglast));
+        srchQuery = query(calendarsFSColl[locale], orderBy('published', 'desc'), startAfter(lastDoc), limit(draftsPreviewLim));
+    } else {
+        srchQuery = query(calendarsFSColl[locale], orderBy('published', 'desc'), limit(draftsPreviewLim));
+    }
+    const snap = await getDocs(srchQuery);
+    const countSnap = paged || await getCountFromServer(query(calendarsFSColl[locale]));
+    const resultCount = countSnap !== true ? countSnap.data().count : 0;
+    return {
+        docs: JSON.parse(JSON.stringify(snap.docs.map(doc => {
+            return {
+                id: doc.id,
+                ...doc.data()
+            };
+        }))),
+        resultCount: resultCount
+    }
+}
+
 export async function userIsMod(uid) {
     const doc = await getDoc(docRef(firestore, 'users/' + uid));
     const data = doc.data();

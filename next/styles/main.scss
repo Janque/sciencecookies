@@ -1,6 +1,6 @@
 @import "_types.scss";
 
-body{
+body {
   scroll-behavior: smooth;
 }
 
@@ -49,6 +49,10 @@ body{
   border-radius: 10px;
 }
 
-.alert:not(.show){
+.alert:not(.show) {
+  display: none;
+}
+
+.dropdown-toggle.no-arrow:after {
   display: none;
 }
