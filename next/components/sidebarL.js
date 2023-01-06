@@ -4,6 +4,7 @@ import NavLink from './navLinks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
+import ImageRatio from './imageRatio';
 import { cookieCardBody } from '../lib/utils';
 
 export default function Sidebar(props) {
@@ -23,9 +24,7 @@ export default function Sidebar(props) {
                     <NavLink type='calendar' className='text-decoration-none text-dark' date={props.latestCalendar.published}>
                         <div className="d-none d-md-inline">
                             <div className="card mb-2">
-                                <div className='card-img-top' style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
-                                    <Image fill src={props.latestCalendar.picUrl} alt={props.latestCalendar.title} sizes="(max-width: 1200px) 25vw, 17vw" style={{ objectFit: 'cover' }} />
-                                </div>
+                                <ImageRatio className='card-img-top' src={props.latestCalendar.picUrl} alt={props.latestCalendar.title} />
                                 <div className="card-body">
                                     <h5 className="card-title">{props.latestCalendar.title}</h5>
                                     <p className="card-text">{props.latestCalendar.descriptionShort}</p>
@@ -51,9 +50,7 @@ export default function Sidebar(props) {
                     <NavLink type='cookie' className='text-decoration-none text-dark' file={props.latestCookie.fileTranslations[router.locale]}>
                         <div className="d-none d-md-inline">
                             <div className="card mb-2">
-                                <div className='card-img-top' style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
-                                    <Image fill src={props.latestCookie.picUrl} alt={props.latestCookie.title} sizes="(max-width: 1200px) 25vw, 17vw" style={{ objectFit: 'cover' }} />
-                                </div>
+                                <ImageRatio className='card-img-top' src={props.latestCookie.picUrl} alt={props.latestCookie.title} />
                                 <div className="card-body">
                                     {latestCookieBody}
                                 </div>
@@ -81,9 +78,7 @@ export default function Sidebar(props) {
                                 <NavLink type='cookie' className='text-decoration-none text-dark' file={cookie.fileTranslations[router.locale]}>
                                     <div className="d-none d-md-inline">
                                         <div className="card mb-2">
-                                            <div className="card-img-top" style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
-                                                <Image fill src={cookie.picUrl} alt={cookie.title} sizes="(max-width: 1200px) 25vw, 17vw" style={{ objectFit: 'cover' }} />
-                                            </div>
+                                            <ImageRatio className='card-img-top' src={cookie.picUrl} alt={cookie.title} />
                                             <div className="card-body">
                                                 {popularCookieBody}
                                             </div>

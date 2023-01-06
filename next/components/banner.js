@@ -1,14 +1,12 @@
 import { useRouter } from "next/router";
-import Image from 'next/image';
+import ImageRatio from "./imageRatio";
 
 export default function Banner() {
     const router = useRouter();
     return (
         <div className="row justify-content-center mt-3 mb-4 align-items-center">
             <div className="col-10 col-sm-5 col-xl-3">
-                <div style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
-                    <Image priority fill src='/img/logoT.svg' alt='Science Cookies Logo' sizes="(max-width: 576px) 85vw, (max-width: 1200px) 42vw, 25vw" />
-                </div>
+                <ImageRatio className='card-img-top' priority src='/img/logoT.svg' alt='Science Cookies Logo' sizes="(max-width: 576px) 85vw, (max-width: 1200px) 42vw, 25vw" />
             </div>
             <div className="col-12 col-sm-6 col-xl-4">
                 <h1 className="title v1 text-center" style={{ fontSize: '2.8rem' }}>SCIENCE COOKIES</h1>

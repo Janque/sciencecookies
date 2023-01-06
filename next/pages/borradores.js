@@ -1,7 +1,7 @@
 import { getGlobalData, formatDate, ultraClean } from '../lib/utils';
 import MetaDescription from '../components/metaDescription';
 import Link from 'next/link';
-import Image from 'next/image';
+import ImageRatio from '../components/imageRatio';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch, faPlusSquare, faEllipsisH, faEdit, faEye } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
@@ -268,9 +268,7 @@ export default function Borradores(props) {
                                     </div>
                                 </div>
                                 <Link className="text-decoration-none text-dark" href={`/${router.locale}/${NavLinks['es']['edit']}?id=${cookie.id}`} as={`/${NavLinks[router.locale]['edit']}?id=${cookie.id}`} locale={false}>
-                                    <div className='card-img-top' style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
-                                        <Image fill src={cookie.picUrl} alt={cookie.title || (router.locale == 'es' ? 'No hay imagen' : 'No image')} sizes="(max-width: 1200px) 25vw, 17vw" style={{ objectFit: 'cover' }} />
-                                    </div>
+                                    <ImageRatio className='card-img-top' src={cookie.picUrl} alt={cookie.title || (router.locale == 'es' ? 'No hay imagen' : 'No image')} />
                                     <div className="card-body">
                                         <h3 className="card-title">{cookie.title}</h3>
                                         <p>{`${router.locale == 'es' ? 'Autor(es)' : 'Author(s)'}: ${cookie.authors}`}</p>

@@ -6,10 +6,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faEdit, faEye, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { NavLinks } from '../components/layoutAttr';
 import { getDraftsCalSearch, draftsPreviewLim } from '../firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import NavLink from '../components/navLinks';
-import Image from 'next/image';
+import ImageRatio from '../components/imageRatio';
 
 export default function Calendarios(props) {
     const router = useRouter();
@@ -99,9 +99,7 @@ export default function Calendarios(props) {
                                     </div>
                                 </div>
                                 <Link href={`/${router.locale}/${NavLinks['es']['editCal']}?id=${calendar.id}`} as={`/${NavLinks[router.locale]['editCal']}?id=${calendar.id}`} locale={false} className='text-decoration-none text-dark'>
-                                    <div className='card-img-top' style={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
-                                        <Image fill src={calendar.picUrl} alt={router.locale == 'es' ? 'No hay imagen' : 'No image'} sizes="(max-width: 1200px) 25vw, 17vw" style={{ objectFit: 'cover' }} />
-                                    </div>
+                                    <ImageRatio className='card-img-top' src={calendar.picUrl} alt={router.locale == 'es' ? 'No hay imagen' : 'No image'} />
                                     <div className="card-body">
                                         <h3 className="card-title">{calendar.title}</h3>
                                         <p className="card-text">{calendar.description}</p>
