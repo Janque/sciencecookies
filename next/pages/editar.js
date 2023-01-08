@@ -7,11 +7,15 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
 import { Buttons } from '../components/layoutAttr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faCheckSquare, faEdit, faEnvelope, faEye, faImage, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { getConfigCatsList } from '../firebase/firestore';
+import { useState } from 'react';
+import { useAlert, AlertComponent } from '../components/alert';
 
 export default function Editar(props) {
     const router = useRouter();
 
+    let submitingPlus, mdlOpenMedMan, mdlOpenMedCho, mdlOpenMedAdd, progressPlusVar, progressPlus, mdlOpenPub, mdlOpenTrans;//temp
     //Plus Sect modal
     const [mdlOpenPlusSect, setMdlOpenPlusSect] = useState(false);
 
@@ -85,7 +89,7 @@ export default function Editar(props) {
                             <div className="card text-dark bg-light h-100 cardBorder" style={{ borderColor: '#343a40' }}>
                                 <a className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close" onclick="addFrom=0;">
                                     <span className="mb-0" style={{ fontSize: '6rem' }}>
-                                        <i className="far fa-plus-square"></i>
+                                        <FontAwesomeIcon icon={faPlusSquare} />
                                     </span>
                                 </a>
                             </div>
@@ -224,28 +228,28 @@ export default function Editar(props) {
             <div className="tbar tbar-right btn-toolbar mb-3" role="toolbar">
                 <div className="btn-group-vertical mr-2 btn-group-lg" role="group">
                     <button className="btn btn-science" data-toggle="modal" data-target="#mdlPlusSect" onclick="toAdd=docDat.cont.length-1;">
-                        <i className="fas fa-plus"></i>
+                        <FontAwesomeIcon icon={faPlus} />
                     </button>
                     <button className="btn btn-science" data-toggle="modal" data-target="#mdlMedMan">
-                        <i className="fas fa-image"></i>
+                        <FontAwesomeIcon icon={faImage} />
                     </button>
                     <button className="btn btn-science" data-toggle="modal" data-target="#mdlTranslate">
-                        <i className="fas fa-language"></i>
+                        <FontAwesomeIcon icon={faLanguage} />
                     </button>
                     <a className="btn btn-science" id="btnPrevCook" target="_blank">
-                        <i className="fas fa-eye"></i>
+                        <FontAwesomeIcon icon={faEye} />
                     </a>
                     <a className="btn btn-science" id="btnPrevMail" target="_blank">
-                        <i className="fas fa-envelope"></i>
+                        <FontAwesomeIcon icon={faEnvelope} />
                     </a>
                     <button className="btn btn-science d-none" id="btnPrivate">
-                        <i className="fas fa-lock"></i>
+                        <FontAwesomeIcon icon={faLock} />
                     </button>
                     <button className="btn btn-science d-none" id="btnAprove">
-                        <i className="far fa-check-square"></i>
+                        <FontAwesomeIcon icon={faCheckSquare} />
                     </button>
                     <button className="btn btn-science d-none" id="btnPub" data-toggle="modal" data-target="#mdlPublish">
-                        <i className="fas fa-paper-plane"></i>
+                        <FontAwesomeIcon icon={faPaperPlane} />
                     </button>
                 </div>
             </div>
@@ -256,7 +260,7 @@ export default function Editar(props) {
                         <select className="form-control mr-0 ml-2 h-100" id="selFileTrans"></select>
                     </div>
                     <button className="btn btn-light btn-link-scckie" id="btnFileTrans">
-                        <i className="fas fa-language"></i>
+                        <FontAwesomeIcon icon={faLanguage} />
                     </button>
                 </div>
                 <form id="frmFile">
@@ -276,7 +280,7 @@ export default function Editar(props) {
                     <div className="row mb-2 justify-content-end">
                         <button className="btn btn-secondary" id="btnCanFile">{router.locale == 'es' ? 'Revertir' : 'Revert'}</button>
                         <button className="btn btn-light btn-link-scckie mx-3" type="submit">
-                            <i className="fas fa-check"></i>
+                            <FontAwesomeIcon icon={faCheck} />
                         </button>
                     </div>
                 </form>
@@ -286,10 +290,10 @@ export default function Editar(props) {
             <div className="container-fluid mb-2 rounded-lg p-3" style={{ backgroundColor: '#57238b' }}>
                 <div className="row mb-2 px-2">
                     <button className="btn btn-light btn-link-scckie ml-auto mr-2" id="btnEditJs">
-                        <i className="fas fa-edit" aria-hidden="true"></i>
+                        <FontAwesomeIcon icon={faEdit} />
                     </button>
                     <button className="btn btn-light btn-link-scckie ml-auto mr-2 d-none" id="btnCheckJs">
-                        <i className="fas fa-check" aria-hidden="true"></i>
+                        <FontAwesomeIcon icon={faCheck} />
                     </button>
                 </div>
                 <div className="row mb-2">
@@ -309,7 +313,7 @@ export async function getServerSideProps(context) {
         site: 'edit',
         host: context.req.headers.host,
         ...(await getGlobalData(context)),
-        configCatsList: { ...configCatsList }
+        configCatsList: { ...getConfigCatsList() }
     }
     return { props: props }
 }
