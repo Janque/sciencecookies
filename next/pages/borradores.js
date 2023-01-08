@@ -68,22 +68,21 @@ export default function Borradores(props) {
             let id = await getTodaysID();
             setProgressPlus(3);
 
-            const promises = [];
-            props.langsList.forEach((l, i) => {
-                setProgressPlus(3 + 30 / props.langsList.length * i);
-                promises.push(createCookie(l, id, ' ' + authUser.displayName, frmPlusTitle, frmPlusFile, authUser.uid));
-            });
-            Promise.all(promises).then(() => {
-                setProgressPlus(90);
-                setTimeout(function () {
-                    setProgressPlus(100);
-                    setProgressPlusVar('success');
-                    showAlert(router.locale == 'es' ? `Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-science" href="../editar?id=${id}">click aqui</a>.` : `Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-science" href="../edit?id=${id}">click here</a>.`, 'success', 'alrtPlus');
-                }, 700);
-                setTimeout(function () {
-                    router.push(`/${router.locale}/${NavLinks['es']['edit']}?id=${id}`, `/${NavLinks[router.locale]['edit']}?id=${id}`, { locale: false });
-                }, 3000);
-            }).catch(err => console.log(err));
+            await Promise.all(
+                props.langsList.map((l, i) => {
+                    setProgressPlus(3 + 30 / props.langsList.length * i);
+                    return createCookie(l, id, ' ' + authUser.displayName, frmPlusTitle, frmPlusFile, authUser.uid);
+                })
+            );
+            setProgressPlus(90);
+            setTimeout(function () {
+                setProgressPlus(100);
+                setProgressPlusVar('success');
+                showAlert(router.locale == 'es' ? `Creado con exito. Redirigiendo...<br>Si no te redirige automáticamente, haz <a class="btn-link-science" href="../editar?id=${id}">click aqui</a>.` : `Successfully created. Redirigiendo...<br>If you aren't automatically redirected, <a class="btn-link-science" href="../edit?id=${id}">click here</a>.`, 'success', 'alrtPlus');
+            }, 700);
+            setTimeout(function () {
+                router.push(`/${router.locale}/${NavLinks['es']['edit']}?id=${id}`, `/${NavLinks[router.locale]['edit']}?id=${id}`, { locale: false });
+            }, 3000);
         }
     }
 
