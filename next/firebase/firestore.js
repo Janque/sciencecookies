@@ -72,7 +72,7 @@ export async function getConfigCatTranslations() {
 export async function getIndexSearch(locale, keywords, order, desc, paged = false, paglast = null) {
     let srchQuery;
     if (paged && paglast) {
-        let lastDoc = await getDoc(docRef(firestore, 'cookies/langs/' + locale, paglast));
+        let lastDoc = await getDoc(docRef(cookiesFSColl[locale], paglast));
         if (!desc) {
             srchQuery = query(cookiesFSColl[locale], where('public', '==', true), where('cats', 'array-contains-any', keywords), orderBy(order), startAfter(lastDoc), limit(indexPreviewLim));
         } else {
@@ -103,7 +103,7 @@ export async function getIndexSearch(locale, keywords, order, desc, paged = fals
 export async function getDraftsSearch(locale, keywords, order, desc, spaced = 0, paged = false, paglast = null) {
     let srchQuery, countQuery;
     if (paged && paglast) {
-        let lastDoc = await getDoc(docRef(firestore, 'cookies/langs/' + locale, paglast));
+        let lastDoc = await getDoc(docRef(cookiesFSColl[locale], paglast));
         if (keywords) {
             if (!desc) {
                 srchQuery = query(cookiesFSColl[locale], where('title', '==', keywords), orderBy(order), startAfter(lastDoc), limit(draftsPreviewLim - spaced));
@@ -151,7 +151,7 @@ export async function getDraftsSearch(locale, keywords, order, desc, spaced = 0,
 export async function getDraftsCalSearch(locale, paged = false, paglast = null) {
     let srchQuery;
     if (paged && paglast) {
-        let lastDoc = await getDoc(docRef(firestore, 'calendars/langs/' + locale, paglast));
+        let lastDoc = await getDoc(docRef(calendarsFSColl[locale], paglast));
         srchQuery = query(calendarsFSColl[locale], orderBy('published', 'desc'), startAfter(lastDoc), limit(draftsPreviewLim));
     } else {
         srchQuery = query(calendarsFSColl[locale], orderBy('published', 'desc'), limit(draftsPreviewLim));
@@ -181,8 +181,8 @@ export async function cookieExists(locale, file) {
     return !snap.empty;
 }
 
-export function createCookie(lang, id, author, title, file, uid) {
-    return setDoc(docRef(firestore, 'cookies/langs/' + lang, id), {
+export function createCookie(locale, id, author, title, file, uid) {
+    return setDoc(docRef(cookiesFSColl[locale], id), {
         authors: [author],
         cont: [
             {
