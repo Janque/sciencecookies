@@ -1,3 +1,4 @@
+//Done
 import { initializeApp, getApps, getApp } from "firebase/app"
 
 var firebaseConfig = {
@@ -27,6 +28,7 @@ const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
 import { getFirestore, getDoc, doc as docRef, getDocs, onSnapshot, updateDoc, query, Timestamp } from "firebase/firestore";
 const FSDB = getFirestore();
+//Done/
 
 import { getStorage, ref as storageRef, deleteObject, uploadBytes, getDownloadURL } from "firebase/storage";
 const STORAGE = getStorage();
@@ -57,6 +59,7 @@ var urlSrch;
 window.loaded = function loaded() {
     urlSrch = new URLSearchParams(location.search);
 
+    //Done
     allCats.forEach((cat, i) => {
         let fat = $('<div></div>');
         classes(fat, "form-group col-auto");
@@ -83,6 +86,7 @@ window.loaded = function loaded() {
         fat.appendChild(div);
         $('#catFrmCont').appendChild(fat);
     });
+    //Done/
 
 
     cookDocRef = docRef(cookiesFSColl, urlSrch.get('id'));

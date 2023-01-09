@@ -1,5 +1,5 @@
-import { database, firestore } from './firebase';
-import { getDocs, query, collection, where, orderBy, limit, getDoc, doc as docRef, getCountFromServer, startAfter, setDoc, Timestamp } from 'firebase/firestore';
+import { firestore } from './firebase';
+import { getDocs, query, collection, where, orderBy, limit, getDoc, doc as docRef, getCountFromServer, startAfter, setDoc, Timestamp, onSnapshot } from 'firebase/firestore';
 import { addKeywordsToStats } from './database';
 
 
@@ -219,4 +219,12 @@ export function createCookie(lang, id, author, title, file, uid) {
             en: file
         }
     });
+}
+
+export function getCookieEdit(locale, id, setCookie, setLoading) {
+    const unsubscribe = onSnapshot(docRef(cookiesFSColl[locale], id), doc => {
+        setCookie(doc.data());
+        setLoading(false);
+    });
+    return unsubscribe;
 }
