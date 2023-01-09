@@ -86,7 +86,6 @@ window.loaded = function loaded() {
         fat.appendChild(div);
         $('#catFrmCont').appendChild(fat);
     });
-    //Done/
 
 
     cookDocRef = docRef(cookiesFSColl, urlSrch.get('id'));
@@ -98,6 +97,7 @@ window.loaded = function loaded() {
         allCats.forEach((cat, i) => {
             $('#cat' + i).checked = docDat.fixedCats.includes($('#cat' + i).value);
         });
+        //Done/
         render();
         fillMed();
         if (docDat.public) {

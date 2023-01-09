@@ -8,15 +8,17 @@ import Button from 'react-bootstrap/Button';
 import { Buttons } from '../components/layoutAttr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faCheckSquare, faEdit, faEnvelope, faEye, faImage, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-import { getConfigCatsList, getCookieEdit } from '../firebase/firestore';
+import { cookieExists, getConfigCatsList, getCookieEdit } from '../firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useAlert, AlertComponent } from '../components/alert';
 import { useAuth } from '../firebase/auth';
 import Spinner from 'react-bootstrap/Spinner';
+import { ultraClean } from '../lib/utils';
 
 export default function Editar(props) {
     const router = useRouter();
     const { authUser } = useAuth();
+    const { showAlert, hideAlert } = useAlert();
 
     //Get Cookie data
     const [cookie, setCookie] = useState(null);
@@ -31,17 +33,78 @@ export default function Editar(props) {
     //Plus Sect modal
     const [mdlOpenPlusSect, setMdlOpenPlusSect] = useState(false);
 
+    //Top form
+    const [topForm, setTopForm] = useState({});
+    const [topFormChanged, setTopFormChanged] = useState(false);
+    function handleNewFile(newFile) {
+        newFile = ultraClean(newFile, '-', true, true);
+        setTopForm({ ...topForm, file: newFile });
+    }
+    function handleFileChange(e) {
+        handleNewFile(e.target.value);
+        setTopFormChanged(true);
+    }
+    function handleFileBlur(e) {
+        handleNewFile(e.target.value);
+    }
+    function handleDescriptionChange(e) {
+        setTopForm({ ...topForm, description: e.target.value });
+        setTopFormChanged(true);
+    }
+    function handleDescriptionBlur(e) {
+        setTopForm({ ...topForm, description: e.target.value.trim() });
+    }
     //Categories selection
     function handleCatsClick(e, cat) {
-        let tc = cookie.fixedCats.slice();
+        let tc = topForm.fixedCats.slice();
         if (e.target.checked) {
             tc.push(cat);
             tc.sort();
         } else {
             tc.splice(tc.indexOf(cat), 1);
         }
-        setCookie({ ...cookie, fixedCats: tc });
+        setTopForm({ ...topForm, fixedCats: tc });
+        setTopFormChanged(true);
     }
+    function handleTopFormRevert() {
+        setTopForm({
+            file: cookie.fileTranslations[router.locale],
+            fixedCats: cookie.fixedCats,
+            description: cookie.description
+        })
+        setTopFormChanged(false);
+    }
+    async function submitTopForm(e) {
+        e.preventDefault();
+        if (topForm.file != cookie.fileTranslations[router.locale] && (await cookieExists(router.locale, topForm.file))) {
+            showAlert(router.locale == 'es' ? 'Ese nombre de archivo ya esta en uso.' : 'That file name is already in use.', 'danger', 'alrtPlus');
+        } else {
+            saveCookie();
+        }
+    }
+
+    //Upload changes
+    function saveCookie() {
+        setCookie({
+            ...cookie,
+            //Pre-saving reversible data
+            ...topForm
+        });
+        //Set no changes
+        setTopFormChanged(false);
+        //To do: upload to fs
+        showAlert('saved','success')
+    }
+    //Reversible data no longer reversible
+    useEffect(() => {
+        if (!cookieLoading) {
+            setTopForm({
+                file: cookie.fileTranslations[router.locale],
+                fixedCats: cookie.fixedCats,
+                description: cookie.description
+            });
+        }
+    }, [cookieLoading])
 
     return (
         (!authUser || cookieLoading) ?
@@ -292,15 +355,15 @@ export default function Editar(props) {
                     </div>
                     <form id="frmFile">
                         <div className="row mb-2">
-                            <label className="col-sm-2 col-lg-4 col-form-label">{router.locale == 'es' ? 'Nombre del archivo' : 'File name'}</label>
+                            <label className="col-sm-auto col-lg-4 col-form-label">{router.locale == 'es' ? 'Nombre del archivo' : 'File name'}</label>
                             <div className="col">
-                                <input className="form-control" id="inFile" type="text" placeholder="titulo-galleta" />
+                                <input className="form-control" id="inFile" type="text" placeholder={router.locale == 'es' ? 'nueva-galleta' : 'new-cookie'} value={topForm.file} required onBlur={handleFileBlur} onChange={handleFileChange} onFocus={hideAlert} />
                             </div>
                         </div>
                         <div className="row mb-2">
-                            <label className="col-sm-2 col-form-label">{router.locale == 'es' ? 'Descripción' : 'Description'}</label>
+                            <label className="col-sm-auto col-form-label">{router.locale == 'es' ? 'Descripción' : 'Description'}</label>
                             <div className="col">
-                                <textarea className="form-control" id="inDesc" rows="3"></textarea>
+                                <textarea className="form-control" id="inDesc" rows="3" value={topForm.description} onBlur={handleDescriptionBlur} onChange={handleDescriptionChange}></textarea>
                             </div>
                         </div>
                         <div className="form-row my-4 justify-content-around">
@@ -308,7 +371,7 @@ export default function Editar(props) {
                                 return (
                                     <div className="form-group col-auto">
                                         <div className="form-check">
-                                            <input type="checkbox" id={`cat${idx}`} className="form-check-input" defaultValue={cat} checked={cookie.fixedCats.indexOf(cat) != -1} onChange={(e) => handleCatsClick(e, cat)} />
+                                            <input type="checkbox" id={`cat${idx}`} className="form-check-input" defaultValue={cat} checked={topForm.fixedCats?.indexOf(cat) != -1} onChange={(e) => handleCatsClick(e, cat)} />
                                             <label htmlFor={`cat${idx}`} className="form-check-label">{props.configCatsList[router.locale].textCats[idx]}</label>
                                         </div>
                                     </div>
@@ -316,10 +379,10 @@ export default function Editar(props) {
                             })}
                         </div>
                         <div className="row mb-2 justify-content-end">
-                            <button className="btn btn-secondary" id="btnCanFile">{router.locale == 'es' ? 'Revertir' : 'Revert'}</button>
-                            <button className="btn btn-light btn-link-scckie mx-3" type="submit">
+                            <Button disabled={!topFormChanged} variant="secondary" onClick={handleTopFormRevert}>{router.locale == 'es' ? 'Revertir' : 'Revert'}</Button>
+                            <Button variant='light' className="btn-link-scckie mx-3" type="submit" onClick={submitTopForm}>
                                 <FontAwesomeIcon icon={faCheck} />
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </div>
