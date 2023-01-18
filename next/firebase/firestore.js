@@ -1,5 +1,5 @@
 import { firestore } from './firebase';
-import { getDocs, query, collection, where, orderBy, limit, getDoc, doc as docRef, getCountFromServer, startAfter, setDoc, Timestamp, onSnapshot } from 'firebase/firestore';
+import { getDocs, query, collection, where, orderBy, limit, getDoc, doc as docRef, getCountFromServer, startAfter, setDoc, Timestamp, onSnapshot, updateDoc } from 'firebase/firestore';
 import { addKeywordsToStats } from './database';
 
 
@@ -50,6 +50,12 @@ export async function getConfigLanguages() {
     const doc = await getDoc(docRef(firestore, 'config', 'langs'));
     const data = doc.data();
     return data.langs;
+}
+
+export async function getConfigAuthors() {
+    const doc = await getDoc(docRef(firestore, 'config', 'authors'));
+    const data = doc.data();
+    return data.authors;
 }
 
 export async function getConfigCatsList() {
@@ -227,4 +233,9 @@ export function getCookieEdit(locale, id, setCookie, setLoading) {
         setLoading(false);
     });
     return unsubscribe;
+}
+
+export async function uploadCookie(locale, id, data) {
+    data.ledit = Timestamp.now();
+    await updateDoc(docRef(cookiesFSColl[locale], id), data);
 }

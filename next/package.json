@@ -14,7 +14,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "bootstrap": "^4.4.1",
-    "firebase": "^9.15.0-canary.1455bfa43",
+    "firebase": "^9.15.0-canary.3ee35f9ae",
     "firebaseui": "^6.0.1",
     "next": "^13.0.6",
     "react": "^18.2.0",

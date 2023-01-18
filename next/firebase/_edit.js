@@ -159,6 +159,7 @@ window.loaded = function loaded() {
         });
     });
 
+    //Done
     function fileFrm() {
         let file = $('#inFile').value;
         getDocs(query(cookiesFSColl, where("file", "==", file))).then(snap => {
@@ -179,6 +180,7 @@ window.loaded = function loaded() {
         event.preventDefault();
         fileFrm();
     });
+    //Done/
     langs.forEach((l, i) => {
         if (l != lang) {
             let opt = $('<option></option>');
@@ -340,6 +342,7 @@ function normSave() {
 }
 
 window.plusSect = function plusSect(type) {
+    //Add unique key (timestamp, Date.now()/1000)
     let newSect = null;
     if (type == 'html') {
         newSect = {
@@ -580,6 +583,7 @@ function render() {
     } else {
         docDat.published = publishDate = Timestamp.now();
     }
+    //Done
     docDat.cont.forEach((item, idx) => {
         let sect = $('<div></div>');
         sect.id = 'sect' + idx;
@@ -874,6 +878,7 @@ function render() {
             fd3.appendChild(fr3);
             subf.appendChild(fd3);
         } else if (item.type == 'ref') {
+            //Done/
             let h = $('<h3></h3>');
             if (lang == "es") {
                 h.html('<br>Referencias');
