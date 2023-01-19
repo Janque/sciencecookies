@@ -9,7 +9,7 @@ import { Buttons } from '../components/layoutAttr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faEye, faImage, faL, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie } from '../firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAlert, AlertComponent } from '../components/alert';
 import { useAuth } from '../firebase/auth';
 import Spinner from 'react-bootstrap/Spinner';
@@ -93,38 +93,32 @@ export default function Editar(props) {
         setTopFormChanged(false);
 
         //Save sections
-        let t = sections.slice();
-        t.forEach((sect, idx) => {
-            if (sect.extra.open) {
-                saveSection(idx);
-            }
-        });
-        setSections(t);
+        saveAllSections();
 
         return uploadCookie(router.locale, props.cookieId, {
             ...cookie,
-            cont: sections.map(sect => {
+            cont: sectionsNorm.map(sect => {
                 //Different for array children
-                if (sect.norm.type == 'head') {
+                if (sect.type == 'head') {
                     return {
-                        key: sect.norm.key,
+                        key: sect.key,
                         type: "head",
-                        title: sect.norm.title,
-                        author: sect.norm.author.slice()
+                        title: sect.title,
+                        author: sect.author.slice()
                     }
                 }
-                if (sect.norm.type == 'ref') {
+                if (sect.type == 'ref') {
                     return {
-                        key: sect.norm.key,
+                        key: sect.key,
                         type: "ref",
-                        ref: sect.norm.ref.slice()
+                        ref: sect.ref.slice()
                     }
                 }
-                return { ...sect.norm, key: sect.norm.key };
+                return { ...sect };
             }),
             //Special data
-            authors: sections[0].norm.author.slice(),
-            title: sections[0].norm.title,
+            authors: sectionsNorm[0].author.slice(),
+            title: sectionsNorm[0].title,
             //Top form
             fileTranslations: {
                 ...cookie.fileTranslations,
@@ -152,11 +146,13 @@ export default function Editar(props) {
 
     //Sections functions
     //Control
-    const [sections, setSections] = useState([]);
-    let sectionsSet = false;
+    const [sectionsNorm, setSectionsNorm] = useState([]);
+    const [sectionsForm, setSectionsForm] = useState([]);
+    const [sectionsOpen, setSectionsOpen] = useState(-1);
+    const [sectionsSet, setSectionsSet] = useState(false);
+    const isInitialMount = useRef(true);
     useEffect(() => {
         if (!cookieLoading && !sectionsSet) {
-            sectionsSet = true;
             let t = cookie.cont.slice();
             t.forEach((sect, idx) => {
                 let key = sect.key;
@@ -169,53 +165,38 @@ export default function Editar(props) {
             let tt = t.map(sect => {
                 if (sect.type == 'head') {
                     return {
-                        norm: {
-                            key: sect.key,
-                            type: "head",
-                            title: sect.title,
-                            author: sect.author.slice()
-                        },
-                        form: {
-                            key: sect.key,
-                            type: "head",
-                            title: sect.title,
-                            author: sect.author.slice()
-                        },
-                        extra: {
-                            open: false
-                        }
+                        key: sect.key,
+                        type: "head",
+                        title: sect.title,
+                        author: sect.author.slice()
                     }
                 }
                 if (sect.type == 'ref') {
                     return {
-                        norm: {
-                            key: sect.key,
-                            type: "ref",
-                            ref: sect.ref.slice()
-                        },
-                        form: {
-                            key: sect.key,
-                            type: "ref",
-                            ref: sect.ref.slice()
-                        },
-                        extra: {
-                            open: false
-                        }
+                        key: sect.key,
+                        type: "ref",
+                        ref: sect.ref.slice()
                     }
                 }
-                return {
-                    norm: { ...sect },
-                    form: { ...sect },
-                    extra: {
-                        open: false
-                    }
-                };
-            })
-            setSections(tt);
+                return { ...sect };
+            });
+            setSectionsNorm(tt);
+            setSectionsForm(tt);
+            setSectionsSet(true);
         }
     }, [cookieLoading])
+    useEffect(() => {
+        if (sectionsSet) {
+            normSave();//tis should run only once on update
+        }
+    }, [sectionsNorm])
+    function saveAllSections(idx = -1) {
+        if (sectionsOpen != -1) saveSection(sectionsOpen);
+        setSectionsOpen(idx)
+    }
     //Plus
     function plusSection(type) {
+        saveAllSections();
         let norm = {
             key: Math.floor(Date.now() / 1000)
         };
@@ -252,72 +233,62 @@ export default function Editar(props) {
         } else {
             return;
         }
-        let newSect = {
-            norm: { ...norm },
-            form: { ...norm },
-            extra: {
-                open: false
-            }
-        }
-        let t = sections.slice();
-        t.splice(toAddSect, 0, newSect);
-        setSections(t);
-        normSave();
+        let t = sectionsNorm.slice();
+        t.splice(toAddSect, 0, norm);
+        setSectionsNorm(t);
+        let tt = sectionsForm.slice();
+        tt.splice(toAddSect, 0, norm);
+        setSectionsForm(t);
         setMdlOpenPlusSect(false);
     }
     //Edition
     function editSection(idx) {
-        let t = sections.slice();
-        t.forEach((sect, i) => {
-            if (i != idx && sect.extra.open) {
-                saveSection(i);
-            }
-        });
-        t[idx].extra.open = true;
-        setSections(t);
+        saveAllSections(idx);
+        setSectionsOpen(idx);
     }
     function cancelEditSection(idx) {
-        let t = sections.slice();
-        if (t[idx].norm.type == 'head') {
-            t[idx].form = {
-                key: t[idx].norm.key,
+        let norm = sectionsNorm.slice();
+        let form = sectionsForm.slice();
+        if (norm[idx].type == 'head') {
+            form[idx] = {
+                key: norm[idx].key,
                 type: "head",
-                title: t[idx].norm.title,
-                author: t[idx].norm.author.slice()
+                title: norm[idx].title,
+                author: norm[idx].author.slice()
             }
-        } else if (t[idx].norm.type == 'ref') {
-            t[idx].form = {
-                key: t[idx].norm.key,
+        } else if (norm[idx].type == 'ref') {
+            form[idx] = {
+                key: norm[idx].key,
                 type: "ref",
-                ref: t[idx].norm.ref.slice()
+                ref: norm[idx].ref.slice()
             }
         } else {
-            t[idx].form = { ...t[idx].norm }
+            form[idx] = { ...norm[idx] }
         }
-        t[idx].extra.open = false;
-        setSections(t);
+        setSectionsOpen(-1);
+        setSectionsForm(form);
     }
     function saveSection(idx) {
-        let t = sections.slice();
-        if (t[idx].norm.type == 'head') {
-            t[idx].norm = {
-                key: t[idx].form.key,
+        let norm = sectionsNorm.slice();
+        let form = sectionsForm.slice();
+        if (norm[idx].type == 'head') {
+            norm[idx] = {
+                key: form[idx].key,
                 type: "head",
-                title: t[idx].form.title,
-                author: t[idx].form.author.slice()
+                title: form[idx].title,
+                author: form[idx].author.slice()
             }
-        } else if (t[idx].norm.type == 'ref') {
-            t[idx].norm = {
-                key: t[idx].form.key,
+        } else if (norm[idx].type == 'ref') {
+            norm[idx] = {
+                key: form[idx].key,
                 type: "ref",
-                ref: t[idx].form.ref.slice()
+                ref: form[idx].ref.slice()
             }
         } else {
-            t[idx].norm = { ...t[idx].form }
+            norm[idx] = { ...form[idx] }
         }
-        t[idx].extra.open = false;
-        setSections(t);
-        normSave();
+        setSectionsOpen(-1);
+        setSectionsNorm(norm);
     }
     //Delete
     const [sectionToDel, setSectionToDel] = useState(-1);
@@ -325,10 +296,13 @@ export default function Editar(props) {
         if (sectionToDel == idx) {
             setSectionToDel(-1);
             hideAlert();
-            let t = sections.slice();
-            t.splice(idx, 1);
-            setSections(t);
-            normSave();
+            let norm = sectionsNorm.slice();
+            let form = sectionsForm.slice();
+            norm.splice(idx, 1);
+            form.splice(idx, 1);
+            setSectionsNorm(norm);
+            setSectionsForm(form);
+            setSectionsOpen(-1);
         } else {
             showAlert(router.locale == 'es' ? "<strong>¿Quieres eliminar esta sección?</strong> Presiona de nuevo el botón para confirmar." : "<strong>Do you want to delete this section? </strong> Press the button again to confirm.", 'danger');
             setSectionToDel(idx);
@@ -645,8 +619,9 @@ export default function Editar(props) {
                 </div>
 
                 <div className="container-fluid mb-2 rounded-lg p-3" id="cont" style={{ backgroundColor: '#57238b' }}>
-                    {sections.map((sect, idx) => {
-                        const { norm, form, extra } = sect;
+                    {sectionsNorm.map((sect, idx) => {
+                        const norm = sect;
+                        const form = sectionsForm[idx];
                         return (
                             <div key={norm.key}>
                                 {!norm.type == 'head' ? <div className="dropdown-divider mx-2"></div> : null}
@@ -675,7 +650,7 @@ export default function Editar(props) {
                                             <Button className="btn-link-science ml-2" variant="light" onClick={() => translateSection(idx)}>
                                                 <FontAwesomeIcon icon={faLanguage} />
                                             </Button>
-                                            {!extra.open ?
+                                            {sectionsOpen != idx ?
                                                 <>
                                                     <Button className="btn-link-science ml-auto" variant="light" onClick={() => editSection(idx)}>
                                                         <FontAwesomeIcon icon={faEdit} />
@@ -701,7 +676,7 @@ export default function Editar(props) {
                                     }
                                 </div>
                                 {norm.type == 'head' ?
-                                    <>{!extra.open ?
+                                    <>{sectionsOpen != idx ?
                                         <div>
                                             <h1 className='text-center'>{norm.title}</h1>
                                             <p>{router.locale == 'es' ? 'Publicado: ' : 'Published: '} {formatDate(cookie.published)}</p>
@@ -716,9 +691,9 @@ export default function Editar(props) {
                                             <div className='row justify-content-center mb-2'>
                                                 <div className="col col-lg-6">
                                                     <input type="text" className='form-control form-control-lg text-center' placeholder={norm.title} value={form.title} onChange={e => {
-                                                        let t = sections.slice();
-                                                        t[idx].form.title = e.target.value;
-                                                        setSections(t);
+                                                        let t = sectionsForm.slice();
+                                                        t[idx].title = e.target.value;
+                                                        setSectionsForm(t);
                                                     }} />
                                                 </div>
                                             </div>
@@ -750,17 +725,17 @@ export default function Editar(props) {
                                                         <div className="form-group col-auto mr-2">
                                                             <div className="form-check">
                                                                 <input type="checkbox" id={`author${i}`} className="form-check-input" defaultValue={author} checked={form.author.indexOf(author) != -1} onChange={(e) => {
-                                                                    let t = sections.slice();
+                                                                    let t = sectionsForm.slice();
                                                                     if (e.target.checked) {
-                                                                        t[idx].form.author.push(author);
-                                                                        t[idx].form.author.sort((a, b) => {
+                                                                        t[idx].author.push(author);
+                                                                        t[idx].author.sort((a, b) => {
                                                                             let aa = a.split(' '), bb = b.split(' ');
                                                                             return (aa[aa.length - 1] < bb[bb.length - 1] ? -1 : 1);
                                                                         });
                                                                     } else {
-                                                                        t[idx].form.author.splice(t[idx].form.author.indexOf(author), 1)
+                                                                        t[idx].author.splice(t[idx].author.indexOf(author), 1)
                                                                     }
-                                                                    setSections(t)
+                                                                    setSectionsForm(t)
                                                                 }} />
                                                                 <label htmlFor={`author${i}`} className="form-check-label">{author}</label>
                                                             </div>
