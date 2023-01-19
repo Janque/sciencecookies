@@ -1132,6 +1132,11 @@ async function ft_step3() {
         });
     });
 }
+async function ft_step4() {
+    await firestore.collection('config').doc('authors').set({
+        authors: [' Andrea Garma', ' Javier Pantoja', ' Paulina Vargas']
+    });
+}
 export const urlTranslations = functions.region('us-central1').https.onRequest(async (req, res) => {
     try {
         console.log("Step 1");
@@ -1140,6 +1145,8 @@ export const urlTranslations = functions.region('us-central1').https.onRequest(a
         await ft_step2();
         console.log("Step 3");
         await ft_step3();
+        console.log("Step 4");
+        await ft_step4();
 
         console.log("Successful");
         res.send('Success!');
