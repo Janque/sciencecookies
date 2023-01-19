@@ -7,7 +7,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
 import { Buttons } from '../components/layoutAttr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faEye, faImage, faL, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faEye, faImage, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie } from '../firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import { useAlert, AlertComponent } from '../components/alert';
@@ -150,22 +150,17 @@ export default function Editar(props) {
     const [sectionsForm, setSectionsForm] = useState([]);
     const [sectionsOpen, setSectionsOpen] = useState(-1);
     const [sectionsSet, setSectionsSet] = useState(false);
-    const isInitialMount = useRef(true);
+    const isFirst = useRef(true);
     useEffect(() => {
         if (!cookieLoading && !sectionsSet) {
-            let t = cookie.cont.slice();
-            t.forEach((sect, idx) => {
+            let t = cookie.cont.map((sect, idx) => {
                 let key = sect.key;
                 if (!key) {
                     key = idx + Math.floor(Date.now() / 1000);
-                    t[idx].key = key;
                 }
-            });
-            setCookie({ ...cookie, cont: t });
-            let tt = t.map(sect => {
                 if (sect.type == 'head') {
                     return {
-                        key: sect.key,
+                        key: key,
                         type: "head",
                         title: sect.title,
                         author: sect.author.slice()
@@ -173,21 +168,25 @@ export default function Editar(props) {
                 }
                 if (sect.type == 'ref') {
                     return {
-                        key: sect.key,
+                        key: key,
                         type: "ref",
                         ref: sect.ref.slice()
                     }
                 }
-                return { ...sect };
+                return { ...sect, key: key };
             });
-            setSectionsNorm(tt);
-            setSectionsForm(tt);
+            setSectionsNorm(t);
+            setSectionsForm(t);
             setSectionsSet(true);
         }
     }, [cookieLoading])
     useEffect(() => {
-        if (sectionsSet) {
-            normSave();//tis should run only once on update
+        if (!cookieLoading && sectionsSet) {
+            if (!isFirst.current) {
+                normSave();
+            } else {
+                isFirst.current = false;
+            }
         }
     }, [sectionsNorm])
     function saveAllSections(idx = -1) {
@@ -238,7 +237,7 @@ export default function Editar(props) {
         setSectionsNorm(t);
         let tt = sectionsForm.slice();
         tt.splice(toAddSect, 0, norm);
-        setSectionsForm(t);
+        setSectionsForm(tt);
         setMdlOpenPlusSect(false);
     }
     //Edition
