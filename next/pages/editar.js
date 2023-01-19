@@ -204,8 +204,8 @@ export default function Editar(props) {
                     }
                 }
                 return {
-                    norm: sect,
-                    form: sect,
+                    norm: { ...sect },
+                    form: { ...sect },
                     extra: {
                         open: false
                     }
@@ -215,8 +215,55 @@ export default function Editar(props) {
         }
     }, [cookieLoading])
     //Plus
-    function plusSection(idx) {
-
+    function plusSection(type) {
+        let norm = {
+            key: Math.floor(Date.now() / 1000)
+        };
+        if (type == 'html') {
+            norm = {
+                ...norm,
+                type: type,
+                html: ""
+            };
+        } else if (type == 'parra') {
+            norm = {
+                ...norm,
+                type: type,
+                text: "",
+                title: "0"
+            };
+        } else if (type == 'youtube') {
+            norm = {
+                ...norm,
+                type: type,
+                vidUrl: "",
+                ratio: "16by9"
+            };
+        } else if (type == 'medSimple') {
+            norm = {
+                ...norm,
+                type: type,
+                medUrl: "https://via.placeholder.com/150.webp",
+                alt: "",
+                caption: "",
+                hasCapt: "true",
+                width: "75%"
+            };
+        } else {
+            return;
+        }
+        let newSect = {
+            norm: { ...norm },
+            form: { ...norm },
+            extra: {
+                open: false
+            }
+        }
+        let t = sections.slice();
+        t.splice(toAddSect, 0, newSect);
+        setSections(t);
+        normSave();
+        setMdlOpenPlusSect(false);
     }
     //Edition
     function editSection(idx) {
@@ -333,10 +380,10 @@ export default function Editar(props) {
                         </button>
                     </Modal.Header>
                     <Modal.Body>
-                        <button className="btn btn-science m-2" onclick="plusSect('parra');">{router.locale == 'es' ? 'Párrafo' : 'Paragraph'}</button>
-                        <button className="btn btn-science m-2" onclick="plusSect('html');">HTML</button>
-                        <button className="btn btn-science m-2" onclick="plusSect('youtube');">Youtube</button>
-                        <button className="btn btn-science m-2" onclick="plusSect('medSimple');">Multimedia</button>
+                        <Button className='btn-science m-2' onClick={() => plusSection('parra')}>{router.locale == 'es' ? 'Párrafo' : 'Paragraph'}</Button>
+                        <Button className="btn-science m-2" onClick={() => plusSection('html')}>HTML</Button>
+                        <Button className="btn-science m-2" onClick={() => plusSection('youtube')}>Youtube</Button>
+                        <Button className="btn-science m-2" onClick={() => plusSection('medSimple')}>Multimedia</Button>
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="d-grid w-100">
