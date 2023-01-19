@@ -103,13 +103,35 @@ export default function Editar(props) {
 
         return uploadCookie(router.locale, props.cookieId, {
             ...cookie,
-            //Pre-saving reversible data
-            ...topForm,
             cont: sections.map(sect => {
-                return { ...sect.norm };
+                //Different for array children
+                if (sect.norm.type == 'head') {
+                    return {
+                        key: sect.norm.key,
+                        type: "head",
+                        title: sect.norm.title,
+                        author: sect.norm.author.slice()
+                    }
+                }
+                if (sect.norm.type == 'ref') {
+                    return {
+                        key: sect.norm.key,
+                        type: "ref",
+                        ref: sect.norm.ref.slice()
+                    }
+                }
+                return { ...sect.norm, key: sect.norm.key };
             }),
             //Special data
-            title: sections[0].norm.title
+            authors: sections[0].norm.author.slice(),
+            title: sections[0].norm.title,
+            //Top form
+            fileTranslations: {
+                ...cookie.fileTranslations,
+                [router.locale]: topForm.file
+            },
+            fixedCats: topForm.fixedCats,
+            description: topForm.description
         });
     }
     async function normSave() {
@@ -145,43 +167,49 @@ export default function Editar(props) {
             });
             setCookie({ ...cookie, cont: t });
             let tt = t.map(sect => {
-                let extra = {
-                    open: false
-                };
-                let form;
                 if (sect.type == 'head') {
-                    form = {
-                        title: sect.title,
-                        author: sect.author
-                    };
-                } else if (sect.type == 'ref') {
-                    form = {
-                        ref: sect.ref
-                    };
-                } else if (sect.type == 'html') {
-                    form = {
-                        html: sect.html
-                    };
-                } else if (sect.type == 'parra') {
-                    form = {
-                        title: sect.title,
-                        text: sect.text
-                    };
-                } else if (sect.type == 'youtube') {
-                    form = {
-                        vidUrl: sect.vidUrl,
-                        ratio: sect.ratio
-                    };
-                } else if (sect.type == 'medSimple') {
-                    form = {
-                        medUrl: sect.medUrl,
-                        alt: sect.alt,
-                        caption: sect.caption,
-                        hasCapt: sect.hasCapt,
-                        width: sect.width
-                    };
+                    return {
+                        norm: {
+                            key: sect.key,
+                            type: "head",
+                            title: sect.title,
+                            author: sect.author.slice()
+                        },
+                        form: {
+                            key: sect.key,
+                            type: "head",
+                            title: sect.title,
+                            author: sect.author.slice()
+                        },
+                        extra: {
+                            open: false
+                        }
+                    }
                 }
-                return { norm: sect, form: form, extra: extra };
+                if (sect.type == 'ref') {
+                    return {
+                        norm: {
+                            key: sect.key,
+                            type: "ref",
+                            ref: sect.ref.slice()
+                        },
+                        form: {
+                            key: sect.key,
+                            type: "ref",
+                            ref: sect.ref.slice()
+                        },
+                        extra: {
+                            open: false
+                        }
+                    }
+                }
+                return {
+                    norm: sect,
+                    form: sect,
+                    extra: {
+                        open: false
+                    }
+                };
             })
             setSections(tt);
         }
@@ -202,11 +230,44 @@ export default function Editar(props) {
         setSections(t);
     }
     function cancelEditSection(idx) {
-
+        let t = sections.slice();
+        if (t[idx].norm.type == 'head') {
+            t[idx].form = {
+                key: t[idx].norm.key,
+                type: "head",
+                title: t[idx].norm.title,
+                author: t[idx].norm.author.slice()
+            }
+        } else if (t[idx].norm.type == 'ref') {
+            t[idx].form = {
+                key: t[idx].norm.key,
+                type: "ref",
+                ref: t[idx].norm.ref.slice()
+            }
+        } else {
+            t[idx].form = { ...t[idx].norm }
+        }
+        t[idx].extra.open = false;
+        setSections(t);
     }
     function saveSection(idx) {
         let t = sections.slice();
-        t[idx].norm = { ...t[idx].norm, ...t[idx].form }
+        if (t[idx].norm.type == 'head') {
+            t[idx].norm = {
+                key: t[idx].form.key,
+                type: "head",
+                title: t[idx].form.title,
+                author: t[idx].form.author.slice()
+            }
+        } else if (t[idx].norm.type == 'ref') {
+            t[idx].norm = {
+                key: t[idx].form.key,
+                type: "ref",
+                ref: t[idx].form.ref.slice()
+            }
+        } else {
+            t[idx].norm = { ...t[idx].form }
+        }
         t[idx].extra.open = false;
         setSections(t);
         normSave();
@@ -601,7 +662,7 @@ export default function Editar(props) {
                                                 <p>{router.locale == 'es' ? 'Ultima actualización: ' : 'Last updated: '} {formatDate(cookie.ledit)}</p>
                                                 : null
                                             }
-                                            <p>{router.locale == 'es' ? 'Autor(es): ' : 'Author(s): '} {norm.author.map((a,i)=>(a+(i<norm.author.length-1?',':'')))}</p>
+                                            <p>{router.locale == 'es' ? 'Autor(es): ' : 'Author(s): '} {norm.author.map((a, i) => (a + (i < norm.author.length - 1 ? ',' : '')))}</p>
                                         </div>
                                         :
                                         <div>
@@ -641,7 +702,7 @@ export default function Editar(props) {
                                                     {props.authorsList.map((author, i) => (
                                                         <div className="form-group col-auto mr-2">
                                                             <div className="form-check">
-                                                                <input type="checkbox" id={`author${i}`} className="form-check-input" defaultValue={author} checked={sect.form.author.indexOf(author) != -1} onChange={(e) => {
+                                                                <input type="checkbox" id={`author${i}`} className="form-check-input" defaultValue={author} checked={form.author.indexOf(author) != -1} onChange={(e) => {
                                                                     let t = sections.slice();
                                                                     if (e.target.checked) {
                                                                         t[idx].form.author.push(author);
@@ -649,8 +710,8 @@ export default function Editar(props) {
                                                                             let aa = a.split(' '), bb = b.split(' ');
                                                                             return (aa[aa.length - 1] < bb[bb.length - 1] ? -1 : 1);
                                                                         });
-                                                                    }else{
-                                                                        t[idx].form.author.splice(t[idx].form.author.indexOf(author),1)
+                                                                    } else {
+                                                                        t[idx].form.author.splice(t[idx].form.author.indexOf(author), 1)
                                                                     }
                                                                     setSections(t)
                                                                 }} />
