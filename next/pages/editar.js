@@ -9,7 +9,7 @@ import { Buttons } from '../components/layoutAttr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faEye, faImage, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie } from '../firebase/firestore';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAlert, AlertComponent } from '../components/alert';
 import { useAuth } from '../firebase/auth';
 import Spinner from 'react-bootstrap/Spinner';
@@ -24,10 +24,12 @@ export default function Editar(props) {
     const [cookie, setCookie] = useState(null);
     const [cookieLoading, setCookieLoading] = useState(true);
     useEffect(() => {
-        if (authUser) {
-            return getCookieEdit(router.locale, props.cookieId, setCookie, setCookieLoading);
+        if (authUser && props.cookieId) {
+            const unsubscribe = getCookieEdit(router.locale, props.cookieId, setCookie, setCookieLoading);
+            window.onbeforeunload = () => unsubscribe();
+            return () => unsubscribe();
         }
-    }, [authUser])
+    }, [getCookieEdit, authUser, props.cookieId]);
 
     let submitingPlus, mdlOpenMedMan, mdlOpenMedCho, mdlOpenMedAdd, progressPlusVar, progressPlus, mdlOpenPub, mdlOpenTrans;//temp
     //Plus Sect modal
