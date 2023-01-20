@@ -181,7 +181,7 @@ export default function Editar(props) {
             setSectionsForm(t);
             setSectionsSet(true);
         }
-    }, [cookieLoading])
+    }, [cookie, sectionsSet])
     useEffect(() => {
         if (!cookieLoading && sectionsSet) {
             if (!isFirst.current) {
