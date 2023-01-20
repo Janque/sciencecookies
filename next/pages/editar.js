@@ -144,7 +144,7 @@ export default function Editar(props) {
                 description: cookie.description
             });
         }
-    }, [cookieLoading])
+    }, [cookie])
 
     //Sections functions
     //Control
