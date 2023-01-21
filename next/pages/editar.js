@@ -99,27 +99,9 @@ export default function Editar(props) {
         setCookieLoading(true);
         return uploadCookie(router.locale, props.cookieId, {
             ...cookie,
-            cont: sectionsNorm.map(sect => {
-                //Different for array children
-                if (sect.type == 'head') {
-                    return {
-                        key: sect.key,
-                        type: "head",
-                        title: sect.title,
-                        author: sect.author.slice()
-                    }
-                }
-                if (sect.type == 'ref') {
-                    return {
-                        key: sect.key,
-                        type: "ref",
-                        ref: sect.ref.slice()
-                    }
-                }
-                return { ...sect };
-            }),
+            cont: sectionsNorm,
             //Special data
-            authors: sectionsNorm[0].author.slice(),
+            authors: sectionsNorm[0].author,
             title: sectionsNorm[0].title,
             //Top form
             fileTranslations: {
@@ -190,44 +172,27 @@ export default function Editar(props) {
     useEffect(() => {
         if (!cookieLoading && !sectionsSet) {
             let t = cookie.cont.map((sect, idx) => {
-                let key = sect.key;
-                if (!key) {
-                    key = idx + Math.floor(Date.now() / 1000);
+                let newSect = {};
+                let sectKey = sect.key;
+                if (!sectKey) {
+                    sectKey = idx + Math.floor(Date.now() / 1000);
                 }
-                if (sect.type == 'head') {
-                    return {
-                        key: key,
-                        type: "head",
-                        title: sect.title,
-                        author: sect.author.slice()
-                    }
-                }
-                if (sect.type == 'ref') {
-                    return {
-                        key: key,
-                        type: "ref",
-                        ref: sect.ref.slice()
-                    }
-                }
-                return { ...sect, key: key };
+                Object.keys(sect).forEach(key => {
+                    if (key == 'author' || key == 'ref') newSect[key] = sect[key].slice();
+                    else if (key == 'key') newSect[key] = sectKey;
+                    else newSect[key] = sect[key];
+                });
+                return newSect;
             });
             let tt = t.map(sect => {
-                if (sect.type == 'head') {
-                    return {
-                        key: sect.key,
-                        type: "head",
-                        title: sect.title,
-                        author: sect.author.slice()
-                    }
+                let newSect = {};
+                if (sect.type != 'ref') {
+                    Object.keys(sect).forEach(key => {
+                        if (key == 'author') newSect[key] = sect[key].slice();
+                        else newSect[key] = sect[key];
+                    });
                 }
-                if (sect.type == 'ref') {
-                    return {
-                        key: sect.key,
-                        type: "ref",
-                        ref: sect.ref.slice()
-                    }
-                }
-                return { ...sect };
+                return newSect;
             });
             setSectionsNorm(t);
             setSectionsForm(tt);
@@ -245,6 +210,9 @@ export default function Editar(props) {
             setSectionsOpen(-1);
         }
     }
+    useEffect(() => {
+        if (mdlOpenPlusSect) saveAllSections();
+    }, [mdlOpenPlusSect])
     //Control refs
     const [openRef, setOpenRef] = useState(-1);
     const [openRefLink, setOpenRefLink] = useState('');
@@ -273,7 +241,6 @@ export default function Editar(props) {
     }
     //Plus
     function plusSection(type) {
-        saveAllSections();
         let norm = {
             key: Math.floor(Date.now() / 1000)
         };
@@ -323,37 +290,38 @@ export default function Editar(props) {
         saveAllSections(idx);
     }
     function cancelEditSection(idx) {
-        let norm = sectionsNorm.slice();
-        let form = sectionsForm.slice();
-        if (norm[idx].type == 'head') {
-            form[idx] = {
-                key: norm[idx].key,
-                type: "head",
-                title: norm[idx].title,
-                author: norm[idx].author.slice()
-            }
-        } else if (norm[idx].type == 'ref') {
-            form[idx] = {
-                key: norm[idx].key,
-                type: "ref",
-                ref: norm[idx].ref.slice()
-            }
-        } else {
-            form[idx] = { ...norm[idx] }
+        if (!sectChanged) {
+            setSectionsOpen(-1);
+            return;
         }
+        let norm = sectionsNorm.slice();
+        if (norm.type == 'ref') {
+            showAlert(router.locale == 'es' ? 'No se puede cancelar la edición de Ref' : 'Edition of Ref cannot be canceled', 'danger');
+            setSectionsOpen(-1);
+            return;
+        }
+        let form = sectionsForm.slice();
+        Object.keys(norm[idx]).forEach(key => {
+            if (key == 'author') form[idx][key] = norm[idx][key].slice();
+            else form[idx][key] = norm[idx][key];
+        });
         setSectionsOpen(-1);
         setSectionsForm(form);
     }
     function saveSection(idx) {
         if (!sectChanged) return;
         let norm = sectionsNorm.slice();
+        if (norm.type == 'ref') {
+            showAlert(router.locale == 'es' ? 'No se puede cancelar la edición de Ref' : 'Edition of Ref cannot be canceled', 'danger');
+            setSectionsOpen(-1);
+            return;
+        }
         let form = sectionsForm.slice();
         Object.keys(form[idx]).forEach(key => {
-            if (key == 'author' || key == 'ref') norm[idx][key] = form[idx][key].slice();
+            if (key == 'author') norm[idx][key] = form[idx][key].slice();
             else norm[idx][key] = form[idx][key];
         });
         setSectionsNorm(norm);
-        setSectChanged(false);
     }
     //Delete
     const [sectionToDel, setSectionToDel] = useState(-1);
