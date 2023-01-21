@@ -239,6 +239,15 @@ export default function Editar(props) {
         setOpenRef(-1);
         setSectionsNorm(t);
     }
+    function plusRef() {
+        saveAllSections();
+        let t = sectionsNorm.slice();
+        let tt = t[t.length - 1].ref.slice();
+        tt.push({ link: '', type: 'web' });
+        t[t.length - 1].ref = tt;
+        setOpenRef(tt.length - 1);
+        setSectionsNorm(t);
+    }
     //Plus
     function plusSection(type) {
         let norm = {
@@ -784,7 +793,12 @@ export default function Editar(props) {
                                 }
                                 {norm.type == 'ref' ?
                                     <>
-                                        <h3><br />{router.locale == 'es' ? 'Referencias' : 'References'}</h3>
+                                        <h3>
+                                            <br />{router.locale == 'es' ? 'Referencias' : 'References'}
+                                            <Button variant="light" className="btn-science ml-2" onClick={() => plusRef()}>
+                                                <FontAwesomeIcon icon={faPlus} />
+                                            </Button>
+                                        </h3>
                                         {norm.ref.map((refer, ridx) => {
                                             return (
                                                 <div key={ultraClean(refer.link)} className='row mb-2'>
@@ -851,6 +865,9 @@ export default function Editar(props) {
                                                 </div>
                                             )
                                         })}
+                                        <Button variant="light" className="btn-science btn-block border border-light" type="button" onClick={() => plusRef()}>
+                                            <FontAwesomeIcon icon={faPlus} />
+                                        </Button>
                                     </>
                                     : null
                                 }
