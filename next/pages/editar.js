@@ -264,7 +264,8 @@ export default function Editar(props) {
                 ...norm,
                 type: type,
                 text: "",
-                title: "0"
+                title: "0",
+                titleTxt: ''
             };
         } else if (type == 'youtube') {
             norm = {
@@ -293,6 +294,7 @@ export default function Editar(props) {
         tt.splice(toAddSect, 0, norm);
         setSectionsForm(tt);
         setMdlOpenPlusSect(false);
+        setSectionsOpen(toAddSect);
     }
     //Edition
     function editSection(idx) {
@@ -666,20 +668,22 @@ export default function Editar(props) {
                         const form = sectionsForm[idx];
                         return (
                             <div key={norm.key}>
-                                {!norm.type == 'head' ? <div className="dropdown-divider mx-2"></div> : null}
+                                {norm.type != 'head' ? <div className="dropdown-divider mx-2"></div> : null}
 
                                 {/* Actions */}
-                                <div className='row mb-2 px-2'>
-                                    {(norm.type != 'head' && norm.type != 'ref') ?
-                                        <Button className="btn-link-science ml-2" variant="light" onClick={() => deleteSection(idx)}>
-                                            <FontAwesomeIcon icon={faTrashAlt} />
-                                        </Button>
-                                        : null
-                                    }
+                                <div className='row mb-2'>
+                                    <div className="col-auto">
+                                        {(norm.type != 'head' && norm.type != 'ref') ?
+                                            <Button className="btn-link-science" variant="light" onClick={() => deleteSection(idx)}>
+                                                <FontAwesomeIcon icon={faTrashAlt} />
+                                            </Button>
+                                            : null
+                                        }
+                                    </div>
                                     {norm.type != 'ref' ?
                                         <>
-                                            <div className="col-auto">
-                                                <select className='form-control mr-0 ml-2 h-100' defaultValue={props.langsList[0] != router.locale ? props.langsList[0] : props.langsList[1]}>
+                                            <div className="col-auto pr-0">
+                                                <select className='form-control pl-2 pr-1 h-100' defaultValue={props.langsList[0] != router.locale ? props.langsList[0] : props.langsList[1]}>
                                                     {props.langsList.map(l => {
                                                         if (l != router.locale) {
                                                             return (
@@ -689,30 +693,34 @@ export default function Editar(props) {
                                                     })}
                                                 </select>
                                             </div>
-                                            <Button className="btn-link-science ml-2" variant="light" onClick={() => translateSection(idx)}>
-                                                <FontAwesomeIcon icon={faLanguage} />
-                                            </Button>
-                                            {sectionsOpen != idx ?
-                                                <>
-                                                    <Button className="btn-link-science ml-auto" variant="light" onClick={() => editSection(idx)}>
-                                                        <FontAwesomeIcon icon={faEdit} />
-                                                    </Button>
-                                                    <Button className="btn-link-science mx-2" variant="light" onClick={() => {
-                                                        setMdlOpenPlusSect(true);
-                                                        setToAddSect(idx + 1);
-                                                    }}>
-                                                        <FontAwesomeIcon icon={faPlus} />
-                                                    </Button>
-                                                </>
-                                                : <>
-                                                    <Button className="ml-auto" variant="danger" onClick={() => cancelEditSection(idx)}>
-                                                        <FontAwesomeIcon icon={faBan} />
-                                                    </Button>
-                                                    <Button className="btn-link-science ml-2" variant="light" onClick={() => saveAllSections()}>
-                                                        <FontAwesomeIcon icon={faCheck} />
-                                                    </Button>
-                                                </>
-                                            }
+                                            <div className="col-auto pl-2">
+                                                <Button className="btn-link-science ml-2" variant="light" onClick={() => translateSection(idx)}>
+                                                    <FontAwesomeIcon icon={faLanguage} />
+                                                </Button>
+                                            </div>
+                                            <div className="col-auto ml-auto">
+                                                {sectionsOpen != idx ?
+                                                    <>
+                                                        <Button className="btn-link-science ml-auto" variant="light" onClick={() => editSection(idx)}>
+                                                            <FontAwesomeIcon icon={faEdit} />
+                                                        </Button>
+                                                        <Button className="btn-link-science ml-2" variant="light" onClick={() => {
+                                                            setMdlOpenPlusSect(true);
+                                                            setToAddSect(idx + 1);
+                                                        }}>
+                                                            <FontAwesomeIcon icon={faPlus} />
+                                                        </Button>
+                                                    </>
+                                                    : <>
+                                                        <Button className="ml-auto" variant="danger" onClick={() => cancelEditSection(idx)}>
+                                                            <FontAwesomeIcon icon={faBan} />
+                                                        </Button>
+                                                        <Button className="btn-link-science ml-2" variant="light" onClick={() => saveAllSections()}>
+                                                            <FontAwesomeIcon icon={faCheck} />
+                                                        </Button>
+                                                    </>
+                                                }
+                                            </div>
                                         </>
                                         : null
                                     }
@@ -872,12 +880,71 @@ export default function Editar(props) {
                                     : null
                                 }
                                 {norm.type == 'parra' ?
-                                    <>
-                                        <div id={'sect' + idx + 't'}>
-                                        </div>
-                                        <div id={'sect' + idx + 'f'}>
-                                        </div>
-                                    </>
+                                    <>{sectionsOpen != idx ?
+                                        <>
+                                            {(Number(norm.title) == 1) ?
+                                                <h1>{norm.titleTxt}</h1>
+                                                : null
+                                            }
+                                            {(Number(norm.title) == 2) ?
+                                                <h2><br />{norm.titleTxt}</h2>
+                                                : null
+                                            }
+                                            {(Number(norm.title) == 3) ?
+                                                <h3>{norm.titleTxt}</h3>
+                                                : null
+                                            }
+                                            {(Number(norm.title) == 4) ?
+                                                <h4>{norm.titleTxt}</h4>
+                                                : null
+                                            }
+                                            {(Number(norm.title) == 5) ?
+                                                <h5>{norm.titleTxt}</h5>
+                                                : null
+                                            }
+                                            {(Number(norm.title) == 6) ?
+                                                <h6>{norm.titleTxt}</h6>
+                                                : null
+                                            }
+                                            <p>{norm.text}</p>
+                                        </>
+                                        :
+                                        <>
+                                            <div className="row">
+                                                <div className="col">
+                                                    <input type="text" className="form-control" value={form.titleTxt} placeholder={(Number(form.title) > 0) ? (router.locale == 'es' ? 'Subtítulo' : 'Subtitle') : ''} readOnly={Number(form.title) == 0} onChange={e => {
+                                                        let t = sectionsForm.slice();
+                                                        t[idx].titleTxt = e.target.value.trim();
+                                                        setSectionsForm(t);
+                                                        setSectChangedIdx(idx);
+                                                    }} />
+                                                </div>
+                                                <div className="col-auto pl-0">
+                                                    <select className="form-control" value={form.title} onChange={e => {
+                                                        let t = sectionsForm.slice();
+                                                        t[idx].title = e.target.value;
+                                                        if (t[idx].title == '0') t[idx].titleTxt = '';
+                                                        setSectionsForm(t);
+                                                        setSectChangedIdx(idx);
+                                                    }}>
+                                                        {[0, 1, 2, 3, 4, 5, 6].map(a => {
+                                                            return (<option value={a}>{a}</option>)
+                                                        })}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="row my-2">
+                                                <div className="col">
+                                                    <textarea rows="8" className="form-control" onChange={e => {
+                                                        let t = sectionsForm.slice();
+                                                        t[idx].text = e.target.value.trim();
+                                                        setSectionsForm(t);
+                                                        setSectChangedIdx(idx);
+                                                    }}>{form.text}</textarea>
+                                                </div>
+                                            </div>
+                                        </>
+                                    }</>
                                     : null
                                 }
                                 {norm.type == 'html' ?

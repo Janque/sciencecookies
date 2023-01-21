@@ -1015,7 +1015,6 @@ function render() {
                 if (ref.link == "") {
                     rBtnEdit.click();
                 }
-                //Done/
             });
             let btnPlusRef0 = $('<a></a>');
             classes(btnPlusRef0, "btn btn-light btn-science");
@@ -1113,7 +1112,7 @@ function render() {
             subf.appendChild(fr0);
 
             let fr1 = $('<div></div>');
-            classes(fr0, "row mb-2");
+            classes(fr1, "row mb-2");
             let f1c0 = $('<div></div>');
             classes(fc0, "col");
             let in2 = $('<textarea></textarea>');
@@ -1131,6 +1130,7 @@ function render() {
             if (Number(item.title) > 0 && item.titleTxt == "") {
                 btnEdit.click();
             }
+            //Done/
         } else if (item.type == 'html') {
             let html = $('<div></div>');
             html.html(item.html);
@@ -1391,9 +1391,11 @@ function render() {
     $('#javaIns').html(docDat.java);
 }
 
+//Done
 $('#inFile').oninput = function () {
     $('#inFile').value = ultraClean($('#inFile').value, '-');
 }
+//Done/
 
 $('#inJava').onchange = function () {
     docDat.java = $('#inJava').value;
