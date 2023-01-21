@@ -7,9 +7,9 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
 import { Buttons } from '../components/layoutAttr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faEye, faImage, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faExternalLinkAlt, faEye, faImage, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie } from '../firebase/firestore';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAlert, AlertComponent } from '../components/alert';
 import { useAuth } from '../firebase/auth';
 import Spinner from 'react-bootstrap/Spinner';
@@ -83,20 +83,20 @@ export default function Editar(props) {
         if (topForm.file != cookie.fileTranslations[router.locale] && (await cookieExists(router.locale, topForm.file))) {
             showAlert(router.locale == 'es' ? 'Ese nombre de archivo ya esta en uso.' : 'That file name is already in use.', 'danger', 'alrtPlus');
         } else {
-            normSave();
+            normSave(true);
         }
     }
 
     //Upload changes
-    function saveCookie() {
+    function saveCookie(saveSections = false) {
         //Not finished@#
-        setCookieLoading(true);
+
+        //Save sections
+        if (saveSections) saveAllSections();
         //Set no changes
         setTopFormChanged(false);
 
-        //Save sections
-        saveAllSections();
-
+        setCookieLoading(true);
         return uploadCookie(router.locale, props.cookieId, {
             ...cookie,
             cont: sectionsNorm.map(sect => {
@@ -130,8 +130,8 @@ export default function Editar(props) {
             description: topForm.description
         });
     }
-    async function normSave() {
-        await saveCookie();
+    async function normSave(saveSections = false) {
+        await saveCookie(saveSections);
         showAlert('saved', 'success');
     }
 
@@ -152,7 +152,41 @@ export default function Editar(props) {
     const [sectionsForm, setSectionsForm] = useState([]);
     const [sectionsOpen, setSectionsOpen] = useState(-1);
     const [sectionsSet, setSectionsSet] = useState(false);
+    const [sectChanged, setSectChanged] = useState(false);
+    const [sectChangedIdx, setSectChangedIdx] = useState(-1);
     const isFirst = useRef(true);
+    useEffect(() => {
+        if (!cookieLoading && sectionsSet) {
+            if (!isFirst.current) {
+                normSave();
+            } else {
+                isFirst.current = false;
+            }
+        }
+    }, [sectionsNorm])
+    useEffect(() => {
+        if (sectChangedIdx != -1) {
+            const norm = sectionsNorm[sectChangedIdx];
+            const form = sectionsForm[sectChangedIdx];
+            let change = false;
+            if (norm.type == 'head') {
+                change = (norm.title != form.title || form.author.length != norm.author.length);
+                for (let i = 0; i < form.author.length; i++) {
+                    if (norm.author.indexOf(form.author[i]) == -1) change = true;
+                    if (change) break;
+                }
+            } else {
+                const nk = Object.keys(norm);
+                const fk = Object.keys(form);
+                change = (nk.length != fk.length);
+                for (let key of nk) {
+                    if (norm[key] !== form[key]) change = true;
+                    if (change) break;
+                }
+            }
+            setSectChanged(change);
+        }
+    }, [sectionsNorm, sectionsForm, sectChangedIdx])
     useEffect(() => {
         if (!cookieLoading && !sectionsSet) {
             let t = cookie.cont.map((sect, idx) => {
@@ -177,23 +211,65 @@ export default function Editar(props) {
                 }
                 return { ...sect, key: key };
             });
+            let tt = t.map(sect => {
+                if (sect.type == 'head') {
+                    return {
+                        key: sect.key,
+                        type: "head",
+                        title: sect.title,
+                        author: sect.author.slice()
+                    }
+                }
+                if (sect.type == 'ref') {
+                    return {
+                        key: sect.key,
+                        type: "ref",
+                        ref: sect.ref.slice()
+                    }
+                }
+                return { ...sect };
+            });
             setSectionsNorm(t);
-            setSectionsForm(t);
+            setSectionsForm(tt);
             setSectionsSet(true);
         }
     }, [cookie, sectionsSet])
-    useEffect(() => {
-        if (!cookieLoading && sectionsSet) {
-            if (!isFirst.current) {
-                normSave();
-            } else {
-                isFirst.current = false;
-            }
-        }
-    }, [sectionsNorm])
-    function saveAllSections(idx = -1) {
+    function saveAllSections(idx = -1, normal = true) {
         if (sectionsOpen != -1) saveSection(sectionsOpen);
-        setSectionsOpen(idx)
+        if (openRef != -1) saveRef(openRef);
+        if (normal) {
+            setSectionsOpen(idx);
+            setOpenRef(-1);
+        } else {
+            setOpenRef(idx);
+            setSectionsOpen(-1);
+        }
+    }
+    //Control refs
+    const [openRef, setOpenRef] = useState(-1);
+    const [openRefLink, setOpenRefLink] = useState('');
+    const [openRefType, setOpenRefType] = useState('web');
+    const [changedRefL, setChangedRefL] = useState(false);
+    const [changedRefT, setChangedRefT] = useState(false);
+    function saveRef(idx) {
+        if (!changedRefL && !changedRefT) return;
+        let t = sectionsNorm.slice();
+        let tt = t[t.length - 1].ref.slice();
+        tt[idx].link = openRefLink;
+        tt[idx].type = openRefType;
+        tt.sort((a, b) => ((a.link.toUpperCase() < b.link.toUpperCase()) ? -1 : 1));
+        t[t.length - 1].ref = tt;
+        setSectionsNorm(t);
+        setChangedRefL(false);
+        setChangedRefT(false);
+    }
+    function delRef(idx) {
+        let t = sectionsNorm.slice();
+        let tt = t[t.length - 1].ref.slice();
+        tt.splice(idx, 1);
+        t[t.length - 1].ref = tt;
+        setOpenRef(-1);
+        setSectionsNorm(t);
     }
     //Plus
     function plusSection(type) {
@@ -245,7 +321,6 @@ export default function Editar(props) {
     //Edition
     function editSection(idx) {
         saveAllSections(idx);
-        setSectionsOpen(idx);
     }
     function cancelEditSection(idx) {
         let norm = sectionsNorm.slice();
@@ -270,26 +345,15 @@ export default function Editar(props) {
         setSectionsForm(form);
     }
     function saveSection(idx) {
+        if (!sectChanged) return;
         let norm = sectionsNorm.slice();
         let form = sectionsForm.slice();
-        if (norm[idx].type == 'head') {
-            norm[idx] = {
-                key: form[idx].key,
-                type: "head",
-                title: form[idx].title,
-                author: form[idx].author.slice()
-            }
-        } else if (norm[idx].type == 'ref') {
-            norm[idx] = {
-                key: form[idx].key,
-                type: "ref",
-                ref: form[idx].ref.slice()
-            }
-        } else {
-            norm[idx] = { ...form[idx] }
-        }
-        setSectionsOpen(-1);
+        Object.keys(form[idx]).forEach(key => {
+            if (key == 'author' || key == 'ref') norm[idx][key] = form[idx][key].slice();
+            else norm[idx][key] = form[idx][key];
+        });
         setSectionsNorm(norm);
+        setSectChanged(false);
     }
     //Delete
     const [sectionToDel, setSectionToDel] = useState(-1);
@@ -667,7 +731,7 @@ export default function Editar(props) {
                                                     <Button className="ml-auto" variant="danger" onClick={() => cancelEditSection(idx)}>
                                                         <FontAwesomeIcon icon={faBan} />
                                                     </Button>
-                                                    <Button className="btn-link-science ml-2" variant="light" onClick={() => saveSection(idx)}>
+                                                    <Button className="btn-link-science ml-2" variant="light" onClick={() => saveAllSections()}>
                                                         <FontAwesomeIcon icon={faCheck} />
                                                     </Button>
                                                 </>
@@ -695,6 +759,7 @@ export default function Editar(props) {
                                                         let t = sectionsForm.slice();
                                                         t[idx].title = e.target.value;
                                                         setSectionsForm(t);
+                                                        setSectChangedIdx(idx);
                                                     }} />
                                                 </div>
                                             </div>
@@ -737,6 +802,7 @@ export default function Editar(props) {
                                                                         t[idx].author.splice(t[idx].author.indexOf(author), 1)
                                                                     }
                                                                     setSectionsForm(t)
+                                                                    setSectChangedIdx(idx);
                                                                 }} />
                                                                 <label htmlFor={`author${i}`} className="form-check-label">{author}</label>
                                                             </div>
@@ -750,10 +816,73 @@ export default function Editar(props) {
                                 }
                                 {norm.type == 'ref' ?
                                     <>
-                                        <div id={'sect' + idx + 't'}>
-                                        </div>
-                                        <div id={'sect' + idx + 'f'}>
-                                        </div>
+                                        <h3><br />{router.locale == 'es' ? 'Referencias' : 'References'}</h3>
+                                        {norm.ref.map((refer, ridx) => {
+                                            return (
+                                                <div key={ultraClean(refer.link)} className='row mb-2'>
+                                                    <div className="col">
+                                                        {openRef != ridx ?
+                                                            <p>
+                                                                {refer.type == 'web' ?
+                                                                    <a href={refer.link} target="_blank" rel="noopener noreferrer" className='text-warning text-break'>
+                                                                        {refer.link} <FontAwesomeIcon icon={faExternalLinkAlt} />
+                                                                    </a>
+                                                                    : null
+                                                                }
+                                                                {refer.type == 'cite' ?
+                                                                    refer.link
+                                                                    : null
+                                                                }
+                                                            </p>
+                                                            :
+                                                            <div className="row">
+                                                                <div className="col">
+                                                                    <input type="text" className="form-control" value={openRefLink} placeholder={(openRefType == 'web' ? 'https://google.com' : (openRefType == 'cite' ? 'Ref' : null))} onChange={e => {
+                                                                        let val = e.target.value.trim();
+                                                                        if (val != openRefLink) setChangedRefL(true);
+                                                                        else setChangedRefL(false);
+                                                                        setOpenRefLink(val);
+                                                                    }} />
+                                                                </div>
+                                                                <div className="col-auto pl-0">
+                                                                    <select className='form-control' value={openRefType} onChange={e => {
+                                                                        let val = e.target.value.trim();
+                                                                        if (val != openRefType) setChangedRefT(true);
+                                                                        else setChangedRefT(false);
+                                                                        setOpenRefType(e.target.value)
+                                                                    }}>
+                                                                        <option value="web">Web</option>
+                                                                        <option value="cite">{router.locale == 'es' ? 'Otro' : 'Other'}</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <div className="col-auto">
+                                                        {openRef != ridx ?
+                                                            <Button variant="light" className="btn-link-science ml-auto" onClick={() => {
+                                                                saveAllSections(ridx, false);
+                                                                setOpenRefLink(refer.link);
+                                                                setOpenRefType(refer.type);
+                                                            }}>
+                                                                <FontAwesomeIcon icon={faEdit} />
+                                                            </Button>
+                                                            :
+                                                            <>
+                                                                <Button variant="light" className="btn-link-science ml-auto"
+                                                                    onClick={() => saveAllSections()}>
+                                                                    <FontAwesomeIcon icon={faCheck} />
+                                                                </Button>
+                                                                <Button variant="light" className="btn-link-science ml-2"
+                                                                    onClick={() => delRef(ridx)}>
+                                                                    <FontAwesomeIcon icon={faTrashAlt} />
+                                                                </Button>
+                                                            </>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
                                     </>
                                     : null
                                 }

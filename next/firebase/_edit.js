@@ -878,7 +878,6 @@ function render() {
             fd3.appendChild(fr3);
             subf.appendChild(fd3);
         } else if (item.type == 'ref') {
-            //Done/
             let h = $('<h3></h3>');
             if (lang == "es") {
                 h.html('<br>Referencias');
@@ -1016,6 +1015,7 @@ function render() {
                 if (ref.link == "") {
                     rBtnEdit.click();
                 }
+                //Done/
             });
             let btnPlusRef0 = $('<a></a>');
             classes(btnPlusRef0, "btn btn-light btn-science");
