@@ -948,12 +948,20 @@ export default function Editar(props) {
                                     : null
                                 }
                                 {norm.type == 'html' ?
-                                    <>
-                                        <div id={'sect' + idx + 't'}>
+                                    <>{sectionsOpen != idx ?
+                                        <div dangerouslySetInnerHTML={{ __html: norm.html }}></div>
+                                        :
+                                        <div className="row my-2">
+                                            <div className="col">
+                                                <textarea rows="8" className="form-control" onChange={e => {
+                                                    let t = sectionsForm.slice();
+                                                    t[idx].html = e.target.value.trim();
+                                                    setSectionsForm(t);
+                                                    setSectChangedIdx(idx);
+                                                }}>{form.html}</textarea>
+                                            </div>
                                         </div>
-                                        <div id={'sect' + idx + 'f'}>
-                                        </div>
-                                    </>
+                                    }</>
                                     : null
                                 }
                                 {norm.type == 'youtube' ?
