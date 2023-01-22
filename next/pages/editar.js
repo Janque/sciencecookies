@@ -966,10 +966,48 @@ export default function Editar(props) {
                                 }
                                 {norm.type == 'youtube' ?
                                     <>
-                                        <div id={'sect' + idx + 't'}>
+                                        <div className={`embed-responsive embed-responsive-${norm.ratio} mb-2`}>
+                                            <iframe allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen src={norm.vidUrl}></iframe>
                                         </div>
-                                        <div id={'sect' + idx + 'f'}>
-                                        </div>
+                                        {sectionsOpen != idx ?
+                                            null
+                                            :
+                                            <div className="row">
+                                                <div className="col">
+                                                    <label htmlFor="inUrl">URL</label>
+                                                    <input id='inUrl' type="text" className="form-control" value={form.vidUrl} onChange={e => {
+                                                        let convUrl = e.target.value.trim();
+                                                        if (convUrl.length == 11) convUrl = "https://www.youtube.com/embed/" + convUrl;
+                                                        else {
+                                                            let part, i = 1;
+                                                            do {
+                                                                part = convUrl[i - 1] + convUrl[i];
+                                                                i++;
+                                                            } while (part != "e/" && part != "v=");
+                                                            convUrl = "https://www.youtube.com/embed/" + convUrl.substring(i, 11);
+                                                        }
+                                                        let t = sectionsForm.slice();
+                                                        t[idx].vidUrl = convUrl;
+                                                        setSectionsForm(t);
+                                                        setSectChangedIdx(idx);
+                                                    }} />
+                                                    <small className="text-muted">{router.locale == 'es' ? 'aaaaaaaaaaa o https://youtu.be/aaaaaaaaaaa o https://www.youtube.com/watch?v=aaaaaaaaaaa' : 'aaaaaaaaaaa or https://youtu.be/aaaaaaaaaaa or https://www.youtube.com/watch?v=aaaaaaaaaaa'}</small>
+                                                </div>
+                                                <div className="col-auto pl-0">
+                                                    <label htmlFor="inRatio">Ratio</label>
+                                                    <select id="inRatio" className="form-control" value={form.ratio} onChange={e => {
+                                                        let t = sectionsForm.slice();
+                                                        t[idx].ratio = e.target.value;
+                                                        setSectionsForm(t);
+                                                        setSectChangedIdx(idx);
+                                                    }}>
+                                                        {['21by9', '16by9', '4by3', '1by1'].map(a => {
+                                                            return (<option value={a}>{a.replaceAll('by', ':')}</option>)
+                                                        })}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        }
                                     </>
                                     : null
                                 }

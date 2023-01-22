@@ -1130,7 +1130,6 @@ function render() {
             if (Number(item.title) > 0 && item.titleTxt == "") {
                 btnEdit.click();
             }
-            //Done/
         } else if (item.type == 'html') {
             let html = $('<div></div>');
             html.html(item.html);
@@ -1229,6 +1228,7 @@ function render() {
             if (item.vidUrl == "") {
                 btnEdit.click();
             }
+            //Done/
         } else if (item.type == 'medSimple') {
             let fig = $('<figure></figure>');
             classes(fig, "mx-auto");
