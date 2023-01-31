@@ -1387,15 +1387,14 @@ function render() {
         sect.appendChild(subf);
         $('#cont').appendChild(sect);
     });
+    //Done
     $('#inJava').text(docDat.java);
     $('#javaIns').html(docDat.java);
 }
 
-//Done
 $('#inFile').oninput = function () {
     $('#inFile').value = ultraClean($('#inFile').value, '-');
 }
-//Done/
 
 $('#inJava').onchange = function () {
     docDat.java = $('#inJava').value;
@@ -1412,6 +1411,7 @@ $('#btnCheckJs').onclick = function () {
     $('#inJava').attr('readonly', 'true');
     normSave();
 };
+//Done/
 
 function fillTrans() {
     langs.forEach(l => {

@@ -1,0 +1,50 @@
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    background-color: hsl(225, 6%, 25%);
+    width: 100%;
+    flex: 0 0 calc(100% - 20px);
+    max-width: calc(100% - 20px);
+    margin: 0 10px;
+    &:first-of-type {
+        border-radius: 0.5rem 0.5rem 0 0;
+    }
+    &:last-of-type {
+        border-radius: 0 0 0.5rem 0.5rem;
+    }
+    .editor-title {
+        display: flex;
+        justify-content: space-between;
+        background-color: hsl(225, 6%, 13%);
+        color: white;
+        padding: 0.5rem 0.5rem 0.5rem 1rem;
+        border-radius: 0.5rem 0.5rem 0 0;
+        .expand-collapse-btn {
+            margin-left: 0.5rem;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+    }
+
+    .code-mirror-wrapper {
+        flex-grow: 1;
+        border-bottom-right-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+        overflow: hidden;
+        width: 100% !important;
+        transition: all 0.3s ease;
+    }
+
+    &.collapsed {
+        flex-grow: 0;
+        .editor-title {
+            border-radius: 0.5rem;
+        }
+        .code-mirror-wrapper {
+            height: 0 !important;
+        }
+    }
+}

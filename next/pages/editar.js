@@ -14,6 +14,12 @@ import { useAlert, AlertComponent } from '../components/alert';
 import { useAuth } from '../firebase/auth';
 import Spinner from 'react-bootstrap/Spinner';
 import { ultraClean } from '../lib/utils';
+import dynamic from 'next/dynamic'
+const CustomEditor = dynamic(
+    () => import('../components/customEditor'),
+    { ssr: false }
+)
+import Script from 'next/script';
 
 export default function Editar(props) {
     const router = useRouter();
@@ -257,13 +263,15 @@ export default function Editar(props) {
             norm = {
                 ...norm,
                 type: type,
-                html: ""
+                html: '',
+                css: '',
+                js: ''
             };
         } else if (type == 'parra') {
             norm = {
                 ...norm,
                 type: type,
-                text: "",
+                text: '',
                 title: "0",
                 titleTxt: ''
             };
@@ -271,7 +279,7 @@ export default function Editar(props) {
             norm = {
                 ...norm,
                 type: type,
-                vidUrl: "",
+                vidUrl: '',
                 ratio: "16by9"
             };
         } else if (type == 'medSimple') {
@@ -279,8 +287,8 @@ export default function Editar(props) {
                 ...norm,
                 type: type,
                 medUrl: "https://via.placeholder.com/150.webp",
-                alt: "",
-                caption: "",
+                alt: '',
+                caption: '',
                 hasCapt: "true",
                 width: "75%"
             };
@@ -298,6 +306,14 @@ export default function Editar(props) {
     }
     //Edition
     function editSection(idx) {
+        let norm = sectionsNorm.slice();
+        if (norm[idx].type == 'html') {
+            setSrcDocCurrent({
+                html: sectionsForm[idx].html,
+                css: sectionsForm[idx].css,
+                js: sectionsForm[idx].js
+            })
+        }
         saveAllSections(idx);
     }
     function cancelEditSection(idx) {
@@ -323,7 +339,7 @@ export default function Editar(props) {
         if (!sectChanged) return;
         let norm = sectionsNorm.slice();
         if (norm.type == 'ref') {
-            showAlert(router.locale == 'es' ? 'No se puede cancelar la edición de Ref' : 'Edition of Ref cannot be canceled', 'danger');
+            showAlert(router.locale == 'es' ? 'No se puede guardar la edición de Ref' : 'Edition of Ref cannot be saved', 'danger');
             setSectionsOpen(-1);
             return;
         }
@@ -334,6 +350,20 @@ export default function Editar(props) {
         });
         setSectionsNorm(norm);
     }
+    //Custom HTML sects
+    const [srcDocCurrent, setSrcDocCurrent] = useState({});
+    useEffect(() => {
+        if (sectChangedIdx != -1 && sectionsForm[sectChangedIdx].type == 'html') {
+            const timeout = setTimeout(() => {
+                setSrcDocCurrent({
+                    html: sectionsForm[sectChangedIdx].html,
+                    css: sectionsForm[sectChangedIdx].css,
+                    js: sectionsForm[sectChangedIdx].js
+                })
+            }, 1500)
+            return () => clearTimeout(timeout)
+        }
+    }, [sectionsForm, sectChangedIdx])
     //Delete
     const [sectionToDel, setSectionToDel] = useState(-1);
     function deleteSection(idx) {
@@ -479,16 +509,16 @@ export default function Editar(props) {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="row mb-3 w-100 py-0 justify-content-center mx-auto">
-                            <img className="w-75 m-0" id="prevNewMed" src="" />
+                            <img className="w-75 m-0" id="prevNewMed" src='' />
                         </div>
                         <form id="frmAddMed">
                             <div className="row mb-3">
                                 <div className="form-check form-check-inline ml-3">
-                                    <input className="form-check-input" id="inMedSrc0" type="radio" name="radsMedSrc" value="home" required="" />
+                                    <input className="form-check-input" id="inMedSrc0" type="radio" name="radsMedSrc" value="home" required />
                                     <label className="form-check-label" for="inMedSrc0">{router.locale == 'es' ? 'Propio' : 'Own'}</label>
                                 </div>
                                 <div className="form-check form-check-inline ml-3">
-                                    <input className="form-check-input" id="inMedSrc1" type="radio" name="radsMedSrc" value="out" required="" />
+                                    <input className="form-check-input" id="inMedSrc1" type="radio" name="radsMedSrc" value="out" required />
                                     <label className="form-check-label" for="inMedSrc1">{router.locale == 'es' ? 'Externo' : 'External'}</label>
                                 </div>
                             </div>
@@ -574,7 +604,7 @@ export default function Editar(props) {
                                 <div className="form-group">
                                     <label for="inTransFrom">{router.locale == 'es' ? 'Traducir del' : 'Translate from'}</label>
                                     <select className="form-control" id="inTransFrom" required="required">
-                                        <option selected="selected" value="">{router.locale == 'es' ? 'Choose...' : 'Generate translation'}</option>
+                                        <option selected="selected" value=''>{router.locale == 'es' ? 'Choose...' : 'Generate translation'}</option>
                                     </select>
                                 </div>
                             </div>
@@ -668,7 +698,7 @@ export default function Editar(props) {
                         const form = sectionsForm[idx];
                         return (
                             <div key={norm.key}>
-                                {norm.type != 'head' ? <div className="dropdown-divider mx-2"></div> : null}
+                                {norm.type != 'head' ? <div className="dropdown-divider"></div> : null}
 
                                 {/* Actions */}
                                 <div className='row mb-2'>
@@ -948,20 +978,56 @@ export default function Editar(props) {
                                     : null
                                 }
                                 {norm.type == 'html' ?
-                                    <>{sectionsOpen != idx ?
-                                        <div dangerouslySetInnerHTML={{ __html: norm.html }}></div>
-                                        :
-                                        <div className="row my-2">
-                                            <div className="col">
-                                                <textarea rows="8" className="form-control" onChange={e => {
+                                    <>
+                                        {sectionsOpen != idx ?
+                                            <>
+                                                <div dangerouslySetInnerHTML={{ __html: sectionsNorm[idx].html }}></div>
+                                                <style dangerouslySetInnerHTML={{ __html: sectionsNorm[idx].css }}></style>
+                                                <Script dangerouslySetInnerHTML={{ __html: sectionsNorm[idx].js }}></Script>
+                                            </>
+                                            :
+                                            <>
+                                                <div dangerouslySetInnerHTML={{ __html: srcDocCurrent.html }}></div>
+                                                <style dangerouslySetInnerHTML={{ __html: srcDocCurrent.css }}></style>
+                                                <Script dangerouslySetInnerHTML={{ __html: srcDocCurrent.js }}></Script>
+                                            </>
+                                        }
+                                        <div className={`row my-2 ${sectionsOpen != idx ? 'd-none' : ''}`}>
+                                            <CustomEditor
+                                                language="html"
+                                                displayName="HTML"
+                                                value={form.html}
+                                                onChange={(value) => {
                                                     let t = sectionsForm.slice();
-                                                    t[idx].html = e.target.value.trim();
+                                                    t[idx].html = value;
                                                     setSectionsForm(t);
                                                     setSectChangedIdx(idx);
-                                                }}>{form.html}</textarea>
-                                            </div>
+                                                }}
+                                            />
+                                            <CustomEditor
+                                                language="javascript"
+                                                displayName="JS"
+                                                value={form.js}
+                                                onChange={(value) => {
+                                                    let t = sectionsForm.slice();
+                                                    t[idx].js = value;
+                                                    setSectionsForm(t);
+                                                    setSectChangedIdx(idx);
+                                                }}
+                                            />
+                                            <CustomEditor
+                                                language="css"
+                                                displayName="CSS"
+                                                value={form.css}
+                                                onChange={(value) => {
+                                                    let t = sectionsForm.slice();
+                                                    t[idx].css = value;
+                                                    setSectionsForm(t);
+                                                    setSectChangedIdx(idx);
+                                                }}
+                                            />
                                         </div>
-                                    }</>
+                                    </>
                                     : null
                                 }
                                 {norm.type == 'youtube' ?
@@ -1025,19 +1091,14 @@ export default function Editar(props) {
                     })}
                 </div>
 
+                {/*Legacy JS*/}
                 <div className="container-fluid mb-2 rounded-lg p-3" style={{ backgroundColor: '#57238b' }}>
-                    <div className="row mb-2 px-2">
-                        <button className="btn btn-light btn-link-scckie ml-auto mr-2" id="btnEditJs">
-                            <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                        <button className="btn btn-light btn-link-scckie ml-auto mr-2 d-none" id="btnCheckJs">
-                            <FontAwesomeIcon icon={faCheck} />
-                        </button>
-                    </div>
                     <div className="row mb-2">
                         <div className="col">
                             <label for="inJava">JavaScript</label>
-                            <textarea className="form-control" id="inJava" rows="8" readonly=""></textarea>
+                            <textarea className="form-control" id="inJava" rows="8" readonly>
+                                {cookie.java}
+                            </textarea>
                         </div>
                     </div>
                 </div>
