@@ -842,18 +842,20 @@ export default function Editar(props) {
                                                 <div key={ultraClean(refer.link)} className='row mb-2'>
                                                     <div className="col">
                                                         {openRef != ridx ?
-                                                            <p>
+                                                            <>
                                                                 {refer.type == 'web' ?
-                                                                    <a href={refer.link} target="_blank" rel="noopener noreferrer" className='text-warning text-break'>
-                                                                        {refer.link} <FontAwesomeIcon icon={faExternalLinkAlt} />
-                                                                    </a>
+                                                                    <p>
+                                                                        <a href={refer.link} target="_blank" rel="noopener noreferrer" className='text-warning text-break'>
+                                                                            {refer.link} <FontAwesomeIcon icon={faExternalLinkAlt} />
+                                                                        </a>
+                                                                    </p>
                                                                     : null
                                                                 }
                                                                 {refer.type == 'cite' ?
-                                                                    refer.link
+                                                                    <p dangerouslySetInnerHTML={{ __html: refer.link }}></p>
                                                                     : null
                                                                 }
-                                                            </p>
+                                                            </>
                                                             :
                                                             <div className="row">
                                                                 <div className="col">
@@ -912,31 +914,11 @@ export default function Editar(props) {
                                 {norm.type == 'parra' ?
                                     <>{sectionsOpen != idx ?
                                         <>
-                                            {(Number(norm.title) == 1) ?
-                                                <h1>{norm.titleTxt}</h1>
+                                            {(Number(norm.title) >= 1 && Number(norm.title) <= 6) ?
+                                                <span dangerouslySetInnerHTML={{ __html: `<h${norm.title}>${(Number(norm.title) == 2) ? '<br/>' : ''}${norm.titleTxt}</h${norm.title}>` }} />
                                                 : null
                                             }
-                                            {(Number(norm.title) == 2) ?
-                                                <h2><br />{norm.titleTxt}</h2>
-                                                : null
-                                            }
-                                            {(Number(norm.title) == 3) ?
-                                                <h3>{norm.titleTxt}</h3>
-                                                : null
-                                            }
-                                            {(Number(norm.title) == 4) ?
-                                                <h4>{norm.titleTxt}</h4>
-                                                : null
-                                            }
-                                            {(Number(norm.title) == 5) ?
-                                                <h5>{norm.titleTxt}</h5>
-                                                : null
-                                            }
-                                            {(Number(norm.title) == 6) ?
-                                                <h6>{norm.titleTxt}</h6>
-                                                : null
-                                            }
-                                            <p>{norm.text}</p>
+                                            <p dangerouslySetInnerHTML={{ __html: norm.text }} />
                                         </>
                                         :
                                         <>
@@ -1102,6 +1084,7 @@ export default function Editar(props) {
                         </div>
                     </div>
                 </div>
+                <Script dangerouslySetInnerHTML={{__html:cookie.java}} />
             </>
     );
 
