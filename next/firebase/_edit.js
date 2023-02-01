@@ -341,6 +341,7 @@ function normSave() {
     });
 }
 
+//Done
 window.plusSect = function plusSect(type) {
     //Add unique key (timestamp, Date.now()/1000)
     let newSect = null;
@@ -392,6 +393,7 @@ function runprog(bar, b, e) {
         }, 5);
     }
 }
+//Done/
 
 function removeMedia(medFileName) {
     return deleteObject(storageRef(STORAGE, 'cookieMedia/' + docId + '/' + medFileName));
@@ -1228,7 +1230,6 @@ function render() {
             if (item.vidUrl == "") {
                 btnEdit.click();
             }
-            //Done/
         } else if (item.type == 'medSimple') {
             let fig = $('<figure></figure>');
             classes(fig, "mx-auto");
@@ -1387,7 +1388,6 @@ function render() {
         sect.appendChild(subf);
         $('#cont').appendChild(sect);
     });
-    //Done
     $('#inJava').text(docDat.java);
     $('#javaIns').html(docDat.java);
 }

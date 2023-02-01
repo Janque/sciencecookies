@@ -1,0 +1,18 @@
+.med-simple {
+	position: relative;
+	border-radius: 2.5px;
+	margin: 0 auto;
+	.card-img-overlay{
+		padding: 0 9px;
+	}
+	figcaption{
+		font-size: 70%;
+        font-weight: lighter;
+	}
+}
+
+@media (max-width: 768px) {
+	.medSimple {
+		width: 100% !important;
+	}
+}

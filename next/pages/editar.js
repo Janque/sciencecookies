@@ -1,4 +1,5 @@
-import styles from '../styles/edit.module.scss';
+import stylesEdit from '../styles/edit.module.scss';
+import stylesCookie from '../styles/cookie.module.scss';
 import { formatDate, getGlobalData } from '../lib/utils';
 import MetaDescription from '../components/metaDescription';
 import { useRouter } from 'next/router';
@@ -7,7 +8,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
 import { Buttons } from '../components/layoutAttr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faExternalLinkAlt, faEye, faImage, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faEye, faImage, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie } from '../firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import { useAlert, AlertComponent } from '../components/alert';
@@ -37,10 +38,14 @@ export default function Editar(props) {
         }
     }, [getCookieEdit, authUser, props.cookieId]);
 
-    let submitingPlus, mdlOpenMedMan, mdlOpenMedCho, mdlOpenMedAdd, progressPlusVar, progressPlus, mdlOpenPub, mdlOpenTrans;//temp
+    let submitingPlus, mdlOpenMedMan, mdlOpenMedAdd, progressPlusVar, progressPlus, mdlOpenPub, mdlOpenTrans;//temp
     //Plus Sect modal
     const [toAddSect, setToAddSect] = useState(-1);
     const [mdlOpenPlusSect, setMdlOpenPlusSect] = useState(false);
+    //Media modals
+    const [toAddMed, setToAddMed] = useState(-1);
+    //Choose
+    const [mdlOpenMedCho, setMdlOpenMedCho] = useState(false);
 
 
     //Top form
@@ -696,6 +701,8 @@ export default function Editar(props) {
                     {sectionsNorm.map((sect, idx) => {
                         const norm = sect;
                         const form = sectionsForm[idx];
+                        const isOpen = sectionsOpen == idx;
+                        const isClosed = sectionsOpen != idx;
                         return (
                             <div key={norm.key}>
                                 {norm.type != 'head' ? <div className="dropdown-divider"></div> : null}
@@ -729,7 +736,7 @@ export default function Editar(props) {
                                                 </Button>
                                             </div>
                                             <div className="col-auto ml-auto">
-                                                {sectionsOpen != idx ?
+                                                {isClosed ?
                                                     <>
                                                         <Button className="btn-link-science ml-auto" variant="light" onClick={() => editSection(idx)}>
                                                             <FontAwesomeIcon icon={faEdit} />
@@ -756,7 +763,7 @@ export default function Editar(props) {
                                     }
                                 </div>
                                 {norm.type == 'head' ?
-                                    <>{sectionsOpen != idx ?
+                                    <>{isClosed ?
                                         <div>
                                             <h1 className='text-center'>{norm.title}</h1>
                                             <p>{router.locale == 'es' ? 'Publicado: ' : 'Published: '} {formatDate(cookie.published)}</p>
@@ -912,7 +919,7 @@ export default function Editar(props) {
                                     : null
                                 }
                                 {norm.type == 'parra' ?
-                                    <>{sectionsOpen != idx ?
+                                    <>{isClosed ?
                                         <>
                                             {(Number(norm.title) >= 1 && Number(norm.title) <= 6) ?
                                                 <span dangerouslySetInnerHTML={{ __html: `<h${norm.title}>${(Number(norm.title) == 2) ? '<br/>' : ''}${norm.titleTxt}</h${norm.title}>` }} />
@@ -961,7 +968,7 @@ export default function Editar(props) {
                                 }
                                 {norm.type == 'html' ?
                                     <>
-                                        {sectionsOpen != idx ?
+                                        {isClosed ?
                                             <>
                                                 <div dangerouslySetInnerHTML={{ __html: sectionsNorm[idx].html }}></div>
                                                 <style dangerouslySetInnerHTML={{ __html: sectionsNorm[idx].css }}></style>
@@ -974,7 +981,7 @@ export default function Editar(props) {
                                                 <Script dangerouslySetInnerHTML={{ __html: srcDocCurrent.js }}></Script>
                                             </>
                                         }
-                                        <div className={`row my-2 ${sectionsOpen != idx ? 'd-none' : ''}`}>
+                                        <div className={`row my-2 ${isClosed ? 'd-none' : ''}`}>
                                             <CustomEditor
                                                 language="html"
                                                 displayName="HTML"
@@ -1014,10 +1021,10 @@ export default function Editar(props) {
                                 }
                                 {norm.type == 'youtube' ?
                                     <>
-                                        <div className={`embed-responsive embed-responsive-${norm.ratio} mb-2`}>
-                                            <iframe allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen src={norm.vidUrl}></iframe>
+                                        <div className={`embed-responsive embed-responsive-${isClosed ? norm.ratio : form.ratio} mb-2`}>
+                                            <iframe allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen src={isClosed ? norm.vidUrl : form.vidUrl}></iframe>
                                         </div>
-                                        {sectionsOpen != idx ?
+                                        {isClosed ?
                                             null
                                             :
                                             <div className="row">
@@ -1061,10 +1068,77 @@ export default function Editar(props) {
                                 }
                                 {norm.type == 'medSimple' ?
                                     <>
-                                        <div id={'sect' + idx + 't'}>
-                                        </div>
-                                        <div id={'sect' + idx + 'f'}>
-                                        </div>
+                                        <figure className={stylesCookie['med-simple']} style={{ width: isClosed ? norm.width + '%' : form.width + '%' }}>
+                                            <img src={isClosed ? norm.medUrl : form.medUrl} alt={isClosed ? norm.alt : form.alt} className="w-100" />
+                                            {(isClosed && norm.hasCapt) || (isOpen && form.hasCapt) ?
+                                                <figcaption dangerouslySetInnerHTML={{ __html: isClosed ? norm.caption : norm.caption }} />
+                                                : null
+                                            }
+                                            <div className='card-img-overlay pt-0'>
+                                                <div className='row mb-2 p-0'>
+                                                    <Button variant='light' size='sm' className='btn-science ml-auto' onClick={() => {
+                                                        setToAddMed(idx);
+                                                        setMdlOpenMedCho(true);
+                                                    }}>
+                                                        <FontAwesomeIcon icon={faExchangeAlt} />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </figure>
+                                        {isOpen ?
+                                            <>
+                                                <div className="form-group my-2">
+                                                    <label htmlFor="inSize">{router.locale == 'es' ? 'Tamaño' : 'Size'}</label>
+                                                    <div className="row">
+                                                        <div className="col align-center d-flex pr-0">
+                                                            <input type="range" id="inSize" className="form-control-range" min='1' max='100' step='1' value={form.width} onChange={e => {
+                                                                let t = sectionsForm.slice();
+                                                                t[idx].width = e.target.value;
+                                                                setSectionsForm(t);
+                                                                setSectChangedIdx(idx);
+                                                            }} />
+                                                        </div>
+                                                        <div className="col-auto">
+                                                            <span className='badge badge-primary range-value-L'>{form.width}%</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="row mb-2 align-items-end">
+                                                    <div className="col">
+                                                        <label htmlFor="inCaption">{router.locale == 'es' ? 'Pie de foto' : 'Caption'}</label>
+                                                        <input type="text" className="form-control" value={form.caption} onChange={e => {
+                                                            let t = sectionsForm.slice();
+                                                            t[idx].caption = e.target.value.trim();
+                                                            setSectionsForm(t);
+                                                            setSectChangedIdx(idx);
+                                                        }} readOnly={!form.hasCapt} />
+                                                    </div>
+                                                    <div className="col-auto pl-0">
+                                                        <select className='form-control pr-0' value={form.hasCapt} onChange={e => {
+                                                            let t = sectionsForm.slice();
+                                                            t[idx].hasCapt = e.target.value=='true';
+                                                            setSectionsForm(t);
+                                                            setSectChangedIdx(idx);
+                                                        }}>
+                                                            <option value={true}>{router.locale == 'es' ? 'Sí' : 'Yes'}</option>
+                                                            <option value={false}>No</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="row mb-2">
+                                                    <div className="col">
+                                                        <label htmlFor="inAlt">Alt</label>
+                                                        <input type="text" className="form-control" value={form.alt} onChange={e => {
+                                                            let t = sectionsForm.slice();
+                                                            t[idx].alt = e.target.value;
+                                                            setSectionsForm(t);
+                                                            setSectChangedIdx(idx);
+                                                        }} />
+                                                    </div>
+                                                </div>
+                                            </>
+                                            : null
+                                        }
                                     </>
                                     : null
                                 }
@@ -1084,7 +1158,7 @@ export default function Editar(props) {
                         </div>
                     </div>
                 </div>
-                <Script dangerouslySetInnerHTML={{__html:cookie.java}} />
+                <Script dangerouslySetInnerHTML={{ __html: cookie.java }} />
             </>
     );
 
