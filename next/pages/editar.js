@@ -21,6 +21,8 @@ const CustomEditor = dynamic(
     { ssr: false }
 )
 import Script from 'next/script';
+import ImageRatio from '../components/imageRatio';
+import ImageAuto from '../components/imageAuto';
 
 export default function Editar(props) {
     const router = useRouter();
@@ -38,14 +40,20 @@ export default function Editar(props) {
         }
     }, [getCookieEdit, authUser, props.cookieId]);
 
-    let submitingPlus, mdlOpenMedMan, mdlOpenMedAdd, progressPlusVar, progressPlus, mdlOpenPub, mdlOpenTrans;//temp
+    let submitingPlus, progressPlusVar, progressPlus, mdlOpenPub, mdlOpenTrans;//temp
     //Plus Sect modal
     const [toAddSect, setToAddSect] = useState(-1);
     const [mdlOpenPlusSect, setMdlOpenPlusSect] = useState(false);
+
     //Media modals
     const [toAddMed, setToAddMed] = useState(-1);
+    const [addFromMed, setAddFromMed] = useState(-1);
     //Choose
     const [mdlOpenMedCho, setMdlOpenMedCho] = useState(false);
+    //Add
+    const [mdlOpenMedAdd, setMdlOpenMedAdd] = useState(false);
+    //Manage
+    const [mdlOpenMedMan, setMdlOpenMedMan] = useState(false);
 
 
     //Top form
@@ -182,15 +190,10 @@ export default function Editar(props) {
     }, [sectionsNorm, sectionsForm, sectChangedIdx])
     useEffect(() => {
         if (!cookieLoading && !sectionsSet) {
-            let t = cookie.cont.map((sect, idx) => {
+            let t = cookie.cont.map(sect => {
                 let newSect = {};
-                let sectKey = sect.key;
-                if (!sectKey) {
-                    sectKey = idx + Math.floor(Date.now() / 1000);
-                }
                 Object.keys(sect).forEach(key => {
                     if (key == 'author' || key == 'ref') newSect[key] = sect[key].slice();
-                    else if (key == 'key') newSect[key] = sectKey;
                     else newSect[key] = sect[key];
                 });
                 return newSect;
@@ -484,16 +487,38 @@ export default function Editar(props) {
                         </button>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="row row-cols-1 row-cols-md-3" id="contMedCho">
+                        <div className="row row-cols-1 row-cols-md-3">
                             <div className="col mb-4">
                                 <div className="card text-dark bg-light h-100 cardBorder" style={{ borderColor: '#343a40' }}>
-                                    <a className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close" onclick="addFrom=0;">
+                                    <Button className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" type="button" onClick={() => {
+                                        setMdlOpenMedCho(false);
+                                        setMdlOpenMedAdd(true);
+                                        setAddFromMed(0);
+                                    }}>
                                         <span className="mb-0" style={{ fontSize: '6rem' }}>
                                             <FontAwesomeIcon icon={faPlusSquare} />
                                         </span>
-                                    </a>
+                                    </Button>
                                 </div>
                             </div>
+                            {cookie.media.map(media => {
+                                return (
+                                    <div className="col mb-4" key={media.key}>
+                                        <a type='button' onClick={() => {
+                                            if (toAddMed == -1) return;
+                                            let t = sectionsForm.slice();
+                                            t[toAddMed].medUrl = media.medUrl;
+                                            setSectionsForm(t);
+                                            setSectChangedIdx(toAddMed);
+                                            setMdlOpenMedCho(false);
+                                        }}>
+                                            <div className='card text-light bg-dark'>
+                                                <ImageRatio className='card-img' src={media.medUrl} alt={media.medFile} sizes='(max-width: 576px) 50vw, (max-width: 1200px) 25vw, 17vw' />
+                                            </div>
+                                        </a>
+                                    </div>
+                                )
+                            })}
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
@@ -1069,7 +1094,7 @@ export default function Editar(props) {
                                 {norm.type == 'medSimple' ?
                                     <>
                                         <figure className={stylesCookie['med-simple']} style={{ width: isClosed ? norm.width + '%' : form.width + '%' }}>
-                                            <img src={isClosed ? norm.medUrl : form.medUrl} alt={isClosed ? norm.alt : form.alt} className="w-100" />
+                                            <ImageAuto src={isClosed ? norm.medUrl : form.medUrl} alt={isClosed ? norm.alt : form.alt} />
                                             {(isClosed && norm.hasCapt) || (isOpen && form.hasCapt) ?
                                                 <figcaption dangerouslySetInnerHTML={{ __html: isClosed ? norm.caption : norm.caption }} />
                                                 : null
@@ -1116,7 +1141,7 @@ export default function Editar(props) {
                                                     <div className="col-auto pl-0">
                                                         <select className='form-control pr-0' value={form.hasCapt} onChange={e => {
                                                             let t = sectionsForm.slice();
-                                                            t[idx].hasCapt = e.target.value=='true';
+                                                            t[idx].hasCapt = e.target.value == 'true';
                                                             setSectionsForm(t);
                                                             setSectChangedIdx(idx);
                                                         }}>

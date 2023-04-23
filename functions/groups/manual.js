@@ -1120,6 +1120,40 @@ async function ft_step2() {
     });
 }
 async function ft_step3() {
+    const snap = await firestore.collection('cookies/langs/es').get();
+    snap.forEach(async doc => {
+        let dat = doc.data();
+        const snapEn = await firestore.collection('cookies/langs/en').doc(doc.id).get();
+        let den = snapEn.data();
+        dat.cont.forEach((sect, i) => {
+            let sectKey = sect.key;
+            if (!sectKey) {
+                sectKey = i + Math.floor(Date.now() / 1000);
+            }
+            dat.cont[i].key = sectKey;
+            den.cont[i].key = sectKey;
+            if (dat.cont[i].type == 'medSimple' && dat.cont[i].width.slice(-1) == '%') {
+                dat.cont[i].width = dat.cont[i].width.slice(0, -1);
+            }
+        });
+        dat.media.forEach((media, i) => {
+            let mediaKey = media.key;
+            if (!mediaKey) {
+                mediaKey = i + Math.floor(Date.now() / 1000);
+            }
+            dat.media[i].key = mediaKey;
+        })
+        await firestore.collection('cookies/langs/es').doc(doc.id).update({
+            cont: dat.cont,
+            media: dat.media
+        });
+        await firestore.collection('cookies/langs/en').doc(doc.id).update({
+            cont: den.cont,
+            media: dat.media
+        });
+    });
+}
+async function ft_step4() {
     const snap = await firestore.collection('calendars/langs/es').get();
     snap.forEach(async doc => {
         await firestore.collection('calendars/langs/es').doc(doc.id).update({
@@ -1132,7 +1166,7 @@ async function ft_step3() {
         });
     });
 }
-async function ft_step4() {
+async function ft_step5() {
     await firestore.collection('config').doc('authors').set({
         authors: [' Andrea Garma', ' Javier Pantoja', ' Paulina Vargas']
     });
@@ -1147,6 +1181,8 @@ export const urlTranslations = functions.region('us-central1').https.onRequest(a
         await ft_step3();
         console.log("Step 4");
         await ft_step4();
+        console.log("Step 5");
+        await ft_step5();
 
         console.log("Successful");
         res.send('Success!');

@@ -7,7 +7,7 @@ import "ace-builds/src-noconflict/theme-monokai";
 //import "ace-builds/src-noconflict/ext-language_tools"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCompressAlt, faExpandAlt } from '@fortawesome/free-solid-svg-icons';
-import styles from '../styles/components/codeEditor.module.scss';
+import styles from '../styles/components/code-editor.module.scss';
 
 export default function CustomEditor({ language, displayName, value, onChange }) {
     const [open, setOpen] = useState(true);
