@@ -478,7 +478,7 @@ export default function Editar(props) {
                 </Modal>
 
                 {/* Choose media modal */}
-                <Modal className='text-dark' show={mdlOpenMedCho} onHide={() => setMdlOpenMedCho(false)} centered scrollable>
+                <Modal className={`text-dark ${stylesEdit['mdl-choose-media']}`} show={mdlOpenMedCho} onHide={() => setMdlOpenMedCho(false)} centered scrollable>
                     <AlertComponent id='alrtPlus' />
                     <Modal.Header>
                         <Modal.Title>{router.locale == 'es' ? 'Escoge una imagen' : 'Choose an image'}</Modal.Title>
@@ -487,15 +487,15 @@ export default function Editar(props) {
                         </button>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="row row-cols-1 row-cols-md-3">
-                            <div className="col mb-4">
-                                <div className="card text-dark bg-light h-100 cardBorder" style={{ borderColor: '#343a40' }}>
+                        <div className="row row-cols-1 row-cols-md-2 row-cols-xl-3">
+                            <div className={`col mb-4 ${stylesEdit['adder-button']}`}>
+                                <div className="card text-dark bg-light h-100 cardBorder">
                                     <Button className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" type="button" onClick={() => {
                                         setMdlOpenMedCho(false);
                                         setMdlOpenMedAdd(true);
-                                        setAddFromMed(0);
+                                        setAddFromMed(1);
                                     }}>
-                                        <span className="mb-0" style={{ fontSize: '6rem' }}>
+                                        <span className="mb-0">
                                             <FontAwesomeIcon icon={faPlusSquare} />
                                         </span>
                                     </Button>
@@ -503,17 +503,18 @@ export default function Editar(props) {
                             </div>
                             {cookie.media.map(media => {
                                 return (
-                                    <div className="col mb-4" key={media.key}>
+                                    <div className={`col mb-4 ${stylesEdit['media-card']}`} key={media.key}>
                                         <a type='button' onClick={() => {
                                             if (toAddMed == -1) return;
                                             let t = sectionsForm.slice();
                                             t[toAddMed].medUrl = media.medUrl;
+                                            console.log(media.medUrl)
                                             setSectionsForm(t);
                                             setSectChangedIdx(toAddMed);
                                             setMdlOpenMedCho(false);
                                         }}>
                                             <div className='card text-light bg-dark'>
-                                                <ImageRatio className='card-img' src={media.medUrl} alt={media.medFile} sizes='(max-width: 576px) 50vw, (max-width: 1200px) 25vw, 17vw' />
+                                                <ImageAuto className='card-img' src={media.medUrl} alt={media.medFile} sizes='(max-width: 576px) 50vw, (max-width: 1200px) 25vw, 17vw' />
                                             </div>
                                         </a>
                                     </div>
@@ -1099,16 +1100,19 @@ export default function Editar(props) {
                                                 <figcaption dangerouslySetInnerHTML={{ __html: isClosed ? norm.caption : norm.caption }} />
                                                 : null
                                             }
-                                            <div className='card-img-overlay pt-0'>
-                                                <div className='row mb-2 p-0'>
-                                                    <Button variant='light' size='sm' className='btn-science ml-auto' onClick={() => {
-                                                        setToAddMed(idx);
-                                                        setMdlOpenMedCho(true);
-                                                    }}>
-                                                        <FontAwesomeIcon icon={faExchangeAlt} />
-                                                    </Button>
+                                            {isOpen ?
+                                                <div className='card-img-overlay pt-0'>
+                                                    <div className='row mb-2 p-0'>
+                                                        <Button variant='light' size='sm' className='btn-science ml-auto' onClick={() => {
+                                                            setToAddMed(idx);
+                                                            setMdlOpenMedCho(true);
+                                                        }}>
+                                                            <FontAwesomeIcon icon={faExchangeAlt} />
+                                                        </Button>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                : null
+                                            }
                                         </figure>
                                         {isOpen ?
                                             <>

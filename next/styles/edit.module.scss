@@ -1,3 +1,5 @@
+@import "_colors.scss";
+
 .tooltipn {
     position: relative;
     display: inline-block;
@@ -53,4 +55,37 @@
     border-width: 5px;
     border-style: solid;
     border-color: transparent #007bff transparent transparent;
+}
+
+.adder-button > * {
+    border-color: $black;
+    button {
+        background-color: transparent !important;
+        border: none;
+        padding: 12px;
+        span {
+            font-size: 6rem;
+            line-height: 6rem;
+        }
+        &:hover {
+            color: #000 !important;
+        }
+    }
+}
+
+.mdl-choose-media {
+    .media-card {
+        a {
+            width: 100%;
+            img {
+                background-color: #000;
+                transition: all 0.3s ease-in-out;
+            }
+            &:hover {
+                img {
+                    opacity: 0.5;
+                }
+            }
+        }
+    }
 }
