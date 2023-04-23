@@ -37,6 +37,12 @@ body {
   animation-fill-mode: both;
   animation-timing-function: ease-out;
   animation-duration: 0.4s;
+  .btn-group-vertical{
+    width: 100%;
+    .btn{
+      padding: 8px 0;
+    }
+  }
 }
 .tbar-right {
   right: 0;

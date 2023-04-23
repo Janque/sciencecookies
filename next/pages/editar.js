@@ -652,7 +652,7 @@ export default function Editar(props) {
 
                 { /* Side toolbar */}
                 <div className="tbar tbar-right btn-toolbar mb-3" role="toolbar">
-                    <div className="btn-group-vertical mr-2 btn-group-lg" role="group">
+                    <div className="btn-group-vertical btn-group-lg" role="group">
                         <button className="btn btn-science" data-toggle="modal" data-target="#mdlPlusSect" onclick="toAdd=docDat.cont.length-1;">
                             <FontAwesomeIcon icon={faPlus} />
                         </button>
@@ -668,15 +668,21 @@ export default function Editar(props) {
                         <a className="btn btn-science" id="btnPrevMail" target="_blank">
                             <FontAwesomeIcon icon={faEnvelope} />
                         </a>
-                        <button className="btn btn-science d-none" id="btnPrivate">
-                            <FontAwesomeIcon icon={faLock} />
-                        </button>
-                        <button className="btn btn-science d-none" id="btnAprove">
-                            <FontAwesomeIcon icon={faCheckSquare} />
-                        </button>
-                        <button className="btn btn-science d-none" id="btnPub" data-toggle="modal" data-target="#mdlPublish">
-                            <FontAwesomeIcon icon={faPaperPlane} />
-                        </button>
+                        {cookie.public ?
+                            <>
+                                <button className="btn btn-science" id="btnPrivate">
+                                    <FontAwesomeIcon icon={faLock} />
+                                </button>
+                            </> :
+                            <>
+                                <button className="btn btn-science" id="btnAprove">
+                                    <FontAwesomeIcon icon={faCheckSquare} />
+                                </button>
+                                <button className="btn btn-science" id="btnPub" data-toggle="modal" data-target="#mdlPublish">
+                                    <FontAwesomeIcon icon={faPaperPlane} />
+                                </button>
+                            </>
+                        }
                     </div>
                 </div>
 
