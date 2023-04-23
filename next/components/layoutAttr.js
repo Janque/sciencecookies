@@ -58,7 +58,8 @@ export const NavLinks = {
         "drafts": "borradores/",
         "draftsCal": "calendarios/",
         "edit": "editar/",
-        "editCal": "editar-calendario/"
+        "editCal": "editar-calendario/",
+        "prevMail": "vista-email/",
     },
     "en": {
         "404": "404/",
@@ -74,6 +75,7 @@ export const NavLinks = {
         "drafts": "drafts/",
         "draftsCal": "calendars/",
         "edit": "edit/",
-        "editCal": "edit-calendar/"
+        "editCal": "edit-calendar/",
+        "prevMail": "mail-preview/",
     }
 }

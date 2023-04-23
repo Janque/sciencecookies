@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import NavLink from '../components/navLinks';
 import { useState } from 'react';
+import Button from 'react-bootstrap/esm/Button';
 
 export default function Home(props) {
   const router = useRouter();
@@ -101,9 +102,9 @@ export default function Home(props) {
               <option value={router.locale == 'es' ? 'viejo' : 'old'}>{router.locale == 'es' ? 'Más viejo' : 'Oldest'}</option>
               <option value="popular">{router.locale == 'es' ? 'Más popular' : 'Popularity'}</option>
             </select>
-            <button className="btn btn-outline-light" type="submit">
+            <Button variant="outline-light" type="submit">
               <FontAwesomeIcon icon={faSearch} />
-            </button>
+            </Button>
           </div>
         </div>
       </form>

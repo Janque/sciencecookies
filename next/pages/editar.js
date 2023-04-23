@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import Modal from 'react-bootstrap/Modal';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
-import { Buttons } from '../components/layoutAttr';
+import { Buttons, NavLinks } from '../components/layoutAttr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faEye, faImage, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie } from '../firebase/firestore';
@@ -21,8 +21,8 @@ const CustomEditor = dynamic(
     { ssr: false }
 )
 import Script from 'next/script';
-import ImageRatio from '../components/imageRatio';
 import ImageAuto from '../components/imageAuto';
+import ToolBar from '../components/toolbar';
 
 export default function Editar(props) {
     const router = useRouter();
@@ -436,10 +436,10 @@ export default function Editar(props) {
                         </button>
                     </Modal.Header>
                     <Modal.Body>
-                        <Button className='btn-science m-2' onClick={() => plusSection('parra')}>{router.locale == 'es' ? 'Párrafo' : 'Paragraph'}</Button>
-                        <Button className="btn-science m-2" onClick={() => plusSection('html')}>HTML</Button>
-                        <Button className="btn-science m-2" onClick={() => plusSection('youtube')}>Youtube</Button>
-                        <Button className="btn-science m-2" onClick={() => plusSection('medSimple')}>Multimedia</Button>
+                        <Button variant='science' className='m-2' onClick={() => plusSection('parra')}>{router.locale == 'es' ? 'Párrafo' : 'Paragraph'}</Button>
+                        <Button variant='science' className="m-2" onClick={() => plusSection('html')}>HTML</Button>
+                        <Button variant='science' className="m-2" onClick={() => plusSection('youtube')}>Youtube</Button>
+                        <Button variant='science' className="m-2" onClick={() => plusSection('medSimple')}>Multimedia</Button>
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="d-grid w-100">
@@ -651,40 +651,40 @@ export default function Editar(props) {
                 </Modal>
 
                 { /* Side toolbar */}
-                <div className="tbar tbar-right btn-toolbar mb-3" role="toolbar">
-                    <div className="btn-group-vertical btn-group-lg" role="group">
-                        <button className="btn btn-science" data-toggle="modal" data-target="#mdlPlusSect" onclick="toAdd=docDat.cont.length-1;">
-                            <FontAwesomeIcon icon={faPlus} />
-                        </button>
-                        <button className="btn btn-science" data-toggle="modal" data-target="#mdlMedMan">
-                            <FontAwesomeIcon icon={faImage} />
-                        </button>
-                        <button className="btn btn-science" data-toggle="modal" data-target="#mdlTranslate">
-                            <FontAwesomeIcon icon={faLanguage} />
-                        </button>
-                        <a className="btn btn-science" id="btnPrevCook" target="_blank">
-                            <FontAwesomeIcon icon={faEye} />
-                        </a>
-                        <a className="btn btn-science" id="btnPrevMail" target="_blank">
-                            <FontAwesomeIcon icon={faEnvelope} />
-                        </a>
-                        {cookie.public ?
-                            <>
-                                <button className="btn btn-science" id="btnPrivate">
-                                    <FontAwesomeIcon icon={faLock} />
-                                </button>
-                            </> :
-                            <>
-                                <button className="btn btn-science" id="btnAprove">
-                                    <FontAwesomeIcon icon={faCheckSquare} />
-                                </button>
-                                <button className="btn btn-science" id="btnPub" data-toggle="modal" data-target="#mdlPublish">
-                                    <FontAwesomeIcon icon={faPaperPlane} />
-                                </button>
-                            </>
-                        }
-                    </div>
-                </div>
+                <ToolBar>
+                    <Button variant='science' onClick={() => {
+                        setMdlOpenPlusSect(true);
+                        setToAddSect(sectionsNorm.length - 1);
+                    }}>
+                        <FontAwesomeIcon icon={faPlus} />
+                    </Button>
+                    <Button variant='science' onClick={() => setMdlOpenMedMan(true)}>
+                        <FontAwesomeIcon icon={faImage} />
+                    </Button>
+                    <Button variant='science' onClick={() => setMdlOpenTrans(true)}>
+                        <FontAwesomeIcon icon={faLanguage} />
+                    </Button>
+                    <Button variant='science' href={'/' + NavLinks[router.locale].cook + cookie.fileTranslations[router.locale] + '/'} id="btnPrevCook" target="_blank">
+                        <FontAwesomeIcon icon={faEye} />
+                    </Button>
+                    <Button variant='science' href={'/' + NavLinks[router.locale].prevMail + cookie.fileTranslations[router.locale] + '/'} id="btnPrevMail" target="_blank">
+                        <FontAwesomeIcon icon={faEnvelope} />
+                    </Button>
+                    {cookie.public ?
+                        <Button variant='science' id="btnPrivate">
+                            <FontAwesomeIcon icon={faLock} />
+                        </Button>
+                        :
+                        <>
+                            <Button variant='science' id="btnAprove">
+                                <FontAwesomeIcon icon={faCheckSquare} />
+                            </Button>
+                            <Button variant='science' id="btnPub" data-toggle="modal" data-target="#mdlPublish">
+                                <FontAwesomeIcon icon={faPaperPlane} />
+                            </Button>
+                        </>
+                    }
+                </ToolBar>
 
                 <div className="container-fluid mb-2 rounded-lg p-3" style={{ backgroundColor: '#57238b' }}>
                     <div className="row mb-2 px-2">

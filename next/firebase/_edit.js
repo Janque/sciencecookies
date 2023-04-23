@@ -116,8 +116,10 @@ window.loaded = function loaded() {
         } else {
             $('#btnAprove').html('<i class="far fa-check-square"></i>');
         }
+        //Done
         $('#btnPrevCook').href = docDat.url;
         $('#btnPrevMail').href = '../vista-email/' + docDat.file;
+        //Done/
     }, err => { console.log(err) });
 
     fillTrans();

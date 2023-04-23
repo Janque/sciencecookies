@@ -1,3 +1,4 @@
+import stylesEdit from '../styles/edit.module.scss';
 import { getGlobalData, formatDate, ultraClean } from '../lib/utils';
 import MetaDescription from '../components/metaDescription';
 import Link from 'next/link';
@@ -14,6 +15,7 @@ import Modal from 'react-bootstrap/Modal';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
 import { getTodaysID } from '../firebase/database';
+import ToolBar from '../components/toolbar';
 
 export default function Borradores(props) {
     const router = useRouter();
@@ -160,13 +162,11 @@ export default function Borradores(props) {
             </Modal>
 
             {/* Side toolbar */}
-            <div className="tbar tbar-right btn-toolbar mb-3" role="toolbar">
-                <div className="btn-group-vertical mr-2 btn-group-lg" role="group">
-                    <button className="btn btn-science" onClick={() => { setMdlOpenPlus(true) }}>
-                        <FontAwesomeIcon icon={faPlus} />
-                    </button>
-                </div>
-            </div>
+            <ToolBar>
+                <Button variant='science' onClick={() => setMdlOpenPlus(true)}>
+                    <FontAwesomeIcon icon={faPlus} />
+                </Button>
+            </ToolBar>
 
             <form action='' method='get' className="mb-4">
                 <div className="input-group">
@@ -182,9 +182,9 @@ export default function Borradores(props) {
                             <option value={router.locale == 'es' ? 'descendente' : 'descending'}>{router.locale == 'es' ? 'Descendente' : 'Descending'}</option>
                             <option value={router.locale == 'es' ? 'ascendente' : 'ascending'}>{router.locale == 'es' ? 'Ascendente' : 'Ascending'}</option>
                         </select>
-                        <button className="btn btn-outline-light" type="submit">
+                        <Button variant="outline-light" type="submit">
                             <FontAwesomeIcon icon={faSearch} />
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </form>
@@ -215,13 +215,13 @@ export default function Borradores(props) {
                     <h5 className="mt-0 text-center" key='1'>No se han encontrado resultados</h5> : <></>
                 }
                 {(!props.searchParams.kywords && page == 1) || searchRes.length < 1 ?
-                    <div className="col mb-4" key='0'>
-                        <div className="card text-dark bg-light h-100 cardBorder" style={{ borderColor: '#343a40' }}>
-                            <a type="button" onClick={() => { setMdlOpenPlus(true) }} className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center">
-                                <h1 style={{ fontSize: '6rem' }} className="mb-0">
+                    <div className={`col mb-4 ${stylesEdit['adder-button']}`}>
+                        <div className="card text-dark bg-light h-100 cardBorder">
+                            <Button className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" type="button" onClick={() => setMdlOpenPlus(true)}>
+                                <span className="mb-0">
                                     <FontAwesomeIcon icon={faPlusSquare} />
-                                </h1>
-                            </a>
+                                </span>
+                            </Button>
                         </div>
                     </div>
                     : <></>
@@ -246,9 +246,9 @@ export default function Borradores(props) {
                                         }
                                         <div className="col-auto p-0 ml-auto">
                                             <div className="dropdown">
-                                                <button className="btn btn-light" onClick={() => handleDropdownClick(cookie.id)} onBlur={() => { handleDropdownBlur(cookie.id) }}>
+                                                <Button variant='light' onClick={() => handleDropdownClick(cookie.id)} onBlur={() => handleDropdownBlur(cookie.id)}>
                                                     <FontAwesomeIcon icon={faEllipsisH} />
-                                                </button>
+                                                </Button>
                                             </div>
                                             <div className={`dropdown-menu dropdown-menu-right ${dropdowns[cookie.id] ? 'show' : ''}`}>
                                                 <Link className="dropdown-item" href={`/${router.locale}/${NavLinks['es']['edit']}?id=${cookie.id}`} as={`/${NavLinks[router.locale]['edit']}?id=${cookie.id}`} locale={false}>
