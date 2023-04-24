@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import NavLink from '../components/navLinks';
 import { useState } from 'react';
-import Button from 'react-bootstrap/esm/Button';
+import Button from 'react-bootstrap/Button';
 
 export default function Home(props) {
   const router = useRouter();

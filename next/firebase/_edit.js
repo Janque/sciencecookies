@@ -404,6 +404,7 @@ function removeMedia(medFileName) {
 }
 
 function fillMed() {
+    //Done
     $('#contMedMan').html(`<div class="col mb-4">
         <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
             <a type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" onclick="addFrom=0;">
@@ -411,7 +412,6 @@ function fillMed() {
             </a>
         </div>
     </div>`);
-    //Done
     $('#contMedCho').html(`<div class="col mb-4">
         <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
             <a type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" onclick="addFrom=1;">
@@ -419,7 +419,6 @@ function fillMed() {
             </a>
         </div>
     </div>`);
-    //Done/
 
     docDat.media.forEach((itm, idx) => {
         let col0 = $('<div></div>');
@@ -533,7 +532,6 @@ function fillMed() {
         $('#contMedMan').appendChild(col0);
 
 
-        //Done
         let col1 = $('<div></div>');
         classes(col1, "col mb-4");
         let btnA1 = $('<a></a>');

@@ -8,9 +8,10 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
 import { Buttons, NavLinks } from '../components/layoutAttr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faEye, faImage, faLanguage, faLock, faPaperPlane, faPlus, faPlusSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faEye, faImage, faLanguage, faLink, faLock, faPaperPlane, faPlus, faPlusSquare, faStar, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
 import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie } from '../firebase/firestore';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAlert, AlertComponent } from '../components/alert';
 import { useAuth } from '../firebase/auth';
 import Spinner from 'react-bootstrap/Spinner';
@@ -23,6 +24,8 @@ const CustomEditor = dynamic(
 import Script from 'next/script';
 import ImageAuto from '../components/imageAuto';
 import ToolBar from '../components/toolbar';
+import useNotOnFirst from '../lib/hooks/useNotOnFirst';
+import { deleteCookieMedia } from '../firebase/storage';
 
 export default function Editar(props) {
     const router = useRouter();
@@ -40,20 +43,73 @@ export default function Editar(props) {
         }
     }, [getCookieEdit, authUser, props.cookieId]);
 
-    let submitingPlus, progressPlusVar, progressPlus, mdlOpenPub, mdlOpenTrans;//temp
+    let progressPlusVar, progressPlus, mdlOpenPub, mdlOpenTrans;//temp
     //Plus Sect modal
     const [toAddSect, setToAddSect] = useState(-1);
     const [mdlOpenPlusSect, setMdlOpenPlusSect] = useState(false);
 
     //Media modals
+    const [localMedia, setLocalMedia] = useState([]);
+    const [localPicUrl, setLocalPicUrl] = useState('');
+    const [localPicUrlSet, setLocalPicUrlSet] = useState(false);
+    useNotOnFirst(normSave, [localPicUrl, localPicUrlSet, cookieLoading], !cookieLoading && localPicUrlSet);
+    useEffect(() => {
+        if (!cookieLoading && !localPicUrlSet) {
+            setLocalPicUrl(cookie.picUrl);
+            setLocalPicUrlSet(true);
+        }
+    }, [cookie, localPicUrlSet, cookieLoading]);
+    const [mediaSet, setMediaSet] = useState(false);
+    useNotOnFirst(normSave, [localMedia, mediaSet, cookieLoading], !cookieLoading && mediaSet);
+    useEffect(() => {
+        if (!cookieLoading && !mediaSet) {
+            let t = cookie.media.map(med => {
+                let newMed = {};
+                Object.keys(med).forEach(key => {
+                    if (key == 'author' || key == 'ref') newMed[key] = med[key].slice();
+                    else newMed[key] = med[key];
+                });
+                return newMed;
+            });
+            setLocalMedia(t);
+            setMediaSet(true);
+        }
+    }, [cookie, mediaSet, cookieLoading]);
     const [toAddMed, setToAddMed] = useState(-1);
+    const [toDelMed, setToDelMed] = useState(-1);
     const [addFromMed, setAddFromMed] = useState(-1);
+    const [medTltipCpTxt, setMedTltipCpTxt] = useState(router.locale == 'es' ? 'Copiar' : 'Copy');
     //Choose
     const [mdlOpenMedCho, setMdlOpenMedCho] = useState(false);
     //Add
     const [mdlOpenMedAdd, setMdlOpenMedAdd] = useState(false);
     //Manage
     const [mdlOpenMedMan, setMdlOpenMedMan] = useState(false);
+    async function handleDelMedia(media, i) {
+        if (toDelMed == i) {
+            setToDelMed(-1);
+            hideAlert();
+            if (media.medFile != 'externo') {
+                await deleteCookieMedia(props.cookieId, media.medFile);
+            }
+            if (media.medUrl == cookie.picUrl) {
+                docDat.picUrl = "";
+            }
+            let m = localMedia.slice();
+            m.splice(i, 1);
+            setLocalMedia(m);
+        } else {
+            showAlert(router.locale == 'es' ? '<strong>¿Quieres eliminar esta imagen?</strong> Presiona de nuevo el botón para confirmar.' : '<strong>Do you want to delete this image? </strong> Press the button again to confirm.', 'warning', 'alrtMedMan');
+            setToDelMed(i);
+        }
+    }
+    useEffect(() => {
+        if (toDelMed != -1) {
+            setTimeout(() => {
+                setToDelMed(-1);
+            }, 3000);
+        }
+    }, [toDelMed])
 
 
     //Top form
@@ -122,6 +178,8 @@ export default function Editar(props) {
             //Special data
             authors: sectionsNorm[0].author,
             title: sectionsNorm[0].title,
+            media: localMedia,
+            picUrl: localPicUrl,
             //Top form
             fileTranslations: {
                 ...cookie.fileTranslations,
@@ -133,7 +191,7 @@ export default function Editar(props) {
     }
     async function normSave(saveSections = false) {
         await saveCookie(saveSections);
-        showAlert('saved', 'success');
+        showAlert('Saved', 'success');//Change to nav tag
     }
 
     useEffect(() => {
@@ -145,7 +203,7 @@ export default function Editar(props) {
                 description: cookie.description
             });
         }
-    }, [cookie])
+    }, [cookie, cookieLoading]);
 
     //Sections functions
     //Control
@@ -155,16 +213,7 @@ export default function Editar(props) {
     const [sectionsSet, setSectionsSet] = useState(false);
     const [sectChanged, setSectChanged] = useState(false);
     const [sectChangedIdx, setSectChangedIdx] = useState(-1);
-    const isFirst = useRef(true);
-    useEffect(() => {
-        if (!cookieLoading && sectionsSet) {
-            if (!isFirst.current) {
-                normSave();
-            } else {
-                isFirst.current = false;
-            }
-        }
-    }, [sectionsNorm])
+    useNotOnFirst(normSave, [sectionsNorm, sectionsSet, cookieLoading], !cookieLoading && sectionsSet);
     useEffect(() => {
         if (sectChangedIdx != -1) {
             const norm = sectionsNorm[sectChangedIdx];
@@ -212,7 +261,7 @@ export default function Editar(props) {
             setSectionsForm(tt);
             setSectionsSet(true);
         }
-    }, [cookie, sectionsSet])
+    }, [cookie, sectionsSet, cookieLoading]);
     function saveAllSections(idx = -1, normal = true) {
         if (sectionsOpen != -1) saveSection(sectionsOpen);
         if (openRef != -1) saveRef(openRef);
@@ -431,7 +480,7 @@ export default function Editar(props) {
                     <AlertComponent id='alrtPlus' />
                     <Modal.Header>
                         <Modal.Title>{router.locale == 'es' ? 'Añadir una sección' : 'Add section'}</Modal.Title>
-                        <button className="close" type="button" onClick={() => setMdlOpenPlusSect(false)} disabled={submitingPlus}>
+                        <button className="close" type="button" onClick={() => setMdlOpenPlusSect(false)}>
                             <span aria-hidden="true">×</span>
                         </button>
                     </Modal.Header>
@@ -443,46 +492,81 @@ export default function Editar(props) {
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="d-grid w-100">
-                            <Button disabled={submitingPlus} variant="secondary" type="button" onClick={() => setMdlOpenPlusSect(false)}>{Buttons[router.locale]["cancel"]}</Button>
+                            <Button variant="secondary" type="button" onClick={() => setMdlOpenPlusSect(false)}>{Buttons[router.locale]["cancel"]}</Button>
                         </div>
                     </Modal.Footer>
                 </Modal>
 
                 {/* Manage media modal */}
-                <Modal className='text-dark' show={mdlOpenMedMan} onHide={() => setMdlOpenMedMan(false)} centered scrollable>
-                    <AlertComponent id='alrtPlus' />
+                <Modal className={`text-dark ${stylesEdit['mdl-manage-media']}`} show={mdlOpenMedMan} onHide={() => setMdlOpenMedMan(false)} centered scrollable>
+                    <AlertComponent id='alrtMedMan' />
                     <Modal.Header>
                         <Modal.Title>{router.locale == 'es' ? 'Administra las imágenes' : 'Manage media'}</Modal.Title>
-                        <button className="close" type="button" onClick={() => setMdlOpenMedMan(false)} disabled={submitingPlus}>
+                        <button className="close" type="button" onClick={() => setMdlOpenMedMan(false)}>
                             <span aria-hidden="true">×</span>
                         </button>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="row row-cols-1 row-cols-md-3" id="contMedMan">
-                            <div className="col mb-4">
-                                <div className="card text-dark bg-light h-100 cardBorder" style={{ borderColor: '#343a40' }}>
-                                    <a className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" type="button" aria-label="Close" onclick="addFrom=0;">
-                                        <span className="mb-0" style={{ fontSize: '6rem' }}>
+                            <div className={`col mb-4 ${stylesEdit['adder-button']}`}>
+                                <div className="card text-dark bg-light h-100 cardBorder">
+                                    <Button className="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" type="button" onClick={() => {
+                                        setMdlOpenMedMan(false);
+                                        setMdlOpenMedAdd(true);
+                                        setAddFromMed(0);
+                                    }}>
+                                        <span className="mb-0">
                                             <FontAwesomeIcon icon={faPlusSquare} />
                                         </span>
-                                    </a>
+                                    </Button>
                                 </div>
                             </div>
+                            {cookie.media.map((media, idx) => {
+                                return (
+                                    <div className={`col mb-4 ${stylesEdit['media-card']}`} key={media.key}>
+                                        <div className='card text-light bg-dark'>
+                                            <ImageAuto className='card-img' src={media.medUrl} alt={media.medFile} sizes='(max-width: 576px) 50vw, (max-width: 1200px) 25vw, 17vw' />
+                                            <div className="card-img-overlay pt-0 px-3">
+                                                <div className='row mb-2 p-0'>
+                                                    <Button className="btn-science" variant='light' size='sm' onClick={async () => await handleDelMedia(media, idx)}><FontAwesomeIcon icon={faTrashAlt} /></Button>
+                                                    <div className={`ml-auto ${stylesEdit['tooltipn']}`}>
+                                                        <Button className="btn-science" variant='light' size='sm' onClick={async () => {
+                                                            await navigator.clipboard.writeText(media.medUrl);
+                                                            setMedTltipCpTxt(router.locale == 'es' ? 'URL copiado' : 'Copied URL');
+                                                        }} onMouseLeave={() => setMedTltipCpTxt(router.locale == 'es' ? 'Copiar' : 'Copy')}>
+                                                            <span className={`${stylesEdit['tooltipTextn']}`}>{medTltipCpTxt}</span>
+                                                            <FontAwesomeIcon icon={faLink} />
+                                                        </Button>
+                                                        <Button className="btn-science ml-1" variant='light' size='sm' onClick={() => {
+                                                            if (cookie.picUrl == media.medUrl) {
+                                                                setLocalPicUrl('');
+                                                            } else {
+                                                                setLocalPicUrl(media.medUrl);
+                                                            }
+                                                        }}>
+                                                            <FontAwesomeIcon icon={cookie.picUrl == media.medUrl ? faStar : farStar} />
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })}
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="d-grid w-100">
-                            <Button disabled={submitingPlus} variant="secondary" type="button" onClick={() => setMdlOpenMedMan(false)}>{Buttons[router.locale]["cancel"]}</Button>
+                            <Button variant="secondary" type="button" onClick={() => setMdlOpenMedMan(false)}>{Buttons[router.locale]["close"]}</Button>
                         </div>
                     </Modal.Footer>
                 </Modal>
 
                 {/* Choose media modal */}
                 <Modal className={`text-dark ${stylesEdit['mdl-choose-media']}`} show={mdlOpenMedCho} onHide={() => setMdlOpenMedCho(false)} centered scrollable>
-                    <AlertComponent id='alrtPlus' />
                     <Modal.Header>
                         <Modal.Title>{router.locale == 'es' ? 'Escoge una imagen' : 'Choose an image'}</Modal.Title>
-                        <button className="close" type="button" onClick={() => setMdlOpenMedCho(false)} disabled={submitingPlus}>
+                        <button className="close" type="button" onClick={() => setMdlOpenMedCho(false)}>
                             <span aria-hidden="true">×</span>
                         </button>
                     </Modal.Header>
@@ -524,17 +608,17 @@ export default function Editar(props) {
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="d-grid w-100">
-                            <Button disabled={submitingPlus} variant="secondary" type="button" onClick={() => setMdlOpenMedCho(false)}>{Buttons[router.locale]["cancel"]}</Button>
+                            <Button variant="secondary" type="button" onClick={() => setMdlOpenMedCho(false)}>{Buttons[router.locale]["cancel"]}</Button>
                         </div>
                     </Modal.Footer>
                 </Modal>
 
                 {/* Add media modal */}
                 <Modal className='text-dark' show={mdlOpenMedAdd} onHide={() => setMdlOpenMedAdd(false)} centered scrollable>
-                    <AlertComponent id='alrtPlus' />
+                    <AlertComponent id='alrtMedAdd' />
                     <Modal.Header>
                         <Modal.Title>{router.locale == 'es' ? 'Añadir multimedia a la Galleta' : 'Add media to the Cookie'}</Modal.Title>
-                        <button className="close" type="button" onClick={() => setMdlOpenMedAdd(false)} disabled={submitingPlus}>
+                        <button className="close" type="button" onClick={() => setMdlOpenMedAdd(false)}>
                             <span aria-hidden="true">×</span>
                         </button>
                     </Modal.Header>
@@ -571,17 +655,17 @@ export default function Editar(props) {
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="d-grid w-100">
-                            <Button disabled={submitingPlus} variant="secondary" type="button" onClick={() => setMdlOpenMedAdd(false)}>{Buttons[router.locale]["cancel"]}</Button>
+                            <Button variant="secondary" type="button" onClick={() => setMdlOpenMedAdd(false)}>{Buttons[router.locale]["cancel"]}</Button>
                         </div>
                     </Modal.Footer>
                 </Modal>
 
                 {/* Publish modal */}
                 <Modal className='text-dark' show={mdlOpenPub} onHide={() => setMdlOpenPub(false)} centered scrollable>
-                    <AlertComponent id='alrtPlus' />
+                    <AlertComponent id='alrtPub' />
                     <Modal.Header>
                         <Modal.Title>{router.locale == 'es' ? 'Publicar la Galleta' : 'Publish Cookie'}</Modal.Title>
-                        <button className="close" type="button" onClick={() => setMdlOpenPub(false)} disabled={submitingPlus}>
+                        <button className="close" type="button" onClick={() => setMdlOpenPub(false)}>
                             <span aria-hidden="true">×</span>
                         </button>
                     </Modal.Header>
@@ -607,17 +691,17 @@ export default function Editar(props) {
                     <Modal.Footer>
                         <div className="d-grid w-100">
                             <button className="btn btn-science btn-block" id="btnCnfPublish" type="button">{router.locale == 'es' ? 'Publicar' : 'Publish'}</button>
-                            <Button disabled={submitingPlus} variant="secondary" type="button" onClick={() => setMdlOpenPub(false)}>{Buttons[router.locale]["cancel"]}</Button>
+                            <Button variant="secondary" type="button" onClick={() => setMdlOpenPub(false)}>{Buttons[router.locale]["cancel"]}</Button>
                         </div>
                     </Modal.Footer>
                 </Modal>
 
                 {/* Translate modal */}
                 <Modal className='text-dark' show={mdlOpenTrans} onHide={() => setMdlOpenTrans(false)} centered scrollable>
-                    <AlertComponent id='alrtPlus' />
+                    <AlertComponent id='alrtTrans' />
                     <Modal.Header>
                         <Modal.Title>{router.locale == 'es' ? 'Generar traducción' : 'Generate translation'}</Modal.Title>
-                        <button className="close" type="button" onClick={() => setMdlOpenTrans(false)} disabled={submitingPlus}>
+                        <button className="close" type="button" onClick={() => setMdlOpenTrans(false)}>
                             <span aria-hidden="true">×</span>
                         </button>
                     </Modal.Header>
@@ -644,7 +728,7 @@ export default function Editar(props) {
                         <Modal.Footer>
                             <div className="d-grid w-100">
                                 <button className="btn btn-science btn-block" id="btnCnfTranslate" type="button">{router.locale == 'es' ? 'Traducir' : 'Translate'}</button>
-                                <Button disabled={submitingPlus} variant="secondary" type="button" onClick={() => setMdlOpenTrans(false)}>{Buttons[router.locale]["cancel"]}</Button>
+                                <Button variant="secondary" type="button" onClick={() => setMdlOpenTrans(false)}>{Buttons[router.locale]["cancel"]}</Button>
                             </div>
                         </Modal.Footer>
                     </form>

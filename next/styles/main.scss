@@ -37,9 +37,9 @@ body {
   animation-fill-mode: both;
   animation-timing-function: ease-out;
   animation-duration: 0.4s;
-  .btn-group-vertical{
+  .btn-group-vertical {
     width: 100%;
-    .btn{
+    .btn {
       padding: 8px 0;
     }
   }
@@ -61,4 +61,9 @@ body {
 
 .dropdown-toggle.no-arrow:after {
   display: none;
+}
+
+//temp
+.d-grid {
+  display: grid;
 }
