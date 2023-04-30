@@ -63,7 +63,25 @@ body {
   display: none;
 }
 
-//temp
+//Bootstrap 5 - Temp
 .d-grid {
   display: grid;
+}
+
+input.form-control[type="file"] {
+  overflow: hidden;
+  &::file-selector-button {
+    padding: 6px 12px;
+    margin: -6px -12px;
+    margin-inline-end: 12px;
+    pointer-events: none;
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0;
+    border-inline-end-width: 1px;
+    border-radius: 0;
+  }
+  &:not(:disabled):not([readonly]) {
+    cursor: pointer;
+  }
 }

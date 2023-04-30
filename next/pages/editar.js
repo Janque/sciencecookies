@@ -1,31 +1,31 @@
 import stylesEdit from '../styles/edit.module.scss';
 import stylesCookie from '../styles/cookie.module.scss';
-import { formatDate, getGlobalData } from '../lib/utils';
-import MetaDescription from '../components/metaDescription';
-import { useRouter } from 'next/router';
-import Modal from 'react-bootstrap/Modal';
-import ProgressBar from 'react-bootstrap/ProgressBar';
-import Button from 'react-bootstrap/Button';
 import { Buttons, NavLinks } from '../components/layoutAttr';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faEye, faImage, faLanguage, faLink, faLock, faPaperPlane, faPlus, faPlusSquare, faStar, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
-import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie } from '../firebase/firestore';
-import { useEffect, useState } from 'react';
 import { useAlert, AlertComponent } from '../components/alert';
+import MetaDescription from '../components/metaDescription';
+import ImageAuto from '../components/imageAuto';
+import ToolBar from '../components/toolbar';
+import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie } from '../firebase/firestore';
 import { useAuth } from '../firebase/auth';
-import Spinner from 'react-bootstrap/Spinner';
-import { ultraClean } from '../lib/utils';
+import { addCookieMedia, deleteCookieMedia } from '../firebase/storage';
+import { formatDate, getGlobalData, ultraClean } from '../lib/utils';
+import useNotOnFirst from '../lib/hooks/useNotOnFirst';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import Script from 'next/script';
 import dynamic from 'next/dynamic'
 const CustomEditor = dynamic(
     () => import('../components/customEditor'),
     { ssr: false }
 )
-import Script from 'next/script';
-import ImageAuto from '../components/imageAuto';
-import ToolBar from '../components/toolbar';
-import useNotOnFirst from '../lib/hooks/useNotOnFirst';
-import { deleteCookieMedia } from '../firebase/storage';
+import Modal from 'react-bootstrap/Modal';
+import ProgressBar from 'react-bootstrap/ProgressBar';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faEye, faImage, faLanguage, faLink, faLock, faPaperPlane, faPlus, faPlusSquare, faStar, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
 
 export default function Editar(props) {
     const router = useRouter();
@@ -83,6 +83,46 @@ export default function Editar(props) {
     const [mdlOpenMedCho, setMdlOpenMedCho] = useState(false);
     //Add
     const [mdlOpenMedAdd, setMdlOpenMedAdd] = useState(false);
+    const [submittingNewMed, setSubmitingNewMed] = useState(false);
+    const [medSource, setMedSource] = useState('own');
+    const [medNewUrl, setMedNewUrl] = useState('');
+    const [medAddPrgVar, setMedAddPrgVar] = useState('primary');
+    const [medAddPrg, setMedAddPrg] = useState(0);
+    function handleMedSrcChange(e) {
+        setMedSource(e.target.value);
+    }
+    async function handleMedAddSubmit(e) {
+        e.preventDefault();
+        setMedAddPrg(0);
+        setSubmitingNewMed(true);
+        if (medSource == 'out') {
+            let m = localMedia.slice();
+            m.push({
+                medFile: 'externo',
+                medUrl: medNewUrl
+            });
+            setLocalMedia(m);
+        } else {
+            await addCookieMedia(props.cookieId, e.target.fileUpload.files[0],
+                (snap) => {
+                    setMedAddPrg((snap.bytesTransferred / snap.totalBytes) * 100);
+                },
+                (err) => {
+                    showAlert((router.locale == 'es' ? "<strong>¡Ha ocurrido un error!</strong> " : "<strong>¡There has been an error!</strong> ") + err.code, 'danger', 'alrtMedAdd');
+                    console.log(err);
+                }, localMedia, setLocalMedia);
+        }
+        setMedAddPrg(100);
+        setMedAddPrgVar('success');
+        setMdlOpenMedAdd(false);
+        if (addFromMed == 0) setMdlOpenMedMan(true);
+        else setMdlOpenMedCho(true);
+        setSubmitingNewMed(false);
+        setMedSource('own');
+        setMedNewUrl('');
+        setMedAddPrg(0);
+        setMedAddPrgVar('primary');
+    }
     //Manage
     const [mdlOpenMedMan, setMdlOpenMedMan] = useState(false);
     async function handleDelMedia(media, i) {
@@ -537,16 +577,16 @@ export default function Editar(props) {
                                                             <span className={`${stylesEdit['tooltipTextn']}`}>{medTltipCpTxt}</span>
                                                             <FontAwesomeIcon icon={faLink} />
                                                         </Button>
-                                                        <Button className="btn-science ml-1" variant='light' size='sm' onClick={() => {
-                                                            if (cookie.picUrl == media.medUrl) {
-                                                                setLocalPicUrl('');
-                                                            } else {
-                                                                setLocalPicUrl(media.medUrl);
-                                                            }
-                                                        }}>
-                                                            <FontAwesomeIcon icon={cookie.picUrl == media.medUrl ? faStar : farStar} />
-                                                        </Button>
                                                     </div>
+                                                    <Button className="btn-science ml-1" variant='light' size='sm' onClick={() => {
+                                                        if (cookie.picUrl == media.medUrl) {
+                                                            setLocalPicUrl('');
+                                                        } else {
+                                                            setLocalPicUrl(media.medUrl);
+                                                        }
+                                                    }}>
+                                                        <FontAwesomeIcon icon={cookie.picUrl == media.medUrl ? faStar : farStar} />
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </div>
@@ -623,35 +663,47 @@ export default function Editar(props) {
                         </button>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="row mb-3 w-100 py-0 justify-content-center mx-auto">
-                            <img className="w-75 m-0" id="prevNewMed" src='' />
-                        </div>
-                        <form id="frmAddMed">
-                            <div className="row mb-3">
-                                <div className="form-check form-check-inline ml-3">
-                                    <input className="form-check-input" id="inMedSrc0" type="radio" name="radsMedSrc" value="home" required />
-                                    <label className="form-check-label" for="inMedSrc0">{router.locale == 'es' ? 'Propio' : 'Own'}</label>
+                        {(medSource == 'own' && medNewUrl) || (medSource == 'out' && medNewUrl.length > 8) ?
+                            <div className="row mb-3 w-100 py-0 justify-content-center mx-auto">
+                                <ImageAuto width='75' id="prevNewMed" className="m-0" src={medNewUrl} alt='' />
+                            </div>
+                            : null
+                        }
+                        {submittingNewMed ?
+                            <ProgressBar variant={medAddPrgVar} animated now={medAddPrg} label={`${medAddPrg}%`} />
+                            :
+                            <Form onSubmit={handleMedAddSubmit}>
+                                <Form.Group controlId="formAMSrc" className="mb-3">
+                                    <Form.Label>{router.locale == 'es' ? 'Fuente' : 'Source'}</Form.Label>
+                                    <div className="d-flex">
+                                        <Form.Check id='formAMSrcOwn' label={router.locale == 'es' ? 'Propio' : 'Own'} className="ml-3" type="radio" name="radsMedSrc" value="own" defaultChecked onChange={handleMedSrcChange} />
+                                        <Form.Check id='formAMSrcOut' label={router.locale == 'es' ? 'Externo' : 'External'} className="ml-3" type="radio" name="radsMedSrc" value="out" onChange={handleMedSrcChange} />
+                                    </div>
+                                </Form.Group>
+                                {medSource == 'own' ?
+                                    <Form.Group controlId="formAMFile" className="mb-5">
+                                        <Form.Label>{router.locale == 'es' ? 'Subir archivo' : 'Upload file'}</Form.Label>
+                                        <Form.Control type="file" name='fileUpload' onChange={(e) => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                setMedNewUrl(URL.createObjectURL(e.target.files[0]));
+                                            } else {
+                                                setMedNewUrl('');
+                                            }
+                                        }} />
+                                    </Form.Group>
+                                    :
+                                    <Form.Group controlId="formAMUrl" className="mb-5">
+                                        <Form.Label>{router.locale == 'es' ? 'URL del archivo' : 'Media URL'}</Form.Label>
+                                        <Form.Control type="text" placeholder={router.locale == 'es' ? 'https://imagen.com' : 'https://image.com'} onChange={(e) => {
+                                            setMedNewUrl(e.target.value);
+                                        }} />
+                                    </Form.Group>
+                                }
+                                <div className="d-grid w-100">
+                                    <Button variant='primary' type='submit'>{router.locale == 'es' ? 'Añadir' : 'Add'}</Button>
                                 </div>
-                                <div className="form-check form-check-inline ml-3">
-                                    <input className="form-check-input" id="inMedSrc1" type="radio" name="radsMedSrc" value="out" required />
-                                    <label className="form-check-label" for="inMedSrc1">{router.locale == 'es' ? 'Externo' : 'External'}</label>
-                                </div>
-                            </div>
-                            <div className="custom-file mb-5 d-none" id="inNewMedFileCont">
-                                <input className="custom-file-input" id="inNewMed" type="file" />
-                                <label className="custom-file-label" id="inNewMedL" for="inNewMed" data-browse="Elegir">{router.locale == 'es' ? 'Subir archivo' : 'Upload file'}</label>
-                            </div>
-                            <div className="row mb-2 d-none" id="inNewMedUrlCont">
-                                <div className="col">
-                                    <label for="inNewMedUrl">{router.locale == 'es' ? 'URL del archivo' : 'Media URL'}</label>
-                                    <input className="form-control" id="inNewMedUrl" type="text" placeholder={router.locale == 'es' ? 'https://imagen.com' : 'https://image.com'} />
-                                </div>
-                            </div>
-                            <div className="d-grid w-100">
-                                <button id="btnCnfNewMed" className="btn btn-primary btn-block" type="submit">{router.locale == 'es' ? 'Añadir' : 'Add'}</button>
-                            </div>
-                        </form>
-                        <ProgressBar variant={progressPlusVar} animated now={progressPlus} label={`${progressPlus}%`} />
+                            </Form>
+                        }
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="d-grid w-100">
@@ -1271,7 +1323,7 @@ export default function Editar(props) {
                     <div className="row mb-2">
                         <div className="col">
                             <label for="inJava">JavaScript</label>
-                            <textarea className="form-control" id="inJava" rows="8" readonly>
+                            <textarea className="form-control" id="inJava" rows="8" readOnly>
                                 {cookie.java}
                             </textarea>
                         </div>

@@ -28,7 +28,6 @@ const FUNCTIONS = getFunctions(firebaseApp, 'us-east1');
 
 import { getFirestore, getDoc, doc as docRef, getDocs, onSnapshot, updateDoc, query, Timestamp } from "firebase/firestore";
 const FSDB = getFirestore();
-//Done/
 
 import { getStorage, ref as storageRef, deleteObject, uploadBytes, getDownloadURL } from "firebase/storage";
 const STORAGE = getStorage();
@@ -37,12 +36,14 @@ window.docDat;
 let docId, cookDocRef;
 let toDel = -1;
 window.toAdd = -1;
-let lastSave = Date.now(), saved = false;
 
 window.addFrom = -1;
 let toDelMed = -1, toAddMed = -1;
 let newMedia = null;
 let newMedSrc = null;
+//Done/
+
+let lastSave = Date.now(), saved = false;
 
 let keywords = [];
 
@@ -97,10 +98,8 @@ window.loaded = function loaded() {
         allCats.forEach((cat, i) => {
             $('#cat' + i).checked = docDat.fixedCats.includes($('#cat' + i).value);
         });
-        //Done/
         render();
         fillMed();
-        //Done
         if (docDat.public) {
             $('#btnPrivate').show();
             $('#btnAprove').hide();
@@ -208,6 +207,7 @@ window.loaded = function loaded() {
         }).catch(err => console.log(err));
     }
 
+    //Done
     function addMed(atempt) {
         let ref = storageRef(STORAGE, 'cookieMedia/' + docId + '/i' + atempt + newMedia.name)
         getDownloadURL(ref).then(res => {
@@ -267,6 +267,7 @@ window.loaded = function loaded() {
         if (newMedSrc == "home") addMed(0);
         else addExtMed();
     });
+    //Done/
 }
 
 let savedInterval;
@@ -397,14 +398,12 @@ function runprog(bar, b, e) {
         }, 5);
     }
 }
-//Done/
 
 function removeMedia(medFileName) {
     return deleteObject(storageRef(STORAGE, 'cookieMedia/' + docId + '/' + medFileName));
 }
 
 function fillMed() {
-    //Done
     $('#contMedMan').html(`<div class="col mb-4">
         <div class="card text-dark bg-light h-100 cardBorder" style="border-color: #343a40;">
             <a type="button" data-toggle="modal" data-target="#mdlAddMed" data-dismiss="modal" aria-label="Close" class="text-decoration-none text-dark h-100 d-flex align-items-center justify-content-center" onclick="addFrom=0;">
@@ -553,9 +552,9 @@ function fillMed() {
         card1.appendChild(img1);
 
         $('#contMedCho').appendChild(col1);
-        //Done/
     });
 }
+//Done/
 
 function setSavedTime() {
     let minutes = Math.floor((Date.now() - lastSave) / 60000);
@@ -1430,6 +1429,7 @@ function fillTrans() {
     })
 }
 
+//Done
 $('#mdlAddMed').on('hidden.bs.modal', e => {
     $("#prevNewMed").src = '';
     if (lang == "es") {
@@ -1478,6 +1478,7 @@ $('#inMedSrc1').onclick = function () {
     $("#inNewMedFileCont").hide();
     $("#inNewMedUrlCont").show();
 }
+//Done/
 
 $('#inSendUpt').onclick = function () {
     if ($('#inSendUpt').checked) {
@@ -1515,6 +1516,7 @@ $('#btnAprove').onclick = function () {
     normSave();
 };
 
+//Done
 $('#mdlAddMed').on('hiden.bs.modal', e => {
     $('#inMedSrc0').attr('checked', 'false');
     $('#inMedSrc1').attr('checked', 'false');
@@ -1523,6 +1525,7 @@ $('#mdlAddMed').on('hiden.bs.modal', e => {
     $("#inNewMedFileCont").hide();
     $("#inNewMedUrlCont").hide();
 });
+//Done/
 
 $('#mdlPublish').on('show.bs.modal', e => {
     let revLangs = 0;
