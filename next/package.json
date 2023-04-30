@@ -16,7 +16,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "ace-builds": "^1.15.0",
     "bootstrap": "^4.6.2",
-    "firebase": "^9.15.0-canary.3ee35f9ae",
+    "firebase": "^9.21.0",
     "firebaseui": "^6.0.1",
     "jquery": "^3.6.3",
     "next": "^13.0.6",
