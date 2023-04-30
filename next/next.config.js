@@ -37,6 +37,16 @@ const nextConfig = {
         locale: false
       },
       {
+        source: '/:locale/edit',
+        destination: '/en/editar',
+        locale: false
+      },
+      {
+        source: '/:locale/editar',
+        destination: '/es/editar',
+        locale: false
+      },
+      {
         source: '/:locale/calendars',
         destination: '/en/calendarios',
         locale: false

@@ -22,6 +22,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from "firebase/database";
 import { getStorage } from 'firebase/storage';
+import { getFunctions} from "firebase/functions";
 
 // Configure Firebase.
 const firebaseConfig = {
@@ -42,3 +43,4 @@ export const auth = getAuth(firebaseApp);
 export const firestore = getFirestore(firebaseApp);
 export const database = getDatabase(firebaseApp);
 export const storage = getStorage(firebaseApp);
+export const functions = getFunctions(firebaseApp, 'us-east1');

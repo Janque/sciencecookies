@@ -41,11 +41,6 @@ window.addFrom = -1;
 let toDelMed = -1, toAddMed = -1;
 let newMedia = null;
 let newMedSrc = null;
-//Done/
-
-let lastSave = Date.now(), saved = false;
-
-let keywords = [];
 
 async function translateSimple(text, from, target) {
     var translate = httpsCallable(FUNCTIONS, 'translations-translateSimple');
@@ -56,6 +51,12 @@ async function translateSimple(text, from, target) {
     });
     return res.data;
 }
+//Done/
+
+let lastSave = Date.now(), saved = false;
+
+let keywords = [];
+
 var urlSrch;
 window.loaded = function loaded() {
     urlSrch = new URLSearchParams(location.search);
@@ -183,7 +184,6 @@ window.loaded = function loaded() {
         event.preventDefault();
         fileFrm();
     });
-    //Done/
     langs.forEach((l, i) => {
         if (l != lang) {
             let opt = $('<option></option>');
@@ -207,7 +207,6 @@ window.loaded = function loaded() {
         }).catch(err => console.log(err));
     }
 
-    //Done
     function addMed(atempt) {
         let ref = storageRef(STORAGE, 'cookieMedia/' + docId + '/i' + atempt + newMedia.name)
         getDownloadURL(ref).then(res => {

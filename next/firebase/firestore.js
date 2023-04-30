@@ -1,6 +1,8 @@
 import { firestore } from './firebase';
 import { getDocs, query, collection, where, orderBy, limit, getDoc, doc as docRef, getCountFromServer, startAfter, setDoc, Timestamp, onSnapshot, updateDoc } from 'firebase/firestore';
 import { addKeywordsToStats } from './database';
+import { translateSimple } from './functions';
+import { ultraClean } from '../lib/utils';
 
 
 export const cookiesFSColl = {
@@ -238,4 +240,16 @@ export function getCookieEdit(locale, id, setCookie, setLoading) {
 export async function uploadCookie(locale, id, data) {
     data.ledit = Timestamp.now();
     await updateDoc(docRef(cookiesFSColl[locale], id), data);
+}
+
+export async function translateTopForm(from, to, id) {
+    const doc = await getDoc(docRef(cookiesFSColl[from], id));
+    const data = doc.data();
+    let file = await translateSimple(data.fileTranslations[from], from, to);
+    file = ultraClean(file, '-', true, true);
+    let desc = await translateSimple(data.description, from, to);
+    return {
+        file: file,
+        description: desc
+    }
 }
