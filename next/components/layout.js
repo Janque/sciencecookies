@@ -62,7 +62,7 @@ export default function Layout({ children }) {
                 <AdsH />
             </div>
 
-            <Footer site={props.site} fullUrl={props.fullUrl} isMobile={props.isMobile} />
+            <Footer site={props.site} isMobile={props.isMobile} />
 
             {/* Global JS*/}
             {/* Page JS*/}

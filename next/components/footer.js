@@ -4,8 +4,11 @@ import NavLink from './navLinks.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShare } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faFacebook, faWhatsapp, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { useRouter } from 'next/router';
+import { Host } from './layoutAttr';
 
 export default function Footer(props) {
+    const router = useRouter();
     return (
         <>
             <div className={styles.share}>
@@ -13,21 +16,21 @@ export default function Footer(props) {
                     <FontAwesomeIcon icon={faShare} />
                 </a>
                 <div id='shareBtns' className='collapse'>
-                    <a id="ttShare" target="_blank" rel="external" href={`https://twitter.com/intent/tweet?text${props.fullUrl}`}><FontAwesomeIcon icon={faTwitter} /></a>
-                    <a id="fbShare" target="_blank" rel="external" href={`https://www.facebook.com/sharer/sharer.php?u=${props.fullUrl}`}><FontAwesomeIcon icon={faFacebook} /></a>
-                    <a id="waShare" target="_blank" rel="external" href={`${props.isMobile ? 'whatsapp://send?text=' : 'https://web.whatsapp.com/send?text='}${props.fullUrl}`}><FontAwesomeIcon icon={faWhatsapp} /></a>
+                    <a id="ttShare" target="_blank" rel="external" href={`https://twitter.com/intent/tweet?text=${Host + router.asPath}`}><FontAwesomeIcon icon={faTwitter} /></a>
+                    <a id="fbShare" target="_blank" rel="external" href={`https://www.facebook.com/sharer/sharer.php?u=${Host + router.asPath}`}><FontAwesomeIcon icon={faFacebook} /></a>
+                    <a id="waShare" target="_blank" rel="external" href={`${props.isMobile ? 'whatsapp://send?text=' : 'https://web.whatsapp.com/send?text='}${Host + router.asPath}`}><FontAwesomeIcon icon={faWhatsapp} /></a>
                 </div>
             </div>
 
             <div className={styles['follow-us'] + ' bg-blue'}>
                 <div className="row">
-                    <a href="//twitter.com/intent/follow?screen_name=_sciencecookies" target="_blank" rel="external">
+                    <a href="https://twitter.com/intent/follow?screen_name=_sciencecookies" target="_blank" rel="external">
                         <FontAwesomeIcon icon={faTwitter} color='#1da1f2' />
                     </a>
-                    <a href="http://instagram.com/sciencecookies" target="_blank" rel="external">
+                    <a href="https://instagram.com/sciencecookies" target="_blank" rel="external">
                         <FontAwesomeIcon icon={faInstagram} color='#e03566' />
                     </a>
-                    <a href="http://www.facebook.com/Science-Cookies-106549557818780/" target="_blank" rel="external">
+                    <a href="https://www.facebook.com/ScienceCookies.blog" target="_blank" rel="external">
                         <FontAwesomeIcon icon={faFacebook} color='#3b5998' />
                     </a>
                 </div>

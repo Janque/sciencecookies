@@ -21,14 +21,6 @@ export function cookieCardBody(locale, title, description, authors, published, l
     )
 }
 
-export function getFullUrl(req) {
-    //console.log(req);
-    //TODO fix
-    return {
-        fullUrl: 'https://' + req.headers.host + req.originalUrl
-    }
-}
-
 export function isMobile(userAgent) {
     return {
         isMobile: Boolean(userAgent.match(
@@ -39,9 +31,9 @@ export function isMobile(userAgent) {
 
 //Get global data for pages
 export async function getGlobalData(context) {
+    console.log(context.req,context.res)
     return {
         ...(await getRecommended(context.locale)),
-        ...(getFullUrl(context.req)),
         ...(isMobile(context.req.headers['user-agent']))
     }
 }

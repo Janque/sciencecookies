@@ -1,3 +1,4 @@
+export const Host = 'https://sciencecookies.net';
 export const Buttons = {
     "es": {
         "404": "Página no encontrada",

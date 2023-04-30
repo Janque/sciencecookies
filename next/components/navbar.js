@@ -54,6 +54,8 @@ export default function Navbar(props) {
             }
         }
     }
+    const { locale, ...transQuery } = router.query;
+
     return (
         <>
             <nav className={styles.navbar + ' navbar sticky-top navbar-expand-lg navbar-dark bg-science'}>
@@ -82,7 +84,7 @@ export default function Navbar(props) {
                     </ul>
 
                     <div className={`row justify-content-end ${styles['w-nsm-100']}`}>
-                        <Link className={styles['lang-switch'] + ' btn btn-link text-light text-decoration-none'} href={transLinkHref} as={transLinkAs} locale={props.site == 'index' ? otLang : false}>
+                        <Link className={styles['lang-switch'] + ' btn btn-link text-light text-decoration-none'} href={{ pathname: transLinkHref, query: transQuery }} as={{ pathname: transLinkAs, query: transQuery }} locale={props.site == 'index' ? otLang : false}>
                             {otLang == 'es' ? 'Español' : 'English'} <FontAwesomeIcon icon={faGlobe} />
                         </Link>
 
