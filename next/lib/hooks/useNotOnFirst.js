@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export default function useOnlineStatus(func, states = [], condition = true) {
+export default function useNotOnFirst(func, states, condition = true) {
     const isFirst = useRef(true);
     useEffect(() => {
         if (condition) {
