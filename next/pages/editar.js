@@ -205,7 +205,6 @@ export default function Editar(props) {
         saveTopForm();
     }
     //Top form translations
-    const [fromLangFile, setFromLangFile] = useState(props.langsList[0] != router.locale ? props.langsList[0] : props.langsList[1]);
     const [translatedTopForm, setTranslatedTopForm] = useState(false);
     useEffect(() => {
         if (translatedTopForm) {
@@ -215,7 +214,7 @@ export default function Editar(props) {
     }, [translatedTopForm, topForm]);
     async function handleTopFormTranslate(e) {
         e.preventDefault();
-        const trans = await translateTopForm(fromLangFile, router.locale, props.cookieId);
+        const trans = await translateTopForm(e.target.fromlang.value, router.locale, props.cookieId);
         setTranslatedTopForm(true);
         setTopForm({
             ...topForm,
@@ -505,9 +504,9 @@ export default function Editar(props) {
         }
     }
     //Translate
-    function translateSection() {
+    function handleTranslateSection(e, idx) {
+        e.preventDefault();
         /*
-        To Do
         getDoc(docRef(FSDB, 'cookies/langs/' + selLang.value, docId)).then(async function (doc) {
             let sect = doc.data().cont[idx];
             if (item.type != sect.type) return;
@@ -526,8 +525,7 @@ export default function Editar(props) {
             }
             console.log(docDat.cont[idx]);
             normSave();
-        }).catch(err => console.log(err));
-        */
+        }).catch(err => console.log(err));*/
     }
 
     return (
@@ -848,9 +846,7 @@ export default function Editar(props) {
                     <Form onSubmit={handleTopFormTranslate}>
                         <div className="row mb-2 px-0">
                             <div className="col-auto pr-2">
-                                <Form.Select className='form-control pl-2 pr-1 h-100' onChange={(e) => {
-                                    setFromLangFile(e.target.value);
-                                }} value={fromLangFile}>
+                                <Form.Select className='form-control pl-2 pr-1 h-100' name='fromlang' defaultValue={props.langsList[0] != router.locale ? props.langsList[0] : props.langsList[1]}>
                                     {props.langsList.map(l => {
                                         if (l != router.locale) {
                                             return (
@@ -910,64 +906,6 @@ export default function Editar(props) {
                         return (
                             <div key={norm.key}>
                                 {norm.type != 'head' ? <div className="dropdown-divider"></div> : null}
-
-                                {/* Actions */}
-                                <div className='row mb-2'>
-                                    <>
-                                        {(norm.type != 'head' && norm.type != 'ref') ?
-                                            <div className="col-auto">
-                                                <Button className="btn-link-science" variant="light" onClick={() => deleteSection(idx)}>
-                                                    <FontAwesomeIcon icon={faTrashAlt} />
-                                                </Button>
-                                            </div>
-                                            : null
-                                        }
-                                        {norm.type != 'ref' ?
-                                            <>
-                                                <div className="col-auto pr-0">
-                                                    <select className='form-control pl-2 pr-1 h-100' defaultValue={props.langsList[0] != router.locale ? props.langsList[0] : props.langsList[1]}>
-                                                        {props.langsList.map(l => {
-                                                            if (l != router.locale) {
-                                                                return (
-                                                                    <option value={l}>{l}</option>
-                                                                )
-                                                            }
-                                                        })}
-                                                    </select>
-                                                </div>
-                                                <div className="col-auto pl-2">
-                                                    <Button className="btn-link-science ml-2" variant="light" onClick={() => translateSection(idx)}>
-                                                        <FontAwesomeIcon icon={faLanguage} />
-                                                    </Button>
-                                                </div>
-                                                <div className="col-auto ml-auto">
-                                                    {isClosed ?
-                                                        <>
-                                                            <Button className="btn-link-science ml-auto" variant="light" onClick={() => editSection(idx)}>
-                                                                <FontAwesomeIcon icon={faEdit} />
-                                                            </Button>
-                                                            <Button className="btn-link-science ml-2" variant="light" onClick={() => {
-                                                                setMdlOpenPlusSect(true);
-                                                                setToAddSect(idx + 1);
-                                                            }}>
-                                                                <FontAwesomeIcon icon={faPlus} />
-                                                            </Button>
-                                                        </>
-                                                        : <>
-                                                            <Button className="ml-auto" variant="danger" onClick={() => cancelEditSection(idx)}>
-                                                                <FontAwesomeIcon icon={faBan} />
-                                                            </Button>
-                                                            <Button className="btn-link-science ml-2" variant="light" onClick={() => saveAllSections()}>
-                                                                <FontAwesomeIcon icon={faCheck} />
-                                                            </Button>
-                                                        </>
-                                                    }
-                                                </div>
-                                            </>
-                                            : null
-                                        }
-                                    </>
-                                </div>
                                 {norm.type == 'head' ?
                                     <>{isClosed ?
                                         <div>
@@ -1351,6 +1289,66 @@ export default function Editar(props) {
                                     </>
                                     : null
                                 }
+
+                                {/* Actions */}
+                                <div className='row mt-2 mb-3'>
+                                    {norm.type != 'ref' ?
+                                        isClosed ?
+                                            <>
+                                                <div className="col-12 col-md-6 d-grid">
+                                                    <Button className="btn-link-science btn-wide mb-2" variant="light" onClick={() => editSection(idx)}>
+                                                        <FontAwesomeIcon icon={faEdit} />
+                                                    </Button>
+                                                </div>
+                                                <div className="col-12 col-md-6 d-grid">
+                                                    <Button className="btn-link-science btn-wide mb-2" variant="light" onClick={() => {
+                                                        setMdlOpenPlusSect(true);
+                                                        setToAddSect(idx + 1);
+                                                    }}>
+                                                        <FontAwesomeIcon icon={faPlus} />
+                                                    </Button>
+                                                </div>
+                                            </>
+                                            :
+                                            <>
+                                                {(norm.type != 'head') ?
+                                                    <div className="col-auto">
+                                                        <Button className="btn-link-science" variant="light" onClick={() => deleteSection(idx)}>
+                                                            <FontAwesomeIcon icon={faTrashAlt} />
+                                                        </Button>
+                                                    </div>
+                                                    : null
+                                                }
+                                                <Form className="col-auto" onSubmit={(e) => handleTranslateSection(e, idx)}>
+                                                    <div className="row">
+                                                        <div className="col-auto pr-0">
+                                                            <Form.Select className='form-control pl-2 pr-1 h-100' defaultValue={props.langsList[0] != router.locale ? props.langsList[0] : props.langsList[1]} name='fromlang'>
+                                                                {props.langsList.map(l => {
+                                                                    if (l != router.locale) {
+                                                                        return (
+                                                                            <option value={l}>{l}</option>
+                                                                        )
+                                                                    }
+                                                                })}
+                                                            </Form.Select>
+                                                        </div>
+                                                        <div className="col-auto pl-2">
+                                                            <Button className="btn-link-science ml-2" variant="light">
+                                                                <FontAwesomeIcon icon={faLanguage} />
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </Form>
+                                                <Button className="ml-auto" variant="danger" onClick={() => cancelEditSection(idx)}>
+                                                    <FontAwesomeIcon icon={faBan} />
+                                                </Button>
+                                                <Button className="btn-link-science mx-3" variant="light" onClick={saveAllSections}>
+                                                    <FontAwesomeIcon icon={faCheck} />
+                                                </Button>
+                                            </>
+                                        : null
+                                    }
+                                </div>
                             </div>
                         )
                     })}
