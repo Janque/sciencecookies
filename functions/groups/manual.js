@@ -1135,6 +1135,9 @@ async function ft_step3() {
             if (dat.cont[i].type == 'medSimple' && dat.cont[i].width.slice(-1) == '%') {
                 dat.cont[i].width = dat.cont[i].width.slice(0, -1);
             }
+            if (den.cont[i].type == 'medSimple' && den.cont[i].width.slice(-1) == '%') {
+                den.cont[i].width = den.cont[i].width.slice(0, -1);
+            }
         });
         dat.media.forEach((media, i) => {
             let mediaKey = media.key;
