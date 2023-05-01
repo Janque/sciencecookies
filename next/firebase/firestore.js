@@ -253,3 +253,23 @@ export async function translateTopForm(from, to, id) {
         description: desc
     }
 }
+
+export async function translateSection(from, to, id, sectIdx, type) {
+    const doc = await getDoc(docRef(cookiesFSColl[from], id));
+    let section = doc.data().cont[sectIdx];
+    if (type != section.type) return { error: 'type mismatch' };
+    if (section.type == 'head') {
+        section.title = await translateSimple(section.title, from, to);
+    } else if (section.type == 'html') {
+        section.html = await translateSimple(section.html, from, to);
+    } else if (section.type == 'parra') {
+        section.text = await translateSimple(section.text, from, to);
+        if (section.title != "0") {
+            section.titleTxt = await translateSimple(section.titleTxt, from, to);
+        }
+    } else if (section.type == 'medSimple') {
+        section.alt = await translateSimple(section.alt, from, to);
+        section.caption = await translateSimple(section.caption, from, to);
+    }
+    return section;
+}

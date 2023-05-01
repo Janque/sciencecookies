@@ -119,10 +119,10 @@ window.loaded = function loaded() {
         //Done
         $('#btnPrevCook').href = docDat.url;
         $('#btnPrevMail').href = '../vista-email/' + docDat.file;
-        //Done/
     }, err => { console.log(err) });
 
     fillTrans();
+    //Done/
     function translateFrm() {
         const translate = httpsCallable(FUNCTIONS, 'translations-translateFullCookie');
         return translate({
@@ -1415,7 +1415,6 @@ $('#btnCheckJs').onclick = function () {
     $('#inJava').attr('readonly', 'true');
     normSave();
 };
-//Done/
 
 function fillTrans() {
     langs.forEach(l => {
@@ -1428,7 +1427,6 @@ function fillTrans() {
     })
 }
 
-//Done
 $('#mdlAddMed').on('hidden.bs.modal', e => {
     $("#prevNewMed").src = '';
     if (lang == "es") {

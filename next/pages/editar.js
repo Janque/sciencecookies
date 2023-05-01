@@ -5,7 +5,7 @@ import { useAlert, AlertComponent } from '../components/alert';
 import MetaDescription from '../components/metaDescription';
 import ImageAuto from '../components/imageAuto';
 import ToolBar from '../components/toolbar';
-import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie, translateTopForm } from '../firebase/firestore';
+import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie, translateTopForm, translateSection } from '../firebase/firestore';
 import { useAuth } from '../firebase/auth';
 import { addCookieMedia, deleteCookieMedia } from '../firebase/storage';
 import { formatDate, getGlobalData, ultraClean } from '../lib/utils';
@@ -206,6 +206,7 @@ export default function Editar(props) {
     }
     //Top form translations
     const [translatedTopForm, setTranslatedTopForm] = useState(false);
+    const [translatingTopForm, setTranslatingTopForm] = useState(false);
     useEffect(() => {
         if (translatedTopForm) {
             setTranslatedTopForm(false);
@@ -214,6 +215,7 @@ export default function Editar(props) {
     }, [translatedTopForm, topForm]);
     async function handleTopFormTranslate(e) {
         e.preventDefault();
+        setTranslatingTopForm(true);
         const trans = await translateTopForm(e.target.fromlang.value, router.locale, props.cookieId);
         setTranslatedTopForm(true);
         setTopForm({
@@ -221,6 +223,7 @@ export default function Editar(props) {
             file: trans.file,
             description: trans.description
         });
+        setTranslatingTopForm(false);
     }
 
     //Upload changes
@@ -504,29 +507,46 @@ export default function Editar(props) {
         }
     }
     //Translate
-    function handleTranslateSection(e, idx) {
+    const [translatingSection, setTranslatingSection] = useState(false);
+    async function handleTranslateSection(e, idx) {
         e.preventDefault();
-        /*
-        getDoc(docRef(FSDB, 'cookies/langs/' + selLang.value, docId)).then(async function (doc) {
-            let sect = doc.data().cont[idx];
-            if (item.type != sect.type) return;
-            if (sect.type == 'head') {
-                docDat.cont[idx].title = await translateSimple(sect.title, selLang.value, lang);
-            } else if (sect.type == 'html') {
-                docDat.cont[idx].html = await translateSimple(sect.html, selLang.value, lang);
-            } else if (sect.type == 'parra') {
-                docDat.cont[idx].text = await translateSimple(sect.text, selLang.value, lang);
-                if (sect.title != "0") {
-                    docDat.cont[idx].titleTxt = await translateSimple(sect.titleTxt, selLang.value, lang);
-                }
-            } else if (sect.type == 'medSimple') {
-                docDat.cont[idx].alt = await translateSimple(sect.alt, selLang.value, lang);
-                docDat.cont[idx].caption = await translateSimple(sect.caption, selLang.value, lang);
+        setTranslatingSection(true);
+        const transSect = await translateSection(e.target.fromlang.value, router.locale, props.cookieId, idx, sectionsNorm[idx].type);
+        if (transSect.error && transSect.error == 'type mismatch') {
+            showAlert(router.locale == 'es' ? "La sección de origen es de un tipo diferente. No se puede completar la traducción." : "The origin section is of a different type. Translation cannot be completed.", 'danger');
+        } else {
+            if (transSect.type == 'head') {
+                let t = sectionsForm.slice();
+                t[idx].title = transSect.title;
+                setSectionsForm(t);
+                setSectChangedIdx(idx);
+            } else if (transSect.type == 'html') {
+                let t = sectionsForm.slice();
+                t[idx].html = transSect.html;
+                t[idx].css = transSect.css;
+                t[idx].js = transSect.js;
+                setSectionsForm(t);
+                setSectChangedIdx(idx);
+            } else if (transSect.type == 'parra') {
+                let t = sectionsForm.slice();
+                t[idx].text = transSect.text;
+                t[idx].title = transSect.title;
+                t[idx].titleTxt = transSect.titleTxt;
+                setSectionsForm(t);
+                setSectChangedIdx(idx);
+            } else if (transSect.type == 'medSimple') {
+                let t = sectionsForm.slice();
+                t[idx].alt = transSect.alt;
+                t[idx].hasCapt = transSect.hasCapt;
+                t[idx].caption = transSect.caption;
+                setSectionsForm(t);
+                setSectChangedIdx(idx);
             }
-            console.log(docDat.cont[idx]);
-            normSave();
-        }).catch(err => console.log(err));*/
+        }
+        setTranslatingSection(false);
     }
+    const [translatingCookie, setTranslatingCookie] = useState(false);
+
 
     return (
         (!authUser || cookieLoading) ?
@@ -818,7 +838,11 @@ export default function Editar(props) {
                         <FontAwesomeIcon icon={faImage} />
                     </Button>
                     <Button variant='science' onClick={() => setMdlOpenTrans(true)}>
-                        <FontAwesomeIcon icon={faLanguage} />
+                        {translatingCookie  ?
+                            <Spinner animation="border" size="sm" />
+                            :
+                            <FontAwesomeIcon icon={faLanguage} />
+                        }
                     </Button>
                     <Button variant='science' href={'/' + NavLinks[router.locale].cook + cookie.fileTranslations[router.locale] + '/'} id="btnPrevCook" target="_blank">
                         <FontAwesomeIcon icon={faEye} />
@@ -858,7 +882,11 @@ export default function Editar(props) {
                             </div>
                             <div className="col-auto pl-2">
                                 <Button variant='light' className="btn-link-science" type='submit'>
-                                    <FontAwesomeIcon icon={faLanguage} />
+                                    {translatingTopForm  ?
+                                        <Spinner animation="border" size="sm" />
+                                        :
+                                        <FontAwesomeIcon icon={faLanguage} />
+                                    }
                                 </Button>
                             </div>
                         </div>
@@ -1098,12 +1126,12 @@ export default function Editar(props) {
                                             </div>
                                             <div className="row my-2">
                                                 <div className="col">
-                                                    <textarea rows="8" className="form-control" onChange={e => {
+                                                    <Form.Control as="textarea" rows={8} onChange={e => {
                                                         let t = sectionsForm.slice();
                                                         t[idx].text = e.target.value.trim();
                                                         setSectionsForm(t);
                                                         setSectChangedIdx(idx);
-                                                    }}>{form.text}</textarea>
+                                                    }} value={form.text} />
                                                 </div>
                                             </div>
                                         </>
@@ -1319,26 +1347,33 @@ export default function Editar(props) {
                                                     </div>
                                                     : null
                                                 }
-                                                <Form className="col-auto" onSubmit={(e) => handleTranslateSection(e, idx)}>
-                                                    <div className="row">
-                                                        <div className="col-auto pr-0">
-                                                            <Form.Select className='form-control pl-2 pr-1 h-100' defaultValue={props.langsList[0] != router.locale ? props.langsList[0] : props.langsList[1]} name='fromlang'>
-                                                                {props.langsList.map(l => {
-                                                                    if (l != router.locale) {
-                                                                        return (
-                                                                            <option value={l}>{l}</option>
-                                                                        )
+                                                {(norm.type != 'youtube') ?
+                                                    <Form className="col-auto" onSubmit={(e) => handleTranslateSection(e, idx)}>
+                                                        <div className="row">
+                                                            <div className="col-auto pr-0">
+                                                                <Form.Select className='form-control pl-2 pr-1 h-100' defaultValue={props.langsList[0] != router.locale ? props.langsList[0] : props.langsList[1]} name='fromlang'>
+                                                                    {props.langsList.map(l => {
+                                                                        if (l != router.locale) {
+                                                                            return (
+                                                                                <option value={l}>{l}</option>
+                                                                            )
+                                                                        }
+                                                                    })}
+                                                                </Form.Select>
+                                                            </div>
+                                                            <div className="col-auto pl-2">
+                                                                <Button className="btn-link-science ml-2" variant="light" type='submit'>
+                                                                    {translatingSection ?
+                                                                        <Spinner animation="border" size="sm" />
+                                                                        :
+                                                                        <FontAwesomeIcon icon={faLanguage} />
                                                                     }
-                                                                })}
-                                                            </Form.Select>
+                                                                </Button>
+                                                            </div>
                                                         </div>
-                                                        <div className="col-auto pl-2">
-                                                            <Button className="btn-link-science ml-2" variant="light">
-                                                                <FontAwesomeIcon icon={faLanguage} />
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                </Form>
+                                                    </Form>
+                                                    : null
+                                                }
                                                 <Button className="ml-auto" variant="danger" onClick={() => cancelEditSection(idx)}>
                                                     <FontAwesomeIcon icon={faBan} />
                                                 </Button>
