@@ -122,7 +122,6 @@ window.loaded = function loaded() {
     }, err => { console.log(err) });
 
     fillTrans();
-    //Done/
     function translateFrm() {
         const translate = httpsCallable(FUNCTIONS, 'translations-translateFullCookie');
         return translate({
@@ -163,7 +162,6 @@ window.loaded = function loaded() {
         });
     });
 
-    //Done
     function fileFrm() {
         let file = $('#inFile').value;
         getDocs(query(cookiesFSColl, where("file", "==", file))).then(snap => {

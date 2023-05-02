@@ -31,7 +31,6 @@ export function isMobile(userAgent) {
 
 //Get global data for pages
 export async function getGlobalData(context) {
-    console.log(context.req,context.res)
     return {
         ...(await getRecommended(context.locale)),
         ...(isMobile(context.req.headers['user-agent']))

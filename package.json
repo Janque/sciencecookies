@@ -9,6 +9,6 @@
     "deployHost": "firebase deploy --only hosting"
   },
   "dependencies": {
-    "firebase-admin": "^11.3.0"
+    "firebase-admin": "^11.7.0"
   }
 }

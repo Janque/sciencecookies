@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { initializeApp, getApps, getApp } from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 import { getAnalytics } from "firebase/analytics";
 import { getPerformance } from "firebase/performance";
 import { getAuth } from 'firebase/auth';

@@ -1,8 +1,7 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-const db = admin.firestore();
+import { firestore } from '../firebase.js';
+import * as functions from 'firebase-functions';
 
-const { TranslationServiceClient } = require('@google-cloud/translate');
+import { TranslationServiceClient } from '@google-cloud/translate';
 const translationClient = new TranslationServiceClient({ keyFilename: 'firebaseKey.json' });
 
 async function translateString(text, from, to, type = 'html') {
@@ -19,21 +18,25 @@ async function translateString(text, from, to, type = 'html') {
     }
 }
 
-exports.translateSimple = functions.region('us-east1').https.onCall(async req => {
+export const translateSimple = functions.region('us-east1').https.onCall(async req => {
     return translateString(req.text, req.from, req.target);
 });
 
-exports.translateFullCookie = functions.region('us-east1').https.onCall(async req => {
-    const doc = await db.collection('cookies/langs/' + req.from).doc(req.docId).get();
+export const translateFullCookie = functions.region('us-east1').https.onCall(async req => {
+    const doc = await firestore.collection('cookies/langs/' + req.from).doc(req.docId).get();
     const data = doc.data();
     let title = await translateString(data.title, req.from, req.target);
-    let file = await translateString(data.file, req.from, req.target);
+    console.log(title);
+    let file = await translateString(data.fileTranslations[req.from], req.from, req.target);
     file = file.toLowerCase().replace(/ /g, '-');
     let translation = {
         cont: [],
         title: title,
         description: await translateString(data.description, req.from, req.target),
-        file: file
+        fileTranslations: {
+            ...data.fileTranslations,
+            [req.target]: file
+        }
     };
 
     //MUST BE A NORMAL FOR
@@ -47,16 +50,17 @@ exports.translateFullCookie = functions.region('us-east1').https.onCall(async re
             sect.text = await translateString(sect.text, req.from, req.target);
             if (sect.title != "0") {
                 sect.titleTxt = await translateString(sect.titleTxt, req.from, req.target);
+            }else{
+                sect.titleTxt = "";
             }
         } else if (sect.type == 'medSimple') {
             sect.alt = await translateString(sect.alt, req.from, req.target);
             sect.caption = await translateString(sect.caption, req.from, req.target);
         }
-        //Add more@#
         translation.cont.push(sect);
     }
 
-    return db.collection('cookies/langs/' + req.target).doc(req.docId).update(translation).then(() => {
+    return firestore.collection('cookies/langs/' + req.target).doc(req.docId).update(translation).then(() => {
         console.log('doc updated');
         return 1;
     }).catch(err => {
@@ -65,11 +69,11 @@ exports.translateFullCookie = functions.region('us-east1').https.onCall(async re
     });
 });
 
-exports.translateFullCalendar = functions.region('us-east1').https.onCall(async req => {
-    const calConfDoc = await db.collection('config').doc('calTypes').get();
+export const translateFullCalendar = functions.region('us-east1').https.onCall(async req => {
+    const calConfDoc = await firestore.collection('config').doc('calTypes').get();
     const calConfig = calConfDoc.data();
 
-    const postTransDoc = await db.collection('config').doc('postTrans').get();
+    const postTransDoc = await firestore.collection('config').doc('postTrans').get();
     const postTrans = postTransDoc.data();
     function postTranslate(str, from = req.from, to = req.target) {
         for (const [word, rep] of Object.entries(postTrans.words[from][to])) {
@@ -83,7 +87,7 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
         return str;
     }
 
-    const doc = await db.collection('calendars/langs/' + req.from).doc(req.docId).get();
+    const doc = await firestore.collection('calendars/langs/' + req.from).doc(req.docId).get();
     const data = doc.data();
     let translation = {
         events: {},
@@ -171,7 +175,7 @@ exports.translateFullCalendar = functions.region('us-east1').https.onCall(async 
         translation.weeks[Number(key[0])][key.substr(1, 3)].events[key[4]].name = event.name;
     }
 
-    return db.collection('calendars/langs/' + req.target).doc(req.docId).update(translation).then(() => {
+    return firestore.collection('calendars/langs/' + req.target).doc(req.docId).update(translation).then(() => {
         console.log('doc updated');
         return 1;
     }).catch(err => {

@@ -266,6 +266,8 @@ export async function translateSection(from, to, id, sectIdx, type) {
         section.text = await translateSimple(section.text, from, to);
         if (section.title != "0") {
             section.titleTxt = await translateSimple(section.titleTxt, from, to);
+        } else {
+            section.titleTxt = '';
         }
     } else if (section.type == 'medSimple') {
         section.alt = await translateSimple(section.alt, from, to);

@@ -8,6 +8,7 @@ import ToolBar from '../components/toolbar';
 import { cookieExists, getConfigCatsList, getConfigLanguages, getConfigAuthors, getCookieEdit, uploadCookie, translateTopForm, translateSection } from '../firebase/firestore';
 import { useAuth } from '../firebase/auth';
 import { addCookieMedia, deleteCookieMedia } from '../firebase/storage';
+import { translateCookie } from '../firebase/functions';
 import { formatDate, getGlobalData, ultraClean } from '../lib/utils';
 import useNotOnFirst from '../lib/hooks/useNotOnFirst';
 import { useRouter } from 'next/router';
@@ -23,6 +24,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
+import Alert from 'react-bootstrap/Alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCheck, faCheckSquare, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faEye, faImage, faLanguage, faLink, faLock, faPaperPlane, faPlus, faPlusSquare, faStar, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
@@ -43,7 +45,7 @@ export default function Editar(props) {
         }
     }, [getCookieEdit, authUser, props.cookieId]);
 
-    let progressPlusVar, progressPlus, mdlOpenPub, mdlOpenTrans;//temp
+    let progressPlusVar, progressPlus, mdlOpenPub;//temp
     //Plus Sect modal
     const [toAddSect, setToAddSect] = useState(-1);
     const [mdlOpenPlusSect, setMdlOpenPlusSect] = useState(false);
@@ -108,6 +110,7 @@ export default function Editar(props) {
                     setMedAddPrg((snap.bytesTransferred / snap.totalBytes) * 100);
                 },
                 (err) => {
+                    setMedAddPrgVar('danger');
                     showAlert((router.locale == 'es' ? "<strong>¡Ha ocurrido un error!</strong> " : "<strong>¡There has been an error!</strong> ") + err.code, 'danger', 'alrtMedAdd');
                     console.log(err);
                 }, localMedia, setLocalMedia);
@@ -150,7 +153,6 @@ export default function Editar(props) {
             }, 3000);
         }
     }, [toDelMed])
-
 
     //Top form
     const [topForm, setTopForm] = useState({});
@@ -545,8 +547,33 @@ export default function Editar(props) {
         }
         setTranslatingSection(false);
     }
-    const [translatingCookie, setTranslatingCookie] = useState(false);
 
+    //Translate Cookie
+    const [mdlOpenTrans, setMdlOpenTrans] = useState(false);
+    const [translatingCookie, setTranslatingCookie] = useState(false);
+    const [progressTrans, setProgressTrans] = useState(0);
+    const [progressTransVar, setProgressTransVar] = useState('primary');
+    async function handleTranslateCookie(e) {
+        e.preventDefault();
+        setProgressTrans(0);
+        setProgressTransVar('primary');
+        setTranslatingCookie(true);
+        const transPromise = translateCookie(e.target.fromlang.value, router.locale, props.cookieId);
+        setProgressTrans(50);
+        const transRes = await transPromise;
+        setProgressTrans(90);
+        if (transRes) {
+            setProgressTrans(96);
+            normSave(false);
+            setProgressTrans(100);
+            setProgressTransVar('success');
+            setTranslatingCookie(false);
+            setMdlOpenTrans(false);
+        } else {
+            setProgressTransVar('danger');
+            showAlert(router.locale == 'es' ? "<strong>¡Ha ocurrido un error!</strong>" : "<strong>¡There has been an error!</strong>", 'danger');
+        }
+    }
 
     return (
         (!authUser || cookieLoading) ?
@@ -672,7 +699,6 @@ export default function Editar(props) {
                                             if (toAddMed == -1) return;
                                             let t = sectionsForm.slice();
                                             t[toAddMed].medUrl = media.medUrl;
-                                            console.log(media.medUrl)
                                             setSectionsForm(t);
                                             setSectChangedIdx(toAddMed);
                                             setMdlOpenMedCho(false);
@@ -793,37 +819,52 @@ export default function Editar(props) {
                     <AlertComponent id='alrtTrans' />
                     <Modal.Header>
                         <Modal.Title>{router.locale == 'es' ? 'Generar traducción' : 'Generate translation'}</Modal.Title>
-                        <button className="close" type="button" onClick={() => setMdlOpenTrans(false)}>
+                        <button className="close" type="button" onClick={() => setMdlOpenTrans(false)} disabled={translatingCookie}>
                             <span aria-hidden="true">×</span>
                         </button>
                     </Modal.Header>
-                    <form id="frmTranslate">
+                    <Form onSubmit={handleTranslateCookie}>
                         <Modal.Body>
-                            <p id="mdlTranslateTxt"></p>
-                            <div className="form-row">
-                                {router.locale == 'es' ?
-                                    <div className="alert alert-dismissible fade show alert-danger" role="alert">Estás en español, ¿realmente quieres traducir desde otro idioma?</div>
-                                    : null
-                                }
-                                <div className="alert alert-dismissible fade show alert-warning" role="alert">{router.locale == 'es' ? 'La traducción sobreescribe los cambios en el idioma actual' : 'The translation overrides the changes in the current language'}</div>
-                            </div>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label for="inTransFrom">{router.locale == 'es' ? 'Traducir del' : 'Translate from'}</label>
-                                    <select className="form-control" id="inTransFrom" required="required">
-                                        <option selected="selected" value=''>{router.locale == 'es' ? 'Choose...' : 'Generate translation'}</option>
-                                    </select>
+                            <div className="row">
+                                <div className="col">
+                                    {router.locale == 'es' ?
+                                        <Alert variant='danger'>Estás en español, ¿realmente quieres traducir desde otro idioma?</Alert>
+                                        : null
+                                    }
+                                    <Alert variant='warning'>{router.locale == 'es' ? 'La traducción sobreescribe los cambios en el idioma actual' : 'The translation overrides the changes in the current language'}</Alert>
+                                    {translatingCookie ?
+                                        <ProgressBar variant={progressTransVar} animated now={progressTrans} label={`${progressTrans}%`} />
+                                        :
+                                        <Form.Group controlId='frmTransLang'>
+                                            <Form.Label>{router.locale == 'es' ? 'Traducir del' : 'Translate from'}</Form.Label>
+                                            <Form.Select className='form-control' name='fromlang' required>
+                                                <option value=''>{router.locale == 'es' ? 'Elige...' : 'Choose...'}</option>
+                                                {props.langsList.map(l => {
+                                                    if (l != router.locale) {
+                                                        return (
+                                                            <option value={l}>{l}</option>
+                                                        )
+                                                    }
+                                                })}
+                                            </Form.Select>
+                                        </Form.Group>
+                                    }
                                 </div>
                             </div>
-                            <ProgressBar variant={progressPlusVar} animated now={progressPlus} label={`${progressPlus}%`} />
                         </Modal.Body>
                         <Modal.Footer>
                             <div className="d-grid w-100">
-                                <button className="btn btn-science btn-block" id="btnCnfTranslate" type="button">{router.locale == 'es' ? 'Traducir' : 'Translate'}</button>
-                                <Button variant="secondary" type="button" onClick={() => setMdlOpenTrans(false)}>{Buttons[router.locale]["cancel"]}</Button>
+                                <Button variant='science' className='mb-2' type="submit" disabled={translatingCookie}>
+                                    {translatingCookie ?
+                                        <Spinner animation="border" size="sm" />
+                                        :
+                                        router.locale == 'es' ? 'Traducir' : 'Translate'
+                                    }
+                                </Button>
+                                <Button variant="secondary" type="button" onClick={() => setMdlOpenTrans(false)} disabled={translatingCookie}>{Buttons[router.locale]["cancel"]}</Button>
                             </div>
                         </Modal.Footer>
-                    </form>
+                    </Form>
                 </Modal>
 
                 { /* Side toolbar */}
@@ -838,7 +879,7 @@ export default function Editar(props) {
                         <FontAwesomeIcon icon={faImage} />
                     </Button>
                     <Button variant='science' onClick={() => setMdlOpenTrans(true)}>
-                        {translatingCookie  ?
+                        {translatingCookie ?
                             <Spinner animation="border" size="sm" />
                             :
                             <FontAwesomeIcon icon={faLanguage} />
@@ -881,8 +922,8 @@ export default function Editar(props) {
                                 </Form.Select>
                             </div>
                             <div className="col-auto pl-2">
-                                <Button variant='light' className="btn-link-science" type='submit'>
-                                    {translatingTopForm  ?
+                                <Button variant='light' className="btn-link-science" type='submit' disabled={translatingTopForm}>
+                                    {translatingTopForm ?
                                         <Spinner animation="border" size="sm" />
                                         :
                                         <FontAwesomeIcon icon={faLanguage} />
@@ -918,7 +959,7 @@ export default function Editar(props) {
                         </div>
                         <div className="row mb-2 justify-content-end">
                             <Button disabled={!topFormChanged} variant="secondary" onClick={handleTopFormRevert}>{router.locale == 'es' ? 'Revertir' : 'Revert'}</Button>
-                            <Button variant='light' className="btn-link-science mx-3" type="submit">
+                            <Button disabled={!topFormChanged || translatingTopForm} variant='light' className="btn-link-science mx-3" type="submit">
                                 <FontAwesomeIcon icon={faCheck} />
                             </Button>
                         </div>
@@ -1362,7 +1403,7 @@ export default function Editar(props) {
                                                                 </Form.Select>
                                                             </div>
                                                             <div className="col-auto pl-2">
-                                                                <Button className="btn-link-science ml-2" variant="light" type='submit'>
+                                                                <Button className="btn-link-science ml-2" variant="light" type='submit' disabled={translatingSection}>
                                                                     {translatingSection ?
                                                                         <Spinner animation="border" size="sm" />
                                                                         :
@@ -1393,7 +1434,7 @@ export default function Editar(props) {
                 <div className="container-fluid mb-2 rounded-lg p-3" style={{ backgroundColor: '#57238b' }}>
                     <div className="row mb-2">
                         <div className="col">
-                            <label for="inJava">JavaScript</label>
+                            <label htmlFor="inJava">JavaScript</label>
                             <textarea className="form-control" id="inJava" rows="8" readOnly>
                                 {cookie.java}
                             </textarea>

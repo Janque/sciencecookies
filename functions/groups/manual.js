@@ -1,9 +1,6 @@
-import { initializeApp } from 'firebase-admin/app';
-initializeApp();
-
+import { firestore } from '../firebase.js';
 import * as functions from 'firebase-functions';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore'
-const firestore = getFirestore();
+import { FieldValue } from 'firebase-admin/firestore'
 
 import ShortUniqueId from 'short-unique-id';
 const uid = new ShortUniqueId({ length: 8 });

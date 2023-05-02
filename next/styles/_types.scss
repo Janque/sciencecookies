@@ -71,7 +71,7 @@ strong,
 }
 
 .btn-science {
-    font-family: raleway-regular;
+    font-family: raleway-semi-bold;
     color: $white;
     background-color: $rebecca;
     border-color: $rebecca;
@@ -89,6 +89,11 @@ strong,
     &.white-link {
         color: $white;
     }
+}
+
+.btn-wide {
+    font-size: 20px;
+    line-height: 1;
 }
 
 #changeLang {
